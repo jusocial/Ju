@@ -1,0 +1,22 @@
+[features]
+seeds = false
+skip-lint = false
+
+[programs.localnet]
+ju_core = "964vWgVEK9X8ZwZB2HyshFVmHUWbcYpRTnVYz2o3F2Xq"
+
+[programs.testnet]
+ju_core = "964vWgVEK9X8ZwZB2HyshFVmHUWbcYpRTnVYz2o3F2Xq"
+
+[programs.devnet]
+ju_core = "964vWgVEK9X8ZwZB2HyshFVmHUWbcYpRTnVYz2o3F2Xq"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "Localnet"
+wallet = "/Users/user/.config/solana/id.json"
+
+[scripts]
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
