@@ -21,4 +21,4 @@ Testnet Cluster: [964vWgVEK9X8ZwZB2HyshFVmHUWbcYpRTnVYz2o3F2Xq](https://explorer
 
 ## Video
 
-[video link](https://youtube.com)
+[video link](https://vimeo.com/817865300)
