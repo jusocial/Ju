@@ -177,6 +177,7 @@ pub mod ju_core {
         // Assign external Processors to Application
         match &ctx.accounts.registering_processor_pda {
             Some(registering_processor_pda) => {
+                require!(registering_processor_pda.processor_type.eq(&ProcessorType::Registering), CustomError::ProcessorTypeMismatch);
                 app.registering_processor = Some(registering_processor_pda.program_address);
             },
             None => {
@@ -185,6 +186,7 @@ pub mod ju_core {
         }
         match &ctx.accounts.connecting_processor_pda {
             Some(connecting_processor_pda) => {
+                require!(connecting_processor_pda.processor_type.eq(&ProcessorType::Connecting), CustomError::ProcessorTypeMismatch);
                 app.connecting_processor = Some(connecting_processor_pda.program_address);
             },
             None => {
@@ -193,6 +195,7 @@ pub mod ju_core {
         }
         match &ctx.accounts.publishing_processor_pda {
             Some(publishing_processor_pda) => {
+                require!(publishing_processor_pda.processor_type.eq(&ProcessorType::Publishing), CustomError::ProcessorTypeMismatch);
                 app.publishing_processor = Some(publishing_processor_pda.program_address);
             },
             None => {
@@ -201,6 +204,7 @@ pub mod ju_core {
         }
         match &ctx.accounts.collecting_processor_pda {
             Some(collecting_processor_pda) => {
+                require!(collecting_processor_pda.processor_type.eq(&ProcessorType::Collecting), CustomError::ProcessorTypeMismatch);
                 app.collecting_processor = Some(collecting_processor_pda.program_address);
             },
             None => {
@@ -209,6 +213,7 @@ pub mod ju_core {
         }
         match &ctx.accounts.referencing_processor_pda {
             Some(referencing_processor_pda) => {
+                require!(referencing_processor_pda.processor_type.eq(&ProcessorType::Referencing), CustomError::ProcessorTypeMismatch);
                 app.referencing_processor = Some(referencing_processor_pda.program_address);
             },
             None => {
