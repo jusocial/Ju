@@ -245,7 +245,7 @@ pub struct UpdateApp<'info> {
 ///
 /// 0. `[]` PDA of the current Application
 /// 1. `[]` PDA of the Profile being created
-/// 2. `[]` PDA of the Handle to be registered (optional)
+/// 2. `[]` PDA of the Alias to be registered (optional)
 /// 3. `[]` External Registering Processor PDA that proof Processor passed to assign is whitelisted.
 /// 4. `[]` External Connecting Processor Program that makes additional processing
 /// 5. `[signer]` Profile Authority
@@ -279,16 +279,16 @@ pub struct CreateProfile<'info> {
     #[account(
         init,
         seeds = [
-            Handle::PREFIX.as_bytes(),
+            Alias::PREFIX.as_bytes(),
             app.key().as_ref(),
-            data.handle.as_ref().unwrap().as_bytes(),
+            data.alias.as_ref().unwrap().as_bytes(),
         ],
         bump,
         payer = authority,
-        space = Handle::LEN
+        space = Alias::LEN
     )]
-    /// PDA to register Profile Handle (user can change Handle in the future - delete old PDA and create new one available)
-    pub handle_pda: Option<Account<'info, Handle>>,
+    /// PDA to register Profile Alias (user can change Alias in the future - delete old PDA and create new one available)
+    pub alias_pda: Option<Account<'info, Alias>>,
 
     #[account(
         seeds = [
@@ -334,8 +334,8 @@ impl<'info> CreateProfile<'info> {
 ///
 /// 0. `[]` PDA of the current Application
 /// 1. `[]` PDA of the Profile being created
-/// 2. `[]` PDA of the Handle to be deleted (optional)
-/// 3. `[]` PDA of the Handle to be registered (optional)
+/// 2. `[]` PDA of the Alias to be deleted (optional)
+/// 3. `[]` PDA of the Alias to be registered (optional)
 /// 4. `[]` External Registering Processor PDA that proof Processor passed to assign is whitelisted (optional)
 /// 5. `[signer]` Profile Authority
 /// 6. `[]` System program
@@ -368,28 +368,28 @@ pub struct UpdateProfile<'info> {
         mut,
         has_one = authority,
         seeds = [
-            Handle::PREFIX.as_bytes(),
+            Alias::PREFIX.as_bytes(),
             app.key().as_ref(),
-            current_handle_pda.value.as_bytes().as_ref(),
+            current_alias_pda.value.as_bytes().as_ref(),
         ],
         bump,
         close = authority
     )]
-    pub current_handle_pda: Option<Account<'info, Handle>>,
+    pub current_alias_pda: Option<Account<'info, Alias>>,
 
     #[account(
         init,
         seeds = [
-            Handle::PREFIX.as_bytes(),
+            Alias::PREFIX.as_bytes(),
             app.key().as_ref(),
-            data.handle.as_ref().unwrap().as_bytes(),
+            data.alias.as_ref().unwrap().as_bytes(),
         ],
         bump,
         payer = authority,
-        space = Handle::LEN
+        space = Alias::LEN
     )]
-    /// Handle account (PDA) to register new available Handle instead old one being delete
-    pub new_handle_pda: Option<Account<'info, Handle>>,
+    /// Alias account (PDA) to register new available Alias instead old one being delete
+    pub new_alias_pda: Option<Account<'info, Alias>>,
 
     #[account(
         seeds = [
@@ -414,7 +414,7 @@ pub struct UpdateProfile<'info> {
 ///
 /// 0. `[]` PDA of the current Application
 /// 1. `[writable]` PDA of the existing Profile
-/// 2. `[writable]` PDA of the Profile's current Handle (optional)
+/// 2. `[writable]` PDA of the Profile's current Alias (optional)
 /// 3. `[signer]` Profile Authority
 /// 4. `[]` System program
 ///
@@ -446,16 +446,16 @@ pub struct DeleteProfile<'info> {
         mut,
         has_one = authority,
         seeds = [
-            Handle::PREFIX.as_bytes(),
+            Alias::PREFIX.as_bytes(),
             app.key().as_ref(),
-            profile.handle.as_ref().unwrap().as_bytes(),
+            profile.alias.as_ref().unwrap().as_bytes(),
         ],
         bump,
         close = authority
     )]
-    /// Handler PDA to delete
-    /// Must be passed if user has a Handler registered
-    pub handle_pda: Option<Account<'info, Handle>>,
+    /// Aliasr PDA to delete
+    /// Must be passed if user has a Aliasr registered
+    pub alias_pda: Option<Account<'info, Alias>>,
 
     #[account(mut)]
     pub authority: Signer<'info>,
@@ -642,7 +642,7 @@ pub struct DeleteConnection<'info> {
 /// 0. `[]` PDA of the current Application
 /// 1. `[]` Subspace creator Profile (PDA)
 /// 2. `[writable]` Subspace PDA, it stores Subspace data
-/// 3. `[]` Subspace Handle PDA (optional)
+/// 3. `[]` Subspace Alias PDA (optional)
 /// 3. `[]` External Connecting Processor PDA that proof Processor passed to assign is whitelisted (optional)
 /// 4. `[]` External Publishing Processor PDA that proof Processor passed to assign is whitelisted (optional)
 /// 5. `[]` External Collecting Processor PDA that proof Processor passed to assign is whitelisted (optional)
@@ -690,16 +690,16 @@ pub struct CreateSubspace<'info> {
     #[account(
         init,
         seeds = [
-            Handle::PREFIX.as_bytes(),
+            Alias::PREFIX.as_bytes(),
             app.key().as_ref(),
-            data.handle.as_ref().unwrap().as_bytes(),
+            data.alias.as_ref().unwrap().as_bytes(),
         ],
         bump,
         payer = authority,
-        space = Handle::LEN
+        space = Alias::LEN
     )]
-    /// A PDA to claim Subspace handle - this way Subspace owner can change handle in the future (delete old PDA and create new one available)
-    pub handle_pda: Option<Account<'info, Handle>>,
+    /// A PDA to claim Subspace alias - this way Subspace owner can change alias in the future (delete old PDA and create new one available)
+    pub alias_pda: Option<Account<'info, Alias>>,
 
     #[account(
         seeds = [
@@ -758,8 +758,8 @@ pub struct CreateSubspace<'info> {
 /// 0. `[]` PDA of the current Application
 /// 1. `[]` Subspace creator Profile (PDA)
 /// 2. `[writable]` Subspace account, it stores Subspace data
-/// 3. `[writable]` Current Subspace handle PDA to be deleted (PDA, optional)
-/// 4. `[]` New Subspace handle to be registered (PDA, optional)
+/// 3. `[writable]` Current Subspace alias PDA to be deleted (PDA, optional)
+/// 4. `[]` New Subspace alias to be registered (PDA, optional)
 /// 4. `[]` External Connecting Processor PDA that proof Processor passed to assign is whitelisted (optional)
 /// 5. `[]` External Publishing Processor PDA that proof Processor passed to assign is whitelisted (optional)
 /// 6. `[]` External Collecting Processor PDA that proof Processor passed to assign is whitelisted (optional)
@@ -806,27 +806,27 @@ pub struct UpdateSubspace<'info> {
         mut,
         has_one = authority,
         seeds = [
-            Handle::PREFIX.as_bytes(),
+            Alias::PREFIX.as_bytes(),
             app.key().as_ref(),
-            current_handle_pda.value.as_bytes().as_ref(),
+            current_alias_pda.value.as_bytes().as_ref(),
         ],
         bump,
         close = authority
     )]
-    pub current_handle_pda: Option<Account<'info, Handle>>,
+    pub current_alias_pda: Option<Account<'info, Alias>>,
 
     #[account(
         init,
         seeds = [
-            Handle::PREFIX.as_bytes(),
+            Alias::PREFIX.as_bytes(),
             app.key().as_ref(),
-            data.handle.as_ref().unwrap().as_bytes(),
+            data.alias.as_ref().unwrap().as_bytes(),
         ],
         bump,
         payer = authority,
-        space = Handle::LEN
+        space = Alias::LEN
     )]
-    pub new_handle_pda: Option<Account<'info, Handle>>,
+    pub new_alias_pda: Option<Account<'info, Alias>>,
 
     #[account(
         seeds = [
@@ -885,7 +885,7 @@ pub struct UpdateSubspace<'info> {
 /// 0. `[]` Current Application (PDA)
 /// 1. `[]` Subspace creator Profile (PDA)
 /// 2. `[writable]` Subspace PDA to be deleted
-/// 3. `[writable]` Subspace current Handle PDA (optional)
+/// 3. `[writable]` Subspace current Alias PDA (optional)
 /// 3. `[signer]` Publication Autority
 /// 4. `[]` System program
 ///
@@ -917,16 +917,16 @@ pub struct DeleteSubpace<'info> {
         mut,
         has_one = authority,
         seeds = [
-            Handle::PREFIX.as_bytes(),
+            Alias::PREFIX.as_bytes(),
             app.key().as_ref(),
-            subspace.handle.as_ref().unwrap().as_bytes(),
+            subspace.alias.as_ref().unwrap().as_bytes(),
         ],
         bump,
         close = authority
     )]
-    /// Handler PDA to delete
-    /// Must be passed if user has a Handler registered
-    pub handle_pda: Option<Account<'info, Handle>>,
+    /// Aliasr PDA to delete
+    /// Must be passed if user has a Aliasr registered
+    pub alias_pda: Option<Account<'info, Alias>>,
 
     #[account(mut)]
     pub authority: Signer<'info>,

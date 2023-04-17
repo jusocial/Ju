@@ -132,7 +132,7 @@ impl App {
 ///
 /// 1. Application account (PDA)
 /// 2. Profile authority address
-/// 3. Unique Application's user Profile Handle as string (ASCII alphanumeric)
+/// 3. Unique Application's user Profile Alias as string (ASCII alphanumeric)
 /// 4. Profile metadata URI
 /// 5. Profile status text
 /// 6. Verification status
@@ -146,8 +146,8 @@ pub struct Profile {
     pub app: Pubkey,
     /// Pubkey of the profile owner (32).
     pub authority: Pubkey,
-    /// Profile handle (1 + STRING_LENGTH_PREFIX + MAX_HANDLE_LENGTH).
-    pub handle: Option<String>,
+    /// Profile alias (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH).
+    pub alias: Option<String>,
     /// Profile metadata URI (STRING_LENGTH_PREFIX + MAX_URI_LENGTH).
     pub metadata_uri: String,
     /// Profile Status text (1 + STRING_LENGTH_PREFIX + MAX_STATUS_LENGTH)
@@ -166,27 +166,27 @@ impl Profile {
     pub const LEN: usize = DISCRIMINATOR_LENGTH         // Anchor internal discrimitator
         + 32                                            // Pubkey
         + 32                                            // Pubkey
-        + (STRING_LENGTH_PREFIX + MAX_HANDLE_LENGTH)    // String
+        + (STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)    // String
         + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)   // Option<String>
         + (STRING_LENGTH_PREFIX + MAX_STATUS_LENGTH)    // String
         + 1                                             // bool
         + 33                                            // Option<Pubkey>
         + 8;                                            // i64
 
-    /// Method for validating Profile Handle
+    /// Method for validating Profile Alias
     ///
     /// Parameters:
     ///
-    /// 1. `handle` - Reference to Application unique Handler String
+    /// 1. `alias` - Reference to Application unique Aliasr String
     /// 
-    pub fn validate_handle(&self, handle: &String) -> Result<()> {
+    pub fn validate_alias(&self, alias: &String) -> Result<()> {
 
-        if !handle.chars().all(|x| x.is_ascii_alphanumeric()) {
-            return Err(error!(CustomError::HandleMustBeAlphanumeric));
+        if !alias.chars().all(|x| x.is_ascii_alphanumeric()) {
+            return Err(error!(CustomError::AliasMustBeAlphanumeric));
         }
 
-        if handle.len() < MIN_HANDLE_LENGTH || handle.len() > MAX_HANDLE_LENGTH {
-            return Err(error!(CustomError::HandleLengthIncorrect));
+        if alias.len() < MIN_ALIAS_LENGTH || alias.len() > MAX_ALIAS_LENGTH {
+            return Err(error!(CustomError::AliasLengthIncorrect));
         }
 
         Ok(())
@@ -201,7 +201,7 @@ impl Profile {
 /// 2. Application address
 /// 3. Profile authority address
 /// 4. Subspace owner Profile Pubkey
-/// 5. Unique application's user profile handle as string (optional, ASCII alphanumeric)
+/// 5. Unique application's user profile alias as string (optional, ASCII alphanumeric)
 /// 6. Subspace metadata URI
 /// 7. External Publishing processor (optional)
 /// 8. External Connecting processor (optional)
@@ -219,8 +219,8 @@ pub struct Subspace {
     pub authority: Pubkey,
     /// Subspace creator Profile Pubkey (32)
     pub creator: Pubkey,
-    /// Profile handle (STRING_LENGTH_PREFIX + MAX_HANDLE_LENGTH).
-    pub handle: Option<String>,
+    /// Profile alias (STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH).
+    pub alias: Option<String>,
     /// Metadata URI (STRING_LENGTH_PREFIX + MAX_URI_LENGTH).
     pub metadata_uri: String,
     /// An address of a Program (external processor) for Publication Creating additional processing (33)
@@ -241,27 +241,27 @@ impl Subspace {
         + 32                                            // Pubkey
         + 32                                            // Pubkey
         + 32                                            // Pubkey
-        + (STRING_LENGTH_PREFIX + MAX_HANDLE_LENGTH)    // String
+        + (STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)    // String
         + (STRING_LENGTH_PREFIX + MAX_URI_LENGTH)       // String
         + 33                                            // Option<Pubkey>
         + 33                                            // Option<Pubkey>
         + 33                                            // Option<Pubkey>
         + 33;                                           // Option<Pubkey>
 
-    /// Method for validating Subspace Handle
+    /// Method for validating Subspace Alias
     ///
     /// Parameters:
     ///
-    /// 1. `handle` - Reference to Application unique Handler String
+    /// 1. `alias` - Reference to Application unique Aliasr String
     /// 
-    pub fn validate_handle(&self, handle: &String) -> Result<()> {
+    pub fn validate_alias(&self, alias: &String) -> Result<()> {
 
-        if !handle.chars().all(|x| x.is_ascii_alphanumeric()) {
-            return Err(error!(CustomError::HandleMustBeAlphanumeric));
+        if !alias.chars().all(|x| x.is_ascii_alphanumeric()) {
+            return Err(error!(CustomError::AliasMustBeAlphanumeric));
         }
 
-        if handle.len() < MIN_HANDLE_LENGTH || handle.len() > MAX_HANDLE_LENGTH {
-            return Err(error!(CustomError::HandleLengthIncorrect));
+        if alias.len() < MIN_ALIAS_LENGTH || alias.len() > MAX_ALIAS_LENGTH {
+            return Err(error!(CustomError::AliasLengthIncorrect));
         }
 
         Ok(())
@@ -416,32 +416,32 @@ impl CollectionItem {
         + 8;                                            // i64
 }
 
-/// Handle account that creates when new Handle is claimed by user Profile or Subspace
+/// Alias account that creates when new Alias is claimed by user Profile or Subspace
 ///
-/// The Handle account stores:
+/// The Alias account stores:
 ///
 /// 1. Application address
-/// 2. Handle authority address
-/// 3. Handle value
+/// 2. Alias authority address
+/// 3. Alias value
 ///
 #[account]
 #[derive(Default)]
-pub struct Handle {
+pub struct Alias {
     /// Application Pubkey (32)
     pub app: Pubkey,
-    /// Handle authority account Pubkey (32)
+    /// Alias authority account Pubkey (32)
     pub authority: Pubkey,
-    /// Handle value (STRING_LENGTH_PREFIX + MAX_HANDLE_LENGTH)
+    /// Alias value (STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)
     pub value: String,
 }
 
-impl Handle {
-    pub const PREFIX: &'static str = "handle";
+impl Alias {
+    pub const PREFIX: &'static str = "alias";
     
     pub const LEN: usize = DISCRIMINATOR_LENGTH         // Anchor internal discrimitator 
         + 32                                            // Pubkey
         + 32                                            // Pubkey
-        + (STRING_LENGTH_PREFIX + MAX_HANDLE_LENGTH);   // String
+        + (STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH);   // String
 }
 
 /// Reaction account that creates when new Publication Reaction initialized
@@ -501,7 +501,7 @@ impl Reaction {
 pub struct Report {
     /// Application Pubkey (32)
     pub app: Pubkey,
-    /// Handle authority account Pubkey (32)
+    /// Alias authority account Pubkey (32)
     pub authority: Pubkey,
     /// Reaction initializer Pubkey (32)
     pub initializer_profile: Pubkey,
@@ -545,13 +545,13 @@ pub struct AppData {
 ///
 /// Struct contains:
 ///
-/// 1. `handle` - Unique Application's user Profile Handle as string (ASCII alphanumeric)
+/// 1. `alias` - Unique Application's user Profile Alias as string (ASCII alphanumeric)
 /// 2. `metadata_uri` - Profile metadata URI
 /// 3. `connecting_processor` - Profile specified external processor to make additional Connection Processing (optional)
 ///
 #[derive(Default, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct ProfileData {
-    pub handle: Option<String>,
+    pub alias: Option<String>,
     pub metadata_uri: String,
     pub connecting_processor_to_assign: Option<Pubkey>,
 }
@@ -561,14 +561,14 @@ pub struct ProfileData {
 /// Struct contains:
 ///
 /// 1. `uuid` - Subspace UUID
-/// 2. `handle` - Unique Application's Subspace Handle as string (ASCII alphanumeric)
+/// 2. `alias` - Unique Application's Subspace Alias as string (ASCII alphanumeric)
 /// 3. `creator` - Subspace creator Profile address
 /// 4. `metadata_uri` - Publication metadata URI
 ///
 #[derive(Default, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct SubspaceData {
     pub uuid: String,
-    pub handle: Option<String>,
+    pub alias: Option<String>,
     pub creator: Pubkey,
     pub metadata_uri: String,
 }

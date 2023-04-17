@@ -21,9 +21,9 @@ pub const MIN_URI_LENGTH: usize = 5;
 #[constant]
 pub const MAX_URI_LENGTH: usize = 100;
 #[constant]
-pub const MIN_HANDLE_LENGTH: usize = 4;
+pub const MIN_ALIAS_LENGTH: usize = 4;
 #[constant]
-pub const MAX_HANDLE_LENGTH: usize = 10;
+pub const MAX_ALIAS_LENGTH: usize = 10;
 #[constant]
 pub const MAX_STATUS_LENGTH: usize = 64;
 #[constant]

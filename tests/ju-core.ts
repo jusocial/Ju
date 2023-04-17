@@ -42,12 +42,12 @@ describe("ju-core", () => {
     ],
     program.programId
   );
-  const profileHandle1 = "igor";
-  const [profileHadleAccount1, profileHandleAccountBump1] = anchor.web3.PublicKey.findProgramAddressSync(
+  const profileAlias1 = "igor";
+  const [profileHadleAccount1, profileAliasAccountBump1] = anchor.web3.PublicKey.findProgramAddressSync(
     [
-      Buffer.from("handle"),
+      Buffer.from("alias"),
       appAccount.toBuffer(),
-      Buffer.from(profileHandle1),
+      Buffer.from(profileAlias1),
     ],
     program.programId
   );
@@ -63,12 +63,12 @@ describe("ju-core", () => {
     ],
     program.programId
   );
-  const profileHandle2 = "julia";
-  const [profileHandleAccount2, profileHandleAccountBump2] = anchor.web3.PublicKey.findProgramAddressSync(
+  const profileAlias2 = "julia";
+  const [profileAliasAccount2, profileAliasAccountBump2] = anchor.web3.PublicKey.findProgramAddressSync(
     [
-      Buffer.from("handle"),
+      Buffer.from("alias"),
       appAccount.toBuffer(),
-      Buffer.from(profileHandle2),
+      Buffer.from(profileAlias2),
     ],
     program.programId
   );
@@ -131,6 +131,43 @@ describe("ju-core", () => {
       expect(data.authority.toString()).to.equal(user.toString());
     });
 
+    it("Update existing App", async () => {
+
+      /* Call the initializeApp function via RPC */
+      const app2 = "juconnect";
+      let appInstructionData: anchor.IdlTypes<JuCore>["AppData"] = {
+        appName: appName,
+        metadataUri: "https://arweave.net/zzz",
+      };
+
+      // try {
+        const tx = await program.methods.initializeApp(appInstructionData)
+          .accounts({
+            app: appAccount,
+            registeringProcessorPda: null,
+            connectingProcessorPda: null,
+            publishingProcessorPda: null,
+            collectingProcessorPda: testProcessorPDA1,  // Must be Error here
+            referencingProcessorPda: null,
+            authority: user,
+            systemProgram: SystemProgram.programId,
+          })
+          .rpc();
+
+        console.log("Tx signature: ", tx);
+
+        /* Fetch the App PDA and check the value  */
+        const data = await program.account.app.fetch(appAccount);
+        console.log('App 2 account: ', data);
+
+      // } catch (err) {
+      //   const e = err as anchor.AnchorError;
+      //   // assert.strictEqual(e.error.errorCode.code, "InstallOwnerMismatch");
+      //   expect(e.error.errorCode.code).to.equal("ProcessorTypeMismatch");
+      // }
+
+    });
+
   });
 
   describe("Profile", async () => {
@@ -138,7 +175,7 @@ describe("ju-core", () => {
     it("Creates Profile 1", async () => {
       /* Call the createProfile function via RPC */
       let profileInstructionData1: anchor.IdlTypes<JuCore>["ProfileData"] = {
-        handle: profileHandle1,
+        alias: profileAlias1,
         metadataUri: "https://arweave.net/profile1",
         connectingProcessorToAssign: null
       };
@@ -147,7 +184,7 @@ describe("ju-core", () => {
           {
             app: appAccount,
             profile: profileAccount1,
-            handlePda: profileHadleAccount1,
+            aliasPda: profileHadleAccount1,
             connectingProcessorPda: null,
             registeringProcessor: testProcessor1.publicKey,
             authority: user,
@@ -171,7 +208,7 @@ describe("ju-core", () => {
 
       /* Call the create function via RPC */
       let profileInstructionData2: anchor.IdlTypes<JuCore>["ProfileData"] = {
-        handle: profileHandle2,
+        alias: profileAlias2,
         metadataUri: "https://arweave.net/profile2",
         connectingProcessorToAssign: null
       };
@@ -179,7 +216,7 @@ describe("ju-core", () => {
         .accounts({
           app: appAccount,
           profile: profileAccount2,
-          handlePda: profileHandleAccount2,
+          aliasPda: profileAliasAccount2,
           connectingProcessorPda: null,
           registeringProcessor: testProcessor1.publicKey,
           authority: user2.publicKey,
@@ -403,12 +440,12 @@ describe("ju-core", () => {
       program.programId
     );
 
-    const subspaceHandle = "nuclear";
+    const subspaceAlias = "nuclear";
     const [subspaceHadleAccount, subspaceHadleAccountBump] = anchor.web3.PublicKey.findProgramAddressSync(
       [
-        Buffer.from("handle"),
+        Buffer.from("alias"),
         appAccount.toBuffer(),
-        Buffer.from(subspaceHandle),
+        Buffer.from(subspaceAlias),
       ],
       program.programId
     );
@@ -418,7 +455,7 @@ describe("ju-core", () => {
       /* Call the createPublication function via RPC */
       let subspaceInstructionData: anchor.IdlTypes<JuCore>["SubspaceData"] = {
         uuid: subspaceUuid,
-        handle: subspaceHandle,
+        alias: subspaceAlias,
         creator: profileAccount1,
         metadataUri: "https://arweave.net/subspace1"
       };
@@ -427,7 +464,7 @@ describe("ju-core", () => {
           app: appAccount,
           creatorProfile: profileAccount1,
           subspace: subspaceAccount,
-          handlePda: subspaceHadleAccount,
+          aliasPda: subspaceHadleAccount,
           collectingProcessorPda: null,
           referencingProcessorPda: null,
           publishingProcessorPda: null,

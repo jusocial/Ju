@@ -265,9 +265,9 @@ pub mod ju_core {
             }
         }
 
-        // if user want to register a Handle - make sure Handle PDA account is passed
-        if data.handle.is_some() && ctx.accounts.handle_pda.is_none() {
-            return Err(error!(CustomError::HandleAccountRequired));
+        // if user want to register a Alias - make sure Alias PDA account is passed
+        if data.alias.is_some() && ctx.accounts.alias_pda.is_none() {
+            return Err(error!(CustomError::AliasAccountRequired));
         }
 
         // Validate metadata URI
@@ -275,13 +275,13 @@ pub mod ju_core {
 
         let profile = &mut ctx.accounts.profile;
 
-        // Validate Handle if present
-        if data.handle.is_some() {
-            profile.validate_handle(data.handle.as_ref().unwrap())?;
+        // Validate Alias if present
+        if data.alias.is_some() {
+            profile.validate_alias(data.alias.as_ref().unwrap())?;
         }
 
         profile.app = *ctx.accounts.app.to_account_info().key;
-        profile.handle = data.handle;
+        profile.alias = data.alias;
         profile.metadata_uri = data.metadata_uri;
         profile.authority = *ctx.accounts.authority.to_account_info().key;
 
@@ -308,16 +308,16 @@ pub mod ju_core {
     /// * `data` - A struct that holds user Profile data
     ///
     pub fn update_profile(ctx: Context<UpdateProfile>, data: ProfileData) -> Result<()> {
-        // if there is a new Handle registering - make sure both account (current and new one Handle) is passed
-        if data.handle.is_some()
-            && (ctx.accounts.current_handle_pda.is_none() || ctx.accounts.new_handle_pda.is_none())
+        // if there is a new Alias registering - make sure both account (current and new one Alias) is passed
+        if data.alias.is_some()
+            && (ctx.accounts.current_alias_pda.is_none() || ctx.accounts.new_alias_pda.is_none())
         {
-            return Err(error!(CustomError::BothHandleAccountRequired));
+            return Err(error!(CustomError::BothAliasAccountRequired));
         }
 
-        // if user just want to delete existing Handle - make sure current Handle account is passed
-        if data.handle.is_none() && ctx.accounts.current_handle_pda.is_none() {
-            return Err(error!(CustomError::CurrentHandleAccountRequired));
+        // if user just want to delete existing Alias - make sure current Alias account is passed
+        if data.alias.is_none() && ctx.accounts.current_alias_pda.is_none() {
+            return Err(error!(CustomError::CurrentAliasAccountRequired));
         }
 
         // Validate metadata URI
@@ -325,12 +325,12 @@ pub mod ju_core {
 
         let profile = &mut ctx.accounts.profile;
 
-        // Validate Handle if present
-        if data.handle.is_some() {
-            profile.validate_handle(data.handle.as_ref().unwrap())?;
+        // Validate Alias if present
+        if data.alias.is_some() {
+            profile.validate_alias(data.alias.as_ref().unwrap())?;
         }
 
-        profile.handle = data.handle;
+        profile.alias = data.alias;
         profile.metadata_uri = data.metadata_uri;
 
         let now = Clock::get()?.unix_timestamp;
@@ -346,9 +346,9 @@ pub mod ju_core {
 
     // Delete existing Profile
     pub fn delete_profile(ctx: Context<DeleteProfile>) -> Result<()> {
-        // if user has registered Handle - make sure that Handle account is passed to delete
-        if ctx.accounts.profile.handle.is_some() && ctx.accounts.handle_pda.is_none() {
-            return Err(error!(CustomError::CurrentHandleAccountRequired));
+        // if user has registered Alias - make sure that Alias account is passed to delete
+        if ctx.accounts.profile.alias.is_some() && ctx.accounts.alias_pda.is_none() {
+            return Err(error!(CustomError::CurrentAliasAccountRequired));
         }
 
         let now = Clock::get()?.unix_timestamp;
@@ -465,9 +465,9 @@ pub mod ju_core {
     /// * `data` - A struct that holds Subspace data
     ///
     pub fn create_subspace(ctx: Context<CreateSubspace>, data: SubspaceData) -> Result<()> {
-        // if user want to register a Handle - make sure Handle account is passed
-        if data.handle.is_some() && ctx.accounts.handle_pda.is_none() {
-            return Err(error!(CustomError::HandleAccountRequired));
+        // if user want to register a Alias - make sure Alias account is passed
+        if data.alias.is_some() && ctx.accounts.alias_pda.is_none() {
+            return Err(error!(CustomError::AliasAccountRequired));
         }
 
         // Validate metadata URI
@@ -475,15 +475,15 @@ pub mod ju_core {
 
         let subspace = &mut ctx.accounts.subspace;
 
-        // Validate Handle if present
-        if data.handle.is_some() {
-            subspace.validate_handle(data.handle.as_ref().unwrap())?;
+        // Validate Alias if present
+        if data.alias.is_some() {
+            subspace.validate_alias(data.alias.as_ref().unwrap())?;
         }
 
         subspace.uuid = data.uuid;
         subspace.app = *ctx.accounts.app.to_account_info().key;   
         subspace.creator = *ctx.accounts.creator_profile.to_account_info().key;
-        subspace.handle = data.handle;
+        subspace.alias = data.alias;
         subspace.metadata_uri = data.metadata_uri;
         subspace.authority = *ctx.accounts.authority.to_account_info().key;
 
@@ -543,28 +543,28 @@ pub mod ju_core {
     /// * `data` - A struct that holds Subspace data
     ///
     pub fn update_subspace(ctx: Context<UpdateSubspace>, data: SubspaceData) -> Result<()> {
-        // if there is a new Handle - make sure new Handle account is passed
-        if data.handle.is_some()
-            && ctx.accounts.subspace.handle.is_none()
-            && ctx.accounts.new_handle_pda.is_none()
+        // if there is a new Alias - make sure new Alias account is passed
+        if data.alias.is_some()
+            && ctx.accounts.subspace.alias.is_none()
+            && ctx.accounts.new_alias_pda.is_none()
         {
-            return Err(error!(CustomError::CurrentHandleAccountRequired));
+            return Err(error!(CustomError::CurrentAliasAccountRequired));
         }
 
-        // if there is a new Handle registering instead current - make sure both account (current and new one Handle) is passed
-        if data.handle.is_some()
-            && ctx.accounts.subspace.handle.is_some()
-            && (ctx.accounts.current_handle_pda.is_none() || ctx.accounts.new_handle_pda.is_none())
+        // if there is a new Alias registering instead current - make sure both account (current and new one Alias) is passed
+        if data.alias.is_some()
+            && ctx.accounts.subspace.alias.is_some()
+            && (ctx.accounts.current_alias_pda.is_none() || ctx.accounts.new_alias_pda.is_none())
         {
-            return Err(error!(CustomError::BothHandleAccountRequired));
+            return Err(error!(CustomError::BothAliasAccountRequired));
         }
 
-        // if user just want to delete existing Handle - make sure current Handle account is passed
-        if data.handle.is_none()
-            && ctx.accounts.subspace.handle.is_some()
-            && ctx.accounts.current_handle_pda.is_none()
+        // if user just want to delete existing Alias - make sure current Alias account is passed
+        if data.alias.is_none()
+            && ctx.accounts.subspace.alias.is_some()
+            && ctx.accounts.current_alias_pda.is_none()
         {
-            return Err(error!(CustomError::CurrentHandleAccountRequired));
+            return Err(error!(CustomError::CurrentAliasAccountRequired));
         }
 
         // Validate metadata URI
@@ -572,12 +572,12 @@ pub mod ju_core {
 
         let subspace = &mut ctx.accounts.subspace;
 
-        // Validate Handle if present
-        if data.handle.is_some() {
-            subspace.validate_handle(data.handle.as_ref().unwrap())?;
+        // Validate Alias if present
+        if data.alias.is_some() {
+            subspace.validate_alias(data.alias.as_ref().unwrap())?;
         }
 
-        subspace.handle = data.handle;
+        subspace.alias = data.alias;
         subspace.metadata_uri = data.metadata_uri;
 
         // Assign Subspace specified external Processors
@@ -631,9 +631,9 @@ pub mod ju_core {
 
     // Delete existing Subspace
     pub fn delete_subspace(ctx: Context<DeleteSubpace>) -> Result<()> {
-        // if Subspace has registered Handle - make sure that Handle account is passed to delete
-        if ctx.accounts.subspace.handle.is_some() && ctx.accounts.handle_pda.is_none() {
-            return Err(error!(CustomError::CurrentHandleAccountRequired));
+        // if Subspace has registered Alias - make sure that Alias account is passed to delete
+        if ctx.accounts.subspace.alias.is_some() && ctx.accounts.alias_pda.is_none() {
+            return Err(error!(CustomError::CurrentAliasAccountRequired));
         }
 
         let now = Clock::get()?.unix_timestamp;

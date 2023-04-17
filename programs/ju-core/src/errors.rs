@@ -26,32 +26,32 @@ pub enum CustomError {
     #[msg("App management action not authorized")]
     AppManagementNotAthorized,
 
-    #[msg("Handle length is incorrect")]
-    HandleLengthIncorrect,
+    #[msg("Alias length is incorrect")]
+    AliasLengthIncorrect,
 
-    #[msg("Handle must contain only ASCII letters and numbers")]
-    HandleMustBeAlphanumeric,
+    #[msg("Alias must contain only ASCII letters and numbers")]
+    AliasMustBeAlphanumeric,
 
     #[msg("Profile incorrect")]
     ProfileIncorrect,
 
     #[msg("Profile handle is incorrect")]
-    ProfileHandleIncorrect,
+    ProfileAliasIncorrect,
 
-    #[msg("Handle account required to register action")]
-    HandleAccountRequired,
+    #[msg("Alias account required to register action")]
+    AliasAccountRequired,
 
     #[msg("Both handle account required to update")]
-    BothHandleAccountRequired,
+    BothAliasAccountRequired,
 
     #[msg("Current handle account required to delete")]
-    CurrentHandleAccountRequired,
+    CurrentAliasAccountRequired,
 
     #[msg("Profile update not authorized")]
     UpdateNotAuthorized,
 
     #[msg("Subspace handle is incorrect")]
-    SubspaceHandleIncorrect,
+    SubspaceAliasIncorrect,
 
     #[msg("URI length is incorrect")]
     UriLengthIncorrect,
@@ -71,8 +71,8 @@ pub enum CustomError {
     #[msg("Connection validation failed")]
     ValidationFail,
 
-    #[msg("Handle account already exist")]
-    HandleAccountExist,
+    #[msg("Alias account already exist")]
+    AliasAccountExist,
 
     #[msg("Forbidden to collect user's  own publication")]
     SelfPublicationCollecting,
