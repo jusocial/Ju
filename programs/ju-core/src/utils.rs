@@ -7,7 +7,7 @@ use crate::*;
 /// 1. `metadata_uri` - Reference to metadata URI String
 /// 
 pub fn validate_metadata_uri(metadata_uri: &String) -> Result<()> {
-    if metadata_uri.len() < MIN_URI_LENGTH && metadata_uri.len() > MAX_URI_LENGTH {
+    if metadata_uri.len() < MIN_URI_LENGTH || metadata_uri.len() > MAX_URI_LENGTH {
         return Err(error!(CustomError::UriLengthIncorrect));
     }
     Ok(())
