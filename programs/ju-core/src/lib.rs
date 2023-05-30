@@ -331,8 +331,13 @@ pub mod ju_core {
         let profile = &mut ctx.accounts.profile;
 
         // Validate Alias if present
-        if data.alias.is_some() {
+        if data.alias.is_some() && (ctx.accounts.current_alias_pda.is_some() || ctx.accounts.new_alias_pda.is_some()) {
             profile.validate_alias(data.alias.as_ref().unwrap())?;
+            let new_alias_pda = &mut ctx.accounts.new_alias_pda.as_mut().unwrap();
+            new_alias_pda.app = *ctx.accounts.app.to_account_info().key;
+            new_alias_pda.profile = *profile.to_account_info().key;
+            new_alias_pda.authority = *ctx.accounts.authority.to_account_info().key;
+            new_alias_pda.value = data.alias.as_ref().unwrap().clone();
         }
 
         profile.alias = data.alias;
