@@ -43,7 +43,7 @@ describe("ju-core", () => {
     program.programId
   );
   const profileAlias1 = "igor";
-  const [profileHadleAccount1, profileAliasAccountBump1] = anchor.web3.PublicKey.findProgramAddressSync(
+  const [profileAliasAccount1, profileAliasAccountBump1] = anchor.web3.PublicKey.findProgramAddressSync(
     [
       Buffer.from("alias"),
       appAccount.toBuffer(),
@@ -104,26 +104,29 @@ describe("ju-core", () => {
     it("Create new App", async () => {
 
       /* Call the initializeApp function via RPC */
-      let appInstructionData: anchor.IdlTypes<JuCore>["AppData"] = {
-        appName: appName,
+      let appData: anchor.IdlTypes<JuCore>["AppData"] = {
         metadataUri: "https://arweave.net/xxx",
       };
 
-      const tx = await program.methods.initializeApp(appInstructionData)
-        .accounts({
-          app: appAccount,
-          registeringProcessorPda: null,
-          connectingProcessorPda: null,
-          publishingProcessorPda: null,
-          collectingProcessorPda: null,
-          referencingProcessorPda: testProcessorPDA1,
-          authority: user,
-          systemProgram: SystemProgram.programId,
-        })
-        .rpc();
+      try {
+        const tx = await program.methods.initializeApp(appName, appData)
+          .accounts({
+            app: appAccount,
+            registeringProcessorPda: null,
+            connectingProcessorPda: null,
+            publishingProcessorPda: null,
+            collectingProcessorPda: null,
+            // referencingProcessorPda: testProcessorPDA1,
+            referencingProcessorPda: null,
+            authority: user,
+            systemProgram: SystemProgram.programId,
+          })
+          .rpc();
 
-      console.log("Tx signature: ", tx);
-
+        console.log("Tx signature: ", tx);
+      } catch (e) {
+        console.log('error: ', e)
+      }
       /* Fetch the App PDA and check the value  */
       const data = await program.account.app.fetch(appAccount);
       console.log('App account: ', data);
@@ -134,31 +137,35 @@ describe("ju-core", () => {
     it("Update existing App", async () => {
 
       /* Call the initializeApp function via RPC */
-      const app2 = "juconnect";
-      let appInstructionData: anchor.IdlTypes<JuCore>["AppData"] = {
-        appName: appName,
-        metadataUri: "https://arweave.net/zzz",
+      const newUri = "https://arweave.net/zzzUpdate";
+      let appData2: anchor.IdlTypes<JuCore>["AppData"] = {
+        metadataUri: newUri,
+        // metadataUri: 'x'.repeat(101)
       };
 
       // try {
-        const tx = await program.methods.initializeApp(appInstructionData)
-          .accounts({
-            app: appAccount,
-            registeringProcessorPda: null,
-            connectingProcessorPda: null,
-            publishingProcessorPda: null,
-            collectingProcessorPda: testProcessorPDA1,  // Must be Error here
-            referencingProcessorPda: null,
-            authority: user,
-            systemProgram: SystemProgram.programId,
-          })
-          .rpc();
+      const tx = await program.methods.updateApp(appData2)
+        .accounts({
+          app: appAccount,
+          registeringProcessorPda: null,
+          connectingProcessorPda: null,
+          publishingProcessorPda: null,
+          collectingProcessorPda: null,
+          // collectingProcessorPda: testProcessorPDA1,  // Must be Error here
+          referencingProcessorPda: testProcessorPDA1,
+          // referencingProcessorPda: null,
+          authority: user,
+          systemProgram: SystemProgram.programId,
+        })
+        .rpc();
 
-        console.log("Tx signature: ", tx);
+      console.log("Tx signature: ", tx);
 
-        /* Fetch the App PDA and check the value  */
-        const data = await program.account.app.fetch(appAccount);
-        console.log('App 2 account: ', data);
+      /* Fetch the App PDA and check the value  */
+      const data = await program.account.app.fetch(appAccount);
+      console.log('App 2 account: ', data);
+
+      expect(data.metadataUri).to.equal(newUri);
 
       // } catch (err) {
       //   const e = err as anchor.AnchorError;
@@ -184,7 +191,7 @@ describe("ju-core", () => {
           {
             app: appAccount,
             profile: profileAccount1,
-            aliasPda: profileHadleAccount1,
+            aliasPda: profileAliasAccount1,
             connectingProcessorPda: null,
             registeringProcessor: testProcessor1.publicKey,
             authority: user,
@@ -199,7 +206,48 @@ describe("ju-core", () => {
       const data = await program.account.profile.fetch(profileAccount1);
       console.log('Profile 1 account: ', data);
 
+      /* Fetch the Alias PDA account and check the value of Profile */
+      const aliasPda = await program.account.alias.fetch(profileAliasAccount1);
+      console.log('Alias acoount: ', aliasPda);
+
       expect(data.authority.toString()).to.equal(user.toString());
+    });
+
+    it("Update Profile 1", async () => {
+
+      const updatedUri = "https://arweave.net/profileUpdatedUri"
+
+      /* Call the createProfile function via RPC */
+      let profileInstructionData1: anchor.IdlTypes<JuCore>["ProfileData"] = {
+        alias: profileAlias1,
+        metadataUri: updatedUri,
+        connectingProcessorToAssign: null
+      };
+      const tx = await program.methods.updateProfile(profileInstructionData1)
+        .accounts(
+          {
+            app: appAccount,
+            profile: profileAccount1,
+            currentAliasPda: profileAliasAccount1,
+            newAliasPda: null,
+            connectingProcessorPda: null,
+            authority: user,
+            systemProgram: SystemProgram.programId,
+          }
+        )
+        .rpc();
+
+      console.log("Tx signature: ", tx);
+
+      /* Fetch the account and check the value of count */
+      const data = await program.account.profile.fetch(profileAccount1);
+      console.log('Profile 1 account: ', data);
+
+      /* Fetch the Alias PDA account and check the value of Profile */
+      const aliasPda = await program.account.alias.fetch(profileAliasAccount1);
+      console.log('Alias acoount: ', aliasPda);
+
+      expect(data.metadataUri).to.equal(updatedUri);
     });
 
     it("Creates Profile 2", async () => {
@@ -326,17 +374,56 @@ describe("ju-core", () => {
         isReply: false,
         contentType: { article: {} },
       };
-      const tx = await program.methods.createPublication(publicationInstructionData, null)
+      try {
+        const tx = await program.methods.createPublication(publicationInstructionData, null)
+          .accounts({
+            app: appAccount,
+            profile: profileAccount1,
+            publication: publicationAccount,
+            subspace: null,
+            targetPublication: null,
+            collectingProcessorPda: null,
+            referencingProcessorPda: null,
+            publishingProcessor: null,
+            referencingProcessor: null,
+            authority: user,
+            systemProgram: SystemProgram.programId,
+          })
+          .rpc();
+        console.log("Tx signature: ", tx);
+      } catch (e) {
+        console.log('error :>> ', e);
+      }
+      /* Fetch the account and check the value of count */
+      const data = await program.account.publication.fetch(publicationAccount);
+      console.log('Publication data: ', data);
+
+      expect(data.uuid.toString()).to.equal(publicationId.toString());
+    });
+
+    it("Update publication", async () => {
+
+      // const updatePublicationId = uuid.v4().replace(/-/g, '');
+      const newURI = "https://arweave.net/publication_updated1";
+      /* Call the create function via RPC */
+      let publicationInstructionData: anchor.IdlTypes<JuCore>["PublicationData"] = {
+        uuid: publicationId,
+        metadataUri: newURI,
+        isMirror: false,
+        isReply: false,
+        contentType: { article: {} },
+      };
+      const tx = await program.methods.updatePublication(publicationInstructionData)
         .accounts({
           app: appAccount,
           profile: profileAccount1,
           publication: publicationAccount,
-          subspace: null,
-          targetPublication: null,
+          // subspace: null,
+          // targetPublication: null,
           collectingProcessorPda: null,
           referencingProcessorPda: null,
-          publishingProcessor: null,
-          referencingProcessor: null,
+          // publishingProcessor: null,
+          // referencingProcessor: null,
           authority: user,
           systemProgram: SystemProgram.programId,
         })
@@ -346,83 +433,54 @@ describe("ju-core", () => {
 
       /* Fetch the account and check the value of count */
       const data = await program.account.publication.fetch(publicationAccount);
-      console.log('Publication data: ', data);
+      console.log('Updated Publication data: ', data);
 
-      expect(data.uuid.toString()).to.equal(publicationId.toString());
+      expect(data.metadataUri.toString()).to.equal(newURI);
     });
 
-    //   it("Update publication", async () => {
 
-    //     // const updatePublicationId = uuid.v4().replace(/-/g, '');
-    //     const newURI = "https://arweave.net/publication_updated1";
-    //     /* Call the create function via RPC */
-    //     let publicationInstructionData: anchor.IdlTypes<JuCore>["PublicationData"] = {
-    //       uuid: publicationId,
-    //       metadataUri: newURI,
-    //       isMirror: false,
-    //       isReply: false,
-    //       contentType: { article: {} },
-    //     };
-    //     const tx = await program.methods.updatePublication(publicationInstructionData)
-    //       .accounts({
-    //         app: appAccount,
-    //         profile: profileAccount1,
-    //         publication: publicationAccount,
-    //         // subspace: null,
-    //         // targetPublication: null,
-    //         collectingProcessorPda: null,
-    //         referencingProcessorPda: null,
-    //         // publishingProcessor: null,
-    //         // referencingProcessor: null,
-    //         authority: user,
-    //         systemProgram: SystemProgram.programId,
-    //       })
-    //       .rpc();
+    it("Create Mirror", async () => {
 
-    //     console.log("Tx signature: ", tx);
+      const mirrorPublicationId = uuid.v4().replace(/-/g, '');
 
-    //     /* Fetch the account and check the value of count */
-    //     const data = await program.account.publication.fetch(publicationAccount);
-    //     console.log('Updated Publication data: ', data);
+      const mirrorPublicationSeed = [
+        Buffer.from("publication"),
+        appAccount.toBuffer(),
+        Buffer.from(mirrorPublicationId),
+      ];
+      const [mirrorPublicationAccount, _] = anchor.web3.PublicKey.findProgramAddressSync(
+        mirrorPublicationSeed,
+        program.programId
+      );
 
-    //     expect(data.metadataUri.toString()).to.equal(newURI);
-    //   });
+      const newURI = "https://arweave.net/publication_updated1";
+      /* Call the create function via RPC */
+      let publicationInstructionData: anchor.IdlTypes<JuCore>["PublicationData"] = {
+        uuid: publicationId,
+        metadataUri: newURI,
+        isMirror: false,
+        isReply: false,
+        contentType: { article: {} },
+      };
+      const tx = await program.methods.createPublication(publicationInstructionData, null)
+        .accounts({
+          app: appAccount,
+          profile: profileAccount1,
+          publication: mirrorPublicationAccount,
+          targetPublication: publicationAccount,
+          authority: user,
+          systemProgram: SystemProgram.programId,
+        })
+        .rpc();
 
+      console.log("Tx signature: ", tx);
 
-    // it("Create Mirror", async () => {
+      /* Fetch the account and check the value of count */
+      const data = await program.account.publication.fetch(mirrorPublicationAccount);
+      console.log('Publication Mirror account data: ', data);
 
-    //   const mirrorPublicationId = uuid.v4().replace(/-/g, '');
-
-    //   const mirrorPublicationSeed = [
-    //     Buffer.from("publication"),
-    //     appAccount.toBuffer(),
-    //     Buffer.from(mirrorPublicationId),
-    //   ];
-    //   const [mirrorPublicationAccount, _] = anchor.web3.PublicKey.findProgramAddressSync(
-    //     mirrorPublicationSeed,
-    //     program.programId
-    //   );
-
-    //   /* Call the create function via RPC */
-    //   const tx = await program.methods.createPublication(mirrorPublicationId, "https://mirror-publication.test", true, false)
-    //     .accounts({
-    //       app: appAccount,
-    //       profile: profileAccount,
-    //       publication: mirrorPublicationAccount,
-    //       targetPublication: publicationAccount,
-    //       authority: user,
-    //       systemProgram: SystemProgram.programId,
-    //     })
-    //     .rpc();
-
-    //   console.log("Tx signature: ", tx);
-
-    //   /* Fetch the account and check the value of count */
-    //   const data = await program.account.publication.fetch(mirrorPublicationAccount);
-    //   console.log('Publication Mirror account data: ', data);
-
-    //   expect(data.authority.toString()).to.equal(user.toString());
-    // });
+      expect(data.authority.toString()).to.equal(user.toString());
+    });
 
   });
 
@@ -481,6 +539,42 @@ describe("ju-core", () => {
       console.log('Subspace data: ', data);
 
       expect(data.uuid.toString()).to.equal(subspaceUuid.toString());
+    });
+
+    it("Update Subspace", async () => {
+
+      const newUri = "https://arweave.net/subspaceUpdatedUri";
+
+      /* Call the createPublication function via RPC */
+      let subspaceInstructionData: anchor.IdlTypes<JuCore>["SubspaceData"] = {
+        uuid: subspaceUuid,
+        alias: null,
+        creator: profileAccount1,
+        metadataUri: newUri
+      };
+      const tx = await program.methods.updateSubspace(subspaceInstructionData)
+        .accounts({
+          app: appAccount,
+          profile: profileAccount1,
+          subspace: subspaceAccount,
+          currentAliasPda: null,
+          newAliasPda: null,
+          collectingProcessorPda: null,
+          referencingProcessorPda: null,
+          publishingProcessorPda: null,
+          connectingProcessorPda: null,
+          authority: user,
+          systemProgram: SystemProgram.programId,
+        })
+        .rpc();
+
+      console.log("Tx signature: ", tx);
+
+      /* Fetch the account and check the value of count */
+      const data = await program.account.subspace.fetch(subspaceAccount);
+      console.log('Updated Subspace data: ', data);
+
+      expect(data.metadataUri).to.equal(newUri);
     });
   });
 });
