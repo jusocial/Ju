@@ -35,22 +35,22 @@ pub enum CustomError {
     #[msg("Profile incorrect")]
     ProfileIncorrect,
 
-    #[msg("Profile handle is incorrect")]
+    #[msg("Profile alias is incorrect")]
     ProfileAliasIncorrect,
 
     #[msg("Alias account required to register action")]
     AliasAccountRequired,
 
-    #[msg("Both handle account required to update")]
+    #[msg("Both alias account required to update")]
     BothAliasAccountRequired,
 
-    #[msg("Current handle account required to delete")]
+    #[msg("Current alias account required to delete")]
     CurrentAliasAccountRequired,
 
     #[msg("Profile update not authorized")]
     UpdateNotAuthorized,
 
-    #[msg("Subspace handle is incorrect")]
+    #[msg("Subspace alias is incorrect")]
     SubspaceAliasIncorrect,
 
     #[msg("URI length is incorrect")]
