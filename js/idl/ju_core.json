@@ -1,0 +1,2966 @@
+{
+  "version": "0.1.0",
+  "name": "ju_core",
+  "constants": [
+    {
+      "name": "MIN_PROCESSORNAME_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "5"
+    },
+    {
+      "name": "MAX_PROCESSORNAME_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "10"
+    },
+    {
+      "name": "MIN_APPNAME_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "5"
+    },
+    {
+      "name": "MAX_APPNAME_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "10"
+    },
+    {
+      "name": "MIN_URI_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "5"
+    },
+    {
+      "name": "MAX_URI_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "100"
+    },
+    {
+      "name": "MIN_ALIAS_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "4"
+    },
+    {
+      "name": "MAX_ALIAS_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "10"
+    },
+    {
+      "name": "MAX_STATUS_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "64"
+    },
+    {
+      "name": "UUID_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "32"
+    },
+    {
+      "name": "MAX_NOTIFICATION_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "100"
+    }
+  ],
+  "instructions": [
+    {
+      "name": "addProcessor",
+      "docs": [
+        "Approve new Protocol external Processor to whitelist",
+        "",
+        "# Arguments",
+        "",
+        "* `processor_type` - Processor type",
+        "* `processor_name` - Processor name",
+        "* `program_address` - Processor program aggress",
+        "* `developer_wallet` - Processor developer wallet (optional)",
+        ""
+      ],
+      "accounts": [
+        {
+          "name": "processorPda",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "processorType",
+          "type": {
+            "defined": "ProcessorType"
+          }
+        },
+        {
+          "name": "processorName",
+          "type": "string"
+        },
+        {
+          "name": "programAddress",
+          "type": "publicKey"
+        },
+        {
+          "name": "developerWallet",
+          "type": {
+            "option": "publicKey"
+          }
+        }
+      ]
+    },
+    {
+      "name": "deleteProcessor",
+      "docs": [
+        "Delete existing Protocol external Processor from whitelist",
+        "",
+        "# Arguments",
+        "",
+        "* `program_address` - Processor program aggress",
+        ""
+      ],
+      "accounts": [
+        {
+          "name": "processor",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "programAddress",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "initializeApp",
+      "docs": [
+        "Initialize new Protocol Application",
+        "",
+        "# Arguments",
+        "",
+        "* `app_name` - Protocol unique Application name",
+        "* `data` - A struct that holds Application data",
+        ""
+      ],
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Current App (PDA) account"
+          ]
+        },
+        {
+          "name": "registeringProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted",
+            "Must be passed if user want to assign Profile specified Processor for additional Registering processing"
+          ]
+        },
+        {
+          "name": "connectingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted",
+            "Must be passed if user want to assign Profile specified Processor for additional Connecting processing"
+          ]
+        },
+        {
+          "name": "publishingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted",
+            "Must be passed if user want to assign Profile specified Processor for additional Publishing processing"
+          ]
+        },
+        {
+          "name": "collectingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted",
+            "Must be passed if user want to assign Profile specified Processor for additional Collecting processing"
+          ]
+        },
+        {
+          "name": "referencingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted",
+            "Must be passed if user want to assign Profile specified Processor for additional Referencing processing"
+          ]
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "appName",
+          "type": "string"
+        },
+        {
+          "name": "data",
+          "type": {
+            "defined": "AppData"
+          }
+        }
+      ]
+    },
+    {
+      "name": "updateApp",
+      "docs": [
+        "Update existing Protocol Application",
+        "",
+        "# Arguments",
+        "",
+        "* `data` - A struct that holds Application data",
+        ""
+      ],
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Current App (PDA) account"
+          ]
+        },
+        {
+          "name": "registeringProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted",
+            "Must be passed if user want to assign Profile specified Processor for additional Registering processing"
+          ]
+        },
+        {
+          "name": "connectingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted",
+            "Must be passed if user want to assign Profile specified Processor for additional Connecting processing"
+          ]
+        },
+        {
+          "name": "publishingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted",
+            "Must be passed if user want to assign Profile specified Processor for additional Publishing processing"
+          ]
+        },
+        {
+          "name": "collectingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted",
+            "Must be passed if user want to assign Profile specified Processor for additional Collecting processing"
+          ]
+        },
+        {
+          "name": "referencingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted",
+            "Must be passed if user want to assign Profile specified Processor for additional Referencing processing"
+          ]
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "data",
+          "type": {
+            "defined": "AppData"
+          }
+        }
+      ]
+    },
+    {
+      "name": "createProfile",
+      "docs": [
+        "Create new user Profile",
+        "",
+        "# Arguments",
+        "",
+        "* `data` - A struct that holds user Profile data",
+        "* `external_processing_data` - additional data that could be passed to an external Processor",
+        ""
+      ],
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "profile",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "aliasPda",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "PDA to register Profile Alias (user can change Alias in the future - delete old PDA and create new one available)"
+          ]
+        },
+        {
+          "name": "connectingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted.",
+            "Must be passed if user want to assign Profile specified Processor for additional Connecting processing"
+          ]
+        },
+        {
+          "name": "registeringProcessor",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External processor that makes additional Profile Registerin processing",
+            "Must be passed if there is any assigned Processors in (App default or Profile specified)"
+          ]
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "data",
+          "type": {
+            "defined": "ProfileData"
+          }
+        },
+        {
+          "name": "externalProcessingData",
+          "type": {
+            "option": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "updateProfile",
+      "docs": [
+        "Update existing user profile",
+        "",
+        "# Arguments",
+        "",
+        "* `data` - A struct that holds user Profile data",
+        ""
+      ],
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "profile",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "currentAliasPda",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true
+        },
+        {
+          "name": "newAliasPda",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "Alias account (PDA) to register new available Alias instead old one being delete"
+          ]
+        },
+        {
+          "name": "connectingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted.",
+            "Must be passed if user want to assign Profile specified Processor for additional Connecting processing"
+          ]
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "data",
+          "type": {
+            "defined": "ProfileData"
+          }
+        }
+      ]
+    },
+    {
+      "name": "deleteProfile",
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "profile",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "aliasPda",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "Aliasr PDA to delete",
+            "Must be passed if user has a Aliasr registered"
+          ]
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initializeConnection",
+      "docs": [
+        "",
+        "# Arguments",
+        "",
+        "* `external_processing_data` - additional data that could be passed to an external Processor",
+        ""
+      ],
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "connection",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "initializer",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "target",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "TODO: this is noе work for both Profile and Subspace..."
+          ]
+        },
+        {
+          "name": "connectingProcessor",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "A Program (external processor) that makes additional Connecting processing",
+            "/// CHECK: Not dangerous"
+          ]
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "externalProcessingData",
+          "type": {
+            "option": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "updateConnection",
+      "docs": [
+        "Update connection (approve by target profile, e.g. - accept friend request)",
+        "",
+        "# Arguments",
+        "",
+        "* `approve_status` - A boolean that holds connection approve status (by Target)",
+        ""
+      ],
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "connection",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "initializer",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "target",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "approveStatus",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "deleteConnection",
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "connection",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "initializerProfile",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "target",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "createSubspace",
+      "docs": [
+        "Create application Subspace owned by specified Profile (e.g. group or \"public\")",
+        "",
+        "# Arguments",
+        "",
+        "* `data` - A struct that holds Subspace data",
+        ""
+      ],
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "creatorProfile",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "subspace",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "aliasPda",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "A PDA to claim Subspace alias - this way Subspace owner can change alias in the future (delete old PDA and create new one available)"
+          ]
+        },
+        {
+          "name": "connectingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted.",
+            "Must be passed if user want to assign Subspace specified Processor for additional Connecting processing"
+          ]
+        },
+        {
+          "name": "publishingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted.",
+            "Must be passed if user want to assign Subspace specified Processor for additional Publishing processing"
+          ]
+        },
+        {
+          "name": "collectingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted.",
+            "Must be passed if user want to assign Subspace specified Processor for additional Collecting processing"
+          ]
+        },
+        {
+          "name": "referencingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted.",
+            "Must be passed if user want to assign Subspace specified Processor for additional Referencing processing"
+          ]
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "data",
+          "type": {
+            "defined": "SubspaceData"
+          }
+        }
+      ]
+    },
+    {
+      "name": "updateSubspace",
+      "docs": [
+        "Update existing Application Subspace",
+        "",
+        "# Arguments",
+        "",
+        "* `data` - A struct that holds Subspace data",
+        ""
+      ],
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "profile",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "subspace",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "currentAliasPda",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true
+        },
+        {
+          "name": "newAliasPda",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true
+        },
+        {
+          "name": "connectingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted.",
+            "Must be passed if user want to assign Subspace specified Processor for additional Connecting processing"
+          ]
+        },
+        {
+          "name": "publishingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted.",
+            "Must be passed if user want to assign Subspace specified Processor for additional Publishing processing"
+          ]
+        },
+        {
+          "name": "collectingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted.",
+            "Must be passed if user want to assign Subspace specified Processor for additional Collecting processing"
+          ]
+        },
+        {
+          "name": "referencingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted.",
+            "Must be passed if user want to assign Subspace specified Processor for additional Referencing processing"
+          ]
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "data",
+          "type": {
+            "defined": "SubspaceData"
+          }
+        }
+      ]
+    },
+    {
+      "name": "deleteSubspace",
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "subspace",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "aliasPda",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "Aliasr PDA to delete",
+            "Must be passed if user has a Aliasr registered"
+          ]
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "createPublication",
+      "docs": [
+        "Create new publication",
+        "",
+        "# Arguments",
+        "",
+        "* `data` - A struct that holds Publication parameters",
+        "* `external_processing_data` - additional data that can be passed to an external processor",
+        ""
+      ],
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "profile",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "publication",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "subspace",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "Subspace (PDA)",
+            "Must be passed if Publication will store in Subspace"
+          ]
+        },
+        {
+          "name": "targetPublication",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "Publication PDA which has to be replyed or referenced",
+            "Must be passed if this mirriring or replying"
+          ]
+        },
+        {
+          "name": "collectingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted.",
+            "Must be passed if user want to assign Publication specified Processor for additional Collecting processing"
+          ]
+        },
+        {
+          "name": "referencingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted.",
+            "Must be passed if user want to assign Publication specified Processor for additional Referencing processing"
+          ]
+        },
+        {
+          "name": "publishingProcessor",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor that makes Publication Creation additional procesing",
+            "Must be passed if there is any assigned Processors in (App default or Publication specified)",
+            "Check: Not dangerous"
+          ]
+        },
+        {
+          "name": "referencingProcessor",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor that makes Publication Referencing additional procesing",
+            "Must be passed if there is any assigned Processors in (App default or Publication specified)",
+            "Check: Not dangerous"
+          ]
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "data",
+          "type": {
+            "defined": "PublicationData"
+          }
+        },
+        {
+          "name": "externalProcessingData",
+          "type": {
+            "option": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "updatePublication",
+      "docs": [
+        "Update existing Publication",
+        "",
+        "# Arguments",
+        "",
+        "* `data` - A struct that holds Publication data",
+        ""
+      ],
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "profile",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "publication",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "collectingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted.",
+            "Must be passed if user want to assign Publication specified Processor for additional Collecting processing"
+          ]
+        },
+        {
+          "name": "referencingProcessorPda",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "External Processor PDA that proof Processor passed to assign is whitelisted.",
+            "Must be passed if user want to assign Publication specified Processor for additional Referencing processing"
+          ]
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "data",
+          "type": {
+            "defined": "PublicationData"
+          }
+        }
+      ]
+    },
+    {
+      "name": "deletePublication",
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "profile",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "publication",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "collectPublication",
+      "docs": [
+        "Collect existing Publication",
+        "",
+        "# Arguments",
+        "",
+        "* `external_processing_data` - additional data that can be passed to an external Collecting Processor",
+        ""
+      ],
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "initializer",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "target",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "collectionItem",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "collectingProcessor",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "A Program (external processor) that makes Collection additional procesing",
+            "Must be passed if there is any assigned Processors in (App default or Publication specified)"
+          ]
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "externalProcessingData",
+          "type": {
+            "option": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "createReaction",
+      "docs": [
+        "Create publication reaction",
+        "",
+        "# Arguments",
+        "",
+        "* `data` - A struct that holds Reaction data",
+        ""
+      ],
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "target",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "initializerProfile",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "reaction",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "reactionType",
+          "type": {
+            "defined": "ReactionType"
+          }
+        }
+      ]
+    },
+    {
+      "name": "deleteReaction",
+      "docs": [
+        "Delete existing Publication Reaction"
+      ],
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "target",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "initializerProfile",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "reaction",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initializeReport",
+      "docs": [
+        "Initialize new Report",
+        "",
+        "# Arguments",
+        "",
+        "* `data` - A struct that holds Report data",
+        ""
+      ],
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "target",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "initializerProfile",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "report",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "data",
+          "type": {
+            "defined": "ReportData"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "ExternalProcessorPDA",
+      "docs": [
+        "ApprovedProcessorPDA holds data about every whitelisted Protocol external Processors",
+        "",
+        "App account stores:",
+        "",
+        "1. Processor type",
+        "2. Processor name (ASCII alphanumeric)",
+        "3. Processor PDA authority address",
+        "4. Processor developer walet",
+        "5. Processorr program address",
+        ""
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "processorType",
+            "docs": [
+              "Processot type (1)"
+            ],
+            "type": {
+              "defined": "ProcessorType"
+            }
+          },
+          {
+            "name": "processorName",
+            "docs": [
+              "Processor name (STRING_LENGTH_PREFIX + MAX_PROCESSORNAME_LENGTH)."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "Processor PDA authority (32)."
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "developerWallet",
+            "docs": [
+              "Processor program author wallet"
+            ],
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "programAddress",
+            "docs": [
+              "External Processor executable program address"
+            ],
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "App",
+      "docs": [
+        "App account for every protocol Application",
+        "",
+        "App account stores:",
+        "",
+        "1. Unique Application name (ID) as string (ASCII alphanumeric)",
+        "2. Application authority address",
+        "3. Application metadata URI (settings)",
+        "4. Registering external Processor",
+        "5. Conecting external Processor",
+        "6. Publishing external Processor",
+        "7. Collecting external Processor",
+        "8. Referencing external Processor",
+        ""
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "appName",
+            "docs": [
+              "App name/ID (STRING_LENGTH_PREFIX + MAX_APPID_LENGTH)."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "Pubkey of the application creator (32)."
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "metadataUri",
+            "docs": [
+              "URI of the metadata (STRING_LENGTH_PREFIX + MAX_URI_LENGTH)."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "registeringProcessor",
+            "docs": [
+              "An address of a Program (external processor) that makes application Profile creation additional processing (33)"
+            ],
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "connectingProcessor",
+            "docs": [
+              "An address of a Program (external processor) for profiles Connection additional processing (33)"
+            ],
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "publishingProcessor",
+            "docs": [
+              "An address of a Program (external processor) for Publication Creating additional processing (33)"
+            ],
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "collectingProcessor",
+            "docs": [
+              "An address of a Program (external processor) for Publication Collecting additional processing (33)"
+            ],
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "referencingProcessor",
+            "docs": [
+              "An address of a Program (external processor) for Publication referencing additional processing (33)"
+            ],
+            "type": {
+              "option": "publicKey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Profile",
+      "docs": [
+        "Profile account that holds data about Application user",
+        "",
+        "Profile account stores:",
+        "",
+        "1. Application account (PDA)",
+        "2. Profile authority address",
+        "3. Unique Application's user Profile Alias as string (ASCII alphanumeric)",
+        "4. Profile metadata URI",
+        "5. Profile status text",
+        "6. Verification status",
+        "7. Profile creation unix timestamp",
+        "8. External connection processor (optional)",
+        ""
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "app",
+            "docs": [
+              "Application Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "Pubkey of the profile owner (32)."
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "alias",
+            "docs": [
+              "Profile alias (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)."
+            ],
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "metadataUri",
+            "docs": [
+              "Profile metadata URI (STRING_LENGTH_PREFIX + MAX_URI_LENGTH)."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "statusText",
+            "docs": [
+              "Profile Status text (1 + STRING_LENGTH_PREFIX + MAX_STATUS_LENGTH)"
+            ],
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "verified",
+            "docs": [
+              "Verified status for VIP users (1)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "connectingProcessor",
+            "docs": [
+              "An address of a Program (external processor) for Connection additional processing (33)"
+            ],
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "createdAt",
+            "docs": [
+              "Profile creation Unix timestamp (8)"
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Subspace",
+      "docs": [
+        "The Subspace is an account (PDA) that holds data about a application Subspace (e.g. group / \"public\")",
+        "",
+        "Subspace account stores:",
+        "",
+        "1. Subspace UUID",
+        "2. Application address",
+        "3. Profile authority address",
+        "4. Subspace owner Profile Pubkey",
+        "5. Unique application's user profile alias as string (optional, ASCII alphanumeric)",
+        "6. Subspace metadata URI",
+        "7. External Publishing processor (optional)",
+        "8. External Connecting processor (optional)",
+        "9. External Collecting processor (optional)",
+        "10. External Referencing processor (optional)",
+        ""
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "uuid",
+            "docs": [
+              "Subspace UUID (UUID_LENGTH)"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "app",
+            "docs": [
+              "Application Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "Pubkey of the profile owner (32)."
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "creator",
+            "docs": [
+              "Subspace creator Profile Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "alias",
+            "docs": [
+              "Profile alias (STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)."
+            ],
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "metadataUri",
+            "docs": [
+              "Metadata URI (STRING_LENGTH_PREFIX + MAX_URI_LENGTH)."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "publishingProcessor",
+            "docs": [
+              "An address of a Program (external processor) for Publication Creating additional processing (33)"
+            ],
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "connectingProcessor",
+            "docs": [
+              "An address of a Program (external processor) for profiles Connection additional processing (33)"
+            ],
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "collectingProcessor",
+            "docs": [
+              "An address of a Program (external processor) for Publication Collecting additional processing (33)"
+            ],
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "referencingProcessor",
+            "docs": [
+              "An address of a Program (external processor) for Publication referencing additional processing (33)"
+            ],
+            "type": {
+              "option": "publicKey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Publication",
+      "docs": [
+        "The Publication is account (PDA) that holds Application's Publication data",
+        "",
+        "Publication account stores:",
+        "",
+        "1. Publication UUID as string",
+        "2. Existing Protocol Application in which Publication was created",
+        "3. References to Publication's author Profile",
+        "4. Publication authority address",
+        "5. Publication metadata URI",
+        "6. Subspace in which Publication being published",
+        "7. Whether or not the Publication is mirroring other existing Publication (e.g. re-post)",
+        "8. Whether or not the Publication is replying to other existing Publication (e.g. comment)",
+        "9. References to existing Publication if there is a mirror or reply (optional)",
+        "10. Publication main content type",
+        "11. External Collecting processor (optional)",
+        "12. External Referencing processor (optional)",
+        "13. Publication create unix timestamp",
+        "14. Publication update unix timestamp (optional)",
+        ""
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "uuid",
+            "docs": [
+              "Publication UUID (STRING_LENGTH_PREFIX + UUID_LENGTH)"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "app",
+            "docs": [
+              "Application account Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "profile",
+            "docs": [
+              "Publication author profile account Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "Publication authority account Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "metadataUri",
+            "docs": [
+              "The URI of the publication metadata(STRING_LENGTH_PREFIX + MAX_URI_LENGTH)"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "subspace",
+            "docs": [
+              "Subspace to publish"
+            ],
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "isMirror",
+            "docs": [
+              "Flag to determine whether publication is mirror (e.g. 'repost') (1)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "isReply",
+            "docs": [
+              "Flag to determine whether publication is reply (e.g. 'comment') (1)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "targetPublication",
+            "docs": [
+              "Optional pubkey that specify target in case Publication is a mirror or reply (33)"
+            ],
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "contentType",
+            "docs": [
+              "Publication content main type (1)"
+            ],
+            "type": {
+              "defined": "ContentType"
+            }
+          },
+          {
+            "name": "collectingProcessor",
+            "docs": [
+              "An address of a Program (external processor) for Publication Collecting additional processing (33)"
+            ],
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "referencingProcessor",
+            "docs": [
+              "An address of a Program (external processor) for Publication Referencing additional processing (33)"
+            ],
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "createdAt",
+            "docs": [
+              "Unix timestamp of the Publication creation (8)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "modifiedAt",
+            "docs": [
+              "The optional Unix timestamp of the Publication modification (9)"
+            ],
+            "type": {
+              "option": "i64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Connection",
+      "docs": [
+        "Connection account holds data about Connection between two Application's entities (e.g. following)",
+        "",
+        "The Connection account stores:",
+        "",
+        "1. Application address",
+        "2. Connection authority address",
+        "3. Connection initializer address (e.g. follower)",
+        "4. Target Application's Profile/Subspace address (e.g. which initializer followed)",
+        "5. Whether or not Connection is approved by target (e.g. accept friend request)",
+        "6. Connection initialize unix timestamp",
+        "7. Connection modify unix timestamp",
+        ""
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "app",
+            "docs": [
+              "Application Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "Connection authority account Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "initializer",
+            "docs": [
+              "Connection initializer Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "target",
+            "docs": [
+              "Connection target Pubkey (might be another Profile or Aoolication Subspace) (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "approved",
+            "docs": [
+              "Flag to determine whether Connection is approved by target entitty (e.g. accept friend request or private group acceptance) (1)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "createdAt",
+            "docs": [
+              "Connection initialization Unix timestamp (8)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "modifiedAt",
+            "docs": [
+              "Connection approve Unix timestamp (8)"
+            ],
+            "type": {
+              "option": "i64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CollectionItem",
+      "docs": [
+        "CollectionItem account that creates when some Profile collects some Application Entity (e.g. Publication)",
+        "",
+        "The CollectionItem account stores:",
+        "",
+        "1. Application address",
+        "2. CollectionItem authority address",
+        "3. CollectionItem target entity (e.g. Publication) address",
+        "4. CollectionItem creation unix timestamp",
+        ""
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "app",
+            "docs": [
+              "Application Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "CollectionItem authority account Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "target",
+            "docs": [
+              "CollectionItem target Publication Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "createdAt",
+            "docs": [
+              "Unix timestamp of the CollectionItem creation (8)"
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Alias",
+      "docs": [
+        "Alias account that creates when new Alias is claimed by user Profile or Subspace",
+        "",
+        "The Alias account stores:",
+        "",
+        "1. Application address",
+        "2. Profile which the alias belongs to",
+        "3. Alias authority address",
+        "4. Alias value",
+        ""
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "app",
+            "docs": [
+              "Application Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "profile",
+            "docs": [
+              "Alias owner Profile Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "Alias authority account Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "value",
+            "docs": [
+              "Alias value (STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)"
+            ],
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Reaction",
+      "docs": [
+        "Reaction account that creates when new Publication Reaction initialized",
+        "",
+        "The Reaction account stores:",
+        "",
+        "1. Application address",
+        "2. Reaction authority address",
+        "3. Reaction initializer Profile",
+        "4. Target Publication address",
+        "5. Reaction type variant",
+        "6. Reaction create unix timestamp",
+        ""
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "app",
+            "docs": [
+              "Application account Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "Reaction authority account Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "initializerProfile",
+            "docs": [
+              "Reaction initializer Profile Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "target",
+            "docs": [
+              "Reaction target Publication Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "reactionType",
+            "docs": [
+              "Reaction value (1)"
+            ],
+            "type": {
+              "defined": "ReactionType"
+            }
+          },
+          {
+            "name": "createdAt",
+            "docs": [
+              "Unix timestamp of the Reaction creation (8)"
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Report",
+      "docs": [
+        "Report account that creates when new Report initialized",
+        "",
+        "Report account stores:",
+        "",
+        "1. Application address",
+        "2. Report authority address",
+        "3. Report initializer Profile",
+        "4. Report Target address",
+        "5. Report type variant",
+        "6. Report notification text",
+        "7. Report create unix timestamp",
+        ""
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "app",
+            "docs": [
+              "Application Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "Alias authority account Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "initializerProfile",
+            "docs": [
+              "Reaction initializer Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "target",
+            "docs": [
+              "Reaction target Publication Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "reportType",
+            "docs": [
+              "Reaction value (1)"
+            ],
+            "type": {
+              "defined": "ReportType"
+            }
+          },
+          {
+            "name": "notification",
+            "docs": [
+              "Report Notification"
+            ],
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "createdAt",
+            "docs": [
+              "Unix timestamp of the Report creation (8)"
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "AppData",
+      "docs": [
+        "App instruction data struct",
+        "",
+        "Struct contains:",
+        "",
+        "1. `metadata_uri` - App metadata json (optional)",
+        ""
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "metadataUri",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProfileData",
+      "docs": [
+        "Profile instruction data struct",
+        "",
+        "Struct contains:",
+        "",
+        "1. `alias` - Unique Application's user Profile Alias as string (ASCII alphanumeric)",
+        "2. `metadata_uri` - Profile metadata URI",
+        "3. `connecting_processor` - Profile specified external processor to make additional Connection Processing (optional)",
+        ""
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "alias",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "metadataUri",
+            "type": "string"
+          },
+          {
+            "name": "connectingProcessorToAssign",
+            "type": {
+              "option": "publicKey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SubspaceData",
+      "docs": [
+        "Subspace data struct",
+        "",
+        "Struct contains:",
+        "",
+        "1. `uuid` - Subspace UUID",
+        "2. `alias` - Unique Application's Subspace Alias as string (ASCII alphanumeric)",
+        "3. `creator` - Subspace creator Profile address",
+        "4. `metadata_uri` - Publication metadata URI",
+        ""
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "uuid",
+            "type": "string"
+          },
+          {
+            "name": "alias",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "creator",
+            "type": "publicKey"
+          },
+          {
+            "name": "metadataUri",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PublicationData",
+      "docs": [
+        "Publication data struct",
+        "",
+        "Struct contains:",
+        "",
+        "1. `uuid` - Publication UUID",
+        "2. `metadata_uri` - Publication metadata URI",
+        "3. `is_mirror` - Whether or not the publication is mirroring other existing publication (e.g. re-post)",
+        "4. `is_reply` - Whether or not the publication is replying to other existing publication (e.g. comment)",
+        "5. `content_type` - Publication content type",
+        ""
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "uuid",
+            "type": "string"
+          },
+          {
+            "name": "metadataUri",
+            "type": "string"
+          },
+          {
+            "name": "isMirror",
+            "type": "bool"
+          },
+          {
+            "name": "isReply",
+            "type": "bool"
+          },
+          {
+            "name": "contentType",
+            "type": {
+              "defined": "ContentType"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReportData",
+      "docs": [
+        "Report data struct",
+        "",
+        "Struct contains:",
+        "",
+        "1. `report_type` - Enum with Report variants",
+        "2. `notification_string` - Additional Report information",
+        ""
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "reportType",
+            "type": {
+              "defined": "ReportType"
+            }
+          },
+          {
+            "name": "notificationString",
+            "type": {
+              "option": "string"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProcessorType",
+      "docs": [
+        "External Processor Type",
+        "",
+        "Enum variants:",
+        "",
+        "* Registering",
+        "* Connecting",
+        "* Publishing",
+        "* Collecting",
+        "* Referencing",
+        ""
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Registering"
+          },
+          {
+            "name": "Connecting"
+          },
+          {
+            "name": "Publishing"
+          },
+          {
+            "name": "Collecting"
+          },
+          {
+            "name": "Referencing"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ConnectionTargetType",
+      "docs": [
+        "Connection Target type (e.g. Profile or Subspace)",
+        "",
+        "Enum variants:",
+        "",
+        "* Profile",
+        "* Subspace",
+        ""
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Profile"
+          },
+          {
+            "name": "Subspace"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ContentType",
+      "docs": [
+        "Content type that publication focus (e.g. short video)",
+        "",
+        "Enum variants:",
+        "",
+        "1. Article - Article type (e.g. - mixed content / blog post)",
+        "2. Image file - Image file type",
+        "3. Video file - Video file type",
+        "4. Short video - Shor video file type",
+        "5. Audio file - Audio file type",
+        "6. Text only - Text type",
+        "7. External link - Link type",
+        ""
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Article"
+          },
+          {
+            "name": "Image"
+          },
+          {
+            "name": "Video"
+          },
+          {
+            "name": "ShortVideo"
+          },
+          {
+            "name": "Audio"
+          },
+          {
+            "name": "Text"
+          },
+          {
+            "name": "Link"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReactionType",
+      "docs": [
+        "Reaction type (e.g. Like / Dislike)",
+        "",
+        "Enum variants:",
+        "",
+        "* UpVote - (e.g. \"Like\")",
+        "* DownVote - (e.g. \"Dislike\")",
+        "* CustomVote - custom smile/icon implementation",
+        ""
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "UpVote"
+          },
+          {
+            "name": "DownVote"
+          },
+          {
+            "name": "CustomVote"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReportType",
+      "docs": [
+        "Report type (e.g. Scam)",
+        "",
+        "Enum variants:",
+        "",
+        "* Scam",
+        "* Abuse",
+        ""
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Scam"
+          },
+          {
+            "name": "Abuse"
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "NewExternalProcessorEvent",
+      "fields": [
+        {
+          "name": "programAddress",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "createdAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DeleteExternalProcessorEvent",
+      "fields": [
+        {
+          "name": "programAddress",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "deletedAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "NewProfileEvent",
+      "fields": [
+        {
+          "name": "app",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "profile",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "createdAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "UpdateProfileEvent",
+      "fields": [
+        {
+          "name": "app",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "profile",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "modifiedAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DeleteProfileEvent",
+      "fields": [
+        {
+          "name": "app",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "profile",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "deletedAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "NewSubspaceEvent",
+      "fields": [
+        {
+          "name": "app",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "subspace",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "createdAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "UpdateSubspaceEvent",
+      "fields": [
+        {
+          "name": "app",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "subspace",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "modifiedAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DeleteSubspaceEvent",
+      "fields": [
+        {
+          "name": "app",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "subspace",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "deletedAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "NewPublicationEvent",
+      "fields": [
+        {
+          "name": "app",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "publication",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "profile",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "createdAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "UpdatePublicationEvent",
+      "fields": [
+        {
+          "name": "app",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "publication",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "profile",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "modifiedAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DeletePublicationEvent",
+      "fields": [
+        {
+          "name": "app",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "publication",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "profile",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "deletedAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "NewConnectionEvent",
+      "fields": [
+        {
+          "name": "app",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "initializer",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "target",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "createdAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "UpdateConnectionEvent",
+      "fields": [
+        {
+          "name": "app",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "connection",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "status",
+          "type": "bool",
+          "index": false
+        },
+        {
+          "name": "modifiedAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DeleteConnectionEvent",
+      "fields": [
+        {
+          "name": "app",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "connection",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "deletedAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "NewReactionEvent",
+      "fields": [
+        {
+          "name": "app",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "target",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "createdAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DeleteReactionEvent",
+      "fields": [
+        {
+          "name": "app",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "target",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "deletedAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "NewReportEvent",
+      "fields": [
+        {
+          "name": "app",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "target",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "createdAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "ProcessorManagementNotAthorized",
+      "msg": "Procesor management action not authorized"
+    },
+    {
+      "code": 6001,
+      "name": "ProcessorTypeMismatch",
+      "msg": "Procesor type mismatch"
+    },
+    {
+      "code": 6002,
+      "name": "ProcessorNameLengthIncorrect",
+      "msg": "Procesor name length is incorrect"
+    },
+    {
+      "code": 6003,
+      "name": "ProcessorNameMustBeAlphanumeric",
+      "msg": "Processor name must contain only ASCII letters and numbers"
+    },
+    {
+      "code": 6004,
+      "name": "ProcessorNotWhitelisted",
+      "msg": "Procesor trying to use is not whitelisted"
+    },
+    {
+      "code": 6005,
+      "name": "AppNameLengthIncorrect",
+      "msg": "Application name (ID) length is incorrect"
+    },
+    {
+      "code": 6006,
+      "name": "AppNameMustBeAlphanumeric",
+      "msg": "Application name (ID) must contain only ASCII letters and numbers"
+    },
+    {
+      "code": 6007,
+      "name": "AppManagementNotAthorized",
+      "msg": "App management action not authorized"
+    },
+    {
+      "code": 6008,
+      "name": "AliasLengthIncorrect",
+      "msg": "Alias length is incorrect"
+    },
+    {
+      "code": 6009,
+      "name": "AliasMustBeAlphanumeric",
+      "msg": "Alias must contain only ASCII letters and numbers"
+    },
+    {
+      "code": 6010,
+      "name": "ProfileIncorrect",
+      "msg": "Profile incorrect"
+    },
+    {
+      "code": 6011,
+      "name": "ProfileAliasIncorrect",
+      "msg": "Profile alias is incorrect"
+    },
+    {
+      "code": 6012,
+      "name": "AliasAccountRequired",
+      "msg": "Alias account required to register action"
+    },
+    {
+      "code": 6013,
+      "name": "BothAliasAccountRequired",
+      "msg": "Both alias account required to update"
+    },
+    {
+      "code": 6014,
+      "name": "CurrentAliasAccountRequired",
+      "msg": "Current alias account required to delete"
+    },
+    {
+      "code": 6015,
+      "name": "UpdateNotAuthorized",
+      "msg": "Profile update not authorized"
+    },
+    {
+      "code": 6016,
+      "name": "SubspaceAliasIncorrect",
+      "msg": "Subspace alias is incorrect"
+    },
+    {
+      "code": 6017,
+      "name": "UriLengthIncorrect",
+      "msg": "URI length is incorrect"
+    },
+    {
+      "code": 6018,
+      "name": "TargetPublicationRequired",
+      "msg": "Missed Target Publication account"
+    },
+    {
+      "code": 6019,
+      "name": "BothMirrorAndReplyNotAllowed",
+      "msg": "Both mirroring and replying not allowed in the same time"
+    },
+    {
+      "code": 6020,
+      "name": "SelfConnectionNotAllowed",
+      "msg": "Self conections is not allowed"
+    },
+    {
+      "code": 6021,
+      "name": "ConnectionTargetAccountMissed",
+      "msg": "Connection target account is missed"
+    },
+    {
+      "code": 6022,
+      "name": "ValidationFail",
+      "msg": "Connection validation failed"
+    },
+    {
+      "code": 6023,
+      "name": "AliasAccountExist",
+      "msg": "Alias account already exist"
+    },
+    {
+      "code": 6024,
+      "name": "SelfPublicationCollecting",
+      "msg": "Forbidden to collect user's  own publication"
+    },
+    {
+      "code": 6025,
+      "name": "RegisteringProcessorAccountMissed",
+      "msg": "Missed registering external processor account"
+    },
+    {
+      "code": 6026,
+      "name": "ConnectingProcessorAccountMissed",
+      "msg": "Missed connecting external processor account"
+    },
+    {
+      "code": 6027,
+      "name": "PublishingProcessorAccountMissed",
+      "msg": "Missed publishing external processor account"
+    },
+    {
+      "code": 6028,
+      "name": "CollectingProcessorAccountMissed",
+      "msg": "Missed collecting external processor account"
+    },
+    {
+      "code": 6029,
+      "name": "ReferencingProcessorAccountMissed",
+      "msg": "Missed referencing external processor account"
+    },
+    {
+      "code": 6030,
+      "name": "RegisteringProcessorMismatch",
+      "msg": "Registering external processor mismatch"
+    },
+    {
+      "code": 6031,
+      "name": "ConnectingProcessorMismatch",
+      "msg": "Connecting external processor mismatch"
+    },
+    {
+      "code": 6032,
+      "name": "PublishingProcessorMismatch",
+      "msg": "Publishing external processor mismatch"
+    },
+    {
+      "code": 6033,
+      "name": "CollectingProcessorMismatch",
+      "msg": "Collecting external processor mismatch"
+    },
+    {
+      "code": 6034,
+      "name": "ReferencingProcessorMismatch",
+      "msg": "Referencing external processor mismatch"
+    }
+  ],
+  "metadata": {
+    "address": "964vWgVEK9X8ZwZB2HyshFVmHUWbcYpRTnVYz2o3F2Xq",
+    "origin": "anchor",
+    "binaryVersion": "0.26.0",
+    "libVersion": "0.26.0"
+  }
+}

@@ -1,5 +1,6 @@
 
 .anchor
+.crates
 .DS_Store
 target
 **/*.rs.bk

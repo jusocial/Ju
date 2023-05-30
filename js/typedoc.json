@@ -1,0 +1,6 @@
+{
+  "entryPoints": ["src/ju-core.ts"],
+  "excludeInternal": true,
+  "excludePrivate": true,
+  "out": "./docs"
+}
