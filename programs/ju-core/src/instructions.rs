@@ -75,20 +75,20 @@ pub struct DeleteProcessor<'info> {
 /// 7. `[]` System program
 ///
 #[derive(Accounts)]
-#[instruction(data: AppData)]
+#[instruction(app_name: String)]
 pub struct InitializeApp<'info> {
     #[account(
         init,
         seeds = [
             App::PREFIX.as_bytes(),
-            data.app_name.as_bytes().as_ref(),
+            app_name.as_bytes().as_ref(),
         ],
         bump,
         payer = authority,
         space = App::LEN
     )]
     /// Current App (PDA) account
-    pub app: Box<Account<'info, App>>,
+    pub app: Account<'info, App>,
 
     #[account(
         seeds = [
@@ -165,18 +165,18 @@ pub struct InitializeApp<'info> {
 /// 7. `[]` System program
 ///
 #[derive(Accounts)]
-#[instruction(data: AppData)]
 pub struct UpdateApp<'info> {
     #[account(
-        has_one = authority @CustomError::AppManagementNotAthorized,
+        mut,
         seeds = [
             App::PREFIX.as_bytes(),
-            data.app_name.as_bytes().as_ref(),
+            app.app_name.as_bytes().as_ref(),
         ],
-        bump
+        bump,
+        has_one = authority @CustomError::AppManagementNotAthorized,
     )]
     /// Current App (PDA) account
-    pub app: Box<Account<'info, App>>,
+    pub app: Account<'info, App>,
 
     #[account(
         seeds = [
