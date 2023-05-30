@@ -536,12 +536,10 @@ impl Report {
 ///
 /// Struct contains:
 ///
-/// 1. `app_name` - Protocol unique Application name
-/// 2. `metadata_uri` - App metadata json (optional)
+/// 1. `metadata_uri` - App metadata json (optional)
 ///
 #[derive(Default, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct AppData {
-    pub app_name: String,
     pub metadata_uri: String,
 }
 
