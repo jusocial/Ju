@@ -97,16 +97,17 @@ pub mod ju_core {
     ///
     /// # Arguments
     ///
+    /// * `app_name` - Protocol unique Application name
     /// * `data` - A struct that holds Application data
     ///
-    pub fn initialize_app(ctx: Context<InitializeApp>, data: AppData) -> Result<()> {
+    pub fn initialize_app(ctx: Context<InitializeApp>, app_name: String, data: AppData) -> Result<()> {
 
         let app = &mut ctx.accounts.app;
 
         // Validate App name
-        app.validate_name(&data.app_name)?;
+        app.validate_name(&app_name)?;
+        app.app_name = app_name;
 
-        app.app_name = data.app_name;
         app.metadata_uri = data.metadata_uri;
         app.authority = *ctx.accounts.authority.to_account_info().key;
 
@@ -166,7 +167,7 @@ pub mod ju_core {
     ///
     /// * `data` - A struct that holds Application data
     ///
-    pub fn update_app(ctx: Context<InitializeApp>, data: AppData) -> Result<()> {
+    pub fn update_app(ctx: Context<UpdateApp>, data: AppData) -> Result<()> {
         // Validate metadata URI
         validate_metadata_uri(&data.metadata_uri)?;
 
