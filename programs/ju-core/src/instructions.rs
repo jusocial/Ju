@@ -176,7 +176,7 @@ pub struct UpdateApp<'info> {
         bump
     )]
     /// Current App (PDA) account
-    pub app: Account<'info, App>,
+    pub app: Box<Account<'info, App>>,
 
     #[account(
         seeds = [

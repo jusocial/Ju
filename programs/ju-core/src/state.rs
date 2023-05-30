@@ -421,14 +421,17 @@ impl CollectionItem {
 /// The Alias account stores:
 ///
 /// 1. Application address
-/// 2. Alias authority address
-/// 3. Alias value
+/// 2. Profile which the alias belongs to
+/// 3. Alias authority address
+/// 4. Alias value
 ///
 #[account]
 #[derive(Default)]
 pub struct Alias {
     /// Application Pubkey (32)
     pub app: Pubkey,
+    /// Alias owner Profile Pubkey (32)
+    pub profile: Pubkey,
     /// Alias authority account Pubkey (32)
     pub authority: Pubkey,
     /// Alias value (STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)
@@ -439,6 +442,7 @@ impl Alias {
     pub const PREFIX: &'static str = "alias";
     
     pub const LEN: usize = DISCRIMINATOR_LENGTH         // Anchor internal discrimitator 
+        + 32                                            // Pubkey
         + 32                                            // Pubkey
         + 32                                            // Pubkey
         + (STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH);   // String

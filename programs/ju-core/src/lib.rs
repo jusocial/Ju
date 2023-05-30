@@ -272,14 +272,19 @@ pub mod ju_core {
 
         // Validate metadata URI
         validate_metadata_uri(&data.metadata_uri)?;
-
+     
         let profile = &mut ctx.accounts.profile;
 
-        // Validate Alias if present
-        if data.alias.is_some() {
+        // Validate Alias and Assign to PDA if present
+        if data.alias.is_some() && ctx.accounts.alias_pda.is_some() {
             profile.validate_alias(data.alias.as_ref().unwrap())?;
+            let alias_pda = &mut ctx.accounts.alias_pda.as_mut().unwrap();
+            alias_pda.app = *ctx.accounts.app.to_account_info().key;
+            alias_pda.profile = *profile.to_account_info().key;
+            alias_pda.authority = *ctx.accounts.authority.to_account_info().key;
+            alias_pda.value = data.alias.as_ref().unwrap().clone();
         }
-
+    
         profile.app = *ctx.accounts.app.to_account_info().key;
         profile.alias = data.alias;
         profile.metadata_uri = data.metadata_uri;
@@ -346,6 +351,8 @@ pub mod ju_core {
 
     // Delete existing Profile
     pub fn delete_profile(ctx: Context<DeleteProfile>) -> Result<()> {
+        // TODO: Implement Application level Delete permisson
+
         // if user has registered Alias - make sure that Alias account is passed to delete
         if ctx.accounts.profile.alias.is_some() && ctx.accounts.alias_pda.is_none() {
             return Err(error!(CustomError::CurrentAliasAccountRequired));
@@ -631,6 +638,8 @@ pub mod ju_core {
 
     // Delete existing Subspace
     pub fn delete_subspace(ctx: Context<DeleteSubpace>) -> Result<()> {
+        // TODO: Implement Application level Delete permisson
+
         // if Subspace has registered Alias - make sure that Alias account is passed to delete
         if ctx.accounts.subspace.alias.is_some() && ctx.accounts.alias_pda.is_none() {
             return Err(error!(CustomError::CurrentAliasAccountRequired));
