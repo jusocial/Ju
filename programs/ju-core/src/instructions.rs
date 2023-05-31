@@ -477,7 +477,7 @@ pub struct DeleteProfile<'info> {
 pub struct CreateAlias<'info> {
     #[account(
         seeds = [
-            APP_SEED.as_bytes(),
+            App::PREFIX.as_bytes(),
             app.app_name.as_bytes().as_ref(),
         ],
         bump
@@ -487,7 +487,7 @@ pub struct CreateAlias<'info> {
     #[account(
         mut,
         seeds = [
-            PROCESSOR_SEED.as_bytes(),
+            Profile::PREFIX.as_bytes(),
             app.key().as_ref(),
             authority.key().as_ref(),
         ],
@@ -499,7 +499,7 @@ pub struct CreateAlias<'info> {
     #[account(
         init,
         seeds = [
-            ALIAS_SEED.as_bytes(),
+            Alias::PREFIX.as_bytes(),
             app.key().as_ref(),
             alias.as_bytes().as_ref(),
         ],
@@ -533,7 +533,7 @@ pub struct CreateAlias<'info> {
 pub struct UpdateAlias<'info> {
     #[account(
         seeds = [
-            APP_SEED.as_bytes(),
+            App::PREFIX.as_bytes(),
             app.app_name.as_bytes().as_ref(),
         ],
         bump
@@ -544,7 +544,7 @@ pub struct UpdateAlias<'info> {
         mut,
         has_one = authority @CustomError::UpdateNotAuthorized,
         seeds = [
-            PROCESSOR_SEED.as_bytes(),
+            Profile::PREFIX.as_bytes(),
             app.key().as_ref(),
             authority.key().as_ref(),
         ],
@@ -556,7 +556,7 @@ pub struct UpdateAlias<'info> {
         mut,
         has_one = authority @CustomError::UpdateNotAuthorized,
         seeds = [
-            ALIAS_SEED.as_bytes(),
+            Alias::PREFIX.as_bytes(),
             app.key().as_ref(),
             current_alias_pda.value.as_bytes().as_ref(),
         ],
@@ -568,7 +568,7 @@ pub struct UpdateAlias<'info> {
     #[account(
         init,
         seeds = [
-            ALIAS_SEED.as_bytes(),
+            Alias::PREFIX.as_bytes(),
             app.key().as_ref(),
             alias.as_bytes().as_ref(),
         ],
@@ -599,7 +599,7 @@ pub struct UpdateAlias<'info> {
 pub struct DeleteAlias<'info> {
     #[account(
         seeds = [
-            APP_SEED.as_bytes(),
+            App::PREFIX.as_bytes(),
             app.app_name.as_bytes().as_ref(),
         ],
         bump
@@ -610,7 +610,7 @@ pub struct DeleteAlias<'info> {
         mut,
         has_one = authority @CustomError::UpdateNotAuthorized,
         seeds = [
-            PROCESSOR_SEED.as_bytes(),
+            Profile::PREFIX.as_bytes(),
             app.key().as_ref(),
             authority.key().as_ref(),
         ],
