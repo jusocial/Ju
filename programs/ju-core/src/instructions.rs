@@ -787,7 +787,7 @@ pub struct UpdateSubspace<'info> {
         ],
         bump
     )]
-    pub profile: Box<Account<'info, Profile>>,
+    pub creator_profile: Box<Account<'info, Profile>>,
 
     #[account(
         mut,
@@ -795,7 +795,8 @@ pub struct UpdateSubspace<'info> {
         seeds = [
             Subspace::PREFIX.as_bytes(),
             app.key().as_ref(),
-            authority.key().as_ref(),
+            creator_profile.key().as_ref(),
+            subspace.uuid.as_bytes().as_ref(),
         ],
         bump,
     )]
@@ -906,6 +907,7 @@ pub struct DeleteSubpace<'info> {
             Subspace::PREFIX.as_bytes(),
             app.key().as_ref(),
             authority.key().as_ref(),
+            subspace.uuid.as_bytes().as_ref(),
         ],
         bump,
         close = authority
