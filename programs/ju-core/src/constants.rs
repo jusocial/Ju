@@ -11,11 +11,11 @@ pub const PROTOCOL_AUTHORITY: Pubkey =
 #[constant]
 pub const MIN_PROCESSORNAME_LENGTH: usize = 5;
 #[constant]
-pub const MAX_PROCESSORNAME_LENGTH: usize = 10;
+pub const MAX_PROCESSORNAME_LENGTH: usize = 50;
 #[constant]
-pub const MIN_APPNAME_LENGTH: usize = 5;
+pub const MIN_APPNAME_LENGTH: usize = 3;
 #[constant]
-pub const MAX_APPNAME_LENGTH: usize = 10;
+pub const MAX_APPNAME_LENGTH: usize = 30;
 #[constant]
 pub const MIN_URI_LENGTH: usize = 5;
 #[constant]
@@ -23,7 +23,7 @@ pub const MAX_URI_LENGTH: usize = 100;
 #[constant]
 pub const MIN_ALIAS_LENGTH: usize = 4;
 #[constant]
-pub const MAX_ALIAS_LENGTH: usize = 10;
+pub const MAX_ALIAS_LENGTH: usize = 30;
 #[constant]
 pub const MAX_STATUS_LENGTH: usize = 64;
 #[constant]
