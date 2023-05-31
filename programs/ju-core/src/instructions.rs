@@ -99,7 +99,7 @@ pub struct InitializeApp<'info> {
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted
     /// Must be passed if user want to assign Profile specified Processor for additional Registering processing
-    pub registering_processor_pda: Option<Account<'info, ExternalProcessorPDA>>,
+    pub registering_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
         seeds = [
@@ -110,7 +110,7 @@ pub struct InitializeApp<'info> {
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted
     /// Must be passed if user want to assign Profile specified Processor for additional Connecting processing
-    pub connecting_processor_pda: Option<Account<'info, ExternalProcessorPDA>>,
+    pub connecting_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
         seeds = [
@@ -121,7 +121,7 @@ pub struct InitializeApp<'info> {
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted
     /// Must be passed if user want to assign Profile specified Processor for additional Publishing processing
-    pub publishing_processor_pda: Option<Account<'info, ExternalProcessorPDA>>,
+    pub publishing_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
         seeds = [
@@ -132,7 +132,7 @@ pub struct InitializeApp<'info> {
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted
     /// Must be passed if user want to assign Profile specified Processor for additional Collecting processing
-    pub collecting_processor_pda: Option<Account<'info, ExternalProcessorPDA>>,
+    pub collecting_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
         seeds = [
@@ -143,7 +143,7 @@ pub struct InitializeApp<'info> {
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted
     /// Must be passed if user want to assign Profile specified Processor for additional Referencing processing
-    pub referencing_processor_pda: Option<Account<'info, ExternalProcessorPDA>>,
+    pub referencing_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(mut)]
     pub authority: Signer<'info>,
@@ -173,7 +173,6 @@ pub struct UpdateApp<'info> {
             app.app_name.as_bytes().as_ref(),
         ],
         bump,
-        has_one = authority @CustomError::AppManagementNotAthorized,
     )]
     /// Current App (PDA) account
     pub app: Account<'info, App>,
@@ -187,7 +186,7 @@ pub struct UpdateApp<'info> {
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted
     /// Must be passed if user want to assign Profile specified Processor for additional Registering processing
-    pub registering_processor_pda: Option<Account<'info, ExternalProcessorPDA>>,
+    pub registering_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
         seeds = [
@@ -198,7 +197,7 @@ pub struct UpdateApp<'info> {
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted
     /// Must be passed if user want to assign Profile specified Processor for additional Connecting processing
-    pub connecting_processor_pda: Option<Account<'info, ExternalProcessorPDA>>,
+    pub connecting_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
         seeds = [
@@ -209,7 +208,7 @@ pub struct UpdateApp<'info> {
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted
     /// Must be passed if user want to assign Profile specified Processor for additional Publishing processing
-    pub publishing_processor_pda: Option<Account<'info, ExternalProcessorPDA>>,
+    pub publishing_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
         seeds = [
@@ -220,7 +219,7 @@ pub struct UpdateApp<'info> {
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted
     /// Must be passed if user want to assign Profile specified Processor for additional Collecting processing
-    pub collecting_processor_pda: Option<Account<'info, ExternalProcessorPDA>>,
+    pub collecting_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
         seeds = [
@@ -231,7 +230,7 @@ pub struct UpdateApp<'info> {
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted
     /// Must be passed if user want to assign Profile specified Processor for additional Referencing processing
-    pub referencing_processor_pda: Option<Account<'info, ExternalProcessorPDA>>,
+    pub referencing_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(mut)]
     pub authority: Signer<'info>,
@@ -996,11 +995,12 @@ pub struct CreatePublication<'info> {
     )]
     /// Subspace (PDA) 
     /// Must be passed if Publication will store in Subspace
-    pub subspace: Option<Account<'info, Subspace>>,
+    pub subspace: Option<Box<Account<'info, Subspace>>>,
 
     /// Publication PDA which has to be replyed or referenced
-    /// Must be passed if this mirriring or replying
-    pub target_publication: Option<Account<'info, Publication>>,
+    /// Must be passed if this mirroring or replying
+    /// CHECK: test
+    pub target_publication: Option<Box<Account<'info, Publication>>>,
 
     #[account(
         seeds = [
@@ -1011,7 +1011,7 @@ pub struct CreatePublication<'info> {
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted.
     /// Must be passed if user want to assign Publication specified Processor for additional Collecting processing
-    pub collecting_processor_pda: Option<Account<'info, ExternalProcessorPDA>>,
+    pub collecting_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
         seeds = [
@@ -1022,7 +1022,7 @@ pub struct CreatePublication<'info> {
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted.
     /// Must be passed if user want to assign Publication specified Processor for additional Referencing processing
-    pub referencing_processor_pda: Option<Account<'info, ExternalProcessorPDA>>,
+    pub referencing_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     /// External Processor that makes Publication Creation additional procesing
     /// Must be passed if there is any assigned Processors in (App default or Publication specified)
