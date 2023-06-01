@@ -100,7 +100,7 @@ describe("ju-core", () => {
     ],
     program.programId
   );
-  
+
 
   describe("External Processor", async () => {
 
