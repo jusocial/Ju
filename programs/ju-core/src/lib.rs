@@ -700,29 +700,6 @@ pub mod ju_core {
     /// * new_alias_pda == None
     ///
     pub fn update_subspace(ctx: Context<UpdateSubspace>, data: SubspaceData) -> Result<()> {
-        // // if there is a new Alias - make sure new Alias account is passed
-        // if data.alias.is_some()
-        //     && ctx.accounts.subspace.alias.is_none()
-        //     && ctx.accounts.new_alias_pda.is_none()
-        // {
-        //     return Err(error!(CustomError::CurrentAliasAccountRequired));
-        // }
-
-        // // if there is a new Alias registering instead current - make sure both account (current and new one Alias) is passed
-        // if data.alias.is_some()
-        //     && ctx.accounts.subspace.alias.is_some()
-        //     && (ctx.accounts.current_alias_pda.is_none() || ctx.accounts.new_alias_pda.is_none())
-        // {
-        //     return Err(error!(CustomError::BothAliasAccountRequired));
-        // }
-
-        // // if user just want to delete existing Alias - make sure current Alias account is passed
-        // if data.alias.is_none()
-        //     && ctx.accounts.subspace.alias.is_some()
-        //     && ctx.accounts.current_alias_pda.is_none()
-        // {
-        //     return Err(error!(CustomError::CurrentAliasAccountRequired));
-        // }
 
         let subspace = &mut ctx.accounts.subspace;
 
