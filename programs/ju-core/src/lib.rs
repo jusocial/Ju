@@ -334,7 +334,7 @@ pub mod ju_core {
             profile.validate_alias(data.alias.as_ref().unwrap())?;
             let alias_pda = &mut ctx.accounts.alias_pda.as_mut().unwrap();
             alias_pda.app = *ctx.accounts.app.to_account_info().key;
-            alias_pda.profile = *profile.to_account_info().key;
+            alias_pda.owner = *profile.to_account_info().key;
             alias_pda.authority = *ctx.accounts.authority.to_account_info().key;
             alias_pda.value = data.alias.as_ref().unwrap().clone();
         }
@@ -400,7 +400,7 @@ pub mod ju_core {
                 profile.validate_alias(data.alias.as_ref().unwrap())?;
                 let new_alias_pda = &mut ctx.accounts.new_alias_pda.as_mut().unwrap();
                 new_alias_pda.app = *ctx.accounts.app.to_account_info().key;
-                new_alias_pda.profile = *profile.to_account_info().key;
+                new_alias_pda.owner = *profile.to_account_info().key;
                 new_alias_pda.authority = *ctx.accounts.authority.to_account_info().key;
                 new_alias_pda.value = data.alias.as_ref().unwrap().clone();
 
@@ -416,7 +416,7 @@ pub mod ju_core {
                 profile.validate_alias(data.alias.as_ref().unwrap())?;
                 let new_alias_pda = &mut ctx.accounts.new_alias_pda.as_mut().unwrap();
                 new_alias_pda.app = *ctx.accounts.app.to_account_info().key;
-                new_alias_pda.profile = *profile.to_account_info().key;
+                new_alias_pda.owner = *profile.to_account_info().key;
                 new_alias_pda.authority = *ctx.accounts.authority.to_account_info().key;
                 new_alias_pda.value = data.alias.as_ref().unwrap().clone();
 
@@ -673,43 +673,106 @@ pub mod ju_core {
     /// # Arguments
     ///
     /// * `data` - A struct that holds Subspace data
+    /// 
+    /// Alias management cases:
+    ///  
+    /// 0) Do nothing:
+    /// * data.alias = <current Subspace alias value>
+    ///
+    /// 1) Register alias if not yet registered:
+    /// * data.alias = <alias value>
+    /// * current_alias_pda == None
+    /// * new_alias_pda == Some
+    ///
+    /// 2) Update current alias (register new and delete current):
+    /// * data.alias = <new alias value>
+    /// * current_alias_pda == Some
+    /// * new_alias_pda == Some
+    ///
+    /// 3) Delete current alias:
+    /// * data.alias = None
+    /// * current_alias_pda == Some
+    /// * new_alias_pda == None
     ///
     pub fn update_subspace(ctx: Context<UpdateSubspace>, data: SubspaceData) -> Result<()> {
-        // if there is a new Alias - make sure new Alias account is passed
-        if data.alias.is_some()
-            && ctx.accounts.subspace.alias.is_none()
-            && ctx.accounts.new_alias_pda.is_none()
-        {
-            return Err(error!(CustomError::CurrentAliasAccountRequired));
-        }
+        // // if there is a new Alias - make sure new Alias account is passed
+        // if data.alias.is_some()
+        //     && ctx.accounts.subspace.alias.is_none()
+        //     && ctx.accounts.new_alias_pda.is_none()
+        // {
+        //     return Err(error!(CustomError::CurrentAliasAccountRequired));
+        // }
 
-        // if there is a new Alias registering instead current - make sure both account (current and new one Alias) is passed
-        if data.alias.is_some()
-            && ctx.accounts.subspace.alias.is_some()
-            && (ctx.accounts.current_alias_pda.is_none() || ctx.accounts.new_alias_pda.is_none())
-        {
-            return Err(error!(CustomError::BothAliasAccountRequired));
-        }
+        // // if there is a new Alias registering instead current - make sure both account (current and new one Alias) is passed
+        // if data.alias.is_some()
+        //     && ctx.accounts.subspace.alias.is_some()
+        //     && (ctx.accounts.current_alias_pda.is_none() || ctx.accounts.new_alias_pda.is_none())
+        // {
+        //     return Err(error!(CustomError::BothAliasAccountRequired));
+        // }
 
-        // if user just want to delete existing Alias - make sure current Alias account is passed
-        if data.alias.is_none()
-            && ctx.accounts.subspace.alias.is_some()
-            && ctx.accounts.current_alias_pda.is_none()
-        {
-            return Err(error!(CustomError::CurrentAliasAccountRequired));
+        // // if user just want to delete existing Alias - make sure current Alias account is passed
+        // if data.alias.is_none()
+        //     && ctx.accounts.subspace.alias.is_some()
+        //     && ctx.accounts.current_alias_pda.is_none()
+        // {
+        //     return Err(error!(CustomError::CurrentAliasAccountRequired));
+        // }
+
+        let subspace = &mut ctx.accounts.subspace;
+
+        // Alias management cases
+        if subspace.alias != data.alias {
+            // Case 1 (update current Alias):
+            if data.alias.is_some()
+                && ctx.accounts.current_alias_pda.is_some()
+                && ctx.accounts.new_alias_pda.is_some()
+            {
+                subspace.validate_alias(data.alias.as_ref().unwrap())?;
+                let new_alias_pda = &mut ctx.accounts.new_alias_pda.as_mut().unwrap();
+                new_alias_pda.app = *ctx.accounts.app.to_account_info().key;
+                new_alias_pda.owner = *subspace.to_account_info().key;
+                new_alias_pda.authority = *ctx.accounts.authority.to_account_info().key;
+                new_alias_pda.value = data.alias.as_ref().unwrap().clone();
+
+                subspace.alias = data.alias.clone();
+            }
+
+            // Case 2 (register alias if not registered):
+            if data.alias.is_some()
+                && subspace.alias != data.alias
+                && ctx.accounts.current_alias_pda.is_none()
+                && ctx.accounts.new_alias_pda.is_some()
+            {
+                subspace.validate_alias(data.alias.as_ref().unwrap())?;
+                let new_alias_pda = &mut ctx.accounts.new_alias_pda.as_mut().unwrap();
+                new_alias_pda.app = *ctx.accounts.app.to_account_info().key;
+                new_alias_pda.owner = *subspace.to_account_info().key;
+                new_alias_pda.authority = *ctx.accounts.authority.to_account_info().key;
+                new_alias_pda.value = data.alias.as_ref().unwrap().clone();
+
+                subspace.alias = data.alias.clone();
+            }
+
+            // Case 3 (delete current alias):
+            if data.alias.is_none()
+                && subspace.alias != data.alias
+                && ctx.accounts.current_alias_pda.is_none()
+                && ctx.accounts.new_alias_pda.is_none()
+            {
+                // Assign None
+                subspace.alias = None;
+            }
+        } else {
+            // Ensure that current_alias_pda and new_alias_pda not passed (to prevent account deleting)
+            if ctx.accounts.current_alias_pda.is_some() || ctx.accounts.new_alias_pda.is_some() {
+                return Err(error!(CustomError::AliasAccountsMustBeNone));
+            }
         }
 
         // Validate metadata URI
         validate_metadata_uri(&data.metadata_uri)?;
 
-        let subspace = &mut ctx.accounts.subspace;
-
-        // Validate Alias if present
-        if data.alias.is_some() {
-            subspace.validate_alias(data.alias.as_ref().unwrap())?;
-        }
-
-        subspace.alias = data.alias;
         subspace.metadata_uri = data.metadata_uri;
 
         // Assign Subspace specified external Processors
