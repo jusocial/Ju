@@ -430,8 +430,8 @@ impl CollectionItem {
 pub struct Alias {
     /// Application Pubkey (32)
     pub app: Pubkey,
-    /// Alias owner Profile Pubkey (32)
-    pub profile: Pubkey,
+    /// Alias owner (Profile or Subspace) Pubkey (32)
+    pub owner: Pubkey,
     /// Alias authority account Pubkey (32)
     pub authority: Pubkey,
     /// Alias value (STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)
