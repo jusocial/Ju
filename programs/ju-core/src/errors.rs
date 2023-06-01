@@ -41,6 +41,9 @@ pub enum CustomError {
     #[msg("Alias account required to register action")]
     AliasAccountRequired,
 
+    #[msg("Alias accounts must not be passed")]
+    AliasAccountsMustBeNone,
+
     #[msg("Both alias account required to update")]
     BothAliasAccountRequired,
 
