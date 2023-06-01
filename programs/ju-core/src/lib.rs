@@ -587,9 +587,14 @@ pub mod ju_core {
 
         let subspace = &mut ctx.accounts.subspace;
 
-        // Validate Alias if present
-        if data.alias.is_some() {
+        // Validate Alias and Assign to PDA if present
+        if data.alias.is_some() && ctx.accounts.alias_pda.is_some() {
             subspace.validate_alias(data.alias.as_ref().unwrap())?;
+            let alias_pda = &mut ctx.accounts.alias_pda.as_mut().unwrap();
+            alias_pda.app = *ctx.accounts.app.to_account_info().key;
+            alias_pda.owner = *subspace.to_account_info().key;
+            alias_pda.authority = *ctx.accounts.authority.to_account_info().key;
+            alias_pda.value = data.alias.as_ref().unwrap().clone();
         }
 
         subspace.uuid = data.uuid;
