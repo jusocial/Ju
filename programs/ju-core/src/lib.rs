@@ -100,8 +100,11 @@ pub mod ju_core {
     /// * `app_name` - Protocol unique Application name
     /// * `data` - A struct that holds Application data
     ///
-    pub fn initialize_app(ctx: Context<InitializeApp>, app_name: String, data: AppData) -> Result<()> {
-
+    pub fn initialize_app(
+        ctx: Context<InitializeApp>,
+        app_name: String,
+        data: AppData,
+    ) -> Result<()> {
         let app = &mut ctx.accounts.app;
 
         // Validate App name
@@ -114,45 +117,70 @@ pub mod ju_core {
         // Assign external Processors to Application
         match &ctx.accounts.registering_processor_pda {
             Some(registering_processor_pda) => {
-                require!(registering_processor_pda.processor_type.eq(&ProcessorType::Registering), CustomError::ProcessorTypeMismatch);
+                require!(
+                    registering_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Registering),
+                    CustomError::ProcessorTypeMismatch
+                );
                 app.registering_processor = Some(registering_processor_pda.program_address);
-            },
+            }
             None => {
                 app.registering_processor = None;
             }
         }
         match &ctx.accounts.connecting_processor_pda {
             Some(connecting_processor_pda) => {
-                require!(connecting_processor_pda.processor_type.eq(&ProcessorType::Connecting), CustomError::ProcessorTypeMismatch);
+                require!(
+                    connecting_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Connecting),
+                    CustomError::ProcessorTypeMismatch
+                );
                 app.connecting_processor = Some(connecting_processor_pda.program_address);
-            },
+            }
             None => {
                 app.connecting_processor = None;
             }
         }
         match &ctx.accounts.publishing_processor_pda {
             Some(publishing_processor_pda) => {
-                require!(publishing_processor_pda.processor_type.eq(&ProcessorType::Publishing), CustomError::ProcessorTypeMismatch);
+                require!(
+                    publishing_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Publishing),
+                    CustomError::ProcessorTypeMismatch
+                );
                 app.publishing_processor = Some(publishing_processor_pda.program_address);
-            },
+            }
             None => {
                 app.publishing_processor = None;
             }
         }
         match &ctx.accounts.collecting_processor_pda {
             Some(collecting_processor_pda) => {
-                require!(collecting_processor_pda.processor_type.eq(&ProcessorType::Collecting), CustomError::ProcessorTypeMismatch);
+                require!(
+                    collecting_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Collecting),
+                    CustomError::ProcessorTypeMismatch
+                );
                 app.collecting_processor = Some(collecting_processor_pda.program_address);
-            },
+            }
             None => {
                 app.collecting_processor = None;
             }
         }
         match &ctx.accounts.referencing_processor_pda {
             Some(referencing_processor_pda) => {
-                require!(referencing_processor_pda.processor_type.eq(&ProcessorType::Referencing), CustomError::ProcessorTypeMismatch);
+                require!(
+                    referencing_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Referencing),
+                    CustomError::ProcessorTypeMismatch
+                );
                 app.referencing_processor = Some(referencing_processor_pda.program_address);
-            },
+            }
             None => {
                 app.referencing_processor = None;
             }
@@ -178,45 +206,70 @@ pub mod ju_core {
         // Assign external Processors to Application
         match &ctx.accounts.registering_processor_pda {
             Some(registering_processor_pda) => {
-                require!(registering_processor_pda.processor_type.eq(&ProcessorType::Registering), CustomError::ProcessorTypeMismatch);
+                require!(
+                    registering_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Registering),
+                    CustomError::ProcessorTypeMismatch
+                );
                 app.registering_processor = Some(registering_processor_pda.program_address);
-            },
+            }
             None => {
                 app.registering_processor = None;
             }
         }
         match &ctx.accounts.connecting_processor_pda {
             Some(connecting_processor_pda) => {
-                require!(connecting_processor_pda.processor_type.eq(&ProcessorType::Connecting), CustomError::ProcessorTypeMismatch);
+                require!(
+                    connecting_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Connecting),
+                    CustomError::ProcessorTypeMismatch
+                );
                 app.connecting_processor = Some(connecting_processor_pda.program_address);
-            },
+            }
             None => {
                 app.connecting_processor = None;
             }
         }
         match &ctx.accounts.publishing_processor_pda {
             Some(publishing_processor_pda) => {
-                require!(publishing_processor_pda.processor_type.eq(&ProcessorType::Publishing), CustomError::ProcessorTypeMismatch);
+                require!(
+                    publishing_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Publishing),
+                    CustomError::ProcessorTypeMismatch
+                );
                 app.publishing_processor = Some(publishing_processor_pda.program_address);
-            },
+            }
             None => {
                 app.publishing_processor = None;
             }
         }
         match &ctx.accounts.collecting_processor_pda {
             Some(collecting_processor_pda) => {
-                require!(collecting_processor_pda.processor_type.eq(&ProcessorType::Collecting), CustomError::ProcessorTypeMismatch);
+                require!(
+                    collecting_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Collecting),
+                    CustomError::ProcessorTypeMismatch
+                );
                 app.collecting_processor = Some(collecting_processor_pda.program_address);
-            },
+            }
             None => {
                 app.collecting_processor = None;
             }
         }
         match &ctx.accounts.referencing_processor_pda {
             Some(referencing_processor_pda) => {
-                require!(referencing_processor_pda.processor_type.eq(&ProcessorType::Referencing), CustomError::ProcessorTypeMismatch);
+                require!(
+                    referencing_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Referencing),
+                    CustomError::ProcessorTypeMismatch
+                );
                 app.referencing_processor = Some(referencing_processor_pda.program_address);
-            },
+            }
             None => {
                 app.referencing_processor = None;
             }
@@ -273,7 +326,7 @@ pub mod ju_core {
 
         // Validate metadata URI
         validate_metadata_uri(&data.metadata_uri)?;
-     
+
         let profile = &mut ctx.accounts.profile;
 
         // Validate Alias and Assign to PDA if present
@@ -285,7 +338,7 @@ pub mod ju_core {
             alias_pda.authority = *ctx.accounts.authority.to_account_info().key;
             alias_pda.value = data.alias.as_ref().unwrap().clone();
         }
-    
+
         profile.app = *ctx.accounts.app.to_account_info().key;
         profile.alias = data.alias;
         profile.metadata_uri = data.metadata_uri;
@@ -313,35 +366,81 @@ pub mod ju_core {
     ///
     /// * `data` - A struct that holds user Profile data
     ///
+    /// Alias management cases:
+    ///  
+    /// 0) Do nothing:
+    /// * data.alias = <current Profile alias value>
+    ///
+    /// 1) Register alias if not yet registered:
+    /// * data.alias = <alias value>
+    /// * current_alias_pda == None
+    /// * new_alias_pda == Some
+    ///
+    /// 2) Update current alias (register new and delete current):
+    /// * data.alias = <new alias value>
+    /// * current_alias_pda == Some
+    /// * new_alias_pda == Some
+    ///
+    /// 3) Delete current alias:
+    /// * data.alias = None
+    /// * current_alias_pda == Some
+    /// * new_alias_pda == None
+    ///
     pub fn update_profile(ctx: Context<UpdateProfile>, data: ProfileData) -> Result<()> {
-        // if there is a new Alias registering - make sure both account (current and new one Alias) is passed
-        if data.alias.is_some()
-            && (ctx.accounts.current_alias_pda.is_none() || ctx.accounts.new_alias_pda.is_none())
-        {
-            return Err(error!(CustomError::BothAliasAccountRequired));
-        }
 
-        // if user just want to delete existing Alias - make sure current Alias account is passed
-        if data.alias.is_none() && ctx.accounts.current_alias_pda.is_none() {
-            return Err(error!(CustomError::CurrentAliasAccountRequired));
+        let profile = &mut ctx.accounts.profile;
+
+        // Alias management cases
+        if profile.alias != data.alias {
+            // Case 1 (update current Alias):
+            if data.alias.is_some()
+                && ctx.accounts.current_alias_pda.is_some()
+                && ctx.accounts.new_alias_pda.is_some()
+            {
+                profile.validate_alias(data.alias.as_ref().unwrap())?;
+                let new_alias_pda = &mut ctx.accounts.new_alias_pda.as_mut().unwrap();
+                new_alias_pda.app = *ctx.accounts.app.to_account_info().key;
+                new_alias_pda.profile = *profile.to_account_info().key;
+                new_alias_pda.authority = *ctx.accounts.authority.to_account_info().key;
+                new_alias_pda.value = data.alias.as_ref().unwrap().clone();
+
+                profile.alias = data.alias.clone();
+            }
+
+            // Case 2 (register alias if not registered):
+            if data.alias.is_some()
+                && profile.alias != data.alias
+                && ctx.accounts.current_alias_pda.is_none()
+                && ctx.accounts.new_alias_pda.is_some()
+            {
+                profile.validate_alias(data.alias.as_ref().unwrap())?;
+                let new_alias_pda = &mut ctx.accounts.new_alias_pda.as_mut().unwrap();
+                new_alias_pda.app = *ctx.accounts.app.to_account_info().key;
+                new_alias_pda.profile = *profile.to_account_info().key;
+                new_alias_pda.authority = *ctx.accounts.authority.to_account_info().key;
+                new_alias_pda.value = data.alias.as_ref().unwrap().clone();
+
+                profile.alias = data.alias.clone();
+            }
+
+            // Case 3 (delete current alias):
+            if data.alias.is_none()
+                && profile.alias != data.alias
+                && ctx.accounts.current_alias_pda.is_none()
+                && ctx.accounts.new_alias_pda.is_none()
+            {
+                // Assign None
+                profile.alias = None;
+            }
+        } else {
+            // Ensure that current_alias_pda and new_alias_pda not passed (to prevent account deleting)
+            if ctx.accounts.current_alias_pda.is_some() || ctx.accounts.new_alias_pda.is_some() {
+                return Err(error!(CustomError::AliasAccountsMustBeNone));
+            }
         }
 
         // Validate metadata URI
         validate_metadata_uri(&data.metadata_uri)?;
-
-        let profile = &mut ctx.accounts.profile;
-
-        // Validate Alias if present
-        if data.alias.is_some() && (ctx.accounts.current_alias_pda.is_some() || ctx.accounts.new_alias_pda.is_some()) {
-            profile.validate_alias(data.alias.as_ref().unwrap())?;
-            let new_alias_pda = &mut ctx.accounts.new_alias_pda.as_mut().unwrap();
-            new_alias_pda.app = *ctx.accounts.app.to_account_info().key;
-            new_alias_pda.profile = *profile.to_account_info().key;
-            new_alias_pda.authority = *ctx.accounts.authority.to_account_info().key;
-            new_alias_pda.value = data.alias.as_ref().unwrap().clone();
-        }
-
-        profile.alias = data.alias;
         profile.metadata_uri = data.metadata_uri;
 
         let now = Clock::get()?.unix_timestamp;
@@ -443,7 +542,7 @@ pub mod ju_core {
     pub fn update_connection(ctx: Context<UpdateConnection>, approve_status: bool) -> Result<()> {
         let connection = &mut ctx.accounts.connection;
         connection.approved = approve_status;
-      
+
         let now = Clock::get()?.unix_timestamp;
         connection.modified_at = Some(now);
 
@@ -494,7 +593,7 @@ pub mod ju_core {
         }
 
         subspace.uuid = data.uuid;
-        subspace.app = *ctx.accounts.app.to_account_info().key;   
+        subspace.app = *ctx.accounts.app.to_account_info().key;
         subspace.creator = *ctx.accounts.creator_profile.to_account_info().key;
         subspace.alias = data.alias;
         subspace.metadata_uri = data.metadata_uri;
@@ -503,36 +602,56 @@ pub mod ju_core {
         // Assign Subspace specified external Processors
         match &ctx.accounts.connecting_processor_pda {
             Some(connecting_processor_pda) => {
-                require!(connecting_processor_pda.processor_type.eq(&ProcessorType::Connecting), CustomError::ProcessorTypeMismatch);
+                require!(
+                    connecting_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Connecting),
+                    CustomError::ProcessorTypeMismatch
+                );
                 subspace.connecting_processor = Some(connecting_processor_pda.program_address);
-            },
+            }
             None => {
                 subspace.connecting_processor = None;
             }
         }
         match &ctx.accounts.publishing_processor_pda {
             Some(publishing_processor_pda) => {
-                require!(publishing_processor_pda.processor_type.eq(&ProcessorType::Publishing), CustomError::ProcessorTypeMismatch);
+                require!(
+                    publishing_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Publishing),
+                    CustomError::ProcessorTypeMismatch
+                );
                 subspace.publishing_processor = Some(publishing_processor_pda.program_address);
-            },
+            }
             None => {
                 subspace.publishing_processor = None;
             }
         }
         match &ctx.accounts.collecting_processor_pda {
             Some(collecting_processor_pda) => {
-                require!(collecting_processor_pda.processor_type.eq(&ProcessorType::Collecting), CustomError::ProcessorTypeMismatch);
+                require!(
+                    collecting_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Collecting),
+                    CustomError::ProcessorTypeMismatch
+                );
                 subspace.collecting_processor = Some(collecting_processor_pda.program_address);
-            },
+            }
             None => {
                 subspace.collecting_processor = None;
             }
         }
         match &ctx.accounts.referencing_processor_pda {
             Some(referencing_processor_pda) => {
-                require!(referencing_processor_pda.processor_type.eq(&ProcessorType::Referencing), CustomError::ProcessorTypeMismatch);
+                require!(
+                    referencing_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Referencing),
+                    CustomError::ProcessorTypeMismatch
+                );
                 subspace.referencing_processor = Some(referencing_processor_pda.program_address);
-            },
+            }
             None => {
                 subspace.referencing_processor = None;
             }
@@ -596,36 +715,56 @@ pub mod ju_core {
         // Assign Subspace specified external Processors
         match &ctx.accounts.connecting_processor_pda {
             Some(connecting_processor_pda) => {
-                require!(connecting_processor_pda.processor_type.eq(&ProcessorType::Connecting), CustomError::ProcessorTypeMismatch);
+                require!(
+                    connecting_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Connecting),
+                    CustomError::ProcessorTypeMismatch
+                );
                 subspace.connecting_processor = Some(connecting_processor_pda.program_address);
-            },
+            }
             None => {
                 subspace.connecting_processor = None;
             }
         }
         match &ctx.accounts.publishing_processor_pda {
             Some(publishing_processor_pda) => {
-                require!(publishing_processor_pda.processor_type.eq(&ProcessorType::Publishing), CustomError::ProcessorTypeMismatch);
+                require!(
+                    publishing_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Publishing),
+                    CustomError::ProcessorTypeMismatch
+                );
                 subspace.publishing_processor = Some(publishing_processor_pda.program_address);
-            },
+            }
             None => {
                 subspace.publishing_processor = None;
             }
         }
         match &ctx.accounts.collecting_processor_pda {
             Some(collecting_processor_pda) => {
-                require!(collecting_processor_pda.processor_type.eq(&ProcessorType::Collecting), CustomError::ProcessorTypeMismatch);
+                require!(
+                    collecting_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Collecting),
+                    CustomError::ProcessorTypeMismatch
+                );
                 subspace.collecting_processor = Some(collecting_processor_pda.program_address);
-            },
+            }
             None => {
                 subspace.collecting_processor = None;
             }
         }
         match &ctx.accounts.referencing_processor_pda {
             Some(referencing_processor_pda) => {
-                require!(referencing_processor_pda.processor_type.eq(&ProcessorType::Referencing), CustomError::ProcessorTypeMismatch);
+                require!(
+                    referencing_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Referencing),
+                    CustomError::ProcessorTypeMismatch
+                );
                 subspace.referencing_processor = Some(referencing_processor_pda.program_address);
-            },
+            }
             None => {
                 subspace.referencing_processor = None;
             }
@@ -787,18 +926,28 @@ pub mod ju_core {
         // Assign Publication specified external Processors
         match &ctx.accounts.collecting_processor_pda {
             Some(collecting_processor_pda) => {
-                require!(collecting_processor_pda.processor_type.eq(&ProcessorType::Collecting), CustomError::ProcessorTypeMismatch);
+                require!(
+                    collecting_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Collecting),
+                    CustomError::ProcessorTypeMismatch
+                );
                 publication.collecting_processor = Some(collecting_processor_pda.program_address);
-            },
+            }
             None => {
                 publication.collecting_processor = None;
             }
         }
         match &ctx.accounts.referencing_processor_pda {
             Some(referencing_processor_pda) => {
-                require!(referencing_processor_pda.processor_type.eq(&ProcessorType::Referencing), CustomError::ProcessorTypeMismatch);
+                require!(
+                    referencing_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Referencing),
+                    CustomError::ProcessorTypeMismatch
+                );
                 publication.referencing_processor = Some(referencing_processor_pda.program_address);
-            },
+            }
             None => {
                 publication.referencing_processor = None;
             }
@@ -841,18 +990,28 @@ pub mod ju_core {
         // Assign Publication specified external Processors
         match &ctx.accounts.collecting_processor_pda {
             Some(collecting_processor_pda) => {
-                require!(collecting_processor_pda.processor_type.eq(&ProcessorType::Collecting), CustomError::ProcessorTypeMismatch);
+                require!(
+                    collecting_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Collecting),
+                    CustomError::ProcessorTypeMismatch
+                );
                 publication.collecting_processor = Some(collecting_processor_pda.program_address);
-            },
+            }
             None => {
                 publication.collecting_processor = None;
             }
         }
         match &ctx.accounts.referencing_processor_pda {
             Some(referencing_processor_pda) => {
-                require!(referencing_processor_pda.processor_type.eq(&ProcessorType::Referencing), CustomError::ProcessorTypeMismatch);
+                require!(
+                    referencing_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Referencing),
+                    CustomError::ProcessorTypeMismatch
+                );
                 publication.referencing_processor = Some(referencing_processor_pda.program_address);
-            },
+            }
             None => {
                 publication.referencing_processor = None;
             }
