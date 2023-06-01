@@ -457,6 +457,7 @@ pub mod ju_core {
     // Delete existing Profile
     pub fn delete_profile(ctx: Context<DeleteProfile>) -> Result<()> {
         // TODO: Implement Application level Delete permisson
+        // TODO: Implement Actions with Profile related entities (publications/subspaces/reactions etc.)
 
         // if user has registered Alias - make sure that Alias account is passed to delete
         if ctx.accounts.profile.alias.is_some() && ctx.accounts.alias_pda.is_none() {
@@ -829,6 +830,7 @@ pub mod ju_core {
     // Delete existing Subspace
     pub fn delete_subspace(ctx: Context<DeleteSubpace>) -> Result<()> {
         // TODO: Implement Application level Delete permisson
+        // TODO: Implement Actions with Subspace related entities (publications/reactions etc.)
 
         // if Subspace has registered Alias - make sure that Alias account is passed to delete
         if ctx.accounts.subspace.alias.is_some() && ctx.accounts.alias_pda.is_none() {
@@ -1153,6 +1155,7 @@ pub mod ju_core {
         reaction.app = *ctx.accounts.app.to_account_info().key;
         reaction.authority = *ctx.accounts.authority.to_account_info().key;
         reaction.initializer_profile = *ctx.accounts.initializer_profile.to_account_info().key;
+        reaction.target = *ctx.accounts.target.to_account_info().key;
         reaction.reaction_type = reaction_type;
 
         let now = Clock::get()?.unix_timestamp;
