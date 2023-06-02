@@ -334,6 +334,7 @@ pub mod ju_core {
             profile.validate_alias(data.alias.as_ref().unwrap())?;
             let alias_pda = &mut ctx.accounts.alias_pda.as_mut().unwrap();
             alias_pda.app = *ctx.accounts.app.to_account_info().key;
+            alias_pda.alias_type = AliasType::Profile;
             alias_pda.owner = *profile.to_account_info().key;
             alias_pda.authority = *ctx.accounts.authority.to_account_info().key;
             alias_pda.value = data.alias.as_ref().unwrap().clone();
@@ -400,6 +401,7 @@ pub mod ju_core {
                 profile.validate_alias(data.alias.as_ref().unwrap())?;
                 let new_alias_pda = &mut ctx.accounts.new_alias_pda.as_mut().unwrap();
                 new_alias_pda.app = *ctx.accounts.app.to_account_info().key;
+                new_alias_pda.alias_type = AliasType::Profile;
                 new_alias_pda.owner = *profile.to_account_info().key;
                 new_alias_pda.authority = *ctx.accounts.authority.to_account_info().key;
                 new_alias_pda.value = data.alias.as_ref().unwrap().clone();
@@ -416,6 +418,7 @@ pub mod ju_core {
                 profile.validate_alias(data.alias.as_ref().unwrap())?;
                 let new_alias_pda = &mut ctx.accounts.new_alias_pda.as_mut().unwrap();
                 new_alias_pda.app = *ctx.accounts.app.to_account_info().key;
+                new_alias_pda.alias_type = AliasType::Profile;
                 new_alias_pda.owner = *profile.to_account_info().key;
                 new_alias_pda.authority = *ctx.accounts.authority.to_account_info().key;
                 new_alias_pda.value = data.alias.as_ref().unwrap().clone();
@@ -593,6 +596,7 @@ pub mod ju_core {
             subspace.validate_alias(data.alias.as_ref().unwrap())?;
             let alias_pda = &mut ctx.accounts.alias_pda.as_mut().unwrap();
             alias_pda.app = *ctx.accounts.app.to_account_info().key;
+            alias_pda.alias_type = AliasType::Subspace;
             alias_pda.owner = *subspace.to_account_info().key;
             alias_pda.authority = *ctx.accounts.authority.to_account_info().key;
             alias_pda.value = data.alias.as_ref().unwrap().clone();
@@ -714,6 +718,7 @@ pub mod ju_core {
                 subspace.validate_alias(data.alias.as_ref().unwrap())?;
                 let new_alias_pda = &mut ctx.accounts.new_alias_pda.as_mut().unwrap();
                 new_alias_pda.app = *ctx.accounts.app.to_account_info().key;
+                new_alias_pda.alias_type = AliasType::Subspace;
                 new_alias_pda.owner = *subspace.to_account_info().key;
                 new_alias_pda.authority = *ctx.accounts.authority.to_account_info().key;
                 new_alias_pda.value = data.alias.as_ref().unwrap().clone();
@@ -730,6 +735,7 @@ pub mod ju_core {
                 subspace.validate_alias(data.alias.as_ref().unwrap())?;
                 let new_alias_pda = &mut ctx.accounts.new_alias_pda.as_mut().unwrap();
                 new_alias_pda.app = *ctx.accounts.app.to_account_info().key;
+                new_alias_pda.alias_type = AliasType::Subspace;
                 new_alias_pda.owner = *subspace.to_account_info().key;
                 new_alias_pda.authority = *ctx.accounts.authority.to_account_info().key;
                 new_alias_pda.value = data.alias.as_ref().unwrap().clone();
