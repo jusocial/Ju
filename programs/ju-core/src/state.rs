@@ -361,7 +361,7 @@ pub struct Connection {
     pub authority: Pubkey,
     /// Connection initializer Pubkey (32)
     pub initializer: Pubkey,
-    /// Connection target Pubkey (might be another Profile or Aoolication Subspace) (32)
+    /// Connection target Pubkey (might be another Profile or Application Subspace) (32)
     pub target: Pubkey,
     /// Flag to determine whether Connection is approved by target entitty (e.g. accept friend request or private group acceptance) (1)
     pub approved: bool,
