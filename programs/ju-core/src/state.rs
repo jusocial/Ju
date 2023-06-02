@@ -430,6 +430,8 @@ impl CollectionItem {
 pub struct Alias {
     /// Application Pubkey (32)
     pub app: Pubkey,
+    /// Alias type (1)
+    pub alias_type: AliasType,
     /// Alias owner (Profile or Subspace) Pubkey (32)
     pub owner: Pubkey,
     /// Alias authority account Pubkey (32)
@@ -443,6 +445,7 @@ impl Alias {
     
     pub const LEN: usize = DISCRIMINATOR_LENGTH         // Anchor internal discrimitator 
         + 32                                            // Pubkey
+        + 1                                             // Enum variant
         + 32                                            // Pubkey
         + 32                                            // Pubkey
         + (STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH);   // String
@@ -624,6 +627,20 @@ pub enum ProcessorType {
     Publishing,
     Collecting,
     Referencing
+}
+
+/// Alias type (e.g. Profile or Subspace)
+///
+/// Enum variants:
+///
+/// * Profile
+/// * Subspace
+///
+#[derive(Default, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
+pub enum AliasType {
+    #[default]
+    Profile,
+    Subspace,
 }
 
 /// Connection Target type (e.g. Profile or Subspace)
