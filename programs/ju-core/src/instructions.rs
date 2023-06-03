@@ -1482,6 +1482,17 @@ pub struct CreateReaction<'info> {
     pub app: Account<'info, App>,
 
     #[account(
+        has_one = authority,
+        seeds = [
+            Profile::PREFIX.as_bytes(),
+            app.key().as_ref(),
+            initializer.authority.key().as_ref(),
+        ],
+        bump
+    )]
+    pub initializer: Account<'info, Profile>,
+
+    #[account(
         seeds = [
             Publication::PREFIX.as_bytes(),
             app.key().as_ref(),
@@ -1492,23 +1503,12 @@ pub struct CreateReaction<'info> {
     pub target: Account<'info, Publication>,
 
     #[account(
-        has_one = authority,
-        seeds = [
-            Profile::PREFIX.as_bytes(),
-            app.key().as_ref(),
-            initializer_profile.authority.key().as_ref(),
-        ],
-        bump
-    )]
-    pub initializer_profile: Account<'info, Profile>,
-
-    #[account(
         init,
         seeds = [
             Reaction::PREFIX.as_bytes(),
             app.key().as_ref(),
             target.key().as_ref(),
-            initializer_profile.key().as_ref(),
+            initializer.key().as_ref(),
         ],
         bump,
         payer = authority,
@@ -1545,6 +1545,17 @@ pub struct DeleteReaction<'info> {
     pub app: Account<'info, App>,
 
     #[account(
+        has_one = authority,
+        seeds = [
+            Profile::PREFIX.as_bytes(),
+            app.key().as_ref(),
+            initializer.authority.key().as_ref(),
+        ],
+        bump
+    )]
+    pub initializer: Account<'info, Profile>,
+
+    #[account(
         seeds = [
             Publication::PREFIX.as_bytes(),
             app.key().as_ref(),
@@ -1555,24 +1566,13 @@ pub struct DeleteReaction<'info> {
     pub target: Account<'info, Publication>,
 
     #[account(
-        has_one = authority,
-        seeds = [
-            Profile::PREFIX.as_bytes(),
-            app.key().as_ref(),
-            initializer_profile.authority.key().as_ref(),
-        ],
-        bump
-    )]
-    pub initializer_profile: Account<'info, Profile>,
-
-    #[account(
         mut,
         has_one = authority,
         seeds = [
             Reaction::PREFIX.as_bytes(),
             app.key().as_ref(),
             target.key().as_ref(),
-            initializer_profile.key().as_ref(),
+            initializer.key().as_ref(),
         ],
         bump,
         close = authority,
@@ -1608,6 +1608,17 @@ pub struct InitializeReport<'info> {
     pub app: Account<'info, App>,
 
     #[account(
+        has_one = authority,
+        seeds = [
+            Profile::PREFIX.as_bytes(),
+            app.key().as_ref(),
+            initializer.authority.key().as_ref(),
+        ],
+        bump
+    )]
+    pub initializer: Account<'info, Profile>,
+
+    #[account(
         seeds = [
             Publication::PREFIX.as_bytes(),
             app.key().as_ref(),
@@ -1618,23 +1629,12 @@ pub struct InitializeReport<'info> {
     pub target: Account<'info, Publication>,
 
     #[account(
-        has_one = authority,
-        seeds = [
-            Profile::PREFIX.as_bytes(),
-            app.key().as_ref(),
-            initializer_profile.authority.key().as_ref(),
-        ],
-        bump
-    )]
-    pub initializer_profile: Account<'info, Profile>,
-
-    #[account(
         init,
         seeds = [
             Report::PREFIX.as_bytes(),
             app.key().as_ref(),
             target.key().as_ref(),
-            initializer_profile.key().as_ref(),
+            initializer.key().as_ref(),
         ],
         bump,
         payer = authority,

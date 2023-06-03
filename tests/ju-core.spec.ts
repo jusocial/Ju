@@ -663,6 +663,7 @@ describe("ju-core", () => {
         isMirror: isMirror,
         isReply: isReply,
         contentType: contentType,
+        tag: null
       };
       try {
         const tx = await program.methods.createPublication(publicationId, publicationInstructionData, null)
@@ -780,6 +781,7 @@ describe("ju-core", () => {
         isMirror: isMirror,
         isReply: isReply,
         contentType: contentType,
+        tag: null
       };
 
       try {
@@ -846,8 +848,8 @@ describe("ju-core", () => {
         const tx = await program.methods.createReaction(reactionType)
           .accounts({
             app: appAccount,
+            initializer: profileAccount1,
             target: publicationAccount,
-            initializerProfile: profileAccount1,
             reaction: reactionAccount,
             authority: user,
             systemProgram: SystemProgram.programId,
@@ -862,7 +864,7 @@ describe("ju-core", () => {
       // console.log('Reaction data: ', data);
 
       expect(data.app.toString()).to.equal(appAccount.toString(), '1');
-      expect(data.initializerProfile.toString()).to.equal(profileAccount1.toString(), '2');
+      expect(data.initializer.toString()).to.equal(profileAccount1.toString(), '2');
       expect(data.target.toString()).to.equal(publicationAccount.toString(), '3');
       expect(data.reactionType.toString()).to.equal(reactionType.toString(), '4');
       expect(data.authority.toString()).to.equal(user.toString(), '5');
@@ -876,7 +878,7 @@ describe("ju-core", () => {
           .accounts({
             app: appAccount,
             target: publicationAccount,
-            initializerProfile: profileAccount1,
+            initializer: profileAccount1,
             reaction: reactionAccount,
             authority: user,
             systemProgram: SystemProgram.programId,
@@ -927,8 +929,8 @@ describe("ju-core", () => {
         )
           .accounts({
             app: appAccount,
+            initializer: profileAccount1,
             target: publicationAccount,
-            initializerProfile: profileAccount1,
             report: reportAccount,
             authority: user,
             systemProgram: SystemProgram.programId,
@@ -943,7 +945,7 @@ describe("ju-core", () => {
       // console.log('Reaction data: ', data);
 
       expect(data.app.toString()).to.equal(appAccount.toString(), '1');
-      expect(data.initializerProfile.toString()).to.equal(profileAccount1.toString(), '2');
+      expect(data.initializer.toString()).to.equal(profileAccount1.toString(), '2');
       expect(data.target.toString()).to.equal(publicationAccount.toString(), '3');
       expect(data.reportType.toString()).to.equal(reportType.toString(), '4');
       expect(data.notification.toString()).to.equal(notificationString.toString(), '5');

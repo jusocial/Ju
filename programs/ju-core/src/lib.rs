@@ -1167,7 +1167,7 @@ pub mod ju_core {
         let reaction = &mut ctx.accounts.reaction;
         reaction.app = *ctx.accounts.app.to_account_info().key;
         reaction.authority = *ctx.accounts.authority.to_account_info().key;
-        reaction.initializer_profile = *ctx.accounts.initializer_profile.to_account_info().key;
+        reaction.initializer = *ctx.accounts.initializer.to_account_info().key;
         reaction.target = *ctx.accounts.target.to_account_info().key;
         reaction.reaction_type = reaction_type;
 
@@ -1207,7 +1207,7 @@ pub mod ju_core {
         let report = &mut ctx.accounts.report;
         report.app = *ctx.accounts.app.to_account_info().key;
         report.authority = *ctx.accounts.authority.to_account_info().key;
-        report.initializer_profile = *ctx.accounts.initializer_profile.to_account_info().key;
+        report.initializer = *ctx.accounts.initializer.to_account_info().key;
         report.target = *ctx.accounts.target.to_account_info().key;
         report.report_type = data.report_type;
         report.notification = data.notification_string;

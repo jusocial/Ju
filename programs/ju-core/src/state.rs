@@ -465,8 +465,8 @@ impl Alias {
 ///
 /// 1. Application address
 /// 2. Reaction authority address
-/// 3. Reaction initializer Profile
-/// 4. Target Publication address
+/// 3. Target Publication address
+/// 4. Reaction initializer Profile
 /// 5. Reaction type variant
 /// 6. Reaction create unix timestamp
 ///
@@ -477,10 +477,10 @@ pub struct Reaction {
     pub app: Pubkey,
     /// Reaction authority account Pubkey (32)
     pub authority: Pubkey,
-    /// Reaction initializer Profile Pubkey (32)
-    pub initializer_profile: Pubkey,
     /// Reaction target Publication Pubkey (32)
     pub target: Pubkey,
+    /// Reaction initializer Profile Pubkey (32)
+    pub initializer: Pubkey,
     /// Reaction value (1)
     pub reaction_type: ReactionType,
     /// Unix timestamp of the Reaction creation (8)
@@ -505,8 +505,8 @@ impl Reaction {
 ///
 /// 1. Application address
 /// 2. Report authority address
-/// 3. Report initializer Profile
-/// 4. Report Target address
+/// 3. Report Target address
+/// 4. Report initializer Profile
 /// 5. Report type variant
 /// 6. Report notification text
 /// 7. Report create unix timestamp
@@ -518,10 +518,10 @@ pub struct Report {
     pub app: Pubkey,
     /// Alias authority account Pubkey (32)
     pub authority: Pubkey,
-    /// Reaction initializer Pubkey (32)
-    pub initializer_profile: Pubkey,
     /// Reaction target Publication Pubkey (32)
     pub target: Pubkey,
+    /// Reaction initializer Pubkey (32)
+    pub initializer: Pubkey,
     /// Reaction value (1)
     pub report_type: ReportType,
     /// Report Notification
