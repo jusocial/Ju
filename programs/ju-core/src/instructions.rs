@@ -168,6 +168,7 @@ pub struct InitializeApp<'info> {
 pub struct UpdateApp<'info> {
     #[account(
         mut,
+        has_one = authority @CustomError::UpdateNotAuthorized,
         seeds = [
             App::PREFIX.as_bytes(),
             app.app_name.as_bytes().as_ref(),
