@@ -1129,7 +1129,7 @@ pub struct DeleteSubpace<'info> {
 /// 6. `[]` System program
 ///
 #[derive(Accounts)]
-#[instruction(data: PublicationData)]
+#[instruction(uuid: String, data: PublicationData)]
 pub struct CreatePublication<'info> {
     #[account(
         seeds = [
@@ -1156,7 +1156,7 @@ pub struct CreatePublication<'info> {
         seeds = [
             Publication::PREFIX.as_bytes(),
             app.key().as_ref(),
-            data.uuid.as_bytes().as_ref(),
+            uuid.as_bytes().as_ref(),
         ],
         bump,
         payer = authority,

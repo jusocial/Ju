@@ -861,11 +861,13 @@ pub mod ju_core {
     ///
     /// # Arguments
     ///
+    /// * `uuid` - Publication UUID
     /// * `data` - A struct that holds Publication parameters
     /// * `external_processing_data` - additional data that can be passed to an external processor
     ///
     pub fn create_publication(
         ctx: Context<CreatePublication>,
+        uuid: String,
         data: PublicationData,
         external_processing_data: Option<String>, // TODO: Replace String with some other type ?
     ) -> Result<()> {
@@ -946,7 +948,7 @@ pub mod ju_core {
 
         let publication = &mut ctx.accounts.publication;
 
-        publication.uuid = data.uuid;
+        publication.uuid = uuid;
         publication.app = *ctx.accounts.app.to_account_info().key;
         publication.profile = *ctx.accounts.profile.to_account_info().key;
         publication.metadata_uri = data.metadata_uri;

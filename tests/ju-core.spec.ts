@@ -659,14 +659,13 @@ describe("ju-core", () => {
 
       /* Call the createPublication function via RPC */
       let publicationInstructionData: anchor.IdlTypes<JuCore>["PublicationData"] = {
-        uuid: publicationId,
         metadataUri: uri,
         isMirror: isMirror,
         isReply: isReply,
         contentType: contentType,
       };
       try {
-        const tx = await program.methods.createPublication(publicationInstructionData, null)
+        const tx = await program.methods.createPublication(publicationId, publicationInstructionData, null)
           .accounts({
             app: appAccount,
             profile: profileAccount1,
@@ -710,7 +709,6 @@ describe("ju-core", () => {
 
       /* Call the create function via RPC */
       let publicationInstructionData: anchor.IdlTypes<JuCore>["PublicationData"] = {
-        uuid: publicationId,
         metadataUri: newURI,
         isMirror: isMirror,
         isReply: isReply,
@@ -775,7 +773,6 @@ describe("ju-core", () => {
       const contentType = { article: {} };
 
       let publicationInstructionData: anchor.IdlTypes<JuCore>["PublicationData"] = {
-        uuid: mirrorPublicationId,
         metadataUri: mirrorURI,
         isMirror: isMirror,
         isReply: isReply,
@@ -784,7 +781,11 @@ describe("ju-core", () => {
 
       try {
         /* Call the create function via RPC */
-        const tx = await program.methods.createPublication(publicationInstructionData, null)
+        const tx = await program.methods.createPublication(
+          mirrorPublicationId,
+          publicationInstructionData,
+          null
+        )
           .accounts({
             app: appAccount,
             profile: profileAccount1,

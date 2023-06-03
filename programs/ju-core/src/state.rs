@@ -582,15 +582,13 @@ pub struct SubspaceData {
 ///
 /// Struct contains:
 ///
-/// 1. `uuid` - Publication UUID
-/// 2. `metadata_uri` - Publication metadata URI
-/// 3. `is_mirror` - Whether or not the publication is mirroring other existing publication (e.g. re-post)
-/// 4. `is_reply` - Whether or not the publication is replying to other existing publication (e.g. comment)
-/// 5. `content_type` - Publication content type
+/// 1. `metadata_uri` - Publication metadata URI
+/// 2. `is_mirror` - Whether or not the publication is mirroring other existing publication (e.g. re-post)
+/// 3. `is_reply` - Whether or not the publication is replying to other existing publication (e.g. comment)
+/// 4. `content_type` - Publication content type
 ///
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct PublicationData {
-    pub uuid: String,
     pub metadata_uri: String,
     pub is_mirror: bool,
     pub is_reply: bool,
