@@ -273,7 +273,7 @@ describe("ju-core", () => {
       } catch (error: any) {
         console.log('error :>> ', error);
       }
-      /* Fetch the account and check the value of count */
+      /* Fetch the account and check the values */
       const data = await program.account.profile.fetch(profileAccount1);
       // console.log('Profile 1 account: ', data);
 
@@ -316,7 +316,7 @@ describe("ju-core", () => {
       } catch (error: any) {
         console.log('error :>> ', error);
       }
-      /* Fetch the account and check the value of count */
+      /* Fetch the account and check the values */
       const data = await program.account.profile.fetch(profileAccount1);
       // console.log('Profile 1 account: ', data);
 
@@ -371,7 +371,7 @@ describe("ju-core", () => {
         console.log('error :>> ', error);
       }
 
-      /* Fetch the account and check the value of count */
+      /* Fetch the account and check the values */
       const data = await program.account.profile.fetch(profileAccount1);
       // console.log('Profile 1 account: ', data);
 
@@ -423,7 +423,7 @@ describe("ju-core", () => {
         console.log('error :>> ', error);
       }
 
-      /* Fetch the account and check the value of count */
+      /* Fetch the account and check the values */
       const data = await program.account.profile.fetch(profileAccount2);
       // console.log('Profile 2 account: ', data);
 
@@ -439,13 +439,12 @@ describe("ju-core", () => {
 
     it("Create Subspace", async () => {
 
-      const subspaceMetadataUri = "https://example.com/subspace1"
+      const subspaceMetadataUri = "https://example.com/subspace-1-uri"
 
       /* Call the createPublication function via RPC */
       let subspaceInstructionData: anchor.IdlTypes<JuCore>["SubspaceData"] = {
         uuid: subspaceUuid,
         alias: subspaceAlias,
-        creator: profileAccount1,
         metadataUri: subspaceMetadataUri
       };
 
@@ -470,7 +469,7 @@ describe("ju-core", () => {
         console.log('error :>> ', error);
       }
 
-      /* Fetch the account and check the value of count */
+      /* Fetch the account and check the values */
       const data = await program.account.subspace.fetch(subspaceAccount);
       // console.log('Subspace address: ', subspaceAccount.toBase58());
       // console.log('Subspace data: ', data);
@@ -483,14 +482,13 @@ describe("ju-core", () => {
 
     it("Update Subspace", async () => {
 
-      const newUri = "https://example.com/subspaceUpdatedUri";
+      const newUri = "https://example.com/subspace-1-updated-uri";
 
       try {
         /* Call ix via RPC */
         let subspaceInstructionData: anchor.IdlTypes<JuCore>["SubspaceData"] = {
           uuid: subspaceUuid,
           alias: subspaceAlias,
-          creator: profileAccount1,
           metadataUri: newUri
         };
         const tx = await program.methods.updateSubspace(subspaceInstructionData)
@@ -513,10 +511,13 @@ describe("ju-core", () => {
       } catch (error: any) {
         console.log('error :>> ', error);
       }
-      /* Fetch the account and check the value of count */
+      /* Fetch the account and check the values */
       const data = await program.account.subspace.fetch(subspaceAccount);
       // console.log('Updated Subspace data: ', data);
 
+      expect(data.uuid.toString()).to.equal(subspaceUuid.toString());
+      expect(data.alias).to.equal(subspaceAlias);
+      expect(data.creator.toString()).to.equal(profileAccount1.toString());
       expect(data.metadataUri).to.equal(newUri);
     });
   });
@@ -568,7 +569,7 @@ describe("ju-core", () => {
         console.log('error :>> ', error);
       }
 
-      /* Fetch the account and check the value of count */
+      /* Fetch the account and check the values */
       const data = await program.account.connection.fetch(connectionAccount);
       // console.log('Connection (following) account: ', data);
 
@@ -603,7 +604,7 @@ describe("ju-core", () => {
         console.log('error :>> ', error);
       }
 
-      /* Fetch the account and check the value of count */
+      /* Fetch the account and check the values */
       const data = await program.account.connection.fetch(connectionAccount);
       // console.log('Updated Connection account: ', data);
 
@@ -639,7 +640,7 @@ describe("ju-core", () => {
         console.log('error :>> ', error);
       }
 
-      /* Fetch the account and check the value of count */
+      /* Fetch the account and check the values */
       const data = await program.account.connection.fetch(connectionAccount2);
       // console.log('Connection (subscribing to Subspace) account: ', data);
 
@@ -686,7 +687,7 @@ describe("ju-core", () => {
       } catch (error: any) {
         console.log('error :>> ', error);
       }
-      /* Fetch the account and check the value of count */
+      /* Fetch the account and check the values */
       const data = await program.account.publication.fetch(publicationAccount);
       // console.log('Publication data: ', data);
 
@@ -741,7 +742,7 @@ describe("ju-core", () => {
         console.log('error :>> ', error);
       }
 
-      /* Fetch the account and check the value of count */
+      /* Fetch the account and check the values */
       const data = await program.account.publication.fetch(publicationAccount);
       // console.log('Updated Publication data: ', data);
 
@@ -806,7 +807,7 @@ describe("ju-core", () => {
         console.log('error :>> ', error);
       }
 
-      /* Fetch the account and check the value of count */
+      /* Fetch the account and check the values */
       const data = await program.account.publication.fetch(mirrorPublicationAccount);
       // console.log('Publication Mirror account data: ', data);
 
