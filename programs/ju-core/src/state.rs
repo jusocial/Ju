@@ -571,14 +571,12 @@ pub struct ProfileData {
 ///
 /// 1. `uuid` - Subspace UUID
 /// 2. `alias` - Unique Application's Subspace Alias as string (ASCII alphanumeric)
-/// 3. `creator` - Subspace creator Profile address
-/// 4. `metadata_uri` - Publication metadata URI
+/// 3. `metadata_uri` - Publication metadata URI
 ///
 #[derive(Default, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct SubspaceData {
     pub uuid: String,
     pub alias: Option<String>,
-    pub creator: Pubkey,
     pub metadata_uri: String,
 }
 
