@@ -341,9 +341,9 @@ describe("ju-core", () => {
 
 
     // Update Profile 1 Alias
-    it("Update Profile 1 Alias", async () => {
+    it("Update Profile 1 Alias & delete metadata", async () => {
 
-      const updatedUri = "https://example.com/profile-updated-uri"
+      const updatedUri = null
 
       // console.log("profileAccount1 :>>", profileAccount1.toBase58());
       // console.log('profileAliasAccount1 :>> ', profileAliasAccount1.toBase58());

@@ -149,7 +149,7 @@ pub struct Profile {
     /// Profile alias (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH).
     pub alias: Option<String>,
     /// Profile metadata URI (STRING_LENGTH_PREFIX + MAX_URI_LENGTH).
-    pub metadata_uri: String,
+    pub metadata_uri: Option<String>,
     /// Profile Status text (1 + STRING_LENGTH_PREFIX + MAX_STATUS_LENGTH)
     pub status_text: Option<String>,
     /// Verified status for VIP users (1)
@@ -566,7 +566,7 @@ pub struct AppData {
 #[derive(Default, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct ProfileData {
     pub alias: Option<String>,
-    pub metadata_uri: String,
+    pub metadata_uri: Option<String>,
     pub status_text: Option<String>,
     pub connecting_processor_to_assign: Option<Pubkey>,
 }

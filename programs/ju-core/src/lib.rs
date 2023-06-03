@@ -324,9 +324,6 @@ pub mod ju_core {
             return Err(error!(CustomError::AliasAccountRequired));
         }
 
-        // Validate metadata URI
-        validate_metadata_uri(&data.metadata_uri)?;
-
         let profile = &mut ctx.accounts.profile;
 
         // Validate Alias and Assign to PDA if present
@@ -338,6 +335,11 @@ pub mod ju_core {
             alias_pda.owner = *profile.to_account_info().key;
             alias_pda.authority = *ctx.accounts.authority.to_account_info().key;
             alias_pda.value = data.alias.as_ref().unwrap().clone();
+        }
+
+        // Validate metadata URI
+        if data.metadata_uri.is_some() {
+            validate_metadata_uri(data.metadata_uri.as_ref().unwrap())?;
         }
 
         profile.app = *ctx.accounts.app.to_account_info().key;
@@ -443,7 +445,9 @@ pub mod ju_core {
         }
 
         // Validate metadata URI
-        validate_metadata_uri(&data.metadata_uri)?;
+        if data.metadata_uri.is_some() {
+            validate_metadata_uri(data.metadata_uri.as_ref().unwrap())?;
+        }
         profile.metadata_uri = data.metadata_uri;
 
         profile.status_text = data.status_text;
