@@ -343,6 +343,7 @@ pub mod ju_core {
         profile.app = *ctx.accounts.app.to_account_info().key;
         profile.alias = data.alias;
         profile.metadata_uri = data.metadata_uri;
+        profile.status_text = data.status_text;
         profile.authority = *ctx.accounts.authority.to_account_info().key;
 
         // Assign Profile specified Connecting external Processor
@@ -444,6 +445,8 @@ pub mod ju_core {
         // Validate metadata URI
         validate_metadata_uri(&data.metadata_uri)?;
         profile.metadata_uri = data.metadata_uri;
+
+        profile.status_text = data.status_text;
 
         let now = Clock::get()?.unix_timestamp;
         // Emit new Event

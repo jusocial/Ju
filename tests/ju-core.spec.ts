@@ -245,6 +245,7 @@ describe("ju-core", () => {
   describe("Profile", async () => {
 
     const uri = "https://example.com/profile-1-uri";
+    const profile1StatusText = 'Hey there!';
 
     it("Creates Profile 1", async () => {
 
@@ -253,6 +254,7 @@ describe("ju-core", () => {
         let profileInstructionData1: anchor.IdlTypes<JuCore>["ProfileData"] = {
           alias: profileAlias1,
           metadataUri: uri,
+          statusText: profile1StatusText,
           connectingProcessorToAssign: null
         };
         const tx = await program.methods.createProfile(profileInstructionData1, null)
@@ -283,6 +285,7 @@ describe("ju-core", () => {
 
       expect(data.metadataUri.toString()).to.equal(uri);
       expect(data.alias.toString()).to.equal(profileAlias1);
+      expect(data.statusText.toString()).to.equal(profile1StatusText);
       expect(aliasPda.owner.toString()).to.equal(profileAccount1.toString());
     });
 
@@ -290,12 +293,13 @@ describe("ju-core", () => {
     it("Update Profile 1", async () => {
 
       const updatedUri = "https://example.com/profile-1-updated-uri"
-
+      const updatedProfile1StatusText = 'LFG!!!';
       try {
         /* Call the createProfile function via RPC */
         let profileInstructionData1: anchor.IdlTypes<JuCore>["ProfileData"] = {
           alias: profileAlias1,
           metadataUri: updatedUri,
+          statusText: updatedProfile1StatusText,
           connectingProcessorToAssign: null
         };
         const tx = await program.methods.updateProfile(profileInstructionData1)
@@ -326,6 +330,7 @@ describe("ju-core", () => {
 
       expect(data.app.toString()).to.equal(appAccount.toString());
       expect(data.metadataUri).to.equal(updatedUri);
+      expect(data.statusText.toString()).to.equal(updatedProfile1StatusText);
       expect(data.alias).to.equal(profileAlias1);
       expect(data.authority.toString()).to.equal(user.toString());
 
@@ -349,6 +354,7 @@ describe("ju-core", () => {
         let profileInstructionData1: anchor.IdlTypes<JuCore>["ProfileData"] = {
           alias: updatedProfileAlias1,
           metadataUri: updatedUri,
+          statusText: null,
           connectingProcessorToAssign: null
         };
         const tx = await program.methods.updateProfile(profileInstructionData1)
@@ -396,11 +402,13 @@ describe("ju-core", () => {
       await airdrop(user2.publicKey);
 
       const profile2MetadataUri = "https://example.com/profile-2"
+      const profile2StatusText = 'Looking for friendship...';
 
       try {
         /* Call the create function via RPC */
         let profileInstructionData2: anchor.IdlTypes<JuCore>["ProfileData"] = {
           alias: profileAlias2,
+          statusText: profile2StatusText,
           metadataUri: profile2MetadataUri,
           connectingProcessorToAssign: null
         };
@@ -428,6 +436,7 @@ describe("ju-core", () => {
       // console.log('Profile 2 account: ', data);
 
       expect(data.metadataUri).to.equal(profile2MetadataUri);
+      expect(data.statusText.toString()).to.equal(profile2StatusText);
       expect(data.alias).to.equal(profileAlias2);
       expect(data.authority.toString()).to.equal(user2.publicKey.toString());
     });

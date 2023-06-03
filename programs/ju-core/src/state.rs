@@ -560,12 +560,14 @@ pub struct AppData {
 ///
 /// 1. `alias` - Unique Application's user Profile Alias as string (ASCII alphanumeric)
 /// 2. `metadata_uri` - Profile metadata URI
-/// 3. `connecting_processor` - Profile specified external processor to make additional Connection Processing (optional)
+/// 3. `status_text` - Profile status
+/// 4. `connecting_processor` - Profile specified external processor to make additional Connection Processing (optional)
 ///
 #[derive(Default, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct ProfileData {
     pub alias: Option<String>,
     pub metadata_uri: String,
+    pub status_text: Option<String>,
     pub connecting_processor_to_assign: Option<Pubkey>,
 }
 
