@@ -448,7 +448,7 @@ describe("ju-core", () => {
 
     it("Create Subspace", async () => {
 
-      const subspaceMetadataUri = "https://example.com/subspace-1-uri"
+      const subspaceMetadataUri = null;
 
       /* Call the createPublication function via RPC */
       let subspaceInstructionData: anchor.IdlTypes<JuCore>["SubspaceData"] = {
@@ -480,7 +480,7 @@ describe("ju-core", () => {
       /* Fetch the account and check the values */
       const data = await program.account.subspace.fetch(subspaceAccount);
       // console.log('Subspace address: ', subspaceAccount.toBase58());
-      // console.log('Subspace data: ', data);
+      console.log('Subspace data: ', data);
 
       expect(data.uuid.toString()).to.equal(subspaceUuid.toString());
       expect(data.alias).to.equal(subspaceAlias);
@@ -520,7 +520,7 @@ describe("ju-core", () => {
       }
       /* Fetch the account and check the values */
       const data = await program.account.subspace.fetch(subspaceAccount);
-      // console.log('Updated Subspace data: ', data);
+      console.log('Updated Subspace data: ', data);
 
       expect(data.uuid.toString()).to.equal(subspaceUuid.toString());
       expect(data.alias).to.equal(subspaceAlias);

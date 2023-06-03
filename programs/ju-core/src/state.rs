@@ -219,10 +219,10 @@ pub struct Subspace {
     pub authority: Pubkey,
     /// Subspace creator Profile Pubkey (32)
     pub creator: Pubkey,
-    /// Profile alias (STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH).
+    /// Profile alias (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH).
     pub alias: Option<String>,
-    /// Metadata URI (STRING_LENGTH_PREFIX + MAX_URI_LENGTH).
-    pub metadata_uri: String,
+    /// Metadata URI (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH).
+    pub metadata_uri: Option<String>,
     /// An address of a Program (external processor) for Publication Creating additional processing (33)
     pub publishing_processor: Option<Pubkey>,
     /// An address of a Program (external processor) for profiles Connection additional processing (33)
@@ -241,8 +241,8 @@ impl Subspace {
         + 32                                            // Pubkey
         + 32                                            // Pubkey
         + 32                                            // Pubkey
-        + (STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)    // String
-        + (STRING_LENGTH_PREFIX + MAX_URI_LENGTH)       // String
+        + (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH) // String
+        + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)   // String
         + 33                                            // Option<Pubkey>
         + 33                                            // Option<Pubkey>
         + 33                                            // Option<Pubkey>
@@ -581,7 +581,7 @@ pub struct ProfileData {
 #[derive(Default, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct SubspaceData {
     pub alias: Option<String>,
-    pub metadata_uri: String,
+    pub metadata_uri: Option<String>,
 }
 
 /// Publication data struct

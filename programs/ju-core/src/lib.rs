@@ -598,7 +598,9 @@ pub mod ju_core {
         }
 
         // Validate metadata URI
-        validate_metadata_uri(&data.metadata_uri)?;
+        if data.metadata_uri.is_some() {
+            validate_metadata_uri(data.metadata_uri.as_ref().unwrap())?;
+        }
 
         let subspace = &mut ctx.accounts.subspace;
 
@@ -770,8 +772,9 @@ pub mod ju_core {
         }
 
         // Validate metadata URI
-        validate_metadata_uri(&data.metadata_uri)?;
-
+        if data.metadata_uri.is_some() {
+            validate_metadata_uri(data.metadata_uri.as_ref().unwrap())?;
+        }
         subspace.metadata_uri = data.metadata_uri;
 
         // Assign Subspace specified external Processors
