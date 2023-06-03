@@ -388,7 +388,6 @@ pub mod ju_core {
     /// * new_alias_pda == None
     ///
     pub fn update_profile(ctx: Context<UpdateProfile>, data: ProfileData) -> Result<()> {
-
         let profile = &mut ctx.accounts.profile;
 
         // Alias management cases
@@ -520,6 +519,10 @@ pub mod ju_core {
         connection.app = *ctx.accounts.app.to_account_info().key;
         connection.authority = *ctx.accounts.authority.to_account_info().key;
         connection.initializer = *ctx.accounts.initializer.to_account_info().key;
+
+        // Checking passed target account and assign if OK
+        let target_account = &ctx.accounts.target;
+        connection.connection_target_type = get_connection_target_type(target_account)?;
         connection.target = *ctx.accounts.target.to_account_info().key;
 
         let now = Clock::get()?.unix_timestamp;
@@ -683,7 +686,7 @@ pub mod ju_core {
     /// # Arguments
     ///
     /// * `data` - A struct that holds Subspace data
-    /// 
+    ///
     /// Alias management cases:
     ///  
     /// 0) Do nothing:
@@ -705,7 +708,6 @@ pub mod ju_core {
     /// * new_alias_pda == None
     ///
     pub fn update_subspace(ctx: Context<UpdateSubspace>, data: SubspaceData) -> Result<()> {
-
         let subspace = &mut ctx.accounts.subspace;
 
         // Alias management cases

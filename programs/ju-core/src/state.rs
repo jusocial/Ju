@@ -346,11 +346,12 @@ impl Publication {
 ///
 /// 1. Application address
 /// 2. Connection authority address
-/// 3. Connection initializer address (e.g. follower)
-/// 4. Target Application's Profile/Subspace address (e.g. which initializer followed)
-/// 5. Whether or not Connection is approved by target (e.g. accept friend request)
-/// 6. Connection initialize unix timestamp
-/// 7. Connection modify unix timestamp
+/// 3. Connection Target type ('profile-to-profile' or 'profile-to-subspace')
+/// 4. Connection initializer address (e.g. follower)
+/// 5. Target Application's Profile/Subspace address (e.g. which initializer followed)
+/// 6. Whether or not Connection is approved by target (e.g. accept friend request)
+/// 7. Connection initialize unix timestamp
+/// 8. Connection modify unix timestamp
 ///
 #[account]
 #[derive(Default)]
@@ -359,6 +360,8 @@ pub struct Connection {
     pub app: Pubkey,
     /// Connection authority account Pubkey (32)
     pub authority: Pubkey,
+    /// Connection Target type (1)
+    pub connection_target_type: ConnectionTargetType,
     /// Connection initializer Pubkey (32)
     pub initializer: Pubkey,
     /// Connection target Pubkey (might be another Profile or Application Subspace) (32)
@@ -377,6 +380,7 @@ impl Connection {
     pub const LEN: usize = DISCRIMINATOR_LENGTH         // Anchor internal discrimitator  
         + 32                                            // Pubkey
         + 32                                            // Pubkey
+        + 1                                             // Enum variant
         + 32                                            // Pubkey
         + 32                                            // Pubkey
         + 1                                             // bool

@@ -85,6 +85,29 @@ describe("ju-core", () => {
     program.programId
   );
 
+  /* Subspace Setup */
+  const subspaceUuid = uuid.v4().replace(/-/g, '');
+  const [subspaceAccount, subspaceAccountBump] = anchor.web3.PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("subspace"),
+      appAccount.toBuffer(),
+      profileAccount1.toBuffer(),
+      Buffer.from(subspaceUuid),
+    ],
+    program.programId
+  );
+
+  const subspaceAlias = "nuclear";
+  const [subspaceAliasAccount, subspaceAliasAccountBump] = anchor.web3.PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("alias"),
+      appAccount.toBuffer(),
+      Buffer.from(subspaceAlias),
+    ],
+    program.programId
+  );
+
+
   /* Publications Setup */
   const publicationId = uuid.v4().replace(/-/g, '');
   const uri = "https://example.com/publication-1";
@@ -305,6 +328,10 @@ describe("ju-core", () => {
       expect(data.metadataUri).to.equal(updatedUri);
       expect(data.alias).to.equal(profileAlias1);
       expect(data.authority.toString()).to.equal(user.toString());
+
+      expect(aliasPda.app.toString()).to.equal(appAccount.toString());
+      expect(JSON.stringify(aliasPda.aliasType)).to.equal(JSON.stringify({ profile: {} }));
+      expect(aliasPda.owner.toString()).to.equal(profileAccount1.toString());
     });
 
 
@@ -408,117 +435,7 @@ describe("ju-core", () => {
   });
 
 
-
-  describe("Connections", async () => {
-    const [connectionAccount, _] = anchor.web3.PublicKey.findProgramAddressSync(
-      [
-        Buffer.from("connection"),
-        appAccount.toBuffer(),
-        profileAccount2.toBuffer(),
-        profileAccount1.toBuffer(),
-      ],
-      program.programId
-    );
-
-    it("Create Connection (Following)", async () => {
-
-      try {
-        /* Call the createConnection function via RPC */
-        const tx = await program.methods.initializeConnection(null)
-          .accounts(
-            {
-              app: appAccount,
-              connection: connectionAccount,
-              initializer: profileAccount2,
-              target: profileAccount1,
-              connectingProcessor: null,
-              authority: user2.publicKey,
-              systemProgram: SystemProgram.programId,
-            }
-          )
-          .signers([user2])
-          .rpc();
-
-        // console.log("Tx signature: ", tx);
-      } catch (error: any) {
-        console.log('error :>> ', error);
-      }
-
-      /* Fetch the account and check the value of count */
-      const data = await program.account.connection.fetch(connectionAccount);
-      // console.log('Connection account: ', data);
-
-      expect(data.app.toString()).to.equal(appAccount.toString());
-      expect(data.initializer.toString()).to.equal(profileAccount2.toString());
-      expect(data.target.toString()).to.equal(profileAccount1.toString());
-      expect(data.approved).to.equal(false);
-      expect(data.authority.toString()).to.equal(user2.publicKey.toString());
-    });
-
-
-
-    it("Update Connection (Approve)", async () => {
-
-      try {
-        /* Call the updateConnection function via RPC */
-        const tx = await program.methods.updateConnection(true)
-          .accounts(
-            {
-              app: appAccount,
-              connection: connectionAccount,
-              initializer: profileAccount2,
-              target: profileAccount1,
-              user: user,
-              systemProgram: SystemProgram.programId,
-            }
-          )
-          .rpc();
-
-        // console.log("Tx signature: ", tx);
-      } catch (error: any) {
-        console.log('error :>> ', error);
-      }
-
-      /* Fetch the account and check the value of count */
-      const data = await program.account.connection.fetch(connectionAccount);
-      // console.log('Updated Connection account: ', data);
-
-      expect(data.app.toString()).to.equal(appAccount.toString());
-      expect(data.initializer.toString()).to.equal(profileAccount2.toString());
-      expect(data.target.toString()).to.equal(profileAccount1.toString());
-      expect(data.approved).to.equal(true);
-      expect(data.authority.toString()).to.equal(user2.publicKey.toString());
-    });
-
-  });
-
-
   describe("Subspaces: ", async () => {
-
-    const subspaceUuid = uuid.v4().replace(/-/g, '');
-    // console.log("Subspace UUID: ", subspaceUuid, "  len: ", subspaceUuid.length);
-
-    const [subspaceAccount, _] = anchor.web3.PublicKey.findProgramAddressSync(
-      [
-        Buffer.from("subspace"),
-        appAccount.toBuffer(),
-        profileAccount1.toBuffer(),
-        Buffer.from(subspaceUuid),
-      ],
-      program.programId
-    );
-
-    const subspaceAlias = "nuclear";
-    const [subspaceAliasAccount, subspaceAliasAccountBump] = anchor.web3.PublicKey.findProgramAddressSync(
-      [
-        Buffer.from("alias"),
-        appAccount.toBuffer(),
-        Buffer.from(subspaceAlias),
-      ],
-      program.programId
-    );
-
-
 
     it("Create Subspace", async () => {
 
@@ -602,6 +519,138 @@ describe("ju-core", () => {
 
       expect(data.metadataUri).to.equal(newUri);
     });
+  });
+
+
+  describe("Connections", async () => {
+    // Profile-to-Profile
+    const [connectionAccount, connectionAccount1Bump] = anchor.web3.PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("connection"),
+        appAccount.toBuffer(),
+        profileAccount2.toBuffer(),
+        profileAccount1.toBuffer(),
+      ],
+      program.programId
+    );
+    // Profile-to-Subspace
+    const [connectionAccount2, connectionAccount2Bump] = anchor.web3.PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("connection"),
+        appAccount.toBuffer(),
+        profileAccount2.toBuffer(),
+        subspaceAccount.toBuffer(),
+      ],
+      program.programId
+    );
+
+    it("Create Connection to Profile (Following)", async () => {
+
+      try {
+        /* Call the createConnection function via RPC */
+        const tx = await program.methods.initializeConnection(null)
+          .accounts(
+            {
+              app: appAccount,
+              connection: connectionAccount,
+              initializer: profileAccount2,
+              target: profileAccount1,
+              connectingProcessor: null,
+              authority: user2.publicKey,
+              systemProgram: SystemProgram.programId,
+            }
+          )
+          .signers([user2])
+          .rpc();
+
+        // console.log("Tx signature: ", tx);
+      } catch (error: any) {
+        console.log('error :>> ', error);
+      }
+
+      /* Fetch the account and check the value of count */
+      const data = await program.account.connection.fetch(connectionAccount);
+      // console.log('Connection (following) account: ', data);
+
+      expect(data.app.toString()).to.equal(appAccount.toString());
+      expect(data.initializer.toString()).to.equal(profileAccount2.toString());
+      expect(data.target.toString()).to.equal(profileAccount1.toString());
+      expect(JSON.stringify(data.connectionTargetType)).to.equal(JSON.stringify({ profile: {} }));
+      expect(data.approved).to.equal(false);
+      expect(data.authority.toString()).to.equal(user2.publicKey.toString());
+    });
+
+
+    it("Update Connection (Approve)", async () => {
+
+      try {
+        /* Call the updateConnection function via RPC */
+        const tx = await program.methods.updateConnection(true)
+          .accounts(
+            {
+              app: appAccount,
+              connection: connectionAccount,
+              initializer: profileAccount2,
+              target: profileAccount1,
+              user: user,
+              systemProgram: SystemProgram.programId,
+            }
+          )
+          .rpc();
+
+        // console.log("Tx signature: ", tx);
+      } catch (error: any) {
+        console.log('error :>> ', error);
+      }
+
+      /* Fetch the account and check the value of count */
+      const data = await program.account.connection.fetch(connectionAccount);
+      // console.log('Updated Connection account: ', data);
+
+      expect(data.app.toString()).to.equal(appAccount.toString());
+      expect(data.initializer.toString()).to.equal(profileAccount2.toString());
+      expect(data.target.toString()).to.equal(profileAccount1.toString());
+      expect(data.approved).to.equal(true);
+      expect(data.authority.toString()).to.equal(user2.publicKey.toString());
+    });
+
+
+    it("Create Connection to Subspace (Subscribing)", async () => {
+
+      try {
+        /* Call the createConnection function via RPC */
+        const tx = await program.methods.initializeConnection(null)
+          .accounts(
+            {
+              app: appAccount,
+              connection: connectionAccount2,
+              initializer: profileAccount2,
+              target: subspaceAccount,
+              connectingProcessor: null,
+              authority: user2.publicKey,
+              systemProgram: SystemProgram.programId,
+            }
+          )
+          .signers([user2])
+          .rpc();
+
+        // console.log("Tx signature: ", tx);
+      } catch (error: any) {
+        console.log('error :>> ', error);
+      }
+
+      /* Fetch the account and check the value of count */
+      const data = await program.account.connection.fetch(connectionAccount2);
+      // console.log('Connection (subscribing to Subspace) account: ', data);
+
+      expect(data.app.toString()).to.equal(appAccount.toString());
+      expect(JSON.stringify(data.connectionTargetType)).to.equal(JSON.stringify({ subspace: {} }));
+      expect(data.initializer.toString()).to.equal(profileAccount2.toString());
+      expect(data.target.toString()).to.equal(subspaceAccount.toString());
+      expect(data.approved).to.equal(false);
+      expect(data.authority.toString()).to.equal(user2.publicKey.toString());
+    });
+
   });
 
 

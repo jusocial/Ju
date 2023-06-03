@@ -13,6 +13,27 @@ pub fn validate_metadata_uri(metadata_uri: &String) -> Result<()> {
     Ok(())
 }
 
+/// Helper function to get Connection target from AccountInfo
+///
+/// Parameters:
+///
+/// 1. `target_account` - Reference to the Profile/Subspace AccountInfo
+/// 
+pub fn get_connection_target_type(
+    target_account: &AccountInfo,
+) -> Result<ConnectionTargetType> {
+    if Account::<Profile>::try_from(target_account).is_ok() {
+        return Ok(ConnectionTargetType::Profile);
+    }
+
+    if Account::<Subspace>::try_from(target_account).is_ok() {
+        return Ok(ConnectionTargetType::Subspace);
+    }
+
+    Err(error!(CustomError::ConnectionTargetAccountInvalid))
+}
+
+
 /// Helper function to get assigned External Processor from AccountInfo
 ///
 /// Parameters:
