@@ -163,9 +163,11 @@ describe("ju-core", () => {
 
     it("Create new App", async () => {
 
+      const appMetadataUri = null;
+
       /* Call the initializeApp function via RPC */
       let appData: anchor.IdlTypes<JuCore>["AppData"] = {
-        metadataUri: "https://example.com/app-uri",
+        metadataUri: appMetadataUri,
       };
 
       // console.log('appAccount: ', appAccount)
@@ -192,7 +194,7 @@ describe("ju-core", () => {
       }
       /* Fetch the App PDA and check the value  */
       const data = await program.account.app.fetch(appAccount);
-      // console.log('App account: ', data);
+      console.log('App account: ', data);
 
       expect(data.authority.toString()).to.equal(user.toString());
     });
@@ -228,7 +230,7 @@ describe("ju-core", () => {
       }
       /* Fetch the App PDA and check the value  */
       const data = await program.account.app.fetch(appAccount);
-      // console.log('App 2 account: ', data);
+      console.log('App 2 account: ', data);
 
       expect(data.metadataUri).to.equal(newUri);
 
@@ -480,7 +482,7 @@ describe("ju-core", () => {
       /* Fetch the account and check the values */
       const data = await program.account.subspace.fetch(subspaceAccount);
       // console.log('Subspace address: ', subspaceAccount.toBase58());
-      console.log('Subspace data: ', data);
+      // console.log('Subspace data: ', data);
 
       expect(data.uuid.toString()).to.equal(subspaceUuid.toString());
       expect(data.alias).to.equal(subspaceAlias);
@@ -520,7 +522,7 @@ describe("ju-core", () => {
       }
       /* Fetch the account and check the values */
       const data = await program.account.subspace.fetch(subspaceAccount);
-      console.log('Updated Subspace data: ', data);
+      // console.log('Updated Subspace data: ', data);
 
       expect(data.uuid.toString()).to.equal(subspaceUuid.toString());
       expect(data.alias).to.equal(subspaceAlias);

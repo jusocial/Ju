@@ -111,7 +111,12 @@ pub mod ju_core {
         app.validate_name(&app_name)?;
         app.app_name = app_name;
 
+        // Validate metadata URI
+        if data.metadata_uri.is_some() {
+            validate_metadata_uri(data.metadata_uri.as_ref().unwrap())?;
+        }
         app.metadata_uri = data.metadata_uri;
+        
         app.authority = *ctx.accounts.authority.to_account_info().key;
 
         // Assign external Processors to Application
@@ -196,11 +201,13 @@ pub mod ju_core {
     /// * `data` - A struct that holds Application data
     ///
     pub fn update_app(ctx: Context<UpdateApp>, data: AppData) -> Result<()> {
-        // Validate metadata URI
-        validate_metadata_uri(&data.metadata_uri)?;
 
         let app = &mut ctx.accounts.app;
 
+        // Validate metadata URI
+        if data.metadata_uri.is_some() {
+            validate_metadata_uri(data.metadata_uri.as_ref().unwrap())?;
+        }
         app.metadata_uri = data.metadata_uri;
 
         // Assign external Processors to Application

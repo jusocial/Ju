@@ -79,8 +79,8 @@ pub struct App {
     pub app_name: String,
     /// Pubkey of the application creator (32).
     pub authority: Pubkey,
-    /// URI of the metadata (STRING_LENGTH_PREFIX + MAX_URI_LENGTH).
-    pub metadata_uri: String,
+    /// URI of the metadata (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH).
+    pub metadata_uri: Option<String>,
     /// An address of a Program (external processor) that makes application Profile creation additional processing (33)
     pub registering_processor: Option<Pubkey>,
     /// An address of a Program (external processor) for profiles Connection additional processing (33)
@@ -99,7 +99,7 @@ impl App {
     pub const LEN: usize = DISCRIMINATOR_LENGTH         // Anchor internal discrimitator
         + (STRING_LENGTH_PREFIX + MAX_APPNAME_LENGTH)   // String      
         + 32                                            // Pubkey
-        + (STRING_LENGTH_PREFIX + MAX_URI_LENGTH)       // String
+        + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)   // Option<String>
         + 33                                            // Option<Pubkey>
         + 33                                            // Option<Pubkey>
         + 33                                            // Option<Pubkey>
@@ -551,7 +551,7 @@ impl Report {
 ///
 #[derive(Default, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct AppData {
-    pub metadata_uri: String,
+    pub metadata_uri: Option<String>,
 }
 
 /// Profile instruction data struct
