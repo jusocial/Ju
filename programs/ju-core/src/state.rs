@@ -337,7 +337,7 @@ impl Publication {
         + 1                                             // bool
         + 33                                            // Option<Pubkey>
         + 1                                             // Enum
-        + (1 + MAX_TAG_LENGTH)                          // Option<String>                                        
+        + (1 + STRING_LENGTH_PREFIX + MAX_TAG_LENGTH)   // Option<String>                                        
         + 33                                            // Option<Pubkey>
         + 33                                            // Option<Pubkey>
         + 8                                             // i64
