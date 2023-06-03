@@ -443,13 +443,12 @@ describe("ju-core", () => {
 
       /* Call the createPublication function via RPC */
       let subspaceInstructionData: anchor.IdlTypes<JuCore>["SubspaceData"] = {
-        uuid: subspaceUuid,
         alias: subspaceAlias,
         metadataUri: subspaceMetadataUri
       };
 
       try {
-        const tx = await program.methods.createSubspace(subspaceInstructionData)
+        const tx = await program.methods.createSubspace(subspaceUuid, subspaceInstructionData)
           .accounts({
             app: appAccount,
             creatorProfile: profileAccount1,
@@ -487,7 +486,6 @@ describe("ju-core", () => {
       try {
         /* Call ix via RPC */
         let subspaceInstructionData: anchor.IdlTypes<JuCore>["SubspaceData"] = {
-          uuid: subspaceUuid,
           alias: subspaceAlias,
           metadataUri: newUri
         };

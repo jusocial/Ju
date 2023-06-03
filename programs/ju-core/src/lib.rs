@@ -581,9 +581,10 @@ pub mod ju_core {
     ///
     /// # Arguments
     ///
+    /// * `uuid` - A Subspace UUID
     /// * `data` - A struct that holds Subspace data
     ///
-    pub fn create_subspace(ctx: Context<CreateSubspace>, data: SubspaceData) -> Result<()> {
+    pub fn create_subspace(ctx: Context<CreateSubspace>, uuid: String, data: SubspaceData) -> Result<()> {
         // if user want to register a Alias - make sure Alias account is passed
         if data.alias.is_some() && ctx.accounts.alias_pda.is_none() {
             return Err(error!(CustomError::AliasAccountRequired));
@@ -605,7 +606,7 @@ pub mod ju_core {
             alias_pda.value = data.alias.as_ref().unwrap().clone();
         }
 
-        subspace.uuid = data.uuid;
+        subspace.uuid = uuid;
         subspace.app = *ctx.accounts.app.to_account_info().key;
         subspace.creator = *ctx.accounts.creator_profile.to_account_info().key;
         subspace.alias = data.alias;

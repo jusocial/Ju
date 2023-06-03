@@ -827,7 +827,7 @@ pub struct DeleteConnection<'info> {
 /// 8. `[]` System program
 ///
 #[derive(Accounts)]
-#[instruction(data: SubspaceData)]
+#[instruction(uuid: String, data: SubspaceData)]
 pub struct CreateSubspace<'info> {
     #[account(
         seeds = [
@@ -855,7 +855,7 @@ pub struct CreateSubspace<'info> {
             Subspace::PREFIX.as_bytes(),
             app.key().as_ref(),
             creator_profile.key().as_ref(),
-            data.uuid.as_bytes().as_ref(),
+            uuid.as_bytes().as_ref(),
         ],
         bump,
         payer = authority,
