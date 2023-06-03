@@ -706,6 +706,7 @@ describe("ju-core", () => {
       const isMirror = false;
       const isReply = false;
       const contentType = { article: {} };
+      const publicationTag = 'solana';
 
       /* Call the create function via RPC */
       let publicationInstructionData: anchor.IdlTypes<JuCore>["PublicationData"] = {
@@ -713,6 +714,7 @@ describe("ju-core", () => {
         isMirror: isMirror,
         isReply: isReply,
         contentType: contentType,
+        tag: publicationTag,
       };
 
       try {
@@ -749,6 +751,7 @@ describe("ju-core", () => {
       expect(data.isMirror).to.equal(isMirror);
       expect(data.isReply).to.equal(isReply);
       expect(data.contentType.toString()).to.equal(contentType.toString());
+      expect(data.tag.toString()).to.equal(publicationTag.toString());
       expect(data.authority.toString()).to.equal(user.toString());
     });
 

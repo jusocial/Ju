@@ -282,10 +282,11 @@ impl Subspace {
 /// 8. Whether or not the Publication is replying to other existing Publication (e.g. comment)
 /// 9. References to existing Publication if there is a mirror or reply (optional)
 /// 10. Publication main content type
-/// 11. External Collecting processor (optional)
-/// 12. External Referencing processor (optional)
-/// 13. Publication create unix timestamp
-/// 14. Publication update unix timestamp (optional)
+/// 11. Publication tag
+/// 12. External Collecting processor (optional)
+/// 13. External Referencing processor (optional)
+/// 14. Publication create unix timestamp
+/// 15. Publication update unix timestamp (optional)
 ///
 #[account]
 // #[derive(Default)]
@@ -310,6 +311,8 @@ pub struct Publication {
     pub target_publication: Option<Pubkey>,
     /// Publication content main type (1)
     pub content_type: ContentType,
+    /// Publication Tag (e.g. '#hashtag') (1 + MAX_TAG_LENGTH)
+    pub tag: Option<String>,
     /// An address of a Program (external processor) for Publication Collecting additional processing (33)
     pub collecting_processor: Option<Pubkey>,
     /// An address of a Program (external processor) for Publication Referencing additional processing (33)
@@ -334,6 +337,7 @@ impl Publication {
         + 1                                             // bool
         + 33                                            // Option<Pubkey>
         + 1                                             // Enum
+        + (1 + MAX_TAG_LENGTH)                          // Option<String>                                        
         + 33                                            // Option<Pubkey>
         + 33                                            // Option<Pubkey>
         + 8                                             // i64
@@ -586,6 +590,7 @@ pub struct SubspaceData {
 /// 2. `is_mirror` - Whether or not the publication is mirroring other existing publication (e.g. re-post)
 /// 3. `is_reply` - Whether or not the publication is replying to other existing publication (e.g. comment)
 /// 4. `content_type` - Publication content type
+/// 5. `tag` - Publication Tag
 ///
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct PublicationData {
@@ -593,6 +598,7 @@ pub struct PublicationData {
     pub is_mirror: bool,
     pub is_reply: bool,
     pub content_type: ContentType,
+    pub tag: Option<String>
 }
 
 /// Report data struct

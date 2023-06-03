@@ -953,6 +953,7 @@ pub mod ju_core {
         publication.profile = *ctx.accounts.profile.to_account_info().key;
         publication.metadata_uri = data.metadata_uri;
         publication.content_type = data.content_type;
+        publication.tag = data.tag;
         publication.authority = *ctx.accounts.authority.to_account_info().key;
 
         // In case this is Subspace Publication
@@ -1044,6 +1045,7 @@ pub mod ju_core {
 
         publication.metadata_uri = data.metadata_uri;
         publication.content_type = data.content_type;
+        publication.tag = data.tag;
 
         // Assign Publication specified external Processors
         match &ctx.accounts.collecting_processor_pda {

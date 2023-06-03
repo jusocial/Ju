@@ -31,6 +31,9 @@ pub const UUID_LENGTH: usize = 32;
 #[constant]
 pub const MAX_NOTIFICATION_LENGTH: usize = 100;
 
+#[constant]
+pub const MAX_TAG_LENGTH: usize = 30;
+
 pub const DISCRIMINATOR_LENGTH: usize = 8;
 
 // Stores the size of the string.
