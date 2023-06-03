@@ -166,9 +166,9 @@ impl Profile {
     pub const LEN: usize = DISCRIMINATOR_LENGTH         // Anchor internal discrimitator
         + 32                                            // Pubkey
         + 32                                            // Pubkey
-        + (STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)    // String
+        + (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH) // String
         + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)   // Option<String>
-        + (STRING_LENGTH_PREFIX + MAX_STATUS_LENGTH)    // String
+        + (1 + STRING_LENGTH_PREFIX + MAX_STATUS_LENGTH)// String
         + 1                                             // bool
         + 33                                            // Option<Pubkey>
         + 8;                                            // i64
