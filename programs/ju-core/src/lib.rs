@@ -504,6 +504,19 @@ pub mod ju_core {
 
         profile.status_text = data.status_text;
 
+        if data.name.is_some() {
+            profile.validate_name(data.name.as_ref().unwrap())?;
+            profile.name = data.name;
+        }
+        if data.surname.is_some() {
+            profile.validate_surname(data.surname.as_ref().unwrap())?;
+            profile.surname = data.surname;
+        }
+        profile.birth_date = data.birth_date;
+        profile.country_code = data.country_code;
+        profile.city_code = data.city_code;
+        profile.current_location = data.curent_location;
+
         let now = Clock::get()?.unix_timestamp;
         // Emit new Event
         emit!(UpdateProfileEvent {
