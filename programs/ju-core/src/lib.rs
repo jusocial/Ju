@@ -111,13 +111,29 @@ pub mod ju_core {
         app.validate_name(&app_name)?;
         app.app_name = app_name;
 
+        app.authority = *ctx.accounts.authority.to_account_info().key;
+
         // Validate metadata URI
         if data.metadata_uri.is_some() {
             validate_metadata_uri(data.metadata_uri.as_ref().unwrap())?;
         }
         app.metadata_uri = data.metadata_uri;
 
-        app.authority = *ctx.accounts.authority.to_account_info().key;
+        // Application Settings and Requirements
+        app.profile_name_required = data.profile_name_required;
+        app.profile_surname_required = data.profile_surname_required;
+        app.profile_birthdate_required = data.profile_birthdate_required;
+        app.profile_country_required = data.profile_country_required;
+        app.profile_city_required = data.profile_city_required;
+        app.profile_metadata_uri_required = data.profile_metadata_uri_required;
+
+        app.subspace_name_required = data.subspace_name_required;
+        app.subspace_metadata_uri_required = data.subspace_metadata_uri_required;
+
+        app.profile_delete_allowed = data.profile_delete_allowed;
+        app.subspace_delete_allowed = data.subspace_delete_allowed;
+        app.publication_delete_allowed = data.publication_delete_allowed;
+
 
         // Assign external Processors to Application
         match &ctx.accounts.registering_processor_pda {
@@ -209,6 +225,21 @@ pub mod ju_core {
             validate_metadata_uri(data.metadata_uri.as_ref().unwrap())?;
         }
         app.metadata_uri = data.metadata_uri;
+
+        // Application Settings and Requirements
+        app.profile_name_required = data.profile_name_required;
+        app.profile_surname_required = data.profile_surname_required;
+        app.profile_birthdate_required = data.profile_birthdate_required;
+        app.profile_country_required = data.profile_country_required;
+        app.profile_city_required = data.profile_city_required;
+        app.profile_metadata_uri_required = data.profile_metadata_uri_required;
+
+        app.subspace_name_required = data.subspace_name_required;
+        app.subspace_metadata_uri_required = data.subspace_metadata_uri_required;
+
+        app.profile_delete_allowed = data.profile_delete_allowed;
+        app.subspace_delete_allowed = data.subspace_delete_allowed;
+        app.publication_delete_allowed = data.publication_delete_allowed;
 
         // Assign external Processors to Application
         match &ctx.accounts.registering_processor_pda {
