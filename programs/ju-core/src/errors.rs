@@ -53,6 +53,12 @@ pub enum CustomError {
     #[msg("Profile update not authorized")]
     UpdateNotAuthorized,
 
+    #[msg("Profile's name too long'")]
+    ProfileNameTooLong,
+
+    #[msg("Profile's surname too long'")]
+    ProfileSurnameTooLong,
+
     #[msg("Subspace alias is incorrect")]
     SubspaceAliasIncorrect,
 
