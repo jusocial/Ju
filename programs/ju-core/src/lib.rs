@@ -116,7 +116,7 @@ pub mod ju_core {
             validate_metadata_uri(data.metadata_uri.as_ref().unwrap())?;
         }
         app.metadata_uri = data.metadata_uri;
-        
+
         app.authority = *ctx.accounts.authority.to_account_info().key;
 
         // Assign external Processors to Application
@@ -377,7 +377,7 @@ pub mod ju_core {
     ///
     /// * `data` - A struct that holds user Profile data
     ///
-    /// Alias management cases:
+    /// # Alias management cases:
     ///  
     /// 0) Do nothing:
     /// * data.alias = <current Profile alias value>
@@ -534,7 +534,7 @@ pub mod ju_core {
         connection.authority = *ctx.accounts.authority.to_account_info().key;
         connection.initializer = *ctx.accounts.initializer.to_account_info().key;
 
-        // Checking passed target account and assign if OK
+        // Checking passed target type and assign if OK
         let target_account = &ctx.accounts.target;
         connection.connection_target_type = get_connection_target_type(target_account)?;
         connection.target = *ctx.accounts.target.to_account_info().key;
@@ -554,14 +554,19 @@ pub mod ju_core {
         Ok(())
     }
 
-    /// Update connection (approve by target profile, e.g. - accept friend request)
+    /// Update connection (approve by Target profile, e.g. - accept friend request)
     ///
     /// # Arguments
     ///
     /// * `approve_status` - A boolean that holds connection approve status (by Target)
     ///
     pub fn update_connection(ctx: Context<UpdateConnection>, approve_status: bool) -> Result<()> {
+
+        // Assert Connection Target authority
+        assert_connection_target_authority(&ctx.accounts.user.to_account_info().key(), &ctx.accounts.target)?;
+
         let connection = &mut ctx.accounts.connection;
+
         connection.approved = approve_status;
 
         let now = Clock::get()?.unix_timestamp;
@@ -580,6 +585,10 @@ pub mod ju_core {
 
     // Delete existing connection
     pub fn delete_connection(ctx: Context<DeleteConnection>) -> Result<()> {
+
+        // Assert Connection Target authority
+        assert_connection_target_authority(&ctx.accounts.authority.to_account_info().key(), &ctx.accounts.target)?;
+
         // Emit new Event
         let now = Clock::get()?.unix_timestamp;
         emit!(DeleteConnectionEvent {
@@ -704,7 +713,7 @@ pub mod ju_core {
     ///
     /// * `data` - A struct that holds Subspace data
     ///
-    /// Alias management cases:
+    /// # Alias management cases:
     ///  
     /// 0) Do nothing:
     /// * data.alias = <current Subspace alias value>
