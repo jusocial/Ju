@@ -260,7 +260,7 @@ impl Profile {
     ///
     /// Parameters:
     ///
-    /// 1. `alias` - Reference to Application unique Aliasr String
+    /// 1. `alias` - Reference to Application unique Alias String
     /// 
     pub fn validate_alias(&self, alias: &String) -> Result<()> {
 
@@ -272,6 +272,32 @@ impl Profile {
             return Err(error!(CustomError::AliasLengthIncorrect));
         }
 
+        Ok(())
+    }
+
+    /// Method for validating Profile Name
+    ///
+    /// Parameters:
+    ///
+    /// 1. `name` - Reference to Profile Name String
+    /// 
+    pub fn validate_name(&self, name: &String) -> Result<()> {
+        if name.len() > MAX_PROFILE_NAME_LENGTH {
+            return Err(error!(CustomError::ProfileNameTooLong));
+        }
+        Ok(())
+    }
+
+    /// Method for validating Profile Surname
+    ///
+    /// Parameters:
+    ///
+    /// 1. `surname` - Reference to Profile Surname String
+    /// 
+    pub fn validate_surname(&self, surname: &String) -> Result<()> {
+        if surname.len() > MAX_PROFILE_SURNAME_LENGTH {
+            return Err(error!(CustomError::ProfileSurnameTooLong));
+        }
         Ok(())
     }
 }
