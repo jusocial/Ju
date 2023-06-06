@@ -69,18 +69,19 @@ impl ExternalProcessorPDA {
 /// 4. `profile_name_required`: Specifies whether the Profile name is required
 /// 5. `profile_surname_required`: Specifies whether the Profile surname is required
 /// 6. `profile_birthdate_required`: Specifies whether the Profile birth date is required
-/// 7. `profile_location_required`: Specifies whether the Profile location is required
-/// 8. `profile_metadata_uri_required`: Specifies whether the Profile metadata URI is required
-/// 9. `subspace_name_required`: Specifies whether the Subspace name is required
-/// 10. `subspace_metadata_uri_required`: Specifies whether the Subspace metadata URI is required
-/// 11. `profile_delete_allowed`: Specifies the permission to delete a Profile
-/// 12. `subspace_delete_allowed`: Specifies the permission to delete a Subspace
-/// 13. `publication_delete_allowed`: Specifies the permission to delete a Publication
-/// 14. `registering_processor`: An address of an external processor for additional processing during Profile creation
-/// 15. `connecting_processor`: An address of an external processor for additional processing during Profile connection
-/// 16. `publishing_processor`: An address of an external processor for additional processing during Publication creation
-/// 17. `collecting_processor`: An address of an external processor for additional processing during Publication collection
-/// 18. `referencing_processor`: An address of an external processor for additional processing during Publication referencing
+/// 7. `profile_country_required`: Specifies whether the Profile country is required
+/// 8. `profile_city_required`: Specifies whether the Profile city is required
+/// 9. `profile_metadata_uri_required`: Specifies whether the Profile metadata URI is required
+/// 10. `subspace_name_required`: Specifies whether the Subspace name is required
+/// 11. `subspace_metadata_uri_required`: Specifies whether the Subspace metadata URI is required
+/// 12. `profile_delete_allowed`: Specifies the permission to delete a Profile
+/// 13. `subspace_delete_allowed`: Specifies the permission to delete a Subspace
+/// 14. `publication_delete_allowed`: Specifies the permission to delete a Publication
+/// 15. `registering_processor`: An address of an external processor for additional processing during Profile creation
+/// 16. `connecting_processor`: An address of an external processor for additional processing during Profile connection
+/// 17. `publishing_processor`: An address of an external processor for additional processing during Publication creation
+/// 18. `collecting_processor`: An address of an external processor for additional processing during Publication collection
+/// 19. `referencing_processor`: An address of an external processor for additional processing during Publication referencing
 ///
 #[account]
 #[derive(Default)]
@@ -100,8 +101,10 @@ pub struct App {
     pub profile_surname_required: bool,
     /// Specifies whether the Profile birth date is required.
     pub profile_birthdate_required: bool,
-    /// Specifies whether the Profile location is required.
-    pub profile_location_required: bool,
+    /// Specifies whether the Profile country is required.
+    pub profile_country_required: bool,
+    /// Specifies whether the Profile city is required.
+    pub profile_city_required: bool,
     /// Specifies whether the Profile metadata URI is required.
     pub profile_metadata_uri_required: bool,
 
@@ -139,7 +142,8 @@ impl App {
         + 1                                             // bool (profile_name_required)
         + 1                                             // bool (profile_surname_required)
         + 1                                             // bool (profile_birthdate_required)
-        + 1                                             // bool (profile_location_required)
+        + 1                                             // bool (profile_country_required)
+        + 1                                             // bool (profile_city_required)
         + 1                                             // bool (profile_metadata_uri_required)
         + 1                                             // bool (subspace_name_required)
         + 1                                             // bool (subspace_metadata_uri_required)
@@ -182,8 +186,15 @@ impl App {
 /// 4. Profile metadata URI
 /// 5. Profile status text
 /// 6. Verification status
-/// 7. Profile creation unix timestamp
-/// 8. External connection processor (optional)
+/// 7. Profile name
+/// 8. Profile surname
+/// 9. Profile birth date
+/// 10. Profile country code
+/// 11. Profile city code
+/// 12. Profile location coordinates
+/// 13. External connection processor (optional)
+/// 14. Profile creation unix timestamp
+/// 15. Profile modification unix timestamp
 ///
 #[account]
 #[derive(Default)]
@@ -192,6 +203,7 @@ pub struct Profile {
     pub app: Pubkey,
     /// Pubkey of the profile owner (32).
     pub authority: Pubkey,
+
     /// Profile alias (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH).
     pub alias: Option<String>,
     /// Profile metadata URI (STRING_LENGTH_PREFIX + MAX_URI_LENGTH).
@@ -200,24 +212,49 @@ pub struct Profile {
     pub status_text: Option<String>,
     /// Verified status for VIP users (1)
     pub verified: bool,
+
+    // Profile's user name
+    pub name: Option<String>,
+    // Profile's user surname
+    pub surname: Option<String>,
+    // Birth date as a Unix timestamp
+    pub birth_date: Option<i64>,
+    // Profile's country
+    pub country_code: Option<i16>,
+    // Profile's city
+    pub city_code: Option<u16>,
+
+    // Profile's current location coordinates
+    pub current_location: Option<LocationCoordinates>,
+
     /// An address of a Program (external processor) for Connection additional processing (33)
     pub connecting_processor: Option<Pubkey>,
+
     /// Profile creation Unix timestamp (8)
     pub created_at: i64,
+    /// The optional Unix timestamp of the Profile modification (1 + 8)
+    pub modified_at: Option<i64>,
 }
 
 impl Profile {
     pub const PREFIX: &'static str = "profile";
 
-    pub const LEN: usize = DISCRIMINATOR_LENGTH         // Anchor internal discrimitator
-        + 32                                            // Pubkey
-        + 32                                            // Pubkey
-        + (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH) // String
-        + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)   // Option<String>
-        + (1 + STRING_LENGTH_PREFIX + MAX_STATUS_LENGTH)// String
-        + 1                                             // bool
-        + (1 + 32)                                      // Option<Pubkey>
-        + 8;                                            // i64
+    pub const LEN: usize = DISCRIMINATOR_LENGTH                     // Anchor internal discrimitator
+        + 32                                                        // Pubkey
+        + 32                                                        // Pubkey
+        + (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)             // String
+        + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)               // Option<String>
+        + (1 + STRING_LENGTH_PREFIX + MAX_STATUS_LENGTH)            // String
+        + 1                                                         // bool
+        + (1 + STRING_LENGTH_PREFIX + MAX_PROFILE_NAME_LENGTH)      // Option<String>
+        + (1 + STRING_LENGTH_PREFIX + MAX_PROFILE_SURNAME_LENGTH)   // Option<String>
+        + 8                                                         // i64
+        + 2                                                         // i16
+        + 2                                                         // i16
+        + (1 + 1)                                                   // Option<Enum> (`current_location`)
+        + (1 + 32)                                                  // Option<Pubkey>
+        + 8                                                         // i64
+        + (1 + 8);                                                  // Option<i64>
 
     /// Method for validating Profile Alias
     ///
@@ -618,8 +655,10 @@ pub struct AppData {
     pub profile_surname_required: bool,
     /// Specifies whether the Profile birth date is required.
     pub profile_birthdate_required: bool,
-    /// Specifies whether the Profile location is required.
-    pub profile_location_required: bool,
+    /// Specifies whether the Profile country is required.
+    pub profile_country_required: bool,
+    /// Specifies whether the Profile city is required.
+    pub profile_city_required: bool,
     /// Specifies whether the Profile metadata URI is required.
     pub profile_metadata_uri_required: bool,
 
@@ -643,13 +682,25 @@ pub struct AppData {
 /// 1. `alias` - Unique Application's user Profile Alias as string (ASCII alphanumeric)
 /// 2. `metadata_uri` - Profile metadata URI
 /// 3. `status_text` - Profile status
-/// 4. `connecting_processor` - Profile specified external processor to make additional Connection Processing (optional)
+/// 4. `name` Profile name
+/// 5. `surname` Profile surname
+/// 6. `birth_date` - Profile birth date
+/// 7. `country_code` Profile country
+/// 8. `city_code` Profile city
+/// 9. `curent_location` - Profile location coordinates
+/// 10. `connecting_processor` - Profile specified external processor to make additional Connection Processing (optional)
 ///
 #[derive(Default, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct ProfileData {
     pub alias: Option<String>,
     pub metadata_uri: Option<String>,
     pub status_text: Option<String>,
+    pub name: Option<String>,
+    pub surname: Option<String>,
+    pub birth_date: Option<u64>,
+    pub country_code: Option<u16>,
+    pub city_code: Option<u16>,
+    pub curent_location: Option<LocationCoordinates>,
     pub connecting_processor_to_assign: Option<Pubkey>,
 }
 
@@ -796,4 +847,17 @@ pub enum ReactionType {
 pub enum ReportType { 
     Scam,
     Abuse,
+}
+
+/// Coordinates
+///
+/// # Struct contains
+///
+/// * latitude
+/// * longitude
+///
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
+pub struct LocationCoordinates {
+    pub latitude: u64,
+    pub longitude: u64,
 }
