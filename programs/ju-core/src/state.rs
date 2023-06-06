@@ -59,52 +59,98 @@ impl ExternalProcessorPDA {
 
 }
 
-/// App account for every protocol Application
+/// # App account for every protocol Application
 ///
-/// # App account stores:
+/// ## App account stores:
 ///
-/// 1. Unique Application name (ID) as string (ASCII alphanumeric)
-/// 2. Application authority address
-/// 3. Application metadata URI (settings)
-/// 4. Registering external Processor
-/// 5. Conecting external Processor
-/// 6. Publishing external Processor
-/// 7. Collecting external Processor
-/// 8. Referencing external Processor
+/// 1. `app_name`: Unique Application name (ID) as string (ASCII alphanumeric)
+/// 2. `authority`: Application authority address
+/// 3. `metadata_uri`: Application metadata URI (settings)
+/// 4. `profile_name_required`: Specifies whether the Profile name is required
+/// 5. `profile_surname_required`: Specifies whether the Profile surname is required
+/// 6. `profile_birthdate_required`: Specifies whether the Profile birth date is required
+/// 7. `profile_location_required`: Specifies whether the Profile location is required
+/// 8. `profile_metadata_uri_required`: Specifies whether the Profile metadata URI is required
+/// 9. `subspace_name_required`: Specifies whether the Subspace name is required
+/// 10. `subspace_metadata_uri_required`: Specifies whether the Subspace metadata URI is required
+/// 11. `profile_delete_allowed`: Specifies the permission to delete a Profile
+/// 12. `subspace_delete_allowed`: Specifies the permission to delete a Subspace
+/// 13. `publication_delete_allowed`: Specifies the permission to delete a Publication
+/// 14. `registering_processor`: An address of an external processor for additional processing during Profile creation
+/// 15. `connecting_processor`: An address of an external processor for additional processing during Profile connection
+/// 16. `publishing_processor`: An address of an external processor for additional processing during Publication creation
+/// 17. `collecting_processor`: An address of an external processor for additional processing during Publication collection
+/// 18. `referencing_processor`: An address of an external processor for additional processing during Publication referencing
 ///
 #[account]
 #[derive(Default)]
 pub struct App {
     /// App name/ID (STRING_LENGTH_PREFIX + MAX_APPID_LENGTH).
     pub app_name: String,
+
     /// Pubkey of the application creator (32).
     pub authority: Pubkey,
+
     /// URI of the metadata (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH).
     pub metadata_uri: Option<String>,
-    /// An address of a Program (external processor) that makes application Profile creation additional processing (33)
+    
+    /// Specifies whether the Profile name is required.
+    pub profile_name_required: bool,
+    /// Specifies whether the Profile surname is required.
+    pub profile_surname_required: bool,
+    /// Specifies whether the Profile birth date is required.
+    pub profile_birthdate_required: bool,
+    /// Specifies whether the Profile location is required.
+    pub profile_location_required: bool,
+    /// Specifies whether the Profile metadata URI is required.
+    pub profile_metadata_uri_required: bool,
+
+    /// Specifies whether the Subspace name is required.
+    pub subspace_name_required: bool,
+    /// Specifies whether the Subspace metadata URI is required.
+    pub subspace_metadata_uri_required: bool,
+
+    /// Specifies the permission to delete a Profile.
+    pub profile_delete_allowed: bool,
+    /// Specifies the permission to delete a Subspace.
+    pub subspace_delete_allowed: bool,
+    /// Specifies the permission to delete a Publication.
+    pub publication_delete_allowed: bool,
+
+    /// An address of an external processor for additional processing during Profile creation.
     pub registering_processor: Option<Pubkey>,
-    /// An address of a Program (external processor) for profiles Connection additional processing (33)
+    /// An address of an external processor for additional processing during Profile connection.
     pub connecting_processor: Option<Pubkey>,
-    /// An address of a Program (external processor) for Publication Creating additional processing (33)
+    /// An address of an external processor for additional processing during Publication creation.
     pub publishing_processor: Option<Pubkey>,
-    /// An address of a Program (external processor) for Publication Collecting additional processing (33)
+    /// An address of an external processor for additional processing during Publication collection.
     pub collecting_processor: Option<Pubkey>,
-    /// An address of a Program (external processor) for Publication referencing additional processing (33)
+    /// An address of an external processor for additional processing during Publication referencing.
     pub referencing_processor: Option<Pubkey>,
 }
 
 impl App {
     pub const PREFIX: &'static str = "app";
 
-    pub const LEN: usize = DISCRIMINATOR_LENGTH         // Anchor internal discrimitator
-        + (STRING_LENGTH_PREFIX + MAX_APPNAME_LENGTH)   // String      
-        + 32                                            // Pubkey
-        + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)   // Option<String>
-        + 33                                            // Option<Pubkey>
-        + 33                                            // Option<Pubkey>
-        + 33                                            // Option<Pubkey>
-        + 33                                            // Option<Pubkey>
-        + 33;                                           // Option<Pubkey>
+    pub const LEN: usize = DISCRIMINATOR_LENGTH         // Anchor internal discriminator
+        + (STRING_LENGTH_PREFIX + MAX_APPNAME_LENGTH)   // String (app_name)
+        + 32                                            // Pubkey (authority)
+        + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)   // Option<String> (metadata_uri)
+        + 1                                             // bool (profile_name_required)
+        + 1                                             // bool (profile_surname_required)
+        + 1                                             // bool (profile_birthdate_required)
+        + 1                                             // bool (profile_location_required)
+        + 1                                             // bool (profile_metadata_uri_required)
+        + 1                                             // bool (subspace_name_required)
+        + 1                                             // bool (subspace_metadata_uri_required)
+        + 1                                             // bool (profile_delete_allowed)
+        + 1                                             // bool (subspace_delete_allowed)
+        + 1                                             // bool (publication_delete_allowed)
+        + (1 + 32)                                      // Option<Pubkey> (registering_processor)
+        + (1 + 32)                                      // Option<Pubkey> (connecting_processor)
+        + (1 + 32)                                      // Option<Pubkey> (publishing_processor)
+        + (1 + 32)                                      // Option<Pubkey> (collecting_processor)
+        + (1 + 32);                                     // Option<Pubkey> (referencing_processor)
 
     /// Method for validating App Name
     ///
@@ -543,15 +589,51 @@ impl Report {
         + 8;                                                    // i64
 }
 
-/// App instruction data struct
+/// ## App instruction data struct.
 ///
-/// # Struct contains:
+/// The struct contains data for the application instruction.
 ///
-/// 1. `metadata_uri` - App metadata json (optional)
+/// ## Fields:
 ///
+/// - `metadata_uri`: The optional metadata URI for the app.
+/// - `profile_name_required`: Specifies whether the Profile name is required.
+/// - `profile_surname_required`: Specifies whether the Profile surname is required.
+/// - `profile_birthdate_required`: Specifies whether the Profile birth date is required.
+/// - `profile_location_required`: Specifies whether the Profile location is required.
+/// - `profile_metadata_uri_required`: Specifies whether the Profile metadata URI is required.
+/// - `subspace_name_required`: Specifies whether the Subspace name is required.
+/// - `subspace_metadata_uri_required`: Specifies whether the Subspace metadata URI is required.
+/// - `profile_delete_allowed`: Specifies the permission to delete a Profile.
+/// - `subspace_delete_allowed`: Specifies the permission to delete a Subspace.
+/// - `publication_delete_allowed`: Specifies the permission to delete a Publication.
+/// 
 #[derive(Default, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct AppData {
+    /// The optional metadata URI for the App.
     pub metadata_uri: Option<String>,
+
+    /// Specifies whether the Profile name is required.
+    pub profile_name_required: bool,
+    /// Specifies whether the Profile surname is required.
+    pub profile_surname_required: bool,
+    /// Specifies whether the Profile birth date is required.
+    pub profile_birthdate_required: bool,
+    /// Specifies whether the Profile location is required.
+    pub profile_location_required: bool,
+    /// Specifies whether the Profile metadata URI is required.
+    pub profile_metadata_uri_required: bool,
+
+    /// Specifies whether the Subspace name is required.
+    pub subspace_name_required: bool,
+    /// Specifies whether the Subspace metadata URI is required.
+    pub subspace_metadata_uri_required: bool,
+
+    /// Specifies the permission to delete a Profile.
+    pub profile_delete_allowed: bool,
+    /// Specifies the permission to delete a Subspace.
+    pub subspace_delete_allowed: bool,
+    /// Specifies the permission to delete a Publication.
+    pub publication_delete_allowed: bool,
 }
 
 /// Profile instruction data struct
