@@ -74,6 +74,9 @@ pub enum CustomError {
     #[msg("Connection target account is invalid")]
     ConnectionTargetAccountInvalid,
 
+    #[msg("Connection target authority mismatch")]
+    ConnectionTargetAuthorityMismatch,
+
     #[msg("Connection validation failed")]
     ValidationFail,
 
