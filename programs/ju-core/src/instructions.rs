@@ -689,7 +689,6 @@ pub struct InitializeConnection<'info> {
     )]
     pub initializer: Account<'info, Profile>,
 
-    /// TODO: this is noе work for both Profile and Subspace...
     /// CHECK: This account is checked in the instruction
     pub target: AccountInfo<'info>,
 
@@ -1084,7 +1083,7 @@ pub struct DeleteSubpace<'info> {
         seeds = [
             Subspace::PREFIX.as_bytes(),
             app.key().as_ref(),
-            authority.key().as_ref(),
+            subspace.creator.key().as_ref(),
             subspace.uuid.as_bytes().as_ref(),
         ],
         bump,
@@ -1169,7 +1168,8 @@ pub struct CreatePublication<'info> {
         seeds = [
             Subspace::PREFIX.as_bytes(),
             app.key().as_ref(),
-            subspace.authority.key().as_ref(),
+            subspace.creator.key().as_ref(),
+            subspace.uuid.as_bytes().as_ref(),
         ],
         bump,
     )]
@@ -1179,7 +1179,6 @@ pub struct CreatePublication<'info> {
 
     /// Publication PDA which has to be replyed or referenced
     /// Must be passed if this mirroring or replying
-    /// CHECK: test
     pub target_publication: Option<Box<Account<'info, Publication>>>,
 
     #[account(
