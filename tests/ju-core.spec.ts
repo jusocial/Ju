@@ -1029,7 +1029,7 @@ describe("ju-core", () => {
 
   describe("Report", async () => {
 
-    const [reportAccount, reportAccountBump] = anchor.web3.PublicKey.findProgramAddressSync(
+    const [publicationReportAccount, publicationReportAccountBump] = anchor.web3.PublicKey.findProgramAddressSync(
       [
         Buffer.from("report"),
         appAccount.toBuffer(),
@@ -1039,10 +1039,30 @@ describe("ju-core", () => {
       program.programId
     );
 
-    it("Initialize Report", async () => {
+    const [profileReportAccount, profileReportAccountBump] = anchor.web3.PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("report"),
+        appAccount.toBuffer(),
+        profileAccount2.toBuffer(),
+        profileAccount1.toBuffer(),
+      ],
+      program.programId
+    );
+
+    const [subspaceReportAccount, subspaceReportAccountBump] = anchor.web3.PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("report"),
+        appAccount.toBuffer(),
+        subspaceAccount.toBuffer(),
+        profileAccount1.toBuffer(),
+      ],
+      program.programId
+    );
+
+    it("Initialize Report for Publication", async () => {
 
       const reportType: anchor.IdlTypes<JuCore>["ReportType"] = { scam: {} }
-      const notificationString = 'Report test notification';
+      const notificationString = 'Publication Report test';
 
       try {
         const tx = await program.methods.initializeReport(
@@ -1055,7 +1075,7 @@ describe("ju-core", () => {
             app: appAccount,
             initializer: profileAccount1,
             target: publicationAccount,
-            report: reportAccount,
+            report: publicationReportAccount,
             authority: user,
             systemProgram: SystemProgram.programId,
           })
@@ -1065,12 +1085,89 @@ describe("ju-core", () => {
         console.log('error :>> ', error);
       }
       /* Fetch the account and check the values */
-      const data = await program.account.report.fetch(reportAccount);
-      // console.log('Reaction data: ', data);
+      const data = await program.account.report.fetch(publicationReportAccount);
+      console.log('Publication Report target pubkey: ', publicationAccount.toBase58());
+      console.log('Publication Report data: ', data);
 
       expect(data.app.toString()).to.equal(appAccount.toString(), '1');
       expect(data.initializer.toString()).to.equal(profileAccount1.toString(), '2');
       expect(data.target.toString()).to.equal(publicationAccount.toString(), '3');
+      expect(data.reportType.toString()).to.equal(reportType.toString(), '4');
+      expect(data.notification.toString()).to.equal(notificationString.toString(), '5');
+      expect(data.authority.toString()).to.equal(user.toString(), '6');
+    });
+
+    it("Initialize Report for Profile", async () => {
+
+      const reportType: anchor.IdlTypes<JuCore>["ReportType"] = { scam: {} }
+      const notificationString = 'Profile Report test';
+
+      try {
+        const tx = await program.methods.initializeReport(
+          {
+            reportType,
+            notificationString
+          }
+        )
+          .accounts({
+            app: appAccount,
+            initializer: profileAccount1,
+            target: profileAccount2,
+            report: profileReportAccount,
+            authority: user,
+            systemProgram: SystemProgram.programId,
+          })
+          .rpc();
+        // console.log("Tx signature: ", tx);
+      } catch (error: any) {
+        console.log('error :>> ', error);
+      }
+      /* Fetch the account and check the values */
+      const data = await program.account.report.fetch(profileReportAccount);
+      console.log('Profile Report target pubkey: ', profileAccount2.toBase58());
+      console.log('Profile Report data: ', data);
+
+      expect(data.app.toString()).to.equal(appAccount.toString(), '1');
+      expect(data.initializer.toString()).to.equal(profileAccount1.toString(), '2');
+      expect(data.target.toString()).to.equal(profileAccount2.toString(), '3');
+      expect(data.reportType.toString()).to.equal(reportType.toString(), '4');
+      expect(data.notification.toString()).to.equal(notificationString.toString(), '5');
+      expect(data.authority.toString()).to.equal(user.toString(), '6');
+    });
+
+    it("Initialize Report for Subspace", async () => {
+
+      const reportType: anchor.IdlTypes<JuCore>["ReportType"] = { scam: {} }
+      const notificationString = 'Subspace Report test';
+
+      try {
+        const tx = await program.methods.initializeReport(
+          {
+            reportType,
+            notificationString
+          }
+        )
+          .accounts({
+            app: appAccount,
+            initializer: profileAccount1,
+            target: subspaceAccount,
+            report: subspaceReportAccount,
+            authority: user,
+            systemProgram: SystemProgram.programId,
+          })
+          .rpc();
+        // console.log("Tx signature: ", tx);
+      } catch (error: any) {
+        console.log('error :>> ', error);
+      }
+      /* Fetch the account and check the values */
+      const data = await program.account.report.fetch(subspaceReportAccount);
+      console.log('Subspace Report target pubkey: ', subspaceAccount.toBase58());
+      console.log('Subspace Report data: ', data);
+
+      expect(data.app.toString()).to.equal(appAccount.toString(), '1');
+      expect(data.initializer.toString()).to.equal(profileAccount1.toString(), '2');
+      expect(data.target.toString()).to.equal(subspaceAccount.toString(), '3');
       expect(data.reportType.toString()).to.equal(reportType.toString(), '4');
       expect(data.notification.toString()).to.equal(notificationString.toString(), '5');
       expect(data.authority.toString()).to.equal(user.toString(), '6');

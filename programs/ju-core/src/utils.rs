@@ -100,6 +100,49 @@ pub fn assert_connection_target_authority(
 }
 
 
+/// Validates the target account for a report based on the provided app and target account information.
+///
+/// # Arguments
+///
+/// * `app` - The public key of the application.
+/// * `target_account` - The account information of the target account.
+///
+/// # Errors
+///
+/// Returns an error of type `CustomError::ConnectionTargetAccountInvalid` if the target account is invalid or does not belong to the specified application.
+///
+/// # Returns
+///
+/// Returns `Ok(())` if the target account is valid and belongs to the specified application.
+/// Otherwise, returns an error.
+/// 
+pub fn validate_report_target(
+    app: &Pubkey,
+    target_account: &AccountInfo,
+) -> Result<()> {
+    if let Ok(profile_account) = Account::<Profile>::try_from(target_account) {
+        if profile_account.app == *app {
+            return Ok(());
+        }
+    }
+
+    if let Ok(subspace_account) = Account::<Subspace>::try_from(target_account) {
+        if subspace_account.app == *app {
+            return Ok(());
+        }
+    }
+
+    if let Ok(publication_account) = Account::<Publication>::try_from(target_account) {
+        if publication_account.app == *app {
+            return Ok(());
+        }
+    }
+
+    Err(error!(CustomError::ConnectionTargetAccountInvalid))
+}
+
+
+
 /// Helper function to get assigned External Processor from AccountInfo
 ///
 /// Parameters:

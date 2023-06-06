@@ -1292,7 +1292,11 @@ pub mod ju_core {
         report.app = *ctx.accounts.app.to_account_info().key;
         report.authority = *ctx.accounts.authority.to_account_info().key;
         report.initializer = *ctx.accounts.initializer.to_account_info().key;
+
+        // Validating passed target account and assign pubkey if Ok
+        validate_report_target(&ctx.accounts.app.to_account_info().key, &ctx.accounts.target)?;
         report.target = *ctx.accounts.target.to_account_info().key;
+
         report.report_type = data.report_type;
         report.notification = data.notification_string;
 
