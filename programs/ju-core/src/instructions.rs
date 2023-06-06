@@ -274,7 +274,7 @@ pub struct CreateProfile<'info> {
         payer = authority,
         space = Profile::LEN
     )]
-    pub profile: Account<'info, Profile>,
+    pub profile: Box<Account<'info, Profile>>,
 
     #[account(
         init,
@@ -362,7 +362,7 @@ pub struct UpdateProfile<'info> {
         bump,
         has_one = authority @CustomError::UpdateNotAuthorized,
     )]
-    pub profile: Account<'info, Profile>,
+    pub profile: Box<Account<'info, Profile>>,
 
     #[account(
         mut,
@@ -440,7 +440,7 @@ pub struct DeleteProfile<'info> {
         bump,
         close = authority
     )]
-    pub profile: Account<'info, Profile>,
+    pub profile: Box<Account<'info, Profile>>,
 
     #[account(
         mut,
@@ -687,7 +687,7 @@ pub struct InitializeConnection<'info> {
         bump,
         has_one = authority
     )]
-    pub initializer: Account<'info, Profile>,
+    pub initializer: Box<Account<'info, Profile>>,
 
     /// CHECK: This account is checked in the instruction
     pub target: AccountInfo<'info>,
@@ -760,7 +760,7 @@ pub struct UpdateConnection<'info> {
         ],
         bump
     )]
-    pub initializer: Account<'info, Profile>,
+    pub initializer: Box<Account<'info, Profile>>,
 
     /// CHECK: This account is checked inside instruction
     pub target: AccountInfo<'info>,
@@ -800,7 +800,7 @@ pub struct DeleteConnection<'info> {
     )]
     pub connection: Account<'info, Connection>,
 
-    pub initializer_profile: Account<'info, Profile>,
+    pub initializer_profile: Box<Account<'info, Profile>>,
 
     /// CHECK: This account is checked in the instruction
     pub target: AccountInfo<'info>,
@@ -847,7 +847,7 @@ pub struct CreateSubspace<'info> {
         ],
         bump
     )]
-    pub creator_profile: Account<'info, Profile>,
+    pub creator_profile: Box<Account<'info, Profile>>,
 
     #[account(
         init,
@@ -1149,7 +1149,7 @@ pub struct CreatePublication<'info> {
         ],
         bump
     )]
-    pub profile: Account<'info, Profile>,
+    pub profile: Box<Account<'info, Profile>>,
 
     #[account(
         init,
@@ -1282,7 +1282,7 @@ pub struct UpdatePublication<'info> {
         ],
         bump
     )]
-    pub profile: Account<'info, Profile>,
+    pub profile: Box<Account<'info, Profile>>,
 
     #[account(
         mut,
@@ -1355,7 +1355,7 @@ pub struct CollectPublication<'info> {
         ],
         bump
     )]
-    pub initializer: Account<'info, Profile>,
+    pub initializer: Box<Account<'info, Profile>>,
 
     #[account(
         constraint = target.authority != initializer.authority @CustomError::SelfPublicationCollecting,
@@ -1490,7 +1490,7 @@ pub struct CreateReaction<'info> {
         ],
         bump
     )]
-    pub initializer: Account<'info, Profile>,
+    pub initializer: Box<Account<'info, Profile>>,
 
     #[account(
         seeds = [
@@ -1553,7 +1553,7 @@ pub struct DeleteReaction<'info> {
         ],
         bump
     )]
-    pub initializer: Account<'info, Profile>,
+    pub initializer: Box<Account<'info, Profile>>,
 
     #[account(
         seeds = [
@@ -1616,7 +1616,7 @@ pub struct InitializeReport<'info> {
         ],
         bump
     )]
-    pub initializer: Account<'info, Profile>,
+    pub initializer: Box<Account<'info, Profile>>,
 
     #[account(
         seeds = [
