@@ -6,7 +6,7 @@ use crate::errors::*;
 
 /// ApprovedProcessorPDA holds data about every whitelisted Protocol external Processors
 ///
-/// App account stores:
+/// # App account stores:
 ///
 /// 1. Processor type 
 /// 2. Processor name (ASCII alphanumeric)
@@ -61,7 +61,7 @@ impl ExternalProcessorPDA {
 
 /// App account for every protocol Application
 ///
-/// App account stores:
+/// # App account stores:
 ///
 /// 1. Unique Application name (ID) as string (ASCII alphanumeric)
 /// 2. Application authority address
@@ -108,7 +108,7 @@ impl App {
 
     /// Method for validating App Name
     ///
-    /// Parameters:
+    /// # Parameters:
     ///
     /// 1. `app_name` - Reference to Protocol unique Application name String
     /// 
@@ -128,7 +128,7 @@ impl App {
 
 /// Profile account that holds data about Application user
 ///
-/// Profile account stores:
+/// # Profile account stores:
 ///
 /// 1. Application account (PDA)
 /// 2. Profile authority address
@@ -170,7 +170,7 @@ impl Profile {
         + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)   // Option<String>
         + (1 + STRING_LENGTH_PREFIX + MAX_STATUS_LENGTH)// String
         + 1                                             // bool
-        + 33                                            // Option<Pubkey>
+        + (1 + 32)                                      // Option<Pubkey>
         + 8;                                            // i64
 
     /// Method for validating Profile Alias
@@ -195,7 +195,7 @@ impl Profile {
 
 /// The Subspace is an account (PDA) that holds data about a application Subspace (e.g. group / "public")
 ///
-/// Subspace account stores:
+/// # Subspace account stores:
 ///
 /// 1. Subspace UUID
 /// 2. Application address
@@ -211,8 +211,6 @@ impl Profile {
 #[account]
 #[derive(Default)]
 pub struct Subspace {
-    /// Subspace UUID (UUID_LENGTH)
-    pub uuid: String,
     /// Application Pubkey (32)
     pub app: Pubkey,
     /// Pubkey of the profile owner (32).
@@ -221,15 +219,17 @@ pub struct Subspace {
     pub creator: Pubkey,
     /// Profile alias (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH).
     pub alias: Option<String>,
+    /// Subspace UUID (UUID_LENGTH)
+    pub uuid: String,
     /// Metadata URI (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH).
     pub metadata_uri: Option<String>,
-    /// An address of a Program (external processor) for Publication Creating additional processing (33)
+    /// An address of a Program (external processor) for Publication Creating additional processing (1 + 32)
     pub publishing_processor: Option<Pubkey>,
-    /// An address of a Program (external processor) for profiles Connection additional processing (33)
+    /// An address of a Program (external processor) for profiles Connection additional processing (1 + 32)
     pub connecting_processor: Option<Pubkey>,
-    /// An address of a Program (external processor) for Publication Collecting additional processing (33)
+    /// An address of a Program (external processor) for Publication Collecting additional processing (1 + 32)
     pub collecting_processor: Option<Pubkey>,
-    /// An address of a Program (external processor) for Publication referencing additional processing (33)
+    /// An address of a Program (external processor) for Publication referencing additional processing (1 + 32)
     pub referencing_processor: Option<Pubkey>,
 }
 
@@ -243,10 +243,10 @@ impl Subspace {
         + 32                                            // Pubkey
         + (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH) // String
         + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)   // String
-        + 33                                            // Option<Pubkey>
-        + 33                                            // Option<Pubkey>
-        + 33                                            // Option<Pubkey>
-        + 33;                                           // Option<Pubkey>
+        + (1 + 32)                                      // Option<Pubkey>
+        + (1 + 32)                                      // Option<Pubkey>
+        + (1 + 32)                                      // Option<Pubkey>
+        + (1 + 32);                                     // Option<Pubkey>
 
     /// Method for validating Subspace Alias
     ///
@@ -270,7 +270,7 @@ impl Subspace {
 
 /// The Publication is account (PDA) that holds Application's Publication data
 ///
-/// Publication account stores:
+/// # Publication account stores:
 ///
 /// 1. Publication UUID as string
 /// 2. Existing Protocol Application in which Publication was created
@@ -291,62 +291,62 @@ impl Subspace {
 #[account]
 // #[derive(Default)]
 pub struct Publication {
-    /// Publication UUID (STRING_LENGTH_PREFIX + UUID_LENGTH)
-    pub uuid: String,
     /// Application account Pubkey (32)
     pub app: Pubkey,
     /// Publication author profile account Pubkey (32)
     pub profile: Pubkey,
     /// Publication authority account Pubkey (32)
     pub authority: Pubkey,
-    /// The URI of the publication metadata(STRING_LENGTH_PREFIX + MAX_URI_LENGTH)
-    pub metadata_uri: String,
     /// Subspace to publish 
     pub subspace: Option<Pubkey>,
     /// Flag to determine whether publication is mirror (e.g. 'repost') (1)
     pub is_mirror: bool,
     /// Flag to determine whether publication is reply (e.g. 'comment') (1)
     pub is_reply: bool,
-    /// Optional pubkey that specify target in case Publication is a mirror or reply (33)
+    /// Optional pubkey that specify target in case Publication is a mirror or reply (1 + 32)
     pub target_publication: Option<Pubkey>,
     /// Publication content main type (1)
     pub content_type: ContentType,
     /// Publication Tag (e.g. '#hashtag') (1 + MAX_TAG_LENGTH)
     pub tag: Option<String>,
-    /// An address of a Program (external processor) for Publication Collecting additional processing (33)
+    /// Publication UUID (STRING_LENGTH_PREFIX + UUID_LENGTH)
+    pub uuid: String,
+    /// The URI of the publication metadata(STRING_LENGTH_PREFIX + MAX_URI_LENGTH)
+    pub metadata_uri: String,
+    /// An address of a Program (external processor) for Publication Collecting additional processing (1 + 32)
     pub collecting_processor: Option<Pubkey>,
-    /// An address of a Program (external processor) for Publication Referencing additional processing (33)
+    /// An address of a Program (external processor) for Publication Referencing additional processing (1 + 32)
     pub referencing_processor: Option<Pubkey>,
     /// Unix timestamp of the Publication creation (8)
     pub created_at: i64,
-    /// The optional Unix timestamp of the Publication modification (9)
+    /// The optional Unix timestamp of the Publication modification (1 + 8)
     pub modified_at: Option<i64>,
 }
 
 impl Publication {
     pub const PREFIX: &'static str = "publication";
     
-    pub const LEN: usize = DISCRIMINATOR_LENGTH         // Anchor internal discrimitator
-        + (STRING_LENGTH_PREFIX + UUID_LENGTH)          // String     
+    pub const LEN: usize = DISCRIMINATOR_LENGTH         // Anchor internal discrimitator    
         + 32                                            // Pubkey
         + 32                                            // Pubkey
         + 32                                            // Pubkey
-        + (STRING_LENGTH_PREFIX + MAX_URI_LENGTH)       // String
-        + 33                                            // Option<Pubkey>
+        + (1 + 32)                                      // Option<Pubkey>
         + 1                                             // bool
         + 1                                             // bool
-        + 33                                            // Option<Pubkey>
+        + (1 + 32)                                      // Option<Pubkey>
         + 1                                             // Enum
-        + (1 + STRING_LENGTH_PREFIX + MAX_TAG_LENGTH)   // Option<String>                                        
-        + 33                                            // Option<Pubkey>
-        + 33                                            // Option<Pubkey>
+        + (1 + STRING_LENGTH_PREFIX + MAX_TAG_LENGTH)   // Option<String> 
+        + (STRING_LENGTH_PREFIX + UUID_LENGTH)          // String
+        + (STRING_LENGTH_PREFIX + MAX_URI_LENGTH)       // String                                      
+        + (1 + 32)                                      // Option<Pubkey>
+        + (1 + 32)                                      // Option<Pubkey>
         + 8                                             // i64
-        + 9;                                            // Option<i64>
+        + (1 + 8);                                      // Option<i64>
 }
 
 /// Connection account holds data about Connection between two Application's entities (e.g. following)
 ///
-/// The Connection account stores:
+/// # The Connection account stores:
 ///
 /// 1. Application address
 /// 2. Connection authority address
@@ -374,7 +374,7 @@ pub struct Connection {
     pub approved: bool,
     /// Connection initialization Unix timestamp (8)
     pub created_at: i64,
-    /// Connection approve Unix timestamp (8)
+    /// Connection approve Unix timestamp (1 + 8)
     pub modified_at: Option<i64>,
 }
 
@@ -389,12 +389,12 @@ impl Connection {
         + 32                                            // Pubkey
         + 1                                             // bool
         + 8                                             // i64
-        + 9;                                            // Option<i64>
+        + (1 + 8);                                      // Option<i64>
 }
 
 /// CollectionItem account that creates when some Profile collects some Application Entity (e.g. Publication)
 ///
-/// The CollectionItem account stores:
+/// # The CollectionItem account stores:
 ///
 /// 1. Application address
 /// 2. CollectionItem authority address
@@ -426,7 +426,7 @@ impl CollectionItem {
 
 /// Alias account that creates when new Alias is claimed by user Profile or Subspace
 ///
-/// The Alias account stores:
+/// # The Alias account stores:
 ///
 /// 1. Application address
 /// 2. Profile which the alias belongs to
@@ -461,7 +461,7 @@ impl Alias {
 
 /// Reaction account that creates when new Publication Reaction initialized
 ///
-/// The Reaction account stores:
+/// # The Reaction account stores:
 ///
 /// 1. Application address
 /// 2. Reaction authority address
@@ -501,7 +501,7 @@ impl Reaction {
 
 /// Report account that creates when new Report initialized
 ///
-/// Report account stores:
+/// # Report account stores:
 ///
 /// 1. Application address
 /// 2. Report authority address
@@ -545,7 +545,7 @@ impl Report {
 
 /// App instruction data struct
 ///
-/// Struct contains:
+/// # Struct contains:
 ///
 /// 1. `metadata_uri` - App metadata json (optional)
 ///
@@ -556,7 +556,7 @@ pub struct AppData {
 
 /// Profile instruction data struct
 ///
-/// Struct contains:
+/// # Struct contains:
 ///
 /// 1. `alias` - Unique Application's user Profile Alias as string (ASCII alphanumeric)
 /// 2. `metadata_uri` - Profile metadata URI
@@ -573,7 +573,7 @@ pub struct ProfileData {
 
 /// Subspace data struct
 ///
-/// Struct contains:
+/// # Struct contains:
 ///
 /// 1. `alias` - Unique Application's Subspace Alias as string (ASCII alphanumeric)
 /// 2. `metadata_uri` - Publication metadata URI
@@ -586,7 +586,7 @@ pub struct SubspaceData {
 
 /// Publication data struct
 ///
-/// Struct contains:
+/// # Struct contains:
 ///
 /// 1. `metadata_uri` - Publication metadata URI
 /// 2. `is_mirror` - Whether or not the publication is mirroring other existing publication (e.g. re-post)
@@ -605,7 +605,7 @@ pub struct PublicationData {
 
 /// Report data struct
 ///
-/// Struct contains:
+/// # Struct contains:
 ///
 /// 1. `report_type` - Enum with Report variants
 /// 2. `notification_string` - Additional Report information
@@ -618,7 +618,7 @@ pub struct ReportData {
 
 /// External Processor Type
 ///
-/// Enum variants:
+/// # Enum variants:
 ///
 /// * Registering
 /// * Connecting
@@ -637,7 +637,7 @@ pub enum ProcessorType {
 
 /// Alias type (e.g. Profile or Subspace)
 ///
-/// Enum variants:
+/// # Enum variants:
 ///
 /// * Profile
 /// * Subspace
@@ -651,7 +651,7 @@ pub enum AliasType {
 
 /// Connection Target type (e.g. Profile or Subspace)
 ///
-/// Enum variants:
+/// # Enum variants:
 ///
 /// * Profile
 /// * Subspace
@@ -666,7 +666,7 @@ pub enum ConnectionTargetType {
 
 /// Content type that publication focus (e.g. short video)
 ///
-/// Enum variants:
+/// # Enum variants:
 ///
 /// 1. Article - Article type (e.g. - mixed content / blog post)
 /// 2. Image file - Image file type
@@ -689,7 +689,7 @@ pub enum ContentType {
 
 /// Reaction type (e.g. Like / Dislike)
 ///
-/// Enum variants:
+/// # Enum variants:
 ///
 /// * UpVote - (e.g. "Like")
 /// * DownVote - (e.g. "Dislike")
@@ -705,7 +705,7 @@ pub enum ReactionType {
 
 /// Report type (e.g. Scam)
 ///
-/// Enum variants:
+/// # Enum variants:
 ///
 /// * Scam
 /// * Abuse
