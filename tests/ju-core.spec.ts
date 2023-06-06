@@ -168,6 +168,19 @@ describe("ju-core", () => {
       /* Call the initializeApp function via RPC */
       let appData: anchor.IdlTypes<JuCore>["AppData"] = {
         metadataUri: appMetadataUri,
+        profileNameRequired: true,
+        profileSurnameRequired: true,
+        profileBirthdateRequired: true,
+        profileCountryRequired: false,
+        profileCityRequired: false,
+        profileMetadataUriRequired: true,
+
+        subspaceNameRequired: true,
+        subspaceMetadataUriRequired: true,
+
+        profileDeleteAllowed: false,
+        subspaceDeleteAllowed: false,
+        publicationDeleteAllowed: false,
       };
 
       // console.log('appAccount: ', appAccount)
@@ -194,7 +207,7 @@ describe("ju-core", () => {
       }
       /* Fetch the App PDA and check the value  */
       const data = await program.account.app.fetch(appAccount);
-      console.log('App account: ', data);
+      // console.log('App account: ', data);
 
       expect(data.authority.toString()).to.equal(user.toString());
     });
@@ -204,7 +217,19 @@ describe("ju-core", () => {
       const newUri = "https://example.com/app-updated-uri";
       let appData2: anchor.IdlTypes<JuCore>["AppData"] = {
         metadataUri: newUri,
-        // metadataUri: 'x'.repeat(101)
+        profileNameRequired: true,
+        profileSurnameRequired: true,
+        profileBirthdateRequired: true,
+        profileCountryRequired: false,
+        profileCityRequired: false,
+        profileMetadataUriRequired: true,
+
+        subspaceNameRequired: true,
+        subspaceMetadataUriRequired: true,
+
+        profileDeleteAllowed: true,
+        subspaceDeleteAllowed: true,
+        publicationDeleteAllowed: true,
       };
 
       try {
@@ -230,7 +255,7 @@ describe("ju-core", () => {
       }
       /* Fetch the App PDA and check the value  */
       const data = await program.account.app.fetch(appAccount);
-      console.log('App 2 account: ', data);
+      // console.log('Updated App account: ', data);
 
       expect(data.metadataUri).to.equal(newUri);
 
@@ -257,6 +282,12 @@ describe("ju-core", () => {
           alias: profileAlias1,
           metadataUri: uri,
           statusText: profile1StatusText,
+          name: null,
+          surname: null,
+          birthDate: null,
+          countryCode: null,
+          cityCode: null,
+          curentLocation: null,
           connectingProcessorToAssign: null
         };
         const tx = await program.methods.createProfile(profileInstructionData1, null)
@@ -302,6 +333,12 @@ describe("ju-core", () => {
           alias: profileAlias1,
           metadataUri: updatedUri,
           statusText: updatedProfile1StatusText,
+          name: null,
+          surname: null,
+          birthDate: null,
+          countryCode: null,
+          cityCode: null,
+          curentLocation: null,
           connectingProcessorToAssign: null
         };
         const tx = await program.methods.updateProfile(profileInstructionData1)
@@ -357,6 +394,12 @@ describe("ju-core", () => {
           alias: updatedProfileAlias1,
           metadataUri: updatedUri,
           statusText: null,
+          name: 'Konrad',
+          surname: 'Mikhelson',
+          birthDate: null,
+          countryCode: 7,
+          cityCode: 31,
+          curentLocation: null,
           connectingProcessorToAssign: null
         };
         const tx = await program.methods.updateProfile(profileInstructionData1)
@@ -381,7 +424,7 @@ describe("ju-core", () => {
 
       /* Fetch the account and check the values */
       const data = await program.account.profile.fetch(profileAccount1);
-      // console.log('Profile 1 account: ', data);
+      console.log('Updated Profile 1 account: ', data);
 
       /* Fetch the Alias PDA account and check the value of Profile */
       const newAliasPda = await program.account.alias.fetch(updatedProfileAliasAccount1);
@@ -412,6 +455,12 @@ describe("ju-core", () => {
           alias: profileAlias2,
           statusText: profile2StatusText,
           metadataUri: profile2MetadataUri,
+          name: null,
+          surname: null,
+          birthDate: null,
+          countryCode: null,
+          cityCode: null,
+          curentLocation: null,
           connectingProcessorToAssign: null
         };
         const tx = await program.methods.createProfile(profileInstructionData2, null)
@@ -833,6 +882,70 @@ describe("ju-core", () => {
       expect(data.isMirror).to.equal(isMirror);
       expect(data.isReply).to.equal(isReply);
       expect(data.contentType.toString()).to.equal(contentType.toString());
+      expect(data.authority.toString()).to.equal(user.toString());
+    });
+
+    it("Create Publication into Subspace", async () => {
+
+      const subspacePublicationId = uuid.v4().replace(/-/g, '');
+
+      const uri = "https://example.com/publication-to-subspace";
+      const isMirror = false;
+      const isReply = false;
+      const contentType = { video: {} };
+      const publicationTag = 'subspacepub';
+
+      const subspacePublicationSeed = [
+        Buffer.from("publication"),
+        appAccount.toBuffer(),
+        Buffer.from(subspacePublicationId),
+      ];
+      const [subspacePublicationAccount, _] = anchor.web3.PublicKey.findProgramAddressSync(
+        subspacePublicationSeed,
+        program.programId
+      );
+
+      /* Call the create function via RPC */
+      let publicationInstructionData: anchor.IdlTypes<JuCore>["PublicationData"] = {
+        metadataUri: uri,
+        isMirror: isMirror,
+        isReply: isReply,
+        contentType: contentType,
+        tag: publicationTag,
+      };
+
+      try {
+        const tx = await program.methods.createPublication(subspacePublicationId, publicationInstructionData, null)
+          .accounts({
+            app: appAccount,
+            profile: profileAccount1,
+            publication: subspacePublicationAccount,
+            subspace: subspaceAccount,
+            targetPublication: null,
+            collectingProcessorPda: null,
+            referencingProcessorPda: null,
+            publishingProcessor: null,
+            referencingProcessor: null,
+            authority: user,
+            systemProgram: SystemProgram.programId,
+          })
+          .rpc();
+        // console.log("Tx signature: ", tx);
+      } catch (error: any) {
+        console.log('error :>> ', error);
+      }
+      /* Fetch the account and check the values */
+      const data = await program.account.publication.fetch(subspacePublicationAccount);
+      // console.log('Publication data: ', data);
+
+      expect(data.app.toString()).to.equal(appAccount.toString());
+      expect(data.profile.toString()).to.equal(profileAccount1.toString());
+      expect(data.uuid.toString()).to.equal(subspacePublicationId.toString());
+      expect(data.metadataUri.toString()).to.equal(uri.toString());
+      expect(data.isMirror).to.equal(isMirror);
+      expect(data.isReply).to.equal(isReply);
+      expect(data.contentType.toString()).to.equal(contentType.toString());
+      expect(data.subspace.toString()).to.equal(subspaceAccount.toString());
       expect(data.authority.toString()).to.equal(user.toString());
     });
 
