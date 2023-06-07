@@ -713,7 +713,7 @@ pub struct AppData {
 /// 6. `birth_date` - Profile birth date
 /// 7. `country_code` Profile country
 /// 8. `city_code` Profile city
-/// 9. `curent_location` - Profile location coordinates
+/// 9. `current_location` - Profile location coordinates
 /// 10. `connecting_processor` - Profile specified external processor to make additional Connection Processing (optional)
 ///
 #[derive(Default, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
@@ -726,7 +726,7 @@ pub struct ProfileData {
     pub birth_date: Option<i64>,
     pub country_code: Option<i16>,
     pub city_code: Option<u16>,
-    pub curent_location: Option<LocationCoordinates>,
+    pub current_location: Option<LocationCoordinates>,
     pub connecting_processor_to_assign: Option<Pubkey>,
 }
 

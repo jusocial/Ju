@@ -287,7 +287,7 @@ describe("ju-core", () => {
           birthDate: null,
           countryCode: null,
           cityCode: null,
-          curentLocation: null,
+          currentLocation: null,
           connectingProcessorToAssign: null
         };
         const tx = await program.methods.createProfile(profileInstructionData1, null)
@@ -338,7 +338,7 @@ describe("ju-core", () => {
           birthDate: null,
           countryCode: null,
           cityCode: null,
-          curentLocation: null,
+          currentLocation: null,
           connectingProcessorToAssign: null
         };
         const tx = await program.methods.updateProfile(profileInstructionData1)
@@ -399,7 +399,7 @@ describe("ju-core", () => {
           birthDate: null,
           countryCode: 7,
           cityCode: 31,
-          curentLocation: null,
+          currentLocation: null,
           connectingProcessorToAssign: null
         };
         const tx = await program.methods.updateProfile(profileInstructionData1)
@@ -460,7 +460,7 @@ describe("ju-core", () => {
           birthDate: null,
           countryCode: null,
           cityCode: null,
-          curentLocation: null,
+          currentLocation: null,
           connectingProcessorToAssign: null
         };
         const tx = await program.methods.createProfile(profileInstructionData2, null)

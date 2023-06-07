@@ -398,7 +398,7 @@ pub mod ju_core {
         profile.birth_date = data.birth_date;
         profile.country_code = data.country_code;
         profile.city_code = data.city_code;
-        profile.current_location = data.curent_location;
+        profile.current_location = data.current_location;
 
         // Assign Profile specified Connecting external Processor
         profile.connecting_processor = data.connecting_processor_to_assign;
@@ -515,7 +515,7 @@ pub mod ju_core {
         profile.birth_date = data.birth_date;
         profile.country_code = data.country_code;
         profile.city_code = data.city_code;
-        profile.current_location = data.curent_location;
+        profile.current_location = data.current_location;
 
         let now = Clock::get()?.unix_timestamp;
         // Emit new Event
