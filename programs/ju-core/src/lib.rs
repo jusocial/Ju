@@ -428,18 +428,18 @@ pub mod ju_core {
     /// * data.alias = <current Profile alias value>
     ///
     /// 1) Register alias if not yet registered:
-    /// * data.alias = <alias value>
+    /// * data.alias = <alias_value>
     /// * current_alias_pda == None
-    /// * new_alias_pda == Some
+    /// * new_alias_pda == Some(alias_value)
     ///
     /// 2) Update current alias (register new and delete current):
-    /// * data.alias = <new alias value>
-    /// * current_alias_pda == Some
-    /// * new_alias_pda == Some
+    /// * data.alias = <new_alias_value>
+    /// * current_alias_pda == Some(current_alias_value)
+    /// * new_alias_pda == Some(new_alias_value)
     ///
     /// 3) Delete current alias:
     /// * data.alias = None
-    /// * current_alias_pda == Some
+    /// * current_alias_pda == Some(current_alias_value)
     /// * new_alias_pda == None
     ///
     pub fn update_profile(ctx: Context<UpdateProfile>, data: ProfileData) -> Result<()> {
@@ -777,18 +777,18 @@ pub mod ju_core {
     /// * data.alias = <current Subspace alias value>
     ///
     /// 1) Register alias if not yet registered:
-    /// * data.alias = <alias value>
+    /// * data.alias = alias_value
     /// * current_alias_pda == None
-    /// * new_alias_pda == Some
+    /// * new_alias_pda == Some(alias_value)
     ///
     /// 2) Update current alias (register new and delete current):
-    /// * data.alias = <new alias value>
-    /// * current_alias_pda == Some
-    /// * new_alias_pda == Some
+    /// * data.alias = new_alias_value
+    /// * current_alias_pda == Some(current_alias_value)
+    /// * new_alias_pda == Some(new_alias_value)
     ///
     /// 3) Delete current alias:
     /// * data.alias = None
-    /// * current_alias_pda == Some
+    /// * current_alias_pda == Some(current_alias_value)
     /// * new_alias_pda == None
     ///
     pub fn update_subspace(ctx: Context<UpdateSubspace>, data: SubspaceData) -> Result<()> {
