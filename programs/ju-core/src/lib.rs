@@ -425,7 +425,9 @@ pub mod ju_core {
     /// # Alias management cases:
     ///  
     /// 0) Do nothing:
-    /// * data.alias = <current Profile alias value>
+    /// * data.alias = <current_alias_value>
+    /// * current_alias_pda == None
+    /// * new_alias_pda == None
     ///
     /// 1) Register alias if not yet registered:
     /// * data.alias = <alias_value>
@@ -774,7 +776,9 @@ pub mod ju_core {
     /// # Alias management cases:
     ///  
     /// 0) Do nothing:
-    /// * data.alias = <current Subspace alias value>
+    /// * data.alias = <current_alias_value>
+    /// * current_alias_pda == None
+    /// * new_alias_pda == None
     ///
     /// 1) Register alias if not yet registered:
     /// * data.alias = alias_value
