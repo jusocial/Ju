@@ -467,7 +467,6 @@ pub mod ju_core {
 
             // Case 2 (register alias if not registered):
             if data.alias.is_some()
-                && profile.alias != data.alias
                 && ctx.accounts.current_alias_pda.is_none()
                 && ctx.accounts.new_alias_pda.is_some()
             {
@@ -484,7 +483,6 @@ pub mod ju_core {
 
             // Case 3 (delete current alias):
             if data.alias.is_none()
-                && profile.alias != data.alias
                 && ctx.accounts.current_alias_pda.is_none()
                 && ctx.accounts.new_alias_pda.is_none()
             {
@@ -818,7 +816,6 @@ pub mod ju_core {
 
             // Case 2 (register alias if not registered):
             if data.alias.is_some()
-                && subspace.alias != data.alias
                 && ctx.accounts.current_alias_pda.is_none()
                 && ctx.accounts.new_alias_pda.is_some()
             {
@@ -835,7 +832,6 @@ pub mod ju_core {
 
             // Case 3 (delete current alias):
             if data.alias.is_none()
-                && subspace.alias != data.alias
                 && ctx.accounts.current_alias_pda.is_none()
                 && ctx.accounts.new_alias_pda.is_none()
             {
