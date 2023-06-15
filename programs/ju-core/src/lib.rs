@@ -554,6 +554,10 @@ pub mod ju_core {
         ctx: Context<InitializeConnection>,
         external_processing_data: Option<String>, // TODO: Replace String with some other type ?
     ) -> Result<()> {
+
+        // Checking passed target type
+        let connection_target_type = get_connection_target_type(&ctx.accounts.target)?;
+
         // Making Connection additional processing using external Processor
         // First check if Application has assigned Connecting Processor
         if let Some(connecting_processor) = ctx.accounts.app.connecting_processor {
@@ -577,7 +581,7 @@ pub mod ju_core {
                         ),
                     ],
 
-                    data: external_processing_data.unwrap_or_default().into_bytes(),
+                    data: external_processing_data.clone().unwrap_or_default().into_bytes(),
                 },
                 &[
                     ctx.accounts.app.to_account_info(),
@@ -588,14 +592,53 @@ pub mod ju_core {
             )?;
         }
 
+        // Second check if Target has assigned individual Connecting Processor and app setting allow this feature
+        let target_connecting_processor = get_connecting_processor_from_target(&ctx.accounts.target)?;
+
+        if ctx.accounts.app.profile_individual_processors_allowed {
+
+            if let Some(connecting_processor) = target_connecting_processor {
+                invoke(
+                    &Instruction {
+                        program_id: connecting_processor,
+
+                        accounts: vec![
+                            AccountMeta::new_readonly(
+                                *ctx.accounts.app.to_account_info().key,
+                                true,
+                            ),
+                            AccountMeta::new_readonly(
+                                *ctx.accounts.initializer.to_account_info().key,
+                                false,
+                            ),
+                            AccountMeta::new_readonly(
+                                *ctx.accounts.target.to_account_info().key,
+                                false,
+                            ),
+                            AccountMeta::new_readonly(
+                                *ctx.accounts.authority.to_account_info().key,
+                                false,
+                            ),
+                        ],
+
+                        data: external_processing_data.unwrap_or_default().into_bytes(),
+                    },
+                    &[
+                        ctx.accounts.app.to_account_info(),
+                        ctx.accounts.initializer.to_account_info(),
+                        ctx.accounts.target.to_account_info(),
+                        ctx.accounts.authority.to_account_info(),
+                    ],
+                )?;
+            }
+        }
+
         let connection = &mut ctx.accounts.connection;
         connection.app = *ctx.accounts.app.to_account_info().key;
         connection.authority = *ctx.accounts.authority.to_account_info().key;
         connection.initializer = *ctx.accounts.initializer.to_account_info().key;
 
-        // Checking passed target type and assign if OK
-        let target_account = &ctx.accounts.target;
-        connection.connection_target_type = get_connection_target_type(target_account)?;
+        connection.connection_target_type = connection_target_type;
         connection.target = *ctx.accounts.target.to_account_info().key;
 
         let now = Clock::get()?.unix_timestamp;
@@ -966,16 +1009,21 @@ pub mod ju_core {
     ) -> Result<()> {
         // Making additianal processing using external Processor
         if !data.is_mirror {
+
             // This is initial Publishing or replying ...
             // Making additianal Publication processing using external Processor
+
             // First check if Application has assigned Publishing external Processor
             if let Some(publishing_processor) = ctx.accounts.app.publishing_processor {
                 invoke(
                     &Instruction {
                         program_id: publishing_processor,
-    
+
                         accounts: vec![
-                            AccountMeta::new_readonly(*ctx.accounts.app.to_account_info().key, true),
+                            AccountMeta::new_readonly(
+                                *ctx.accounts.app.to_account_info().key,
+                                true,
+                            ),
                             AccountMeta::new_readonly(
                                 *ctx.accounts.profile.to_account_info().key,
                                 false,
@@ -989,7 +1037,7 @@ pub mod ju_core {
                                 false,
                             ),
                         ],
-    
+
                         data: external_processing_data.unwrap_or_default().into_bytes(),
                     },
                     &[
@@ -1001,16 +1049,21 @@ pub mod ju_core {
                 )?;
             }
         } else {
+
             // This is Referencing ...
             // Making additianal Publication Reference processing using external Processor
-            // Check if Application has assigned Referencing external Processor
+
+            // First check if Application has assigned Referencing external Processor
             if let Some(referencing_processor) = ctx.accounts.app.referencing_processor {
                 invoke(
                     &Instruction {
                         program_id: referencing_processor,
-    
+
                         accounts: vec![
-                            AccountMeta::new_readonly(*ctx.accounts.app.to_account_info().key, true),
+                            AccountMeta::new_readonly(
+                                *ctx.accounts.app.to_account_info().key,
+                                true,
+                            ),
                             AccountMeta::new_readonly(
                                 *ctx.accounts.profile.to_account_info().key,
                                 false,
@@ -1024,8 +1077,8 @@ pub mod ju_core {
                                 false,
                             ),
                         ],
-    
-                        data: external_processing_data.unwrap_or_default().into_bytes(),
+
+                        data: external_processing_data.clone().unwrap_or_default().into_bytes(),
                     },
                     &[
                         ctx.accounts.app.to_account_info(),
@@ -1034,6 +1087,45 @@ pub mod ju_core {
                         ctx.accounts.authority.to_account_info(),
                     ],
                 )?;
+            }
+
+            // Second check if Target Publication has individual assigned Referencing external Processor
+            if ctx.accounts.app.publication_individual_processors_allowed && ctx.accounts.target_publication.is_some() {
+
+                if let Some(referencing_processor) = ctx.accounts.target_publication.as_ref().unwrap().referencing_processor {
+                    invoke(
+                        &Instruction {
+                            program_id: referencing_processor,
+    
+                            accounts: vec![
+                                AccountMeta::new_readonly(
+                                    *ctx.accounts.app.to_account_info().key,
+                                    true,
+                                ),
+                                AccountMeta::new_readonly(
+                                    *ctx.accounts.profile.to_account_info().key,
+                                    false,
+                                ),
+                                AccountMeta::new_readonly(
+                                    *ctx.accounts.publication.to_account_info().key,
+                                    false,
+                                ),
+                                AccountMeta::new_readonly(
+                                    *ctx.accounts.authority.to_account_info().key,
+                                    false,
+                                ),
+                            ],
+    
+                            data: external_processing_data.unwrap_or_default().into_bytes(),
+                        },
+                        &[
+                            ctx.accounts.app.to_account_info(),
+                            ctx.accounts.profile.to_account_info(),
+                            ctx.accounts.publication.to_account_info(),
+                            ctx.accounts.authority.to_account_info(),
+                        ],
+                    )?;
+                }
             }
         }
 
@@ -1220,8 +1312,10 @@ pub mod ju_core {
         ctx: Context<CollectPublication>,
         external_processing_data: Option<String>, // TODO: Replace String with some other type ?
     ) -> Result<()> {
+
         // Making additianal Collection processing using external Processor
-        // Check if Application has assigned Collecting external Processor
+
+        // First check if Application has assigned Collecting external Processor
         if let Some(collecting_processor) = ctx.accounts.app.collecting_processor {
             invoke(
                 &Instruction {
@@ -1243,7 +1337,7 @@ pub mod ju_core {
                         ),
                     ],
 
-                    data: external_processing_data.unwrap_or_default().into_bytes(),
+                    data: external_processing_data.clone().unwrap_or_default().into_bytes(),
                 },
                 &[
                     ctx.accounts.app.to_account_info(),
@@ -1252,6 +1346,45 @@ pub mod ju_core {
                     ctx.accounts.authority.to_account_info(),
                 ],
             )?;
+        }
+
+        // Second check if Target Publication has individual assigned Collectiong external Processor
+        if ctx.accounts.app.publication_individual_processors_allowed{
+
+            if let Some(collecting_processor) = ctx.accounts.target.collecting_processor {
+                invoke(
+                    &Instruction {
+                        program_id: collecting_processor,
+
+                        accounts: vec![
+                            AccountMeta::new_readonly(
+                                *ctx.accounts.app.to_account_info().key,
+                                true,
+                            ),
+                            AccountMeta::new_readonly(
+                                *ctx.accounts.initializer.to_account_info().key,
+                                false,
+                            ),
+                            AccountMeta::new_readonly(
+                                *ctx.accounts.target.to_account_info().key,
+                                false,
+                            ),
+                            AccountMeta::new_readonly(
+                                *ctx.accounts.authority.to_account_info().key,
+                                false,
+                            ),
+                        ],
+
+                        data: external_processing_data.unwrap_or_default().into_bytes(),
+                    },
+                    &[
+                        ctx.accounts.app.to_account_info(),
+                        ctx.accounts.initializer.to_account_info(),
+                        ctx.accounts.target.to_account_info(),
+                        ctx.accounts.authority.to_account_info(),
+                    ],
+                )?;
+            }
         }
 
         let collection_item = &mut ctx.accounts.collection_item;

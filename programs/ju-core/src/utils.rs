@@ -57,6 +57,41 @@ pub fn get_connection_target_type(
     Err(error!(CustomError::ConnectionTargetAccountInvalid))
 }
 
+
+/// Retrieves the `connecting_processor` value from the target account.
+///
+/// This function attempts to extract the `connecting_processor` value from the provided
+/// `target_account`. It checks the type of the account and returns the `connecting_processor`
+/// if the account is either of type `Profile` or `Subspace`. Otherwise, it returns an error
+/// indicating that the target account is invalid.
+///
+/// # Arguments
+///
+/// * `target_account` - The target account from which to extract the `connecting_processor`.
+///
+/// # Errors
+///
+/// This function returns an error of type `CustomError::ConnectionTargetAccountInvalid` if the
+/// target account is not of type `Profile` or `Subspace`.
+///
+/// # Returns
+///
+/// The `connecting_processor` value from the target account if it exists, or `None` if it is
+/// not available.
+/// 
+pub fn get_connecting_processor_from_target(target_account: &AccountInfo) -> Result<Option<Pubkey>> {
+    if let Ok(profile_account) = Account::<Profile>::try_from(target_account) {
+        return Ok(profile_account.connecting_processor);
+    }
+
+    if let Ok(subspace_account) = Account::<Subspace>::try_from(target_account) {
+        return Ok(subspace_account.connecting_processor);
+    }
+
+    Err(error!(CustomError::ConnectionTargetAccountInvalid))
+}
+
+
 /// Asserts the authority field of a Connection target account.
 /// 
 /// This function checks the authority field of the given connection target account
@@ -100,7 +135,8 @@ pub fn assert_connection_target_authority(
 }
 
 
-/// Validates the target account for a report based on the provided app and target account information.
+/// Validates the target account for a report 
+/// based on the provided app and target account information.
 ///
 /// # Arguments
 ///
@@ -109,7 +145,8 @@ pub fn assert_connection_target_authority(
 ///
 /// # Errors
 ///
-/// Returns an error of type `CustomError::ConnectionTargetAccountInvalid` if the target account is invalid or does not belong to the specified application.
+/// Returns an error of type `CustomError::ConnectionTargetAccountInvalid` 
+/// if the target account is invalid or does not belong to the specified application.
 ///
 /// # Returns
 ///
