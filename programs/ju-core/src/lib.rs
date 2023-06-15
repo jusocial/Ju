@@ -1,6 +1,8 @@
 //use std::mem::size_of;
 // use uuid::Uuid;
 
+use solana_program::{instruction::AccountMeta, instruction::Instruction, program::invoke};
+
 use anchor_lang::prelude::*;
 
 mod constants;
@@ -134,7 +136,6 @@ pub mod ju_core {
         app.subspace_delete_allowed = data.subspace_delete_allowed;
         app.publication_delete_allowed = data.publication_delete_allowed;
 
-
         // Assign external Processors to Application
         match &ctx.accounts.registering_processor_pda {
             Some(registering_processor_pda) => {
@@ -217,7 +218,6 @@ pub mod ju_core {
     /// * `data` - A struct that holds Application data
     ///
     pub fn update_app(ctx: Context<UpdateApp>, data: AppData) -> Result<()> {
-
         let app = &mut ctx.accounts.app;
 
         // Validate metadata URI
@@ -330,31 +330,31 @@ pub mod ju_core {
     ) -> Result<()> {
         // Making additional Profile Registering processing using external Processor
         // Check if Application has assigned Registering Processor
-        if ctx.accounts.app.registering_processor.is_some() {
-            // Check if Registering Processor account is passed
-            match &ctx.accounts.registering_processor {
-                Some(registering_processor) => {
-                    // Processor Pubkeys assert
-                    require_keys_eq!(
-                        registering_processor.key(),
-                        ctx.accounts
-                            .app
-                            .registering_processor
-                            .as_ref()
-                            .unwrap()
-                            .key(),
-                        CustomError::RegisteringProcessorMismatch
-                    );
-                    // Making CPI call to Processor
-                    registering_processor::cpi::process(
-                        ctx.accounts.process_registering_ctx(registering_processor),
-                        external_processing_data,
-                    )?;
-                }
-                None => {
-                    return Err(error!(CustomError::RegisteringProcessorAccountMissed));
-                }
-            }
+        if let Some(registering_processor) = ctx.accounts.app.registering_processor {
+            invoke(
+                &Instruction {
+                    program_id: registering_processor,
+
+                    accounts: vec![
+                        AccountMeta::new_readonly(*ctx.accounts.app.to_account_info().key, true),
+                        AccountMeta::new_readonly(
+                            *ctx.accounts.profile.to_account_info().key,
+                            false,
+                        ),
+                        AccountMeta::new_readonly(
+                            *ctx.accounts.authority.to_account_info().key,
+                            false,
+                        ),
+                    ],
+
+                    data: external_processing_data.unwrap_or_default().into_bytes(),
+                },
+                &[
+                    ctx.accounts.app.to_account_info(),
+                    ctx.accounts.profile.to_account_info(),
+                    ctx.accounts.authority.to_account_info(),
+                ],
+            )?;
         }
 
         // if user want to register a Alias - make sure Alias PDA account is passed
@@ -561,30 +561,36 @@ pub mod ju_core {
     ) -> Result<()> {
         // Making Connection additional processing using external Processor
         // First check if Application has assigned Connecting Processor
-        if ctx.accounts.app.connecting_processor.is_some() {
-            match &ctx.accounts.connecting_processor {
-                Some(connecting_processor) => {
-                    // Processor Pubkeys assert
-                    require_keys_eq!(
-                        connecting_processor.key(),
-                        ctx.accounts
-                            .app
-                            .connecting_processor
-                            .as_ref()
-                            .unwrap()
-                            .key(),
-                        CustomError::ConnectingProcessorMismatch
-                    );
-                    // Making CPI call to Processor
-                    connecting_processor::cpi::process(
-                        ctx.accounts.process_connecting_ctx(connecting_processor),
-                        external_processing_data,
-                    )?;
-                }
-                None => {
-                    return Err(error!(CustomError::ConnectingProcessorAccountMissed));
-                }
-            }
+        if let Some(connecting_processor) = ctx.accounts.app.connecting_processor {
+            invoke(
+                &Instruction {
+                    program_id: connecting_processor,
+
+                    accounts: vec![
+                        AccountMeta::new_readonly(*ctx.accounts.app.to_account_info().key, true),
+                        AccountMeta::new_readonly(
+                            *ctx.accounts.initializer.to_account_info().key,
+                            false,
+                        ),
+                        AccountMeta::new_readonly(
+                            *ctx.accounts.target.to_account_info().key,
+                            false,
+                        ),
+                        AccountMeta::new_readonly(
+                            *ctx.accounts.authority.to_account_info().key,
+                            false,
+                        ),
+                    ],
+
+                    data: external_processing_data.unwrap_or_default().into_bytes(),
+                },
+                &[
+                    ctx.accounts.app.to_account_info(),
+                    ctx.accounts.initializer.to_account_info(),
+                    ctx.accounts.target.to_account_info(),
+                    ctx.accounts.authority.to_account_info(),
+                ],
+            )?;
         }
 
         let connection = &mut ctx.accounts.connection;
@@ -619,9 +625,11 @@ pub mod ju_core {
     /// * `approve_status` - A boolean that holds connection approve status (by Target)
     ///
     pub fn update_connection(ctx: Context<UpdateConnection>, approve_status: bool) -> Result<()> {
-
         // Assert Connection Target authority
-        assert_connection_target_authority(&ctx.accounts.user.to_account_info().key(), &ctx.accounts.target)?;
+        assert_connection_target_authority(
+            &ctx.accounts.user.to_account_info().key(),
+            &ctx.accounts.target,
+        )?;
 
         let connection = &mut ctx.accounts.connection;
 
@@ -643,9 +651,11 @@ pub mod ju_core {
 
     // Delete existing connection
     pub fn delete_connection(ctx: Context<DeleteConnection>) -> Result<()> {
-
         // Assert Connection Target authority
-        assert_connection_target_authority(&ctx.accounts.authority.to_account_info().key(), &ctx.accounts.target)?;
+        assert_connection_target_authority(
+            &ctx.accounts.authority.to_account_info().key(),
+            &ctx.accounts.target,
+        )?;
 
         // Emit new Event
         let now = Clock::get()?.unix_timestamp;
@@ -665,7 +675,11 @@ pub mod ju_core {
     /// * `uuid` - A Subspace UUID
     /// * `data` - A struct that holds Subspace data
     ///
-    pub fn create_subspace(ctx: Context<CreateSubspace>, uuid: String, data: SubspaceData) -> Result<()> {
+    pub fn create_subspace(
+        ctx: Context<CreateSubspace>,
+        uuid: String,
+        data: SubspaceData,
+    ) -> Result<()> {
         // if user want to register a Alias - make sure Alias account is passed
         if data.alias.is_some() && ctx.accounts.alias_pda.is_none() {
             return Err(error!(CustomError::AliasAccountRequired));
@@ -960,60 +974,71 @@ pub mod ju_core {
             // This is initial Publishing or replying ...
             // Making additianal Publication processing using external Processor
             // First check if Application has assigned Publishing external Processor
-            if ctx.accounts.app.publishing_processor.is_some() {
-                match &ctx.accounts.publishing_processor {
-                    Some(publishing_processor) => {
-                        // Processor Pubkeys assert
-                        require_keys_eq!(
-                            publishing_processor.key(),
-                            ctx.accounts
-                                .app
-                                .publishing_processor
-                                .as_ref()
-                                .unwrap()
-                                .key(),
-                            CustomError::PublishingProcessorMismatch
-                        );
-
-                        // Making CPI call to Processor
-                        publishing_processor::cpi::process(
-                            ctx.accounts.process_publishing_ctx(publishing_processor),
-                            external_processing_data,
-                        )?;
-                    }
-                    None => {
-                        return Err(error!(CustomError::PublishingProcessorAccountMissed));
-                    }
-                }
+            if let Some(publishing_processor) = ctx.accounts.app.publishing_processor {
+                invoke(
+                    &Instruction {
+                        program_id: publishing_processor,
+    
+                        accounts: vec![
+                            AccountMeta::new_readonly(*ctx.accounts.app.to_account_info().key, true),
+                            AccountMeta::new_readonly(
+                                *ctx.accounts.profile.to_account_info().key,
+                                false,
+                            ),
+                            AccountMeta::new_readonly(
+                                *ctx.accounts.publication.to_account_info().key,
+                                false,
+                            ),
+                            AccountMeta::new_readonly(
+                                *ctx.accounts.authority.to_account_info().key,
+                                false,
+                            ),
+                        ],
+    
+                        data: external_processing_data.unwrap_or_default().into_bytes(),
+                    },
+                    &[
+                        ctx.accounts.app.to_account_info(),
+                        ctx.accounts.profile.to_account_info(),
+                        ctx.accounts.publication.to_account_info(),
+                        ctx.accounts.authority.to_account_info(),
+                    ],
+                )?;
             }
         } else {
             // This is Referencing ...
             // Making additianal Publication Reference processing using external Processor
             // Check if Application has assigned Referencing external Processor
-            if ctx.accounts.app.referencing_processor.is_some() {
-                match &ctx.accounts.referencing_processor {
-                    Some(referencing_processor) => {
-                        // Processor Pubkeys assert
-                        require_keys_eq!(
-                            referencing_processor.key(),
-                            ctx.accounts
-                                .app
-                                .publishing_processor
-                                .as_ref()
-                                .unwrap()
-                                .key(),
-                            CustomError::ReferencingProcessorMismatch
-                        );
-                        // Making CPI call to Processor
-                        referencing_processor::cpi::process(
-                            ctx.accounts.process_referencing_ctx(referencing_processor),
-                            external_processing_data,
-                        )?;
-                    }
-                    None => {
-                        return Err(error!(CustomError::ReferencingProcessorAccountMissed));
-                    }
-                }
+            if let Some(referencing_processor) = ctx.accounts.app.referencing_processor {
+                invoke(
+                    &Instruction {
+                        program_id: referencing_processor,
+    
+                        accounts: vec![
+                            AccountMeta::new_readonly(*ctx.accounts.app.to_account_info().key, true),
+                            AccountMeta::new_readonly(
+                                *ctx.accounts.profile.to_account_info().key,
+                                false,
+                            ),
+                            AccountMeta::new_readonly(
+                                *ctx.accounts.publication.to_account_info().key,
+                                false,
+                            ),
+                            AccountMeta::new_readonly(
+                                *ctx.accounts.authority.to_account_info().key,
+                                false,
+                            ),
+                        ],
+    
+                        data: external_processing_data.unwrap_or_default().into_bytes(),
+                    },
+                    &[
+                        ctx.accounts.app.to_account_info(),
+                        ctx.accounts.profile.to_account_info(),
+                        ctx.accounts.publication.to_account_info(),
+                        ctx.accounts.authority.to_account_info(),
+                    ],
+                )?;
             }
         }
 
@@ -1202,30 +1227,36 @@ pub mod ju_core {
     ) -> Result<()> {
         // Making additianal Collection processing using external Processor
         // Check if Application has assigned Collecting external Processor
-        if ctx.accounts.app.collecting_processor.is_some() {
-            match &ctx.accounts.collecting_processor {
-                Some(collecting_processor) => {
-                    // Processor Pubkeys assert
-                    require_keys_eq!(
-                        collecting_processor.key(),
-                        ctx.accounts
-                            .app
-                            .publishing_processor
-                            .as_ref()
-                            .unwrap()
-                            .key(),
-                        CustomError::CollectingProcessorMismatch
-                    );
-                    // Making CPI call to Processor
-                    collecting_processor::cpi::process(
-                        ctx.accounts.process_collecting_ctx(collecting_processor),
-                        external_processing_data,
-                    )?;
-                }
-                None => {
-                    return Err(error!(CustomError::CollectingProcessorAccountMissed));
-                }
-            }
+        if let Some(collecting_processor) = ctx.accounts.app.collecting_processor {
+            invoke(
+                &Instruction {
+                    program_id: collecting_processor,
+
+                    accounts: vec![
+                        AccountMeta::new_readonly(*ctx.accounts.app.to_account_info().key, true),
+                        AccountMeta::new_readonly(
+                            *ctx.accounts.initializer.to_account_info().key,
+                            false,
+                        ),
+                        AccountMeta::new_readonly(
+                            *ctx.accounts.target.to_account_info().key,
+                            false,
+                        ),
+                        AccountMeta::new_readonly(
+                            *ctx.accounts.authority.to_account_info().key,
+                            false,
+                        ),
+                    ],
+
+                    data: external_processing_data.unwrap_or_default().into_bytes(),
+                },
+                &[
+                    ctx.accounts.app.to_account_info(),
+                    ctx.accounts.initializer.to_account_info(),
+                    ctx.accounts.target.to_account_info(),
+                    ctx.accounts.authority.to_account_info(),
+                ],
+            )?;
         }
 
         let collection_item = &mut ctx.accounts.collection_item;
@@ -1294,7 +1325,10 @@ pub mod ju_core {
         report.initializer = *ctx.accounts.initializer.to_account_info().key;
 
         // Validating passed target account and assign pubkey if Ok
-        validate_report_target(&ctx.accounts.app.to_account_info().key, &ctx.accounts.target)?;
+        validate_report_target(
+            &ctx.accounts.app.to_account_info().key,
+            &ctx.accounts.target,
+        )?;
         report.target = *ctx.accounts.target.to_account_info().key;
 
         report.report_type = data.report_type;

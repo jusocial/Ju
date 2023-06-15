@@ -98,7 +98,7 @@ pub struct InitializeApp<'info> {
         bump,
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted
-    /// Must be passed if user want to assign Profile specified Processor for additional Registering processing
+    /// Must be passed if user wants to assign External Processor for additional Registering processing
     pub registering_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
@@ -109,7 +109,7 @@ pub struct InitializeApp<'info> {
         bump,
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted
-    /// Must be passed if user want to assign Profile specified Processor for additional Connecting processing
+    /// Must be passed if user wants to assign External Processor for additional Connecting processing
     pub connecting_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
@@ -120,7 +120,7 @@ pub struct InitializeApp<'info> {
         bump,
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted
-    /// Must be passed if user want to assign Profile specified Processor for additional Publishing processing
+    /// Must be passed if user wants to assign External Processor for additional Publishing processing
     pub publishing_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
@@ -131,7 +131,7 @@ pub struct InitializeApp<'info> {
         bump,
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted
-    /// Must be passed if user want to assign Profile specified Processor for additional Collecting processing
+    /// Must be passed if user wants to assign External Processor for additional Collecting processing
     pub collecting_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
@@ -142,7 +142,7 @@ pub struct InitializeApp<'info> {
         bump,
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted
-    /// Must be passed if user want to assign Profile specified Processor for additional Referencing processing
+    /// Must be passed if user wants to assign External Processor for additional Referencing processing
     pub referencing_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(mut)]
@@ -186,7 +186,7 @@ pub struct UpdateApp<'info> {
         bump,
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted
-    /// Must be passed if user want to assign Profile specified Processor for additional Registering processing
+    /// Must be passed if user wants to assign External Processor for additional Registering processing
     pub registering_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
@@ -197,7 +197,7 @@ pub struct UpdateApp<'info> {
         bump,
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted
-    /// Must be passed if user want to assign Profile specified Processor for additional Connecting processing
+    /// Must be passed if user wants to assign External Processor for additional Connecting processing
     pub connecting_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
@@ -208,7 +208,7 @@ pub struct UpdateApp<'info> {
         bump,
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted
-    /// Must be passed if user want to assign Profile specified Processor for additional Publishing processing
+    /// Must be passed if user wants to assign External Processor for additional Publishing processing
     pub publishing_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
@@ -219,7 +219,7 @@ pub struct UpdateApp<'info> {
         bump,
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted
-    /// Must be passed if user want to assign Profile specified Processor for additional Collecting processing
+    /// Must be passed if user wants to assign External Processor for additional Collecting processing
     pub collecting_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
@@ -230,7 +230,7 @@ pub struct UpdateApp<'info> {
         bump,
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted
-    /// Must be passed if user want to assign Profile specified Processor for additional Referencing processing
+    /// Must be passed if user wants to assign External Processor for additional Referencing processing
     pub referencing_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(mut)]
@@ -246,10 +246,9 @@ pub struct UpdateApp<'info> {
 /// 0. `[]` PDA of the current Application
 /// 1. `[]` PDA of the Profile being created
 /// 2. `[]` PDA of the Alias to be registered (optional)
-/// 3. `[]` External Registering Processor PDA that proof Processor passed to assign is whitelisted.
-/// 4. `[]` External Connecting Processor Program that makes additional processing
-/// 5. `[signer]` Profile Authority
-/// 6. `[]` System program
+/// 3. `[]` External Connecting Processor PDA that proof Processor passed to assign is whitelisted (optional)
+/// 4. `[signer]` Profile Authority
+/// 5. `[]` System program
 ///
 #[derive(Accounts)]
 #[instruction(data: ProfileData)]
@@ -293,39 +292,18 @@ pub struct CreateProfile<'info> {
     #[account(
         seeds = [
             ExternalProcessorPDA::PREFIX.as_bytes(),
-            data.connecting_processor_to_assign.unwrap().as_ref(),
+            connecting_processor_pda.program_address.as_ref(),
         ],
         bump,
     )]
     /// External Processor PDA that proof Processor passed to assign is whitelisted.
-    /// Must be passed if user want to assign Profile specified Processor for additional Connecting processing
+    /// Must be passed if user wants to assign Profile specified Processor for additional Connecting processing
     pub connecting_processor_pda: Option<Account<'info, ExternalProcessorPDA>>,
-
-    // #[account(executable)]
-    /// External processor that makes additional Profile Registerin processing
-    /// Must be passed if there is any assigned Processors in (App default or Profile specified)
-    /// CHECK: Not dangerous
-    pub registering_processor: Option<AccountInfo<'info>>,
 
     #[account(mut)]
     pub authority: Signer<'info>,
 
     pub system_program: Program<'info, System>,
-}
-
-impl<'info> CreateProfile<'info> {
-    pub fn process_registering_ctx(
-        &self,
-        cpi_program: &AccountInfo<'info>,
-    ) -> CpiContext<'_, '_, '_, 'info, ProcessRegistering<'info>> {
-        let cpi_accounts = ProcessRegistering {
-            profile: self.profile.to_account_info(),
-            app: self.app.to_account_info(),
-            user: self.authority.to_account_info(),
-            system_program: self.system_program.to_account_info(),
-        };
-        CpiContext::new(cpi_program.clone(), cpi_accounts)
-    }
 }
 
 /// Context to update application user profile
@@ -336,7 +314,7 @@ impl<'info> CreateProfile<'info> {
 /// 1. `[]` PDA of the Profile being created
 /// 2. `[]` PDA of the Alias to be deleted (optional)
 /// 3. `[]` PDA of the Alias to be registered (optional)
-/// 4. `[]` External Registering Processor PDA that proof Processor passed to assign is whitelisted (optional)
+/// 4. `[]` External Connecting Processor PDA that proof Processor passed to assign is whitelisted (optional)
 /// 5. `[signer]` Profile Authority
 /// 6. `[]` System program
 ///
@@ -394,7 +372,7 @@ pub struct UpdateProfile<'info> {
     #[account(
         seeds = [
             ExternalProcessorPDA::PREFIX.as_bytes(),
-            data.connecting_processor_to_assign.unwrap().as_ref(),
+            connecting_processor_pda.program_address.as_ref(),
         ],
         bump,
     )]
@@ -648,7 +626,6 @@ pub struct DeleteAlias<'info> {
 /// 1. `[writable]` PDA of the Connection, it stores all Connection data
 /// 2. `[]` PDA of the initializer Profile
 /// 3. `[]` PDA of the Target (another Profile or Subspace)
-/// 4. `[]` Program (external processor) that makes additional Connection processing (optional)
 /// 4. `[signer]` Connection Authority
 /// 5. `[]` System program
 ///
@@ -692,30 +669,10 @@ pub struct InitializeConnection<'info> {
     /// CHECK: This account is checked in the instruction
     pub target: AccountInfo<'info>,
 
-    /// A Program (external processor) that makes additional Connecting processing
-    /// /// CHECK: Not dangerous
-    pub connecting_processor: Option<AccountInfo<'info>>,
-
     #[account(mut)]
     pub authority: Signer<'info>,
 
     pub system_program: Program<'info, System>,
-}
-
-impl<'info> InitializeConnection<'info> {
-    pub fn process_connecting_ctx(
-        &self,
-        cpi_program: &AccountInfo<'info>,
-    ) -> CpiContext<'_, '_, '_, 'info, ProcessConnecting<'info>> {
-        let cpi_accounts = ProcessConnecting {
-            initializer: self.initializer.to_account_info(),
-            target: self.target.to_account_info(),
-            app: self.app.to_account_info(),
-            authority: self.authority.to_account_info(),
-            system_program: self.system_program.to_account_info(),
-        };
-        CpiContext::new(cpi_program.clone(), cpi_accounts)
-    }
 }
 
 /// Context to update existing connection - e.g. change approve status
@@ -1123,10 +1080,8 @@ pub struct DeleteSubpace<'info> {
 /// 4. `[]` Target Publication which has to be replyed or referenced (optional)
 /// 5. `[]` External Collecting Processor PDA that proof Processor passed to assign is whitelisted (optional)
 /// 6. `[]` External Referencing Processor PDA that proof Processor passed to assign is whitelisted (optional)
-/// 7. `[]` - External Publishing processor that makes Publication additional procesing (optional)
-/// 8. `[]` - External Referencing processor that makes Publication additional procesing (optional)
-/// 5. `[signer]` Publication Autority
-/// 6. `[]` System program
+/// 7. `[signer]` Publication Autority
+/// 8. `[]` System program
 ///
 #[derive(Accounts)]
 #[instruction(uuid: String, data: PublicationData)]
@@ -1203,50 +1158,10 @@ pub struct CreatePublication<'info> {
     /// Must be passed if user want to assign Publication specified Processor for additional Referencing processing
     pub referencing_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
-    /// External Processor that makes Publication Creation additional procesing
-    /// Must be passed if there is any assigned Processors in (App default or Publication specified)
-    /// Check: Not dangerous
-    pub publishing_processor: Option<AccountInfo<'info>>,
-
-    /// External Processor that makes Publication Referencing additional procesing
-    /// Must be passed if there is any assigned Processors in (App default or Publication specified)
-    /// Check: Not dangerous
-    pub referencing_processor: Option<AccountInfo<'info>>,
-
     #[account(mut)]
     pub authority: Signer<'info>,
 
     pub system_program: Program<'info, System>,
-}
-
-impl<'info> CreatePublication<'info> {
-    pub fn process_publishing_ctx(
-        &self,
-        cpi_program: &AccountInfo<'info>,
-    ) -> CpiContext<'_, '_, '_, 'info, ProcessPublishing<'info>> {
-        let cpi_accounts = ProcessPublishing {
-            app: self.app.to_account_info(),
-            profile: self.profile.to_account_info(),
-            publication: self.publication.to_account_info(),
-            authority: self.authority.to_account_info(),
-            system_program: self.system_program.to_account_info(),
-        };
-        CpiContext::new(cpi_program.clone(), cpi_accounts)
-    }
-
-    pub fn process_referencing_ctx(
-        &self,
-        cpi_program: &AccountInfo<'info>,
-    ) -> CpiContext<'_, '_, '_, 'info, ProcessReferencing<'info>> {
-        let cpi_accounts = ProcessReferencing {
-            app: self.app.to_account_info(),
-            initializer: self.profile.to_account_info(),
-            target: self.target_publication.as_ref().unwrap().to_account_info(), // TODO: avoid panic
-            authority: self.authority.to_account_info(),
-            system_program: self.system_program.to_account_info(),
-        };
-        CpiContext::new(cpi_program.clone(), cpi_accounts)
-    }
 }
 
 /// Context to update existing Publication
@@ -1332,9 +1247,8 @@ pub struct UpdatePublication<'info> {
 /// 1. `[]` Collect initializer Profile (PDA)
 /// 2. `[]` Target Publication account (PDA)
 /// 3. `[writable]` Collection item account (PDA) being created, it will store Collection data
-/// 4. `[]` - External Collecting processor that makes Collecting additional procesing (optional)
-/// 5. `[signer]` Collection item Autority
-/// 6. `[]` System program
+/// 4. `[signer]` Collection item Autority
+/// 5. `[]` System program
 ///
 #[derive(Accounts)]
 pub struct CollectPublication<'info> {
@@ -1381,31 +1295,10 @@ pub struct CollectPublication<'info> {
     )]
     pub collection_item: Account<'info, CollectionItem>,
 
-    /// A Program (external processor) that makes Collection additional procesing
-    /// Must be passed if there is any assigned Processors in (App default or Publication specified)
-    /// CHECK: Not dangerous
-    pub collecting_processor: Option<AccountInfo<'info>>,
-
     #[account(mut)]
     pub authority: Signer<'info>,
 
     pub system_program: Program<'info, System>,
-}
-
-impl<'info> CollectPublication<'info> {
-    pub fn process_collecting_ctx(
-        &self,
-        cpi_program: &AccountInfo<'info>,
-    ) -> CpiContext<'_, '_, '_, 'info, ProcessCollecting<'info>> {
-        let cpi_accounts = ProcessCollecting {
-            app: self.app.to_account_info(),
-            initializer: self.initializer.to_account_info(),
-            target: self.target.to_account_info(),
-            authority: self.authority.to_account_info(),
-            system_program: self.system_program.to_account_info(),
-        };
-        CpiContext::new(cpi_program.clone(), cpi_accounts)
-    }
 }
 
 /// Context to delete existing Publication
