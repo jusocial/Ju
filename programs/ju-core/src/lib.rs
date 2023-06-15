@@ -383,7 +383,20 @@ pub mod ju_core {
         profile.current_location = data.current_location;
 
         // Assign Profile specified Connecting external Processor
-        profile.connecting_processor = data.connecting_processor_to_assign;
+        match &ctx.accounts.connecting_processor_pda {
+            Some(connecting_processor_pda) => {
+                require!(
+                    connecting_processor_pda
+                        .processor_type
+                        .eq(&ProcessorType::Connecting),
+                    CustomError::ProcessorTypeMismatch
+                );
+                profile.connecting_processor = Some(connecting_processor_pda.program_address);
+            }
+            None => {
+                profile.connecting_processor = None;
+            }
+        }
 
         let now = Clock::get()?.unix_timestamp;
         profile.created_at = now;
