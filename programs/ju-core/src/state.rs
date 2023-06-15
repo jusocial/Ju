@@ -77,11 +77,14 @@ impl ExternalProcessorPDA {
 /// 12. `profile_delete_allowed`: Specifies the permission to delete a Profile
 /// 13. `subspace_delete_allowed`: Specifies the permission to delete a Subspace
 /// 14. `publication_delete_allowed`: Specifies the permission to delete a Publication
-/// 15. `registering_processor`: An address of an external processor for additional processing during Profile creation
-/// 16. `connecting_processor`: An address of an external processor for additional processing during Profile connection
-/// 17. `publishing_processor`: An address of an external processor for additional processing during Publication creation
-/// 18. `collecting_processor`: An address of an external processor for additional processing during Publication collection
-/// 19. `referencing_processor`: An address of an external processor for additional processing during Publication referencing
+/// 15. `profile_individual_processors_allowed`: Specifies the permission to assign Profile's individual external processors.
+/// 16. `subspace_individual_processors_allowed`: Specifies the permission to assign Subspace's individual external processors.
+/// 17. `publication_individual_processors_allowed`: Specifies the permission to assign Publication's individual external processors.
+/// 18. `registering_processor`: An address of an external processor for additional processing during Profile creation
+/// 19. `connecting_processor`: An address of an external processor for additional processing during Profile connection
+/// 20. `publishing_processor`: An address of an external processor for additional processing during Publication creation
+/// 21. `collecting_processor`: An address of an external processor for additional processing during Publication collection
+/// 22. `referencing_processor`: An address of an external processor for additional processing during Publication referencing
 ///
 #[account]
 #[derive(Default)]
@@ -120,6 +123,13 @@ pub struct App {
     /// Specifies the permission to delete a Publication.
     pub publication_delete_allowed: bool,
 
+    /// Specifies the permission to assign Profile's individual external processors.
+    pub profile_individual_processors_allowed: bool,
+    /// Specifies the permission to assign Subspace's individual external processors.
+    pub subspace_individual_processors_allowed: bool,
+    /// Specifies the permission to assign Publication's individual external processors.
+    pub publication_individual_processors_allowed: bool,
+
     /// An address of an external processor for additional processing during Profile creation.
     pub registering_processor: Option<Pubkey>,
     /// An address of an external processor for additional processing during Profile connection.
@@ -150,6 +160,9 @@ impl App {
         + 1                                             // bool (profile_delete_allowed)
         + 1                                             // bool (subspace_delete_allowed)
         + 1                                             // bool (publication_delete_allowed)
+        + 1                                             // bool (profile_individual_processors_allowed)
+        + 1                                             // bool (subspace_individual_processors_allowed)
+        + 1                                             // bool (publication_individual_processors_allowed)
         + (1 + 32)                                      // Option<Pubkey> (registering_processor)
         + (1 + 32)                                      // Option<Pubkey> (connecting_processor)
         + (1 + 32)                                      // Option<Pubkey> (publishing_processor)
@@ -669,6 +682,9 @@ impl Report {
 /// - `profile_delete_allowed`: Specifies the permission to delete a Profile.
 /// - `subspace_delete_allowed`: Specifies the permission to delete a Subspace.
 /// - `publication_delete_allowed`: Specifies the permission to delete a Publication.
+/// - `profile_individual_processors_allowed`: Specifies the permission to assign Profile's individual external processors.
+/// - `subspace_individual_processors_allowed`: Specifies the permission to assign Subspace's individual external processors.
+/// - `publication_individual_processors_allowed`: Specifies the permission to assign Publication's individual external processors.
 /// 
 #[derive(Default, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct AppData {
@@ -699,6 +715,13 @@ pub struct AppData {
     pub subspace_delete_allowed: bool,
     /// Specifies the permission to delete a Publication.
     pub publication_delete_allowed: bool,
+
+    /// Specifies the permission to assign Profile's individual external processors.
+    pub profile_individual_processors_allowed: bool,
+    /// Specifies the permission to assign Subspace's individual external processors.
+    pub subspace_individual_processors_allowed: bool,
+    /// Specifies the permission to assign Publication's individual external processors.
+    pub publication_individual_processors_allowed: bool,
 }
 
 /// Profile instruction data struct
@@ -714,7 +737,6 @@ pub struct AppData {
 /// 7. `country_code` Profile country
 /// 8. `city_code` Profile city
 /// 9. `current_location` - Profile location coordinates
-/// 10. `connecting_processor` - Profile specified external processor to make additional Connection Processing (optional)
 ///
 #[derive(Default, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct ProfileData {
@@ -727,7 +749,6 @@ pub struct ProfileData {
     pub country_code: Option<i16>,
     pub city_code: Option<u16>,
     pub current_location: Option<LocationCoordinates>,
-    pub connecting_processor_to_assign: Option<Pubkey>,
 }
 
 /// Subspace data struct
