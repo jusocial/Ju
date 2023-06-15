@@ -1,6 +1,3 @@
-//use std::mem::size_of;
-// use uuid::Uuid;
-
 use solana_program::{instruction::AccountMeta, instruction::Instruction, program::invoke};
 
 use anchor_lang::prelude::*;
@@ -18,21 +15,6 @@ use events::*;
 use instructions::*;
 use state::*;
 use utils::*;
-
-/// Registering External Processor
-use registering_processor::cpi::accounts::ProcessRegistering;
-
-/// Connecting External Processor
-use connecting_processor::cpi::accounts::ProcessConnecting;
-
-/// Publishing External Processor
-use publishing_processor::cpi::accounts::ProcessPublishing;
-
-/// Collecting External Processor
-use collecting_processor::cpi::accounts::ProcessCollecting;
-
-/// Referencing External Processor
-use referencing_processor::cpi::accounts::ProcessReferencing;
 
 declare_id!("964vWgVEK9X8ZwZB2HyshFVmHUWbcYpRTnVYz2o3F2Xq");
 

@@ -19,16 +19,3 @@ default = []
 [dependencies]
 solana-program = "1.14.13"
 anchor-lang = "0.27.0"
-registering-processor = { path = "../registering-processor", features = ["cpi"]}
-connecting-processor = { path = "../connecting-processor", features = ["cpi"]}
-publishing-processor = { path = "../publishing-processor", features = ["cpi"]}
-collecting-processor = { path = "../collecting-processor", features = ["cpi"]}
-referencing-processor = { path = "../referencing-processor", features = ["cpi"]}
-
-# [dependencies.uuid]
-# version = "1.3.0"
-# features = [
-#     "v4",                # Lets you generate random UUIDs
-#     "fast-rng",          # Use a faster (but still sufficiently random) RNG
-#     "macro-diagnostics", # Enable better diagnostics for compile-time UUIDs
-# ]
