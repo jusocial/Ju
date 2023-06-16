@@ -26,6 +26,9 @@ pub enum CustomError {
     #[msg("App management action not authorized")]
     AppManagementNotAthorized,
 
+    #[msg("The action is prohibited by application settings")]
+    ActionProhibitedByAppSettings,
+
     #[msg("Alias length is incorrect")]
     AliasLengthIncorrect,
 
