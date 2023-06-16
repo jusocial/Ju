@@ -807,7 +807,7 @@ pub mod ju_core {
         if ctx.accounts.app.subspace_name_required && data.name.is_none() {
             return Err(error!(CustomError::MissingRequiredField));
         }
-        // Validate name 
+        // Validate name
         if data.name.is_some() {
             subspace.validate_name(data.name.as_ref().unwrap())?;
         }
@@ -974,6 +974,22 @@ pub mod ju_core {
             }
         }
 
+        // Check Application level required fields
+
+        if ctx.accounts.app.subspace_name_required && data.name.is_none() {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
+
+        // Validate name
+        if data.name.is_some() {
+            subspace.validate_name(data.name.as_ref().unwrap())?;
+        }
+        subspace.name = data.name;
+
+        if ctx.accounts.app.subspace_metadata_uri_required && data.metadata_uri.is_none() {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
+        
         // Validate metadata URI
         if data.metadata_uri.is_some() {
             validate_metadata_uri(data.metadata_uri.as_ref().unwrap())?;
@@ -981,60 +997,63 @@ pub mod ju_core {
         subspace.metadata_uri = data.metadata_uri;
 
         // Assign Subspace specified external Processors
-        match &ctx.accounts.connecting_processor_pda {
-            Some(connecting_processor_pda) => {
-                require!(
-                    connecting_processor_pda
-                        .processor_type
-                        .eq(&ProcessorType::Connecting),
-                    CustomError::ProcessorTypeMismatch
-                );
-                subspace.connecting_processor = Some(connecting_processor_pda.program_address);
+        if ctx.accounts.app.subspace_individual_processors_allowed {
+            match &ctx.accounts.connecting_processor_pda {
+                Some(connecting_processor_pda) => {
+                    require!(
+                        connecting_processor_pda
+                            .processor_type
+                            .eq(&ProcessorType::Connecting),
+                        CustomError::ProcessorTypeMismatch
+                    );
+                    subspace.connecting_processor = Some(connecting_processor_pda.program_address);
+                }
+                None => {
+                    subspace.connecting_processor = None;
+                }
             }
-            None => {
-                subspace.connecting_processor = None;
+            match &ctx.accounts.publishing_processor_pda {
+                Some(publishing_processor_pda) => {
+                    require!(
+                        publishing_processor_pda
+                            .processor_type
+                            .eq(&ProcessorType::Publishing),
+                        CustomError::ProcessorTypeMismatch
+                    );
+                    subspace.publishing_processor = Some(publishing_processor_pda.program_address);
+                }
+                None => {
+                    subspace.publishing_processor = None;
+                }
             }
-        }
-        match &ctx.accounts.publishing_processor_pda {
-            Some(publishing_processor_pda) => {
-                require!(
-                    publishing_processor_pda
-                        .processor_type
-                        .eq(&ProcessorType::Publishing),
-                    CustomError::ProcessorTypeMismatch
-                );
-                subspace.publishing_processor = Some(publishing_processor_pda.program_address);
+            match &ctx.accounts.collecting_processor_pda {
+                Some(collecting_processor_pda) => {
+                    require!(
+                        collecting_processor_pda
+                            .processor_type
+                            .eq(&ProcessorType::Collecting),
+                        CustomError::ProcessorTypeMismatch
+                    );
+                    subspace.collecting_processor = Some(collecting_processor_pda.program_address);
+                }
+                None => {
+                    subspace.collecting_processor = None;
+                }
             }
-            None => {
-                subspace.publishing_processor = None;
-            }
-        }
-        match &ctx.accounts.collecting_processor_pda {
-            Some(collecting_processor_pda) => {
-                require!(
-                    collecting_processor_pda
-                        .processor_type
-                        .eq(&ProcessorType::Collecting),
-                    CustomError::ProcessorTypeMismatch
-                );
-                subspace.collecting_processor = Some(collecting_processor_pda.program_address);
-            }
-            None => {
-                subspace.collecting_processor = None;
-            }
-        }
-        match &ctx.accounts.referencing_processor_pda {
-            Some(referencing_processor_pda) => {
-                require!(
-                    referencing_processor_pda
-                        .processor_type
-                        .eq(&ProcessorType::Referencing),
-                    CustomError::ProcessorTypeMismatch
-                );
-                subspace.referencing_processor = Some(referencing_processor_pda.program_address);
-            }
-            None => {
-                subspace.referencing_processor = None;
+            match &ctx.accounts.referencing_processor_pda {
+                Some(referencing_processor_pda) => {
+                    require!(
+                        referencing_processor_pda
+                            .processor_type
+                            .eq(&ProcessorType::Referencing),
+                        CustomError::ProcessorTypeMismatch
+                    );
+                    subspace.referencing_processor =
+                        Some(referencing_processor_pda.program_address);
+                }
+                None => {
+                    subspace.referencing_processor = None;
+                }
             }
         }
 
