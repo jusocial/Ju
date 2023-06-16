@@ -26,6 +26,9 @@ pub enum CustomError {
     #[msg("App management action not authorized")]
     AppManagementNotAthorized,
 
+    #[msg("Missing dield required by Application settings")]
+    MissingRequiredField,
+
     #[msg("The action is prohibited by application settings")]
     ActionProhibitedByAppSettings,
 
