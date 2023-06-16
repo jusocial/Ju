@@ -295,7 +295,7 @@ impl Profile {
     /// 1. `name` - Reference to Profile Name String
     /// 
     pub fn validate_name(&self, name: &String) -> Result<()> {
-        if name.len() > MAX_PROFILE_NAME_LENGTH {
+        if name.len() < MIN_PROFILE_NAME_LENGTH || name.len() > MAX_PROFILE_NAME_LENGTH {
             return Err(error!(CustomError::ProfileNameTooLong));
         }
         Ok(())
@@ -308,7 +308,7 @@ impl Profile {
     /// 1. `surname` - Reference to Profile Surname String
     /// 
     pub fn validate_surname(&self, surname: &String) -> Result<()> {
-        if surname.len() > MAX_PROFILE_SURNAME_LENGTH {
+        if surname.len() < MIN_PROFILE_SURNAME_LENGTH ||  surname.len() > MAX_PROFILE_SURNAME_LENGTH {
             return Err(error!(CustomError::ProfileSurnameTooLong));
         }
         Ok(())
@@ -319,16 +319,17 @@ impl Profile {
 ///
 /// # Subspace account stores:
 ///
-/// 1. Subspace UUID
-/// 2. Application address
-/// 3. Profile authority address
-/// 4. Subspace owner Profile Pubkey
-/// 5. Unique application's user profile alias as string (optional, ASCII alphanumeric)
-/// 6. Subspace metadata URI
-/// 7. External Publishing processor (optional)
-/// 8. External Connecting processor (optional)
-/// 9. External Collecting processor (optional)
-/// 10. External Referencing processor (optional)
+/// 1. Application address
+/// 2. Profile authority address
+/// 3. Subspace owner Profile Pubkey
+/// 4. Unique application's user profile alias as string (optional, ASCII alphanumeric) (optional)
+/// 5. Subspace name (optional)
+/// 6. Subspace UUID
+/// 7. Subspace metadata URI (optional)
+/// 8. External Publishing processor (optional)
+/// 9. External Connecting processor (optional)
+/// 10. External Collecting processor (optional)
+/// 11. External Referencing processor (optional)
 ///
 #[account]
 #[derive(Default)]
@@ -341,6 +342,8 @@ pub struct Subspace {
     pub creator: Pubkey,
     /// Profile alias (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH).
     pub alias: Option<String>,
+    /// Subspace name
+    pub name: Option<String>,
     /// Subspace UUID (UUID_LENGTH)
     pub uuid: String,
     /// Metadata URI (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH).
@@ -358,17 +361,18 @@ pub struct Subspace {
 impl Subspace {
     pub const PREFIX: &'static str = "subspace";
 
-    pub const LEN: usize = DISCRIMINATOR_LENGTH         // Anchor internal discrimitator
-        + (STRING_LENGTH_PREFIX + UUID_LENGTH)          // String     
-        + 32                                            // Pubkey
-        + 32                                            // Pubkey
-        + 32                                            // Pubkey
-        + (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH) // String
-        + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)   // String
-        + (1 + 32)                                      // Option<Pubkey>
-        + (1 + 32)                                      // Option<Pubkey>
-        + (1 + 32)                                      // Option<Pubkey>
-        + (1 + 32);                                     // Option<Pubkey>
+    pub const LEN: usize = DISCRIMINATOR_LENGTH                 // Anchor internal discrimitator     
+        + 32                                                    // Pubkey (app)
+        + 32                                                    // Pubkey (authority)
+        + 32                                                    // Pubkey (creator)
+        + (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)         // String (alias)
+        + (1 + STRING_LENGTH_PREFIX + MAX_SUBSPACE_NAME_LENGTH) // String (alias)
+        + (STRING_LENGTH_PREFIX + UUID_LENGTH)                  // String (uuid)
+        + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)           // String (metadata_uri)
+        + (1 + 32)                                              // Option<Pubkey>
+        + (1 + 32)                                              // Option<Pubkey>
+        + (1 + 32)                                              // Option<Pubkey>
+        + (1 + 32);                                             // Option<Pubkey>
 
     /// Method for validating Subspace Alias
     ///
@@ -386,6 +390,19 @@ impl Subspace {
             return Err(error!(CustomError::AliasLengthIncorrect));
         }
 
+        Ok(())
+    }
+
+    /// Method for validating Subspace Name
+    ///
+    /// Parameters:
+    ///
+    /// 1. `name` - Reference to Profile Name String
+    /// 
+    pub fn validate_name(&self, name: &String) -> Result<()> {
+        if name.len() < MIN_SUBSPACE_NAME_LENGTH || name.len() > MAX_SUBSPACE_NAME_LENGTH {
+            return Err(error!(CustomError::ProfileNameTooLong));
+        }
         Ok(())
     }
 }
@@ -759,12 +776,14 @@ pub struct ProfileData {
 ///
 /// # Struct contains:
 ///
-/// 1. `alias` - Unique Application's Subspace Alias as string (ASCII alphanumeric)
-/// 2. `metadata_uri` - Publication metadata URI
+/// 1. `alias` - Unique Application's Subspace Alias as string (ASCII alphanumeric) (optional)
+/// 2. `name` - Subspace name (optional)
+/// 3. `metadata_uri` - Publication metadata URI (optional)
 ///
 #[derive(Default, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct SubspaceData {
     pub alias: Option<String>,
+    pub name: Option<String>,
     pub metadata_uri: Option<String>,
 }
 
