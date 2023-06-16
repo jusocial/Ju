@@ -525,7 +525,12 @@ pub mod ju_core {
 
     // Delete existing Profile
     pub fn delete_profile(ctx: Context<DeleteProfile>) -> Result<()> {
-        // TODO: Implement Application level Delete permisson
+
+        // Check Application level Delete permisson
+        if !ctx.accounts.app.profile_delete_allowed {
+            return Err(error!(CustomError::ActionProhibitedByAppSettings));
+        }
+
         // TODO: Implement Actions with Profile related entities (publications/subspaces/reactions etc.)
 
         // if user has registered Alias - make sure that Alias account is passed to delete
@@ -974,8 +979,13 @@ pub mod ju_core {
 
     // Delete existing Subspace
     pub fn delete_subspace(ctx: Context<DeleteSubpace>) -> Result<()> {
-        // TODO: Implement Application level Delete permisson
-        // TODO: Implement Actions with Subspace related entities (publications/reactions etc.)
+
+        // Check Application level Delete permisson
+        if !ctx.accounts.app.subspace_delete_allowed {
+            return Err(error!(CustomError::ActionProhibitedByAppSettings));
+        }
+
+        // TODO: Implement Actions with Subspace related existing entities (publications/reactions etc.)
 
         // if Subspace has registered Alias - make sure that Alias account is passed to delete
         if ctx.accounts.subspace.alias.is_some() && ctx.accounts.alias_pda.is_none() {
@@ -1289,7 +1299,11 @@ pub mod ju_core {
 
     // Delete existing publication
     pub fn delete_publication(ctx: Context<DeletePublication>) -> Result<()> {
-        // TODO: Implement Application level Delete permisson
+
+        // Check Application level Delete permisson
+        if !ctx.accounts.app.publication_delete_allowed {
+            return Err(error!(CustomError::ActionProhibitedByAppSettings));
+        }
 
         let now = Clock::get()?.unix_timestamp;
         // Emit an Event
