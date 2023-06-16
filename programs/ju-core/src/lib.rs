@@ -357,17 +357,30 @@ pub mod ju_core {
             alias_pda.value = data.alias.as_ref().unwrap().clone();
         }
 
-        // Validate metadata URI
-        if data.metadata_uri.is_some() {
-            validate_metadata_uri(data.metadata_uri.as_ref().unwrap())?;
-        }
-
         profile.app = *ctx.accounts.app.to_account_info().key;
         profile.authority = *ctx.accounts.authority.to_account_info().key;
 
         profile.alias = data.alias;
-        profile.metadata_uri = data.metadata_uri;
-        profile.status_text = data.status_text;
+
+        // Check Application level required fields
+        if ctx.accounts.app.profile_name_required && data.name.is_none() {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
+        if ctx.accounts.app.profile_surname_required && data.surname.is_none() {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
+        if ctx.accounts.app.profile_birthdate_required && data.birth_date.is_none() {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
+        if ctx.accounts.app.profile_country_required && data.country_code.is_none() {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
+        if ctx.accounts.app.profile_city_required && data.city_code.is_none() {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
+        if ctx.accounts.app.profile_metadata_uri_required && data.metadata_uri.is_none() {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
 
         if data.name.is_some() {
             profile.validate_name(data.name.as_ref().unwrap())?;
@@ -382,19 +395,29 @@ pub mod ju_core {
         profile.city_code = data.city_code;
         profile.current_location = data.current_location;
 
+        // Validate metadata URI
+        if data.metadata_uri.is_some() {
+            validate_metadata_uri(data.metadata_uri.as_ref().unwrap())?;
+        }
+        profile.metadata_uri = data.metadata_uri;
+
+        profile.status_text = data.status_text;
+
         // Assign Profile specified Connecting external Processor
-        match &ctx.accounts.connecting_processor_pda {
-            Some(connecting_processor_pda) => {
-                require!(
-                    connecting_processor_pda
-                        .processor_type
-                        .eq(&ProcessorType::Connecting),
-                    CustomError::ProcessorTypeMismatch
-                );
-                profile.connecting_processor = Some(connecting_processor_pda.program_address);
-            }
-            None => {
-                profile.connecting_processor = None;
+        if ctx.accounts.app.profile_individual_processors_allowed {
+            match &ctx.accounts.connecting_processor_pda {
+                Some(connecting_processor_pda) => {
+                    require!(
+                        connecting_processor_pda
+                            .processor_type
+                            .eq(&ProcessorType::Connecting),
+                        CustomError::ProcessorTypeMismatch
+                    );
+                    profile.connecting_processor = Some(connecting_processor_pda.program_address);
+                }
+                None => {
+                    profile.connecting_processor = None;
+                }
             }
         }
 
@@ -491,13 +514,25 @@ pub mod ju_core {
             }
         }
 
-        // Validate metadata URI
-        if data.metadata_uri.is_some() {
-            validate_metadata_uri(data.metadata_uri.as_ref().unwrap())?;
+        // Check Application level required fields
+        if ctx.accounts.app.profile_name_required && data.name.is_none() {
+            return Err(error!(CustomError::MissingRequiredField));
         }
-        profile.metadata_uri = data.metadata_uri;
-
-        profile.status_text = data.status_text;
+        if ctx.accounts.app.profile_surname_required && data.surname.is_none() {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
+        if ctx.accounts.app.profile_birthdate_required && data.birth_date.is_none() {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
+        if ctx.accounts.app.profile_country_required && data.country_code.is_none() {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
+        if ctx.accounts.app.profile_city_required && data.city_code.is_none() {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
+        if ctx.accounts.app.profile_metadata_uri_required && data.metadata_uri.is_none() {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
 
         if data.name.is_some() {
             profile.validate_name(data.name.as_ref().unwrap())?;
@@ -512,6 +547,14 @@ pub mod ju_core {
         profile.city_code = data.city_code;
         profile.current_location = data.current_location;
 
+        // Validate metadata URI
+        if data.metadata_uri.is_some() {
+            validate_metadata_uri(data.metadata_uri.as_ref().unwrap())?;
+        }
+        profile.metadata_uri = data.metadata_uri;
+
+        profile.status_text = data.status_text;
+
         let now = Clock::get()?.unix_timestamp;
         // Emit new Event
         emit!(UpdateProfileEvent {
@@ -525,7 +568,6 @@ pub mod ju_core {
 
     // Delete existing Profile
     pub fn delete_profile(ctx: Context<DeleteProfile>) -> Result<()> {
-
         // Check Application level Delete permisson
         if !ctx.accounts.app.profile_delete_allowed {
             return Err(error!(CustomError::ActionProhibitedByAppSettings));
@@ -559,7 +601,6 @@ pub mod ju_core {
         ctx: Context<InitializeConnection>,
         external_processing_data: Option<String>, // TODO: Replace String with some other type ?
     ) -> Result<()> {
-
         // Checking passed target type
         let connection_target_type = get_connection_target_type(&ctx.accounts.target)?;
 
@@ -586,7 +627,10 @@ pub mod ju_core {
                         ),
                     ],
 
-                    data: external_processing_data.clone().unwrap_or_default().into_bytes(),
+                    data: external_processing_data
+                        .clone()
+                        .unwrap_or_default()
+                        .into_bytes(),
                 },
                 &[
                     ctx.accounts.app.to_account_info(),
@@ -598,10 +642,10 @@ pub mod ju_core {
         }
 
         // Second check if Target has assigned individual Connecting Processor and app setting allow this feature
-        let target_connecting_processor = get_connecting_processor_from_target(&ctx.accounts.target)?;
+        let target_connecting_processor =
+            get_connecting_processor_from_target(&ctx.accounts.target)?;
 
         if ctx.accounts.app.profile_individual_processors_allowed {
-
             if let Some(connecting_processor) = target_connecting_processor {
                 invoke(
                     &Instruction {
@@ -750,64 +794,86 @@ pub mod ju_core {
         subspace.app = *ctx.accounts.app.to_account_info().key;
         subspace.creator = *ctx.accounts.creator_profile.to_account_info().key;
         subspace.alias = data.alias;
-        subspace.metadata_uri = data.metadata_uri;
         subspace.authority = *ctx.accounts.authority.to_account_info().key;
 
+        // Check Application level required fields
+
+        if ctx.accounts.app.subspace_name_required && data.name.is_none() {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
+        // Validate name 
+        if data.name.is_some() {
+            subspace.validate_name(data.name.as_ref().unwrap())?;
+        }
+        subspace.name = data.name;
+
+        if ctx.accounts.app.subspace_metadata_uri_required && data.metadata_uri.is_none() {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
+        // Validate metadata URI
+        if data.metadata_uri.is_some() {
+            validate_metadata_uri(data.metadata_uri.as_ref().unwrap())?;
+        }
+        subspace.metadata_uri = data.metadata_uri;
+
         // Assign Subspace specified external Processors
-        match &ctx.accounts.connecting_processor_pda {
-            Some(connecting_processor_pda) => {
-                require!(
-                    connecting_processor_pda
-                        .processor_type
-                        .eq(&ProcessorType::Connecting),
-                    CustomError::ProcessorTypeMismatch
-                );
-                subspace.connecting_processor = Some(connecting_processor_pda.program_address);
+        if ctx.accounts.app.subspace_individual_processors_allowed {
+            match &ctx.accounts.connecting_processor_pda {
+                Some(connecting_processor_pda) => {
+                    require!(
+                        connecting_processor_pda
+                            .processor_type
+                            .eq(&ProcessorType::Connecting),
+                        CustomError::ProcessorTypeMismatch
+                    );
+                    subspace.connecting_processor = Some(connecting_processor_pda.program_address);
+                }
+                None => {
+                    subspace.connecting_processor = None;
+                }
             }
-            None => {
-                subspace.connecting_processor = None;
+            match &ctx.accounts.publishing_processor_pda {
+                Some(publishing_processor_pda) => {
+                    require!(
+                        publishing_processor_pda
+                            .processor_type
+                            .eq(&ProcessorType::Publishing),
+                        CustomError::ProcessorTypeMismatch
+                    );
+                    subspace.publishing_processor = Some(publishing_processor_pda.program_address);
+                }
+                None => {
+                    subspace.publishing_processor = None;
+                }
             }
-        }
-        match &ctx.accounts.publishing_processor_pda {
-            Some(publishing_processor_pda) => {
-                require!(
-                    publishing_processor_pda
-                        .processor_type
-                        .eq(&ProcessorType::Publishing),
-                    CustomError::ProcessorTypeMismatch
-                );
-                subspace.publishing_processor = Some(publishing_processor_pda.program_address);
+            match &ctx.accounts.collecting_processor_pda {
+                Some(collecting_processor_pda) => {
+                    require!(
+                        collecting_processor_pda
+                            .processor_type
+                            .eq(&ProcessorType::Collecting),
+                        CustomError::ProcessorTypeMismatch
+                    );
+                    subspace.collecting_processor = Some(collecting_processor_pda.program_address);
+                }
+                None => {
+                    subspace.collecting_processor = None;
+                }
             }
-            None => {
-                subspace.publishing_processor = None;
-            }
-        }
-        match &ctx.accounts.collecting_processor_pda {
-            Some(collecting_processor_pda) => {
-                require!(
-                    collecting_processor_pda
-                        .processor_type
-                        .eq(&ProcessorType::Collecting),
-                    CustomError::ProcessorTypeMismatch
-                );
-                subspace.collecting_processor = Some(collecting_processor_pda.program_address);
-            }
-            None => {
-                subspace.collecting_processor = None;
-            }
-        }
-        match &ctx.accounts.referencing_processor_pda {
-            Some(referencing_processor_pda) => {
-                require!(
-                    referencing_processor_pda
-                        .processor_type
-                        .eq(&ProcessorType::Referencing),
-                    CustomError::ProcessorTypeMismatch
-                );
-                subspace.referencing_processor = Some(referencing_processor_pda.program_address);
-            }
-            None => {
-                subspace.referencing_processor = None;
+            match &ctx.accounts.referencing_processor_pda {
+                Some(referencing_processor_pda) => {
+                    require!(
+                        referencing_processor_pda
+                            .processor_type
+                            .eq(&ProcessorType::Referencing),
+                        CustomError::ProcessorTypeMismatch
+                    );
+                    subspace.referencing_processor =
+                        Some(referencing_processor_pda.program_address);
+                }
+                None => {
+                    subspace.referencing_processor = None;
+                }
             }
         }
 
@@ -979,7 +1045,6 @@ pub mod ju_core {
 
     // Delete existing Subspace
     pub fn delete_subspace(ctx: Context<DeleteSubpace>) -> Result<()> {
-
         // Check Application level Delete permisson
         if !ctx.accounts.app.subspace_delete_allowed {
             return Err(error!(CustomError::ActionProhibitedByAppSettings));
@@ -1019,7 +1084,6 @@ pub mod ju_core {
     ) -> Result<()> {
         // Making additianal processing using external Processor
         if !data.is_mirror {
-
             // This is initial Publishing or replying ...
             // Making additianal Publication processing using external Processor
 
@@ -1059,7 +1123,6 @@ pub mod ju_core {
                 )?;
             }
         } else {
-
             // This is Referencing ...
             // Making additianal Publication Reference processing using external Processor
 
@@ -1088,7 +1151,10 @@ pub mod ju_core {
                             ),
                         ],
 
-                        data: external_processing_data.clone().unwrap_or_default().into_bytes(),
+                        data: external_processing_data
+                            .clone()
+                            .unwrap_or_default()
+                            .into_bytes(),
                     },
                     &[
                         ctx.accounts.app.to_account_info(),
@@ -1100,13 +1166,20 @@ pub mod ju_core {
             }
 
             // Second check if Target Publication has individual assigned Referencing external Processor
-            if ctx.accounts.app.publication_individual_processors_allowed && ctx.accounts.target_publication.is_some() {
-
-                if let Some(referencing_processor) = ctx.accounts.target_publication.as_ref().unwrap().referencing_processor {
+            if ctx.accounts.app.publication_individual_processors_allowed
+                && ctx.accounts.target_publication.is_some()
+            {
+                if let Some(referencing_processor) = ctx
+                    .accounts
+                    .target_publication
+                    .as_ref()
+                    .unwrap()
+                    .referencing_processor
+                {
                     invoke(
                         &Instruction {
                             program_id: referencing_processor,
-    
+
                             accounts: vec![
                                 AccountMeta::new_readonly(
                                     *ctx.accounts.app.to_account_info().key,
@@ -1125,7 +1198,7 @@ pub mod ju_core {
                                     false,
                                 ),
                             ],
-    
+
                             data: external_processing_data.unwrap_or_default().into_bytes(),
                         },
                         &[
@@ -1299,7 +1372,6 @@ pub mod ju_core {
 
     // Delete existing publication
     pub fn delete_publication(ctx: Context<DeletePublication>) -> Result<()> {
-
         // Check Application level Delete permisson
         if !ctx.accounts.app.publication_delete_allowed {
             return Err(error!(CustomError::ActionProhibitedByAppSettings));
@@ -1326,7 +1398,6 @@ pub mod ju_core {
         ctx: Context<CollectPublication>,
         external_processing_data: Option<String>, // TODO: Replace String with some other type ?
     ) -> Result<()> {
-
         // Making additianal Collection processing using external Processor
 
         // First check if Application has assigned Collecting external Processor
@@ -1351,7 +1422,10 @@ pub mod ju_core {
                         ),
                     ],
 
-                    data: external_processing_data.clone().unwrap_or_default().into_bytes(),
+                    data: external_processing_data
+                        .clone()
+                        .unwrap_or_default()
+                        .into_bytes(),
                 },
                 &[
                     ctx.accounts.app.to_account_info(),
@@ -1363,8 +1437,7 @@ pub mod ju_core {
         }
 
         // Second check if Target Publication has individual assigned Collectiong external Processor
-        if ctx.accounts.app.publication_individual_processors_allowed{
-
+        if ctx.accounts.app.publication_individual_processors_allowed {
             if let Some(collecting_processor) = ctx.accounts.target.collecting_processor {
                 invoke(
                     &Instruction {
