@@ -32,11 +32,11 @@ pub const UUID_LENGTH: usize = 32;
 pub const MAX_NOTIFICATION_LENGTH: usize = 100;
 
 #[constant]
-pub const  MIN_PROFILE_NAME_LENGTH: usize = 4;
+pub const  MIN_PROFILE_NAME_LENGTH: usize = 2;
 #[constant]
 pub const  MAX_PROFILE_NAME_LENGTH: usize = 20;
 #[constant]
-pub const  MIN_PROFILE_SURNAME_LENGTH: usize = 4;
+pub const  MIN_PROFILE_SURNAME_LENGTH: usize = 2;
 #[constant]
 pub const  MAX_PROFILE_SURNAME_LENGTH: usize = 30;
 
