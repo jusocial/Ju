@@ -411,17 +411,17 @@ impl Subspace {
 ///
 /// # Publication account stores:
 ///
-/// 1. Publication UUID as string
-/// 2. Existing Protocol Application in which Publication was created
-/// 3. References to Publication's author Profile
-/// 4. Publication authority address
-/// 5. Publication metadata URI
-/// 6. Subspace in which Publication being published
-/// 7. Whether or not the Publication is mirroring other existing Publication (e.g. re-post)
-/// 8. Whether or not the Publication is replying to other existing Publication (e.g. comment)
-/// 9. References to existing Publication if there is a mirror or reply (optional)
-/// 10. Publication main content type
-/// 11. Publication tag
+/// 1. Existing Protocol Application in which Publication was created
+/// 2. References to Publication's author Profile
+/// 3. Publication authority address
+/// 4. Publication metadata URI
+/// 5. Subspace in which Publication being published
+/// 6. Whether or not the Publication is mirroring other existing Publication (e.g. re-post)
+/// 7. Whether or not the Publication is replying to other existing Publication (e.g. comment)
+/// 8. References to existing Publication if there is a mirror or reply (optional)
+/// 9. Publication main content type
+/// 10. Publication tag
+/// 11. Publication UUID as string
 /// 12. External Collecting processor (optional)
 /// 13. External Referencing processor (optional)
 /// 14. Publication create unix timestamp
