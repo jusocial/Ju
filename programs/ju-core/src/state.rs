@@ -519,19 +519,22 @@ impl Connection {
 /// # The CollectionItem account stores:
 ///
 /// 1. Application address
-/// 2. CollectionItem authority address
+/// 2. CollectionItem initializer Profile address
 /// 3. CollectionItem target entity (e.g. Publication) address
-/// 4. CollectionItem creation unix timestamp
+/// 4. CollectionItem authority address
+/// 5. CollectionItem creation unix timestamp
 ///
 #[account]
 #[derive(Default)]
 pub struct CollectionItem {
     /// Application Pubkey (32)
     pub app: Pubkey,
-    /// CollectionItem authority account Pubkey (32)
-    pub authority: Pubkey,
+    /// CollectionItem initializer account Pubkey (32)
+    pub initializer: Pubkey,
     /// CollectionItem target Publication Pubkey (32)
     pub target: Pubkey,
+    /// CollectionItem authority account Pubkey (32)
+    pub authority: Pubkey,
     /// Unix timestamp of the CollectionItem creation (8)
     pub created_at: i64,
 }
@@ -540,6 +543,7 @@ impl CollectionItem {
     pub const PREFIX: &'static str = "collection_item";
     
     pub const LEN: usize = DISCRIMINATOR_LENGTH       
+        + 32                                            // Pubkey
         + 32                                            // Pubkey
         + 32                                            // Pubkey
         + 32                                            // Pubkey
