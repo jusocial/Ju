@@ -382,18 +382,17 @@ pub mod ju_core {
             return Err(error!(CustomError::MissingRequiredField));
         }
 
+        // Validate name
         if data.name.is_some() {
             profile.validate_name(data.name.as_ref().unwrap())?;
-            profile.name = data.name;
         }
+        profile.name = data.name;
+
+        // Validate surname
         if data.surname.is_some() {
             profile.validate_surname(data.surname.as_ref().unwrap())?;
-            profile.surname = data.surname;
         }
-        profile.birth_date = data.birth_date;
-        profile.country_code = data.country_code;
-        profile.city_code = data.city_code;
-        profile.current_location = data.current_location;
+        profile.surname = data.surname;
 
         // Validate metadata URI
         if data.metadata_uri.is_some() {
@@ -401,6 +400,10 @@ pub mod ju_core {
         }
         profile.metadata_uri = data.metadata_uri;
 
+        profile.birth_date = data.birth_date;
+        profile.country_code = data.country_code;
+        profile.city_code = data.city_code;
+        profile.current_location = data.current_location;
         profile.status_text = data.status_text;
 
         // Assign Profile specified Connecting external Processor
