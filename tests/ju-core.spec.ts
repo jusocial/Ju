@@ -238,7 +238,6 @@ describe("ju-core", () => {
         profileCityRequired: false,
         profileMetadataUriRequired: true,
 
-        subspaceNameRequired: true,
         subspaceMetadataUriRequired: true,
 
         profileIndividualProcessorsAllowed: false,
@@ -291,7 +290,6 @@ describe("ju-core", () => {
         profileCityRequired: false,
         profileMetadataUriRequired: true,
 
-        subspaceNameRequired: true,
         subspaceMetadataUriRequired: true,
 
         profileIndividualProcessorsAllowed: false,

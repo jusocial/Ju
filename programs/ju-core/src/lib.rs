@@ -133,7 +133,6 @@ pub mod ju_core {
         app.profile_city_required = data.profile_city_required;
         app.profile_metadata_uri_required = data.profile_metadata_uri_required;
 
-        app.subspace_name_required = data.subspace_name_required;
         app.subspace_metadata_uri_required = data.subspace_metadata_uri_required;
 
         app.profile_delete_allowed = data.profile_delete_allowed;
@@ -238,7 +237,6 @@ pub mod ju_core {
         app.profile_city_required = data.profile_city_required;
         app.profile_metadata_uri_required = data.profile_metadata_uri_required;
 
-        app.subspace_name_required = data.subspace_name_required;
         app.subspace_metadata_uri_required = data.subspace_metadata_uri_required;
 
         app.profile_delete_allowed = data.profile_delete_allowed;
@@ -824,15 +822,8 @@ pub mod ju_core {
         subspace.alias = data.alias;
         subspace.authority = *ctx.accounts.authority.to_account_info().key;
 
-        // Check Application level required fields
-
-        if ctx.accounts.app.subspace_name_required && data.name.is_none() {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
         // Validate name
-        if data.name.is_some() {
-            subspace.validate_name(data.name.as_ref().unwrap())?;
-        }
+        subspace.validate_name(&data.name)?;
         subspace.name = data.name;
 
         subspace.publishing_permission = data.publishing_permission;
@@ -998,16 +989,8 @@ pub mod ju_core {
             }
         }
 
-        // Check Application level required fields
-
-        if ctx.accounts.app.subspace_name_required && data.name.is_none() {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
-
         // Validate name
-        if data.name.is_some() {
-            subspace.validate_name(data.name.as_ref().unwrap())?;
-        }
+        subspace.validate_name(&data.name)?;
         subspace.name = data.name;
 
         subspace.publishing_permission = data.publishing_permission;

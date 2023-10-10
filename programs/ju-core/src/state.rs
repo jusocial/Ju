@@ -91,19 +91,18 @@ impl ExternalProcessorPDA {
 /// 7. `profile_country_required`: Specifies whether the Profile country is required
 /// 8. `profile_city_required`: Specifies whether the Profile city is required
 /// 9. `profile_metadata_uri_required`: Specifies whether the Profile metadata URI is required
-/// 10. `subspace_name_required`: Specifies whether the Subspace name is required
-/// 11. `subspace_metadata_uri_required`: Specifies whether the Subspace metadata URI is required
-/// 12. `profile_delete_allowed`: Specifies the permission to delete a Profile
-/// 13. `subspace_delete_allowed`: Specifies the permission to delete a Subspace
-/// 14. `publication_delete_allowed`: Specifies the permission to delete a Publication
-/// 15. `profile_individual_processors_allowed`: Specifies the permission to assign Profile's individual external processors.
-/// 16. `subspace_individual_processors_allowed`: Specifies the permission to assign Subspace's individual external processors.
-/// 17. `publication_individual_processors_allowed`: Specifies the permission to assign Publication's individual external processors.
-/// 18. `registering_processor`: An address of an external processor for additional processing during Profile creation
-/// 19. `connecting_processor`: An address of an external processor for additional processing during Profile connection
-/// 20. `publishing_processor`: An address of an external processor for additional processing during Publication creation
-/// 21. `collecting_processor`: An address of an external processor for additional processing during Publication collection
-/// 22. `referencing_processor`: An address of an external processor for additional processing during Publication referencing
+/// 10. `subspace_metadata_uri_required`: Specifies whether the Subspace metadata URI is required
+/// 11. `profile_delete_allowed`: Specifies the permission to delete a Profile
+/// 12. `subspace_delete_allowed`: Specifies the permission to delete a Subspace
+/// 13. `publication_delete_allowed`: Specifies the permission to delete a Publication
+/// 14. `profile_individual_processors_allowed`: Specifies the permission to assign Profile's individual external processors.
+/// 15. `subspace_individual_processors_allowed`: Specifies the permission to assign Subspace's individual external processors.
+/// 16. `publication_individual_processors_allowed`: Specifies the permission to assign Publication's individual external processors.
+/// 17. `registering_processor`: An address of an external processor for additional processing during Profile creation
+/// 18. `connecting_processor`: An address of an external processor for additional processing during Profile connection
+/// 19. `publishing_processor`: An address of an external processor for additional processing during Publication creation
+/// 20. `collecting_processor`: An address of an external processor for additional processing during Publication collection
+/// 21. `referencing_processor`: An address of an external processor for additional processing during Publication referencing
 ///
 #[account]
 #[derive(Default)]
@@ -130,8 +129,6 @@ pub struct App {
     /// Specifies whether the Profile metadata URI is required.
     pub profile_metadata_uri_required: bool,
 
-    /// Specifies whether the Subspace name is required.
-    pub subspace_name_required: bool,
     /// Specifies whether the Subspace metadata URI is required.
     pub subspace_metadata_uri_required: bool,
 
@@ -174,7 +171,6 @@ impl App {
         + 1                                             // bool (profile_country_required)
         + 1                                             // bool (profile_city_required)
         + 1                                             // bool (profile_metadata_uri_required)
-        + 1                                             // bool (subspace_name_required)
         + 1                                             // bool (subspace_metadata_uri_required)
         + 1                                             // bool (profile_delete_allowed)
         + 1                                             // bool (subspace_delete_allowed)
@@ -342,7 +338,7 @@ impl Profile {
 /// 2. Profile authority address
 /// 3. Subspace owner Profile Pubkey
 /// 4. Unique application's user profile alias as string (optional, ASCII alphanumeric) (optional)
-/// 5. Subspace name (optional)
+/// 5. Subspace name
 /// 6. Subspace UUID
 /// 7. Subspace publishing permission level
 /// 8. Subspace metadata URI (optional)
@@ -363,7 +359,7 @@ pub struct Subspace {
     /// Profile alias (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH).
     pub alias: Option<String>,
     /// Subspace name
-    pub name: Option<String>,
+    pub name: String,
     /// Subspace UUID (UUID_LENGTH)
     pub uuid: String,
     /// Subspace publishing permission level
@@ -388,7 +384,7 @@ impl Subspace {
         + 32                                                    // Pubkey (authority)
         + 32                                                    // Pubkey (creator)
         + (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)         // String (alias)
-        + (1 + STRING_LENGTH_PREFIX + MAX_SUBSPACE_NAME_LENGTH) // String (alias)
+        + (STRING_LENGTH_PREFIX + MAX_SUBSPACE_NAME_LENGTH)     // String (alias)
         + (STRING_LENGTH_PREFIX + UUID_LENGTH)                  // String (uuid)
         + 1                                                     // Enum (publishing_permission)
         + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)           // String (metadata_uri)
@@ -766,7 +762,6 @@ impl Report {
 /// - `profile_birthdate_required`: Specifies whether the Profile birth date is required.
 /// - `profile_location_required`: Specifies whether the Profile location is required.
 /// - `profile_metadata_uri_required`: Specifies whether the Profile metadata URI is required.
-/// - `subspace_name_required`: Specifies whether the Subspace name is required.
 /// - `subspace_metadata_uri_required`: Specifies whether the Subspace metadata URI is required.
 /// - `profile_delete_allowed`: Specifies the permission to delete a Profile.
 /// - `subspace_delete_allowed`: Specifies the permission to delete a Subspace.
@@ -793,8 +788,6 @@ pub struct AppData {
     /// Specifies whether the Profile metadata URI is required.
     pub profile_metadata_uri_required: bool,
 
-    /// Specifies whether the Subspace name is required.
-    pub subspace_name_required: bool,
     /// Specifies whether the Subspace metadata URI is required.
     pub subspace_metadata_uri_required: bool,
 
@@ -845,13 +838,13 @@ pub struct ProfileData {
 /// # Struct contains:
 ///
 /// 1. `alias` - Unique Application's Subspace Alias as string (ASCII alphanumeric) (optional)
-/// 2. `name` - Subspace name (optional)
+/// 2. `name` - Subspace name
 /// 3. `metadata_uri` - Publication metadata URI (optional)
 ///
 #[derive(Default, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct SubspaceData {
     pub alias: Option<String>,
-    pub name: Option<String>,
+    pub name: String,
     pub publishing_permission: SubspacePublishingPermissionLevel,
     pub metadata_uri: Option<String>,
 }
