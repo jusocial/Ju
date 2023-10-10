@@ -1483,16 +1483,6 @@ pub struct CreateReaction<'info> {
     )]
     pub initializer: Box<Account<'info, Profile>>,
 
-    // #[account(
-    //     seeds = [
-    //         Publication::PREFIX.as_bytes(),
-    //         app.key().as_ref(),
-    //         target.uuid.as_bytes().as_ref(),
-    //     ],
-    //     bump
-    // )]
-    // pub target: Account<'info, Publication>,
-
     /// Report target - potentialy could be a Profile or Publication
     /// CHECK: Account checked inside instruction
     pub target: AccountInfo<'info>,
@@ -1549,16 +1539,6 @@ pub struct DeleteReaction<'info> {
         bump
     )]
     pub initializer: Box<Account<'info, Profile>>,
-
-    // #[account(
-    //     seeds = [
-    //         Publication::PREFIX.as_bytes(),
-    //         app.key().as_ref(),
-    //         target.uuid.as_bytes().as_ref(),
-    //     ],
-    //     bump
-    // )]
-    // pub target: Account<'info, Publication>,
 
     /// Report target - potentialy could be a Profile or Publication
     /// CHECK: Account checked inside instruction
