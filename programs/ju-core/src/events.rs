@@ -95,6 +95,17 @@ pub struct NewSubspaceManagerEvent {
     pub created_at: i64,
 }
 
+/// An Event that is fired when new Subspace Manager modified.
+#[event]
+pub struct UpdateSubspaceManagerEvent {
+    /// Application PDA address
+    pub app: Pubkey,
+    /// Manager Profile PDA address
+    pub profile: Pubkey,
+    /// Subspace updating unix timestamp
+    pub modified_at: i64,
+}
+
 /// An Event that is fired when new Publication is created.
 #[event]
 pub struct NewPublicationEvent {

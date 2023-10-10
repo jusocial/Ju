@@ -1030,6 +1030,80 @@ pub struct AddSubspaceManager<'info> {
     pub system_program: Program<'info, System>,
 }
 
+/// Update an existing Subspace manager
+///
+/// Accounts expected:
+///
+/// 0. `[]` Current Application (PDA)
+/// 1. `[]` Subspace (PDA)
+/// 2. `[]` Profile as Subspace manager (PDA)
+/// 3. `[writable]` SubspaceManager PDA, it stores all SubspaceManager data
+/// 4. `[signer]` Application Authority
+/// 5. `[]` System program
+///
+#[derive(Accounts)]
+pub struct UpdateSubspaceManager<'info> {
+    #[account(
+        seeds = [
+            App::PREFIX.as_bytes(),
+            app.app_name.as_bytes().as_ref(),
+        ],
+        bump
+    )]
+    pub app: Account<'info, App>,
+
+    #[account(
+        has_one = authority,
+        seeds = [
+            Subspace::PREFIX.as_bytes(),
+            app.key().as_ref(),
+            subspace.creator.key().as_ref(),
+            subspace.uuid.as_bytes().as_ref(),
+        ],
+        bump,
+    )]
+    pub subspace: Account<'info, Subspace>,
+
+    #[account(
+        seeds = [
+            Profile::PREFIX.as_bytes(),
+            app.key().as_ref(),
+            profile.authority.key().as_ref(),
+        ],
+        bump
+    )]
+    pub profile: Account<'info, Profile>,
+
+    #[account(
+        seeds = [
+           Connection::PREFIX.as_bytes(),
+           app.key().as_ref(),
+           profile.key().as_ref(),
+           subspace.key().as_ref(),
+           // another one Initializer seed for making unique connection for each initializer
+           profile.key().as_ref(), 
+        ],
+        bump
+    )]
+    pub connection_proof: Box<Account<'info, Connection>>,
+
+    #[account(
+        has_one = authority,
+        seeds = [
+            SubspaceManager::PREFIX.as_bytes(),
+            subspace.key().as_ref(),
+            profile.key().as_ref(),
+        ],
+        bump
+    )]
+    pub manager: Account<'info, SubspaceManager>,
+
+    #[account(mut)]
+    pub authority: Signer<'info>,
+
+    pub system_program: Program<'info, System>,
+}
+
 /// Context to delete existing Subspace manager
 ///
 /// Accounts expected:

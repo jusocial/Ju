@@ -1131,6 +1131,31 @@ pub mod ju_core {
         Ok(())
     }
 
+    /// Update an existing Subspace manager
+    ///
+    /// /// # Arguments
+    ///
+    /// * `manager_role` - Subspace manager Role
+    ///
+    pub fn update_subspace_manager(
+        ctx: Context<UpdateSubspaceManager>,
+        manager_role: SubspaceManagementRoleType,
+    ) -> Result<()> {
+        let manager = &mut ctx.accounts.manager;
+
+        manager.role = manager_role;
+
+        let now = Clock::get()?.unix_timestamp;
+        // Emit new Event
+        emit!(UpdateSubspaceManagerEvent {
+            app: *ctx.accounts.app.to_account_info().key,
+            profile: *ctx.accounts.profile.to_account_info().key,
+            modified_at: now,
+        });
+
+        Ok(())
+    }
+
     /// Delete existing Subspace manager
     ///
     pub fn delete_subspace_manager(_ctx: Context<DeleteSubspaceManager>) -> Result<()> {
@@ -1151,7 +1176,6 @@ pub mod ju_core {
         data: PublicationData,
         external_processing_data: Option<String>, // TODO: Replace String with some other type ?
     ) -> Result<()> {
-
         // In case this is mirroring or replying make sure Target Publication account is passed
         if (data.is_mirror || data.is_reply) && ctx.accounts.target_publication.is_none() {
             return Err(error!(CustomError::TargetPublicationRequired));
@@ -1161,7 +1185,6 @@ pub mod ju_core {
         if data.is_mirror && data.is_reply {
             return Err(error!(CustomError::BothMirrorAndReplyNotAllowed));
         }
-
 
         // Making additianal processing using external Processor
         if !data.is_mirror {
@@ -1297,13 +1320,39 @@ pub mod ju_core {
 
         // ************************************
         //
-        // TODO: ?  
-        // Implement validation in case someone 
-        // trying to mirror or reply 
-        // Publication from Subspace 
+        // TODO: ?
+        // Implement validation in case someone
+        // trying to mirror or reply
+        // Publication from Subspace
         // into his own Profile
         //
         // ************************************
+
+        // // In case this is replying make sure the destination of the Publication won't be changed
+        // if data.is_reply {
+        //     let mut destination_entyty = ctx.accounts.profile.to_account_info().key;
+
+        //     if ctx.accounts.subspace.is_some() {
+        //         destination_entyty = ctx
+        //             .accounts
+        //             .subspace
+        //             .as_ref()
+        //             .unwrap()
+        //             .to_account_info()
+        //             .key;
+        //     }
+
+        //     require!(
+        //         destination_entyty.eq(ctx
+        //             .accounts
+        //             .target_publication
+        //             .as_ref()
+        //             .unwrap()
+        //             .to_account_info()
+        //             .key),
+        //         CustomError::SubspacePublishingPermissionViolation
+        //     );
+        // }
 
         publication.uuid = uuid;
         publication.app = *ctx.accounts.app.to_account_info().key;
@@ -1315,7 +1364,7 @@ pub mod ju_core {
         // In case target of the Publication is a Subspace
         if ctx.accounts.subspace.is_some() {
             let target_subspace = ctx.accounts.subspace.as_ref().unwrap();
-        
+
             let is_publishing_allowed = is_publishing_allowed(
                 target_subspace,
                 &ctx.accounts.profile.to_account_info().key,
@@ -1323,13 +1372,20 @@ pub mod ju_core {
                 ctx.accounts.connection_proof.as_ref(),
                 ctx.accounts.subspace_manager_proof.as_ref(),
             );
-        
+
             require!(
                 is_publishing_allowed,
                 CustomError::SubspacePublishingPermissionViolation
             );
-        
-            publication.subspace = Some(*target_subspace.to_account_info().key);
+
+
+            if !data.is_reply {
+                // Only on initial publishing or miroring
+                publication.subspace = Some(*target_subspace.to_account_info().key);
+            } else {
+                // In case this is replying 
+                publication.subspace = None;
+            }
         }
 
         publication.is_mirror = data.is_mirror;
