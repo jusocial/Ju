@@ -1088,6 +1088,7 @@ pub struct UpdateSubspaceManager<'info> {
     pub connection_proof: Box<Account<'info, Connection>>,
 
     #[account(
+        mut,
         has_one = authority,
         seeds = [
             SubspaceManager::PREFIX.as_bytes(),
