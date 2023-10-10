@@ -996,7 +996,7 @@ pub struct AddSubspaceManager<'info> {
         ],
         bump
     )]
-    pub profile: Account<'info, Profile>,
+    pub profile: Box<Account<'info, Profile>>,
 
     #[account(
         seeds = [
@@ -1072,7 +1072,7 @@ pub struct UpdateSubspaceManager<'info> {
         ],
         bump
     )]
-    pub profile: Account<'info, Profile>,
+    pub profile: Box<Account<'info, Profile>>,
 
     #[account(
         seeds = [
