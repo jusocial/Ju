@@ -1151,6 +1151,18 @@ pub mod ju_core {
         data: PublicationData,
         external_processing_data: Option<String>, // TODO: Replace String with some other type ?
     ) -> Result<()> {
+
+        // In case this is mirroring or replying make sure Target Publication account is passed
+        if (data.is_mirror || data.is_reply) && ctx.accounts.target_publication.is_none() {
+            return Err(error!(CustomError::TargetPublicationRequired));
+        }
+
+        // If both flags are true
+        if data.is_mirror && data.is_reply {
+            return Err(error!(CustomError::BothMirrorAndReplyNotAllowed));
+        }
+
+
         // Making additianal processing using external Processor
         if !data.is_mirror {
             // This is initial Publishing or replying ...
@@ -1281,17 +1293,17 @@ pub mod ju_core {
             }
         }
 
-        // In case this is mirroring or replying make sure Target Publication account is passed
-        if (data.is_mirror || data.is_reply) && ctx.accounts.target_publication.is_none() {
-            return Err(error!(CustomError::TargetPublicationRequired));
-        }
-
-        // If both flags are true
-        if data.is_mirror && data.is_reply {
-            return Err(error!(CustomError::BothMirrorAndReplyNotAllowed));
-        }
-
         let publication = &mut ctx.accounts.publication;
+
+        // ************************************
+        //
+        // TODO: ?  
+        // Implement validation in case someone 
+        // trying to mirror or reply 
+        // Publication from Subspace 
+        // into his own Profile
+        //
+        // ************************************
 
         publication.uuid = uuid;
         publication.app = *ctx.accounts.app.to_account_info().key;
