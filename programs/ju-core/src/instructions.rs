@@ -1157,7 +1157,6 @@ pub struct CreatePublication<'info> {
     pub subspace: Option<Box<Account<'info, Subspace>>>,
 
     #[account(
-        has_one = profile,
         seeds = [
             Publication::PREFIX.as_bytes(),
             app.key().as_ref(),
