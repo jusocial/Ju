@@ -14,6 +14,7 @@ pub struct AddDeveloper<'info> {
         init,
         seeds = [
             DeveloperWhitelistItem::PREFIX.as_bytes(),
+            authority.key().as_ref()
         ],
         bump,
         payer = authority,
@@ -42,6 +43,7 @@ pub struct DeleteDeveloper<'info> {
         has_one = authority,
         seeds = [
             DeveloperWhitelistItem::PREFIX.as_bytes(),
+            authority.key().as_ref()
         ],
         bump,
         close = authority,
