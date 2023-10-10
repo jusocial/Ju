@@ -1328,32 +1328,6 @@ pub mod ju_core {
         //
         // ************************************
 
-        // // In case this is replying make sure the destination of the Publication won't be changed
-        // if data.is_reply {
-        //     let mut destination_entyty = ctx.accounts.profile.to_account_info().key;
-
-        //     if ctx.accounts.subspace.is_some() {
-        //         destination_entyty = ctx
-        //             .accounts
-        //             .subspace
-        //             .as_ref()
-        //             .unwrap()
-        //             .to_account_info()
-        //             .key;
-        //     }
-
-        //     require!(
-        //         destination_entyty.eq(ctx
-        //             .accounts
-        //             .target_publication
-        //             .as_ref()
-        //             .unwrap()
-        //             .to_account_info()
-        //             .key),
-        //         CustomError::SubspacePublishingPermissionViolation
-        //     );
-        // }
-
         publication.uuid = uuid;
         publication.app = *ctx.accounts.app.to_account_info().key;
         publication.profile = *ctx.accounts.profile.to_account_info().key;
