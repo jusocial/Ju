@@ -16,16 +16,18 @@ import { ContentType, contentTypeBeet } from '../types/ContentType';
  * @category generated
  */
 export type PublicationArgs = {
-  uuid: string;
   app: web3.PublicKey;
   profile: web3.PublicKey;
   authority: web3.PublicKey;
-  metadataUri: string;
+  isEncrypted: boolean;
   subspace: beet.COption<web3.PublicKey>;
   isMirror: boolean;
   isReply: boolean;
   targetPublication: beet.COption<web3.PublicKey>;
   contentType: ContentType;
+  tag: beet.COption<string>;
+  uuid: string;
+  metadataUri: string;
   collectingProcessor: beet.COption<web3.PublicKey>;
   referencingProcessor: beet.COption<web3.PublicKey>;
   createdAt: beet.bignum;
@@ -42,16 +44,18 @@ export const publicationDiscriminator = [213, 137, 189, 150, 94, 132, 251, 247];
  */
 export class Publication implements PublicationArgs {
   private constructor(
-    readonly uuid: string,
     readonly app: web3.PublicKey,
     readonly profile: web3.PublicKey,
     readonly authority: web3.PublicKey,
-    readonly metadataUri: string,
+    readonly isEncrypted: boolean,
     readonly subspace: beet.COption<web3.PublicKey>,
     readonly isMirror: boolean,
     readonly isReply: boolean,
     readonly targetPublication: beet.COption<web3.PublicKey>,
     readonly contentType: ContentType,
+    readonly tag: beet.COption<string>,
+    readonly uuid: string,
+    readonly metadataUri: string,
     readonly collectingProcessor: beet.COption<web3.PublicKey>,
     readonly referencingProcessor: beet.COption<web3.PublicKey>,
     readonly createdAt: beet.bignum,
@@ -63,16 +67,18 @@ export class Publication implements PublicationArgs {
    */
   static fromArgs(args: PublicationArgs) {
     return new Publication(
-      args.uuid,
       args.app,
       args.profile,
       args.authority,
-      args.metadataUri,
+      args.isEncrypted,
       args.subspace,
       args.isMirror,
       args.isReply,
       args.targetPublication,
       args.contentType,
+      args.tag,
+      args.uuid,
+      args.metadataUri,
       args.collectingProcessor,
       args.referencingProcessor,
       args.createdAt,
@@ -174,16 +180,18 @@ export class Publication implements PublicationArgs {
    */
   pretty() {
     return {
-      uuid: this.uuid,
       app: this.app.toBase58(),
       profile: this.profile.toBase58(),
       authority: this.authority.toBase58(),
-      metadataUri: this.metadataUri,
+      isEncrypted: this.isEncrypted,
       subspace: this.subspace,
       isMirror: this.isMirror,
       isReply: this.isReply,
       targetPublication: this.targetPublication,
       contentType: 'ContentType.' + ContentType[this.contentType],
+      tag: this.tag,
+      uuid: this.uuid,
+      metadataUri: this.metadataUri,
       collectingProcessor: this.collectingProcessor,
       referencingProcessor: this.referencingProcessor,
       createdAt: (() => {
@@ -214,16 +222,18 @@ export const publicationBeet = new beet.FixableBeetStruct<
 >(
   [
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
-    ['uuid', beet.utf8String],
     ['app', beetSolana.publicKey],
     ['profile', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
-    ['metadataUri', beet.utf8String],
+    ['isEncrypted', beet.bool],
     ['subspace', beet.coption(beetSolana.publicKey)],
     ['isMirror', beet.bool],
     ['isReply', beet.bool],
     ['targetPublication', beet.coption(beetSolana.publicKey)],
     ['contentType', contentTypeBeet],
+    ['tag', beet.coption(beet.utf8String)],
+    ['uuid', beet.utf8String],
+    ['metadataUri', beet.utf8String],
     ['collectingProcessor', beet.coption(beetSolana.publicKey)],
     ['referencingProcessor', beet.coption(beetSolana.publicKey)],
     ['createdAt', beet.i64],

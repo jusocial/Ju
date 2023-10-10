@@ -27,19 +27,21 @@ exports.reactionBeet = exports.Reaction = exports.reactionDiscriminator = void 0
 const web3 = __importStar(require("@solana/web3.js"));
 const beet = __importStar(require("@metaplex-foundation/beet"));
 const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
+const ReactionTargetType_1 = require("../types/ReactionTargetType");
 const ReactionType_1 = require("../types/ReactionType");
 exports.reactionDiscriminator = [226, 61, 100, 191, 223, 221, 142, 139];
 class Reaction {
-    constructor(app, authority, initializerProfile, target, reactionType, createdAt) {
+    constructor(app, authority, targetType, target, initializer, reactionType, createdAt) {
         this.app = app;
         this.authority = authority;
-        this.initializerProfile = initializerProfile;
+        this.targetType = targetType;
         this.target = target;
+        this.initializer = initializer;
         this.reactionType = reactionType;
         this.createdAt = createdAt;
     }
     static fromArgs(args) {
-        return new Reaction(args.app, args.authority, args.initializerProfile, args.target, args.reactionType, args.createdAt);
+        return new Reaction(args.app, args.authority, args.targetType, args.target, args.initializer, args.reactionType, args.createdAt);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return Reaction.deserialize(accountInfo.data, offset);
@@ -76,8 +78,9 @@ class Reaction {
         return {
             app: this.app.toBase58(),
             authority: this.authority.toBase58(),
-            initializerProfile: this.initializerProfile.toBase58(),
+            targetType: 'ReactionTargetType.' + ReactionTargetType_1.ReactionTargetType[this.targetType],
             target: this.target.toBase58(),
+            initializer: this.initializer.toBase58(),
             reactionType: 'ReactionType.' + ReactionType_1.ReactionType[this.reactionType],
             createdAt: (() => {
                 const x = this.createdAt;
@@ -99,8 +102,9 @@ exports.reactionBeet = new beet.BeetStruct([
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['app', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
-    ['initializerProfile', beetSolana.publicKey],
+    ['targetType', ReactionTargetType_1.reactionTargetTypeBeet],
     ['target', beetSolana.publicKey],
+    ['initializer', beetSolana.publicKey],
     ['reactionType', ReactionType_1.reactionTypeBeet],
     ['createdAt', beet.i64],
 ], Reaction.fromArgs, 'Reaction');

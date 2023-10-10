@@ -42,6 +42,16 @@ export declare class AppManagementNotAthorizedError extends Error {
     readonly name: string;
     constructor();
 }
+export declare class MissingRequiredFieldError extends Error {
+    readonly code: number;
+    readonly name: string;
+    constructor();
+}
+export declare class ActionProhibitedByAppSettingsError extends Error {
+    readonly code: number;
+    readonly name: string;
+    constructor();
+}
 export declare class AliasLengthIncorrectError extends Error {
     readonly code: number;
     readonly name: string;
@@ -67,6 +77,11 @@ export declare class AliasAccountRequiredError extends Error {
     readonly name: string;
     constructor();
 }
+export declare class AliasAccountsMustBeNoneError extends Error {
+    readonly code: number;
+    readonly name: string;
+    constructor();
+}
 export declare class BothAliasAccountRequiredError extends Error {
     readonly code: number;
     readonly name: string;
@@ -82,7 +97,22 @@ export declare class UpdateNotAuthorizedError extends Error {
     readonly name: string;
     constructor();
 }
+export declare class ProfileFirstNameLengthIncorrectError extends Error {
+    readonly code: number;
+    readonly name: string;
+    constructor();
+}
+export declare class ProfileLastNameLengthIncorrectError extends Error {
+    readonly code: number;
+    readonly name: string;
+    constructor();
+}
 export declare class SubspaceAliasIncorrectError extends Error {
+    readonly code: number;
+    readonly name: string;
+    constructor();
+}
+export declare class SubspaceNameIncorrectError extends Error {
     readonly code: number;
     readonly name: string;
     constructor();
@@ -112,7 +142,17 @@ export declare class ConnectionTargetAccountMissedError extends Error {
     readonly name: string;
     constructor();
 }
-export declare class ValidationFailError extends Error {
+export declare class ConnectionTargetAccountInvalidError extends Error {
+    readonly code: number;
+    readonly name: string;
+    constructor();
+}
+export declare class ConnectionTargetAuthorityMismatchError extends Error {
+    readonly code: number;
+    readonly name: string;
+    constructor();
+}
+export declare class ConnectionValidationFailError extends Error {
     readonly code: number;
     readonly name: string;
     constructor();
@@ -173,6 +213,16 @@ export declare class CollectingProcessorMismatchError extends Error {
     constructor();
 }
 export declare class ReferencingProcessorMismatchError extends Error {
+    readonly code: number;
+    readonly name: string;
+    constructor();
+}
+export declare class ReactionTargetAccountInvalidError extends Error {
+    readonly code: number;
+    readonly name: string;
+    constructor();
+}
+export declare class ReportTargetAccountInvalidError extends Error {
     readonly code: number;
     readonly name: string;
     constructor();

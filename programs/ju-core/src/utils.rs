@@ -135,6 +135,43 @@ pub fn assert_connection_target_authority(
 }
 
 
+/// Validates the target account for a reaction 
+/// based on the provided app and target account information.
+///
+/// # Arguments
+///
+/// * `app` - The public key of the application.
+/// * `target_account` - The account information of the target account.
+///
+/// # Errors
+///
+/// Returns an error of type `CustomError::ReactionTargetAccountInvalid` 
+/// if the target account is invalid or does not belong to the specified application.
+///
+/// # Returns
+///
+/// Returns `Ok(ReactionTargetType)` if the target account is valid and belongs to the specified application.
+/// Otherwise, returns an error.
+/// 
+pub fn validate_reaction_target(
+    app: &Pubkey,
+    target_account: &AccountInfo,
+) -> Result<ReactionTargetType> {
+    if let Ok(profile_account) = Account::<Profile>::try_from(target_account) {
+        if profile_account.app == *app {
+            return Ok(ReactionTargetType::Profile);
+        }
+    }
+
+    if let Ok(publication_account) = Account::<Publication>::try_from(target_account) {
+        if publication_account.app == *app {
+            return Ok(ReactionTargetType::Publication);
+        }
+    }
+
+    Err(error!(CustomError::ReactionTargetAccountInvalid))
+}
+
 /// Validates the target account for a report 
 /// based on the provided app and target account information.
 ///
@@ -145,51 +182,104 @@ pub fn assert_connection_target_authority(
 ///
 /// # Errors
 ///
-/// Returns an error of type `CustomError::ConnectionTargetAccountInvalid` 
+/// Returns an error of type `CustomError::ReportTargetAccountInvalid` 
 /// if the target account is invalid or does not belong to the specified application.
 ///
 /// # Returns
 ///
-/// Returns `Ok(())` if the target account is valid and belongs to the specified application.
+/// Returns `Ok(ReportTargetType)` if the target account is valid and belongs to the specified application.
 /// Otherwise, returns an error.
 /// 
 pub fn validate_report_target(
     app: &Pubkey,
     target_account: &AccountInfo,
-) -> Result<()> {
+) -> Result<ReportTargetType> {
     if let Ok(profile_account) = Account::<Profile>::try_from(target_account) {
         if profile_account.app == *app {
-            return Ok(());
+            return Ok(ReportTargetType::Profile);
         }
     }
 
     if let Ok(subspace_account) = Account::<Subspace>::try_from(target_account) {
         if subspace_account.app == *app {
-            return Ok(());
+            return Ok(ReportTargetType::Subspace);
         }
     }
 
     if let Ok(publication_account) = Account::<Publication>::try_from(target_account) {
         if publication_account.app == *app {
-            return Ok(());
+            return Ok(ReportTargetType::Publication);
         }
     }
 
-    Err(error!(CustomError::ConnectionTargetAccountInvalid))
+    Err(error!(CustomError::ReportTargetAccountInvalid))
 }
 
 
-
-/// Helper function to get assigned External Processor from AccountInfo
+/// Checks if a profile has permission to publish content in a given subspace.
 ///
-/// Parameters:
+/// # Arguments
 ///
-/// 1. `target` - Reference to Profile/Subspace AccountInfo
-/// 
-pub fn _try_get_target_connecting_processor(target: &AccountInfo) -> Result<Option<Pubkey>> {
-    let _data = target.try_borrow_data();
-
-    // TODO: implemet logic or return None
-
-    Ok(None)
+/// * `subspace` - The subspace for which publishing permission is being checked.
+/// * `profile_key` - The public key of the profile attempting to publish.
+/// * `authority_key` - The public key of the authority overseeing the subspace.
+/// * `connection_proof` - An optional Connection-proof PDA that may grant publishing permission.
+/// * `subspace_manager_proof` - An optional Subspace-manager-proof that may grant publishing permission.
+///
+/// # Returns
+///
+/// Returns `true` if the profile has permission to publish in the subspace, `false` otherwise.
+///
+pub fn is_publishing_allowed(
+    subspace: &Box<Account<'_, Subspace>>,
+    profile_key: &Pubkey,
+    authority_key: &Pubkey,
+    connection_proof: Option<&Box<Account<'_, Connection>>>,
+    subspace_manager_proof: Option<&Box<Account<'_, SubspaceManager>>>,
+) -> bool {
+    match subspace.publishing_permission {
+        SubspacePublishingPermissionLevel::All => true,
+        SubspacePublishingPermissionLevel::AllMembers => {
+            if let Some(connection_proof) = connection_proof {
+                if connection_proof.initializer == *profile_key
+                    && connection_proof.target == *subspace.to_account_info().key
+                {
+                    return true;
+                }
+            }
+            if let Some(subspace_manager_proof) = subspace_manager_proof {
+                if subspace_manager_proof.profile == *profile_key {
+                    return true;
+                }
+            }
+            authority_key == &subspace.authority.key()
+        }
+        SubspacePublishingPermissionLevel::ApprovedMembers => {
+            if let Some(connection_proof) = connection_proof {
+                if connection_proof.initializer == *profile_key
+                    && connection_proof.target == *subspace.to_account_info().key
+                    && connection_proof.approved
+                {
+                    return true;
+                }
+            }
+            if let Some(subspace_manager_proof) = subspace_manager_proof {
+                if subspace_manager_proof.profile == *profile_key {
+                    return true;
+                }
+            }
+            authority_key == &subspace.authority.key()
+        }
+        SubspacePublishingPermissionLevel::Admins => {
+            if let Some(subspace_manager_proof) = subspace_manager_proof {
+                if subspace_manager_proof.profile == *profile_key {
+                    return true;
+                }
+            }
+            authority_key == &subspace.authority.key()
+        }
+        SubspacePublishingPermissionLevel::Owner => {
+            authority_key == &subspace.authority.key()
+        }
+    }
 }

@@ -6,12 +6,17 @@
  */
 
 import * as beet from '@metaplex-foundation/beet';
-import * as web3 from '@solana/web3.js';
-import * as beetSolana from '@metaplex-foundation/beet-solana';
+import { LocationCoordinates, locationCoordinatesBeet } from './LocationCoordinates';
 export type ProfileData = {
   alias: beet.COption<string>;
-  metadataUri: string;
-  connectingProcessorToAssign: beet.COption<web3.PublicKey>;
+  metadataUri: beet.COption<string>;
+  statusText: beet.COption<string>;
+  firstName: beet.COption<string>;
+  lastName: beet.COption<string>;
+  birthDate: beet.COption<beet.bignum>;
+  countryCode: beet.COption<number>;
+  cityCode: beet.COption<number>;
+  currentLocation: beet.COption<LocationCoordinates>;
 };
 
 /**
@@ -21,8 +26,14 @@ export type ProfileData = {
 export const profileDataBeet = new beet.FixableBeetArgsStruct<ProfileData>(
   [
     ['alias', beet.coption(beet.utf8String)],
-    ['metadataUri', beet.utf8String],
-    ['connectingProcessorToAssign', beet.coption(beetSolana.publicKey)],
+    ['metadataUri', beet.coption(beet.utf8String)],
+    ['statusText', beet.coption(beet.utf8String)],
+    ['firstName', beet.coption(beet.utf8String)],
+    ['lastName', beet.coption(beet.utf8String)],
+    ['birthDate', beet.coption(beet.i64)],
+    ['countryCode', beet.coption(beet.i16)],
+    ['cityCode', beet.coption(beet.u16)],
+    ['currentLocation', beet.coption(locationCoordinatesBeet)],
   ],
   'ProfileData',
 );

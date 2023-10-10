@@ -28,7 +28,16 @@ const beet = __importStar(require("@metaplex-foundation/beet"));
 var ReportType;
 (function (ReportType) {
     ReportType[ReportType["Scam"] = 0] = "Scam";
-    ReportType[ReportType["Abuse"] = 1] = "Abuse";
+    ReportType[ReportType["Phishing"] = 1] = "Phishing";
+    ReportType[ReportType["Abuse"] = 2] = "Abuse";
+    ReportType[ReportType["Spam"] = 3] = "Spam";
+    ReportType[ReportType["HateSpeech"] = 4] = "HateSpeech";
+    ReportType[ReportType["Harassment"] = 5] = "Harassment";
+    ReportType[ReportType["Misinformation"] = 6] = "Misinformation";
+    ReportType[ReportType["Violence"] = 7] = "Violence";
+    ReportType[ReportType["Threats"] = 8] = "Threats";
+    ReportType[ReportType["Copyright"] = 9] = "Copyright";
+    ReportType[ReportType["Adult"] = 10] = "Adult";
 })(ReportType = exports.ReportType || (exports.ReportType = {}));
 exports.reportTypeBeet = beet.fixedScalarEnum(ReportType);
 //# sourceMappingURL=ReportType.js.map

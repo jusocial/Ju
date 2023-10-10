@@ -29,6 +29,7 @@ const web3 = __importStar(require("@solana/web3.js"));
 const PublicationData_1 = require("../types/PublicationData");
 exports.createPublicationStruct = new beet.FixableBeetArgsStruct([
     ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['uuid', beet.utf8String],
     ['data', PublicationData_1.publicationDataBeet],
     ['externalProcessingData', beet.coption(beet.utf8String)],
 ], 'CreatePublicationInstructionArgs');
@@ -91,33 +92,6 @@ function createCreatePublicationInstruction(accounts, args, programId = new web3
         }
         keys.push({
             pubkey: accounts.referencingProcessorPda,
-            isWritable: false,
-            isSigner: false,
-        });
-    }
-    if (accounts.publishingProcessor != null) {
-        if (accounts.subspace == null ||
-            accounts.targetPublication == null ||
-            accounts.collectingProcessorPda == null ||
-            accounts.referencingProcessorPda == null) {
-            throw new Error("When providing 'publishingProcessor' then 'accounts.subspace', 'accounts.targetPublication', 'accounts.collectingProcessorPda', 'accounts.referencingProcessorPda' need(s) to be provided as well.");
-        }
-        keys.push({
-            pubkey: accounts.publishingProcessor,
-            isWritable: false,
-            isSigner: false,
-        });
-    }
-    if (accounts.referencingProcessor != null) {
-        if (accounts.subspace == null ||
-            accounts.targetPublication == null ||
-            accounts.collectingProcessorPda == null ||
-            accounts.referencingProcessorPda == null ||
-            accounts.publishingProcessor == null) {
-            throw new Error("When providing 'referencingProcessor' then 'accounts.subspace', 'accounts.targetPublication', 'accounts.collectingProcessorPda', 'accounts.referencingProcessorPda', 'accounts.publishingProcessor' need(s) to be provided as well.");
-        }
-        keys.push({
-            pubkey: accounts.referencingProcessor,
             isWritable: false,
             isSigner: false,
         });

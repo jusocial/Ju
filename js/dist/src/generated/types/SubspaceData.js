@@ -25,11 +25,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.subspaceDataBeet = void 0;
 const beet = __importStar(require("@metaplex-foundation/beet"));
-const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
 exports.subspaceDataBeet = new beet.FixableBeetArgsStruct([
-    ['uuid', beet.utf8String],
     ['alias', beet.coption(beet.utf8String)],
-    ['creator', beetSolana.publicKey],
-    ['metadataUri', beet.utf8String],
+    ['name', beet.coption(beet.utf8String)],
+    ['metadataUri', beet.coption(beet.utf8String)],
 ], 'SubspaceData');
 //# sourceMappingURL=SubspaceData.js.map

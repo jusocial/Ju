@@ -22,6 +22,22 @@ declare_id!("964vWgVEK9X8ZwZB2HyshFVmHUWbcYpRTnVYz2o3F2Xq");
 pub mod ju_core {
     use super::*;
 
+    /// Approve new Developer
+    ///
+    pub fn add_developer(ctx: Context<AddDeveloper>) -> Result<()> {
+        let developer = &mut ctx.accounts.developer;
+
+        developer.authority = *ctx.accounts.authority.to_account_info().key;
+
+        Ok(())
+    }
+
+    /// Delete existing Developer
+    ///
+    pub fn delete_developer(_ctx: Context<DeleteDeveloper>) -> Result<()> {
+        Ok(())
+    }
+
     /// Approve new Protocol external Processor to whitelist
     ///
     /// # Arguments
@@ -89,6 +105,12 @@ pub mod ju_core {
         app_name: String,
         data: AppData,
     ) -> Result<()> {
+        // ********************************
+        //
+        // TODO: Implement Developer access
+        //
+        // ********************************
+
         let app = &mut ctx.accounts.app;
 
         // Validate App name
@@ -104,8 +126,8 @@ pub mod ju_core {
         app.metadata_uri = data.metadata_uri;
 
         // Application Settings and Requirements
-        app.profile_name_required = data.profile_name_required;
-        app.profile_surname_required = data.profile_surname_required;
+        app.profile_first_name_required = data.profile_first_name_required;
+        app.profile_last_name_required = data.profile_last_name_required;
         app.profile_birthdate_required = data.profile_birthdate_required;
         app.profile_country_required = data.profile_country_required;
         app.profile_city_required = data.profile_city_required;
@@ -209,8 +231,8 @@ pub mod ju_core {
         app.metadata_uri = data.metadata_uri;
 
         // Application Settings and Requirements
-        app.profile_name_required = data.profile_name_required;
-        app.profile_surname_required = data.profile_surname_required;
+        app.profile_first_name_required = data.profile_first_name_required;
+        app.profile_last_name_required = data.profile_last_name_required;
         app.profile_birthdate_required = data.profile_birthdate_required;
         app.profile_country_required = data.profile_country_required;
         app.profile_city_required = data.profile_city_required;
@@ -363,10 +385,10 @@ pub mod ju_core {
         profile.alias = data.alias;
 
         // Check Application level required fields
-        if ctx.accounts.app.profile_name_required && data.name.is_none() {
+        if ctx.accounts.app.profile_first_name_required && data.first_name.is_none() {
             return Err(error!(CustomError::MissingRequiredField));
         }
-        if ctx.accounts.app.profile_surname_required && data.surname.is_none() {
+        if ctx.accounts.app.profile_last_name_required && data.last_name.is_none() {
             return Err(error!(CustomError::MissingRequiredField));
         }
         if ctx.accounts.app.profile_birthdate_required && data.birth_date.is_none() {
@@ -382,17 +404,17 @@ pub mod ju_core {
             return Err(error!(CustomError::MissingRequiredField));
         }
 
-        // Validate name
-        if data.name.is_some() {
-            profile.validate_name(data.name.as_ref().unwrap())?;
+        // Validate first name
+        if data.first_name.is_some() {
+            profile.validate_first_name(data.first_name.as_ref().unwrap())?;
         }
-        profile.name = data.name;
+        profile.first_name = data.first_name;
 
-        // Validate surname
-        if data.surname.is_some() {
-            profile.validate_surname(data.surname.as_ref().unwrap())?;
+        // Validate last name
+        if data.last_name.is_some() {
+            profile.validate_last_name(data.last_name.as_ref().unwrap())?;
         }
-        profile.surname = data.surname;
+        profile.last_name = data.last_name;
 
         // Validate metadata URI
         if data.metadata_uri.is_some() {
@@ -518,10 +540,10 @@ pub mod ju_core {
         }
 
         // Check Application level required fields
-        if ctx.accounts.app.profile_name_required && data.name.is_none() {
+        if ctx.accounts.app.profile_first_name_required && data.first_name.is_none() {
             return Err(error!(CustomError::MissingRequiredField));
         }
-        if ctx.accounts.app.profile_surname_required && data.surname.is_none() {
+        if ctx.accounts.app.profile_last_name_required && data.last_name.is_none() {
             return Err(error!(CustomError::MissingRequiredField));
         }
         if ctx.accounts.app.profile_birthdate_required && data.birth_date.is_none() {
@@ -537,17 +559,17 @@ pub mod ju_core {
             return Err(error!(CustomError::MissingRequiredField));
         }
 
-        // Validate name
-        if data.name.is_some() {
-            profile.validate_name(data.name.as_ref().unwrap())?;
+        // Validate first name
+        if data.first_name.is_some() {
+            profile.validate_first_name(data.first_name.as_ref().unwrap())?;
         }
-        profile.name = data.name;
+        profile.first_name = data.first_name;
 
-        // Validate surname
-        if data.surname.is_some() {
-            profile.validate_surname(data.surname.as_ref().unwrap())?;
+        // Validate last name
+        if data.last_name.is_some() {
+            profile.validate_last_name(data.last_name.as_ref().unwrap())?;
         }
-        profile.surname = data.surname;
+        profile.last_name = data.last_name;
 
         // Validate metadata URI
         if data.metadata_uri.is_some() {
@@ -813,6 +835,8 @@ pub mod ju_core {
         }
         subspace.name = data.name;
 
+        subspace.publishing_permission = data.publishing_permission;
+
         if ctx.accounts.app.subspace_metadata_uri_required && data.metadata_uri.is_none() {
             return Err(error!(CustomError::MissingRequiredField));
         }
@@ -986,6 +1010,8 @@ pub mod ju_core {
         }
         subspace.name = data.name;
 
+        subspace.publishing_permission = data.publishing_permission;
+
         if ctx.accounts.app.subspace_metadata_uri_required && data.metadata_uri.is_none() {
             return Err(error!(CustomError::MissingRequiredField));
         }
@@ -1090,6 +1116,33 @@ pub mod ju_core {
             deleted_at: now
         });
 
+        Ok(())
+    }
+
+    /// Approve new Subspace manager
+    ///
+    /// /// # Arguments
+    ///
+    /// * `manager_role` - Subspace manager Role
+    ///
+    pub fn add_subspace_manager(
+        ctx: Context<AddSubspaceManager>,
+        manager_role: SubspaceManagementRoleType,
+    ) -> Result<()> {
+        let manager = &mut ctx.accounts.manager;
+
+        manager.app = *ctx.accounts.app.to_account_info().key;
+        manager.authority = *ctx.accounts.authority.to_account_info().key;
+
+        manager.profile = *ctx.accounts.profile.to_account_info().key;
+        manager.role = manager_role;
+
+        Ok(())
+    }
+
+    /// Delete existing Subspace manager
+    ///
+    pub fn delete_subspace_manager(_ctx: Context<DeleteSubspaceManager>) -> Result<()> {
         Ok(())
     }
 
@@ -1256,16 +1309,155 @@ pub mod ju_core {
         publication.tag = data.tag;
         publication.authority = *ctx.accounts.authority.to_account_info().key;
 
-        // In case this is Subspace Publication
+        // // In case target of the Publication is a Subspace
+        // if ctx.accounts.subspace.is_some() {
+        //     let target_subspace = &ctx.accounts.subspace.as_ref().unwrap();
+        //     let mut is_publishing_allowed = false;
+
+        //     match target_subspace.publishing_permission {
+        //         SubspacePublishingPermissionLevel::All => {
+        //             is_publishing_allowed = true;
+        //         }
+        //         SubspacePublishingPermissionLevel::AllMembers => {
+        //             match &ctx.accounts.connection_proof {
+        //                 Some(connection_proof) => {
+        //                     if connection_proof.initializer.eq(&ctx
+        //                         .accounts
+        //                         .profile
+        //                         .to_account_info()
+        //                         .key)
+        //                         && connection_proof
+        //                             .target
+        //                             .eq(target_subspace.to_account_info().key)
+        //                     {
+        //                         is_publishing_allowed = true;
+        //                     }
+        //                 }
+        //                 None => {}
+        //             }
+        //             match &ctx.accounts.subspace_manager_proof {
+        //                 Some(subspace_manager_proof) => {
+        //                     if subspace_manager_proof.profile.eq(&ctx
+        //                         .accounts
+        //                         .profile
+        //                         .to_account_info()
+        //                         .key)
+        //                     {
+        //                         is_publishing_allowed = true;
+        //                     }
+        //                 }
+        //                 None => {}
+        //             }
+        //             if ctx
+        //                 .accounts
+        //                 .authority
+        //                 .key
+        //                 .eq(&target_subspace.authority.key())
+        //             {
+        //                 is_publishing_allowed = true;
+        //             }
+        //         }
+        //         SubspacePublishingPermissionLevel::ApprovedMembers => {
+        //             match &ctx.accounts.connection_proof {
+        //                 Some(connection_proof) => {
+        //                     if connection_proof.initializer.eq(&ctx
+        //                         .accounts
+        //                         .profile
+        //                         .to_account_info()
+        //                         .key)
+        //                         && connection_proof
+        //                             .target
+        //                             .eq(target_subspace.to_account_info().key)
+        //                         && connection_proof.approved == true
+        //                     {
+        //                         is_publishing_allowed = true;
+        //                     }
+        //                 }
+        //                 None => {}
+        //             }
+        //             match &ctx.accounts.subspace_manager_proof {
+        //                 Some(subspace_manager_proof) => {
+        //                     if subspace_manager_proof.profile.eq(&ctx
+        //                         .accounts
+        //                         .profile
+        //                         .to_account_info()
+        //                         .key)
+        //                     {
+        //                         is_publishing_allowed = true;
+        //                     }
+        //                 }
+        //                 None => {}
+        //             }
+        //             if ctx
+        //                 .accounts
+        //                 .authority
+        //                 .key
+        //                 .eq(&target_subspace.authority.key())
+        //             {
+        //                 is_publishing_allowed = true;
+        //             }
+        //         }
+        //         SubspacePublishingPermissionLevel::Admins => {
+        //             match &ctx.accounts.subspace_manager_proof {
+        //                 Some(subspace_manager_proof) => {
+        //                     if subspace_manager_proof.profile.eq(&ctx
+        //                         .accounts
+        //                         .profile
+        //                         .to_account_info()
+        //                         .key)
+        //                     {
+        //                         is_publishing_allowed = true;
+        //                     }
+        //                 }
+        //                 None => {}
+        //             }
+        //             if ctx
+        //                 .accounts
+        //                 .authority
+        //                 .key
+        //                 .eq(&target_subspace.authority.key())
+        //             {
+        //                 is_publishing_allowed = true;
+        //             }
+        //         }
+        //         SubspacePublishingPermissionLevel::Owner => {
+        //             if ctx
+        //                 .accounts
+        //                 .authority
+        //                 .key
+        //                 .eq(&target_subspace.authority.key())
+        //             {
+        //                 is_publishing_allowed = true;
+        //             }
+        //         }
+        //     }
+
+        //     require!(
+        //         is_publishing_allowed,
+        //         CustomError::SubspacePublishingPermissionViolation
+        //     );
+
+        //     publication.subspace = Some(*target_subspace.to_account_info().key);
+        // }
+
+        // In case target of the Publication is a Subspace
         if ctx.accounts.subspace.is_some() {
-            publication.subspace = Some(
-                *ctx.accounts
-                    .subspace
-                    .as_ref()
-                    .unwrap()
-                    .to_account_info()
-                    .key,
+            let target_subspace = ctx.accounts.subspace.as_ref().unwrap();
+        
+            let is_publishing_allowed = is_publishing_allowed(
+                target_subspace,
+                &ctx.accounts.profile.to_account_info().key,
+                &ctx.accounts.authority.key,
+                ctx.accounts.connection_proof.as_ref(),
+                ctx.accounts.subspace_manager_proof.as_ref(),
             );
+        
+            require!(
+                is_publishing_allowed,
+                CustomError::SubspacePublishingPermissionViolation
+            );
+        
+            publication.subspace = Some(*target_subspace.to_account_info().key);
         }
 
         publication.is_mirror = data.is_mirror;
@@ -1388,7 +1580,7 @@ pub mod ju_core {
                 }
             }
         }
-        
+
         let now = Clock::get()?.unix_timestamp;
         publication.modified_at = Some(now);
 
@@ -1531,6 +1723,14 @@ pub mod ju_core {
         reaction.app = *ctx.accounts.app.to_account_info().key;
         reaction.authority = *ctx.accounts.authority.to_account_info().key;
         reaction.initializer = *ctx.accounts.initializer.to_account_info().key;
+
+        // Validating passed target account and assign pubkey if Ok
+        let target_type = validate_reaction_target(
+            &ctx.accounts.app.to_account_info().key,
+            &ctx.accounts.target,
+        )?;
+        reaction.target_type = target_type;
+
         reaction.target = *ctx.accounts.target.to_account_info().key;
         reaction.reaction_type = reaction_type;
 
@@ -1573,10 +1773,12 @@ pub mod ju_core {
         report.initializer = *ctx.accounts.initializer.to_account_info().key;
 
         // Validating passed target account and assign pubkey if Ok
-        validate_report_target(
+        let target_type = validate_report_target(
             &ctx.accounts.app.to_account_info().key,
             &ctx.accounts.target,
         )?;
+        report.target_type = target_type;
+
         report.target = *ctx.accounts.target.to_account_info().key;
 
         report.report_type = data.report_type;

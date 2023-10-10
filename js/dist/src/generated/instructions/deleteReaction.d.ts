@@ -5,8 +5,8 @@ export declare const deleteReactionStruct: beet.BeetArgsStruct<{
 }>;
 export type DeleteReactionInstructionAccounts = {
     app: web3.PublicKey;
+    initializer: web3.PublicKey;
     target: web3.PublicKey;
-    initializerProfile: web3.PublicKey;
     reaction: web3.PublicKey;
     authority: web3.PublicKey;
     systemProgram?: web3.PublicKey;

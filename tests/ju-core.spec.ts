@@ -126,6 +126,67 @@ describe("ju-core", () => {
   );
 
 
+  // Profile2-to-Profile1
+  const [connectionAccount_2_1, connectionAccount_2_1Bump] = anchor.web3.PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("connection"),
+      appAccount.toBuffer(),
+      profileAccount2.toBuffer(),
+      profileAccount1.toBuffer(),
+      profileAccount2.toBuffer(),
+    ],
+    program.programId
+  );
+
+  // Profile1-to-Profile2
+  const [connectionAccount_1_2, connectionAccount_1_2Bump] = anchor.web3.PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("connection"),
+      appAccount.toBuffer(),
+      profileAccount1.toBuffer(),
+      profileAccount2.toBuffer(),
+      profileAccount1.toBuffer(),
+    ],
+    program.programId
+  );
+
+  // Profile1-to-Subspace
+  const [connectionAccount_1_sub, connectionAccount_1_sub_Bump] = anchor.web3.PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("connection"),
+      appAccount.toBuffer(),
+      profileAccount1.toBuffer(),
+      subspaceAccount.toBuffer(),
+      profileAccount1.toBuffer(),
+    ],
+    program.programId
+  );
+
+  // Profile2-to-Subspace
+  const [connectionAccount_2_sub, connectionAccount_2_sub_Bump] = anchor.web3.PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("connection"),
+      appAccount.toBuffer(),
+      profileAccount2.toBuffer(),
+      subspaceAccount.toBuffer(),
+      profileAccount2.toBuffer(),
+    ],
+    program.programId
+  );
+
+
+  // Profile2 -> Subspace Manager
+  const [subspaceManager2, subspaceManager2Bump] = anchor.web3.PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("subspace_manager"),
+      subspaceAccount.toBuffer(),
+      profileAccount2.toBuffer(),
+    ],
+    program.programId
+  );
+
+
+
   describe("External Processor", async () => {
 
     it("Add Processor", async () => {
@@ -170,8 +231,8 @@ describe("ju-core", () => {
       /* Call the initializeApp function via RPC */
       let appData: anchor.IdlTypes<JuCore>["AppData"] = {
         metadataUri: appMetadataUri,
-        profileNameRequired: true,
-        profileSurnameRequired: true,
+        profileFirstNameRequired: true,
+        profileLastNameRequired: true,
         profileBirthdateRequired: true,
         profileCountryRequired: false,
         profileCityRequired: false,
@@ -223,8 +284,8 @@ describe("ju-core", () => {
       const newUri = "https://example.com/app-updated-uri";
       let appData2: anchor.IdlTypes<JuCore>["AppData"] = {
         metadataUri: newUri,
-        profileNameRequired: true,
-        profileSurnameRequired: true,
+        profileFirstNameRequired: true,
+        profileLastNameRequired: true,
         profileBirthdateRequired: true,
         profileCountryRequired: false,
         profileCityRequired: false,
@@ -305,8 +366,8 @@ describe("ju-core", () => {
           alias: profileAlias1,
           metadataUri: uri,
           statusText: profile1StatusText,
-          name: profile1Name,
-          surname: profile1Surname,
+          firstName: profile1Name,
+          lastName: profile1Surname,
           birthDate: birthDate(1972, 0, 24),
           countryCode: null,
           cityCode: null,
@@ -331,6 +392,7 @@ describe("ju-core", () => {
       }
       /* Fetch the account and check the values */
       const data = await program.account.profile.fetch(profileAccount1);
+      console.log('profileAccount1 :>> ', profileAccount1);
       console.log('Profile 1 account: ', data);
 
       /* Fetch the Alias PDA account and check the value of Profile */
@@ -338,8 +400,8 @@ describe("ju-core", () => {
       // console.log('Alias acoount: ', aliasPda);
 
       expect(data.metadataUri.toString()).to.equal(uri);
-      expect(data.name.toString()).to.equal(profile1Name);
-      expect(data.surname.toString()).to.equal(profile1Surname);
+      expect(data.firstName.toString()).to.equal(profile1Name);
+      expect(data.lastName.toString()).to.equal(profile1Surname);
       expect(data.birthDate.toString()).to.equal(birthDate(1972, 0, 24).toString());
 
       expect(data.alias.toString()).to.equal(profileAlias1);
@@ -360,8 +422,8 @@ describe("ju-core", () => {
           alias: profileAlias1,
           metadataUri: updatedUri,
           statusText: updatedProfile1StatusText,
-          name: profile1Name,
-          surname: profile1Surname,
+          firstName: profile1Name,
+          lastName: profile1Surname,
           birthDate: profile1Birthdate,
           countryCode: null,
           cityCode: null,
@@ -396,8 +458,8 @@ describe("ju-core", () => {
       expect(data.app.toString()).to.equal(appAccount.toString());
       expect(data.metadataUri).to.equal(updatedUri);
 
-      expect(data.name.toString()).to.equal(profile1Name);
-      expect(data.surname.toString()).to.equal(profile1Surname);
+      expect(data.firstName.toString()).to.equal(profile1Name);
+      expect(data.lastName.toString()).to.equal(profile1Surname);
       expect(data.birthDate.toString()).to.equal(profile1Birthdate.toString());
 
       expect(data.statusText.toString()).to.equal(updatedProfile1StatusText);
@@ -428,8 +490,8 @@ describe("ju-core", () => {
           alias: updatedProfileAlias1,
           metadataUri: updatedUri,
           statusText: null,
-          name: updatedProfile1Name,
-          surname: updatedProfile1Surname,
+          firstName: updatedProfile1Name,
+          lastName: updatedProfile1Surname,
           birthDate: updatedProfile1Birthdate,
           countryCode: 7,
           cityCode: 31,
@@ -472,8 +534,8 @@ describe("ju-core", () => {
 
       expect(data.app.toString()).to.equal(appAccount.toString());
 
-      expect(data.name.toString()).to.equal(updatedProfile1Name);
-      expect(data.surname.toString()).to.equal(updatedProfile1Surname);
+      expect(data.firstName.toString()).to.equal(updatedProfile1Name);
+      expect(data.lastName.toString()).to.equal(updatedProfile1Surname);
       expect(data.birthDate.toString()).to.equal(updatedProfile1Birthdate.toString());
 
       expect(data.metadataUri).to.equal(updatedUri);
@@ -500,8 +562,8 @@ describe("ju-core", () => {
           alias: null,
           metadataUri: uri,
           statusText: null,
-          name: 'Konrad',
-          surname: 'Mikhelson',
+          firstName: 'Konrad',
+          lastName: 'Mikhelson',
           birthDate: birthDate(1984, 0, 26),
           countryCode: 7,
           cityCode: 31,
@@ -559,8 +621,8 @@ describe("ju-core", () => {
           alias: profileAlias2,
           statusText: profile2StatusText,
           metadataUri: profile2MetadataUri,
-          name: profile2Name,
-          surname: profile2Surname,
+          firstName: profile2Name,
+          lastName: profile2Surname,
           birthDate: profile2Birthdate,
           countryCode: null,
           cityCode: null,
@@ -590,8 +652,8 @@ describe("ju-core", () => {
 
       expect(data.metadataUri).to.equal(profile2MetadataUri);
 
-      expect(data.name.toString()).to.equal(profile2Name);
-      expect(data.surname.toString()).to.equal(profile2Surname);
+      expect(data.firstName.toString()).to.equal(profile2Name);
+      expect(data.lastName.toString()).to.equal(profile2Surname);
       expect(data.birthDate.toString()).to.equal(profile2Birthdate.toString());
 
       expect(data.statusText.toString()).to.equal(profile2StatusText);
@@ -607,13 +669,15 @@ describe("ju-core", () => {
     const subspaceName = 'Nuclear Block'
 
     it("Create Subspace", async () => {
-      
+
+      const publishingPermission: anchor.IdlTypes<JuCore>["SubspacePublishingPermissionLevel"] = { all: {} }
       const subspaceMetadataUri = "https://example.com/profile-1-uri";
 
       /* Call the createPublication function via RPC */
       let subspaceInstructionData: anchor.IdlTypes<JuCore>["SubspaceData"] = {
         alias: subspaceAlias,
         name: subspaceName,
+        publishingPermission: { all: {} },
         metadataUri: subspaceMetadataUri
       };
 
@@ -646,11 +710,13 @@ describe("ju-core", () => {
       expect(data.uuid.toString()).to.equal(subspaceUuid.toString());
       expect(data.alias).to.equal(subspaceAlias);
       expect(data.creator.toString()).to.equal(profileAccount1.toString());
+      expect(data.publishingPermission.toString()).to.equal(publishingPermission.toString());
       expect(data.metadataUri).to.equal(subspaceMetadataUri);
     });
 
     it("Update Subspace", async () => {
 
+      const publishingPermission: anchor.IdlTypes<JuCore>["SubspacePublishingPermissionLevel"] = { allMembers: {} }
       const newUri = "https://example.com/subspace-1-updated-uri";
 
       try {
@@ -658,6 +724,7 @@ describe("ju-core", () => {
         let subspaceInstructionData: anchor.IdlTypes<JuCore>["SubspaceData"] = {
           alias: subspaceAlias,
           name: subspaceName,
+          publishingPermission: publishingPermission,
           metadataUri: newUri
         };
         const tx = await program.methods.updateSubspace(subspaceInstructionData)
@@ -687,32 +754,13 @@ describe("ju-core", () => {
       expect(data.uuid.toString()).to.equal(subspaceUuid.toString());
       expect(data.alias).to.equal(subspaceAlias);
       expect(data.creator.toString()).to.equal(profileAccount1.toString());
+      expect(data.publishingPermission.toString()).to.equal(publishingPermission.toString());
       expect(data.metadataUri).to.equal(newUri);
     });
   });
 
 
   describe("Connections", async () => {
-    // Profile-to-Profile
-    const [connectionAccount, connectionAccount1Bump] = anchor.web3.PublicKey.findProgramAddressSync(
-      [
-        Buffer.from("connection"),
-        appAccount.toBuffer(),
-        profileAccount2.toBuffer(),
-        profileAccount1.toBuffer(),
-      ],
-      program.programId
-    );
-    // Profile-to-Subspace
-    const [connectionAccount2, connectionAccount2Bump] = anchor.web3.PublicKey.findProgramAddressSync(
-      [
-        Buffer.from("connection"),
-        appAccount.toBuffer(),
-        profileAccount2.toBuffer(),
-        subspaceAccount.toBuffer(),
-      ],
-      program.programId
-    );
 
     it("Create Connection to Profile (Following)", async () => {
 
@@ -722,7 +770,7 @@ describe("ju-core", () => {
           .accounts(
             {
               app: appAccount,
-              connection: connectionAccount,
+              connection: connectionAccount_2_1,
               initializer: profileAccount2,
               target: profileAccount1,
               authority: user2.publicKey,
@@ -738,7 +786,7 @@ describe("ju-core", () => {
       }
 
       /* Fetch the account and check the values */
-      const data = await program.account.connection.fetch(connectionAccount);
+      const data = await program.account.connection.fetch(connectionAccount_2_1);
       // console.log('Connection (following) account: ', data);
 
       expect(data.app.toString()).to.equal(appAccount.toString());
@@ -750,6 +798,41 @@ describe("ju-core", () => {
     });
 
 
+    it("Create backward Connection to Profile (reFollowing)", async () => {
+
+      try {
+        /* Call the createConnection function via RPC */
+        const tx = await program.methods.initializeConnection(null)
+          .accounts(
+            {
+              app: appAccount,
+              connection: connectionAccount_1_2,
+              initializer: profileAccount1,
+              target: profileAccount2,
+              authority: user,
+              systemProgram: SystemProgram.programId,
+            }
+          )
+          .rpc();
+
+        // console.log("Tx signature: ", tx);
+      } catch (error: any) {
+        console.log('error :>> ', error);
+      }
+
+      /* Fetch the account and check the values */
+      const data = await program.account.connection.fetch(connectionAccount_1_2);
+      // console.log('Connection (following) account: ', data);
+
+      expect(data.app.toString()).to.equal(appAccount.toString());
+      expect(data.initializer.toString()).to.equal(profileAccount1.toString());
+      expect(data.target.toString()).to.equal(profileAccount2.toString());
+      expect(JSON.stringify(data.connectionTargetType)).to.equal(JSON.stringify({ profile: {} }));
+      expect(data.approved).to.equal(false);
+      expect(data.authority.toString()).to.equal(user.toString());
+    });
+
+
     it("Update Connection (Approve)", async () => {
 
       try {
@@ -758,7 +841,7 @@ describe("ju-core", () => {
           .accounts(
             {
               app: appAccount,
-              connection: connectionAccount,
+              connection: connectionAccount_2_1,
               initializer: profileAccount2,
               target: profileAccount1,
               user: user,
@@ -773,7 +856,7 @@ describe("ju-core", () => {
       }
 
       /* Fetch the account and check the values */
-      const data = await program.account.connection.fetch(connectionAccount);
+      const data = await program.account.connection.fetch(connectionAccount_2_1);
       // console.log('Updated Connection account: ', data);
 
       expect(data.app.toString()).to.equal(appAccount.toString());
@@ -784,7 +867,7 @@ describe("ju-core", () => {
     });
 
 
-    it("Create Connection to Subspace (Subscribing)", async () => {
+    it("Create Connection Profile 1 to Subspace (Subscribing)", async () => {
 
       try {
         /* Call the createConnection function via RPC */
@@ -792,7 +875,43 @@ describe("ju-core", () => {
           .accounts(
             {
               app: appAccount,
-              connection: connectionAccount2,
+              connection: connectionAccount_1_sub,
+              initializer: profileAccount1,
+              target: subspaceAccount,
+              authority: user,
+              systemProgram: SystemProgram.programId,
+            }
+          )
+          .rpc();
+
+        // console.log("Tx signature: ", tx);
+      } catch (error: any) {
+        console.log('error :>> ', error);
+      }
+
+      /* Fetch the account and check the values */
+      const data = await program.account.connection.fetch(connectionAccount_1_sub);
+      // console.log('Connection (subscribing to Subspace) account: ', data);
+
+      expect(data.app.toString()).to.equal(appAccount.toString());
+      expect(JSON.stringify(data.connectionTargetType)).to.equal(JSON.stringify({ subspace: {} }));
+      expect(data.initializer.toString()).to.equal(profileAccount1.toString());
+      expect(data.target.toString()).to.equal(subspaceAccount.toString());
+      expect(data.approved).to.equal(false);
+      expect(data.authority.toString()).to.equal(user.toString());
+    });
+
+
+
+    it("Create Connection Profile 2 to Subspace (Subscribing)", async () => {
+
+      try {
+        /* Call the createConnection function via RPC */
+        const tx = await program.methods.initializeConnection(null)
+          .accounts(
+            {
+              app: appAccount,
+              connection: connectionAccount_2_sub,
               initializer: profileAccount2,
               target: subspaceAccount,
               authority: user2.publicKey,
@@ -808,7 +927,7 @@ describe("ju-core", () => {
       }
 
       /* Fetch the account and check the values */
-      const data = await program.account.connection.fetch(connectionAccount2);
+      const data = await program.account.connection.fetch(connectionAccount_2_sub);
       // console.log('Connection (subscribing to Subspace) account: ', data);
 
       expect(data.app.toString()).to.equal(appAccount.toString());
@@ -822,12 +941,48 @@ describe("ju-core", () => {
   });
 
 
+  describe("Subspaces Management: ", async () => {
+
+    it("Create Subspace Manager", async () => {
+
+      const managerRole: anchor.IdlTypes<JuCore>["SubspaceManagementRoleType"] = { publisher: {} }
+
+      try {
+        /* Call ix via RPC */
+        const tx = await program.methods.addSubspaceManager(managerRole)
+          .accounts({
+            app: appAccount,
+            subspace: subspaceAccount,
+            profile: profileAccount2,
+            connectionProof: connectionAccount_2_sub,
+            manager: subspaceManager2,
+            authority: user,
+            systemProgram: SystemProgram.programId,
+          })
+          // .signers([user2])
+          .rpc();
+
+        // console.log("Tx signature: ", tx);
+      } catch (error: any) {
+        console.log('error :>> ', error);
+      }
+      /* Fetch the account and check the values */
+      const data = await program.account.subspaceManager.fetch(subspaceManager2);
+      // console.log('Updated Subspace data: ', data);
+
+      expect(data.profile.toString()).to.equal(profileAccount2.toString());
+      expect(data.role.toString()).to.equal(managerRole.toString());
+    });
+  });
+
+
   describe("Publication", async () => {
 
     it("Create Publication", async () => {
 
       /* Call the createPublication function via RPC */
       let publicationInstructionData: anchor.IdlTypes<JuCore>["PublicationData"] = {
+        isEncrypted: false,
         metadataUri: uri,
         isMirror: isMirror,
         isReply: isReply,
@@ -842,6 +997,8 @@ describe("ju-core", () => {
             publication: publicationAccount,
             subspace: null,
             targetPublication: program.programId,
+            connectionProof: null,
+            subspaceManagerProof: null,
             collectingProcessorPda: null,
             referencingProcessorPda: null,
             authority: user,
@@ -878,6 +1035,7 @@ describe("ju-core", () => {
 
       /* Call the create function via RPC */
       let publicationInstructionData: anchor.IdlTypes<JuCore>["PublicationData"] = {
+        isEncrypted: false,
         metadataUri: newURI,
         isMirror: isMirror,
         isReply: isReply,
@@ -891,8 +1049,10 @@ describe("ju-core", () => {
             app: appAccount,
             profile: profileAccount1,
             publication: publicationAccount,
-            // subspace: null,
+            subspace: null,
             // targetPublication: null,
+            connectionProof: null,
+            subspaceManagerProof: null,
             collectingProcessorPda: null,
             referencingProcessorPda: null,
             authority: user,
@@ -943,6 +1103,7 @@ describe("ju-core", () => {
       const contentType = { article: {} };
 
       let publicationInstructionData: anchor.IdlTypes<JuCore>["PublicationData"] = {
+        isEncrypted: true,
         metadataUri: mirrorURI,
         isMirror: isMirror,
         isReply: isReply,
@@ -963,6 +1124,8 @@ describe("ju-core", () => {
             publication: mirrorPublicationAccount,
             subspace: null,
             targetPublication: publicationAccount,
+            connectionProof: null,
+            subspaceManagerProof: null,
             collectingProcessorPda: null,
             referencingProcessorPda: null,
             authority: user,
@@ -989,7 +1152,7 @@ describe("ju-core", () => {
       expect(data.authority.toString()).to.equal(user.toString());
     });
 
-    it("Create Publication into Subspace", async () => {
+    it("Profile2 CAN'T create Publication into Subspace without connection proof", async () => {
 
       const subspacePublicationId = uuid.v4().replace(/-/g, '');
 
@@ -1011,6 +1174,7 @@ describe("ju-core", () => {
 
       /* Call the create function via RPC */
       let publicationInstructionData: anchor.IdlTypes<JuCore>["PublicationData"] = {
+        isEncrypted: true,
         metadataUri: uri,
         isMirror: isMirror,
         isReply: isReply,
@@ -1026,6 +1190,8 @@ describe("ju-core", () => {
             publication: subspacePublicationAccount,
             subspace: subspaceAccount,
             targetPublication: null,
+            connectionProof: null,  // Connection account here
+            subspaceManagerProof: null,
             collectingProcessorPda: null,
             referencingProcessorPda: null,
             authority: user,
@@ -1034,21 +1200,89 @@ describe("ju-core", () => {
           .rpc();
         // console.log("Tx signature: ", tx);
       } catch (error: any) {
+        // console.log('error :>> ', error);
+        expect(String(error)).contain('Error Code: SubspacePublishingPermissionViolation.')
+      }
+      /* Fetch the account and check the values */
+      // const data = await program.account.publication.fetch(subspacePublicationAccount);
+      // console.log('Publication data: ', data);
+
+      // expect(data.app.toString()).to.equal(appAccount.toString());
+      // expect(data.profile.toString()).to.equal(profileAccount1.toString());
+      // expect(data.uuid.toString()).to.equal(subspacePublicationId.toString());
+      // expect(data.metadataUri.toString()).to.equal(uri.toString());
+      // expect(data.isMirror).to.equal(isMirror);
+      // expect(data.isReply).to.equal(isReply);
+      // expect(data.contentType.toString()).to.equal(contentType.toString());
+      // expect(data.subspace.toString()).to.equal(subspaceAccount.toString());
+      // expect(data.authority.toString()).to.equal(user.toString());
+    });
+
+    it("Profile2 CAN createPublication into Subspace with subspace-manager proof", async () => {
+
+      const subspacePublicationId = uuid.v4().replace(/-/g, '');
+
+      const uri = "https://example.com/publication-to-subspace";
+      const isMirror = false;
+      const isReply = false;
+      const contentType = { video: {} };
+      const publicationTag = 'subspacepub';
+
+      const subspacePublicationSeed = [
+        Buffer.from("publication"),
+        appAccount.toBuffer(),
+        Buffer.from(subspacePublicationId),
+      ];
+      const [subspacePublicationAccount, _] = anchor.web3.PublicKey.findProgramAddressSync(
+        subspacePublicationSeed,
+        program.programId
+      );
+
+      /* Call the create function via RPC */
+      let publicationInstructionData: anchor.IdlTypes<JuCore>["PublicationData"] = {
+        isEncrypted: true,
+        metadataUri: uri,
+        isMirror: isMirror,
+        isReply: isReply,
+        contentType: contentType,
+        tag: publicationTag,
+      };
+
+      try {
+        const tx = await program.methods.createPublication(subspacePublicationId, publicationInstructionData, null)
+          .accounts({
+            app: appAccount,
+            profile: profileAccount2,
+            publication: subspacePublicationAccount,
+            subspace: subspaceAccount,
+            targetPublication: null,
+            connectionProof: null,  // Connection proof here
+            subspaceManagerProof: subspaceManager2, // Management proof here
+            collectingProcessorPda: null,
+            referencingProcessorPda: null,
+            authority: user2.publicKey,
+            systemProgram: SystemProgram.programId,
+          })
+          .signers([user2])
+          .rpc();
+        // console.log("Tx signature: ", tx);
+      } catch (error: any) {
         console.log('error :>> ', error);
+        // expect(String(error)).contain('Error Code: SubspacePublishingPermissionViolation.')
       }
       /* Fetch the account and check the values */
       const data = await program.account.publication.fetch(subspacePublicationAccount);
-      // console.log('Publication data: ', data);
+      console.log('Publication data: ', data);
 
-      expect(data.app.toString()).to.equal(appAccount.toString());
-      expect(data.profile.toString()).to.equal(profileAccount1.toString());
-      expect(data.uuid.toString()).to.equal(subspacePublicationId.toString());
-      expect(data.metadataUri.toString()).to.equal(uri.toString());
-      expect(data.isMirror).to.equal(isMirror);
-      expect(data.isReply).to.equal(isReply);
-      expect(data.contentType.toString()).to.equal(contentType.toString());
-      expect(data.subspace.toString()).to.equal(subspaceAccount.toString());
-      expect(data.authority.toString()).to.equal(user.toString());
+      expect(data.app.toString()).to.equal(appAccount.toString(), '1');
+      expect(data.profile.toString()).to.equal(profileAccount2.toString(), '2');
+      expect(data.uuid.toString()).to.equal(subspacePublicationId.toString(), '3');
+      expect(data.metadataUri.toString()).to.equal(uri.toString(), '4');
+      expect(data.isMirror).to.equal(isMirror, '5');
+      expect(data.isReply).to.equal(isReply, '6');
+      expect(data.contentType.toString()).to.equal(contentType.toString(), '7');
+      expect(data.subspace.toString()).to.equal(subspaceAccount.toString(), '8');
+      expect(data.authority.toString()).to.equal(user2.publicKey.toString(), '9');
     });
 
   });
@@ -1056,7 +1290,17 @@ describe("ju-core", () => {
 
   describe("Reaction", async () => {
 
-    const [reactionAccount, reactionAccountBump] = anchor.web3.PublicKey.findProgramAddressSync(
+    const [reactionToProfileAccount, reactionToProfileAccountBump] = anchor.web3.PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("reaction"),
+        appAccount.toBuffer(),
+        profileAccount2.toBuffer(),
+        profileAccount1.toBuffer(),
+      ],
+      program.programId
+    );
+
+    const [reactionToPublicationAccount, reactionToPublicationAccountBump] = anchor.web3.PublicKey.findProgramAddressSync(
       [
         Buffer.from("reaction"),
         appAccount.toBuffer(),
@@ -1066,8 +1310,9 @@ describe("ju-core", () => {
       program.programId
     );
 
-    it("Create Reaction", async () => {
+    it("Create Reaction to Profile", async () => {
 
+      const reactionTargetType: anchor.IdlTypes<JuCore>["ReactionTargetType"] = { profile: {} }
       let reactionType: anchor.IdlTypes<JuCore>["ReactionType"] = { upVote: {} }
 
       try {
@@ -1075,8 +1320,8 @@ describe("ju-core", () => {
           .accounts({
             app: appAccount,
             initializer: profileAccount1,
-            target: publicationAccount,
-            reaction: reactionAccount,
+            target: profileAccount2,
+            reaction: reactionToProfileAccount,
             authority: user,
             systemProgram: SystemProgram.programId,
           })
@@ -1086,14 +1331,47 @@ describe("ju-core", () => {
         console.log('error :>> ', error);
       }
       /* Fetch the account and check the values */
-      const data = await program.account.reaction.fetch(reactionAccount);
+      const data = await program.account.reaction.fetch(reactionToProfileAccount);
       // console.log('Reaction data: ', data);
 
       expect(data.app.toString()).to.equal(appAccount.toString(), '1');
       expect(data.initializer.toString()).to.equal(profileAccount1.toString(), '2');
-      expect(data.target.toString()).to.equal(publicationAccount.toString(), '3');
-      expect(data.reactionType.toString()).to.equal(reactionType.toString(), '4');
-      expect(data.authority.toString()).to.equal(user.toString(), '5');
+      expect(data.targetType.toString()).to.equal(reactionTargetType.toString(), '3');
+      expect(data.target.toString()).to.equal(profileAccount2.toString(), '4');
+      expect(data.reactionType.toString()).to.equal(reactionType.toString(), '5');
+      expect(data.authority.toString()).to.equal(user.toString(), '6');
+    });
+
+    it("Create Reaction to Publication", async () => {
+
+      const reactionTargetType: anchor.IdlTypes<JuCore>["ReactionTargetType"] = { publication: {} }
+      let reactionType: anchor.IdlTypes<JuCore>["ReactionType"] = { upVote: {} }
+
+      try {
+        const tx = await program.methods.createReaction(reactionType)
+          .accounts({
+            app: appAccount,
+            initializer: profileAccount1,
+            target: publicationAccount,
+            reaction: reactionToPublicationAccount,
+            authority: user,
+            systemProgram: SystemProgram.programId,
+          })
+          .rpc();
+        // console.log("Tx signature: ", tx);
+      } catch (error: any) {
+        console.log('error :>> ', error);
+      }
+      /* Fetch the account and check the values */
+      const data = await program.account.reaction.fetch(reactionToPublicationAccount);
+      // console.log('Reaction data: ', data);
+
+      expect(data.app.toString()).to.equal(appAccount.toString(), '1');
+      expect(data.initializer.toString()).to.equal(profileAccount1.toString(), '2');
+      expect(data.targetType.toString()).to.equal(reactionTargetType.toString(), '3');
+      expect(data.target.toString()).to.equal(publicationAccount.toString(), '4');
+      expect(data.reactionType.toString()).to.equal(reactionType.toString(), '5');
+      expect(data.authority.toString()).to.equal(user.toString(), '6');
     });
 
 
@@ -1105,7 +1383,7 @@ describe("ju-core", () => {
             app: appAccount,
             target: publicationAccount,
             initializer: profileAccount1,
-            reaction: reactionAccount,
+            reaction: reactionToPublicationAccount,
             authority: user,
             systemProgram: SystemProgram.programId,
           })
@@ -1116,11 +1394,11 @@ describe("ju-core", () => {
       }
 
       try {
-        await program.account.reaction.fetch(reactionAccount);
+        await program.account.reaction.fetch(reactionToPublicationAccount);
       } catch (error: any) {
         expect(error).to.be.an("error");
         expect(error.toString()).to.contain(
-          `Account does not exist or has no data ${reactionAccount.toString()}`
+          `Account does not exist or has no data ${reactionToPublicationAccount.toString()}`
         );
       }
 
@@ -1163,6 +1441,7 @@ describe("ju-core", () => {
 
     it("Initialize Report for Publication", async () => {
 
+      const reportTargetType: anchor.IdlTypes<JuCore>["ReportTargetType"] = { publication: {} }
       const reportType: anchor.IdlTypes<JuCore>["ReportType"] = { scam: {} }
       const notificationString = 'Publication Report test';
 
@@ -1193,14 +1472,16 @@ describe("ju-core", () => {
 
       expect(data.app.toString()).to.equal(appAccount.toString(), '1');
       expect(data.initializer.toString()).to.equal(profileAccount1.toString(), '2');
-      expect(data.target.toString()).to.equal(publicationAccount.toString(), '3');
+      expect(data.targetType.toString()).to.equal(reportTargetType.toString(), '3');
+      expect(data.target.toString()).to.equal(publicationAccount.toString(), '4');
       expect(data.reportType.toString()).to.equal(reportType.toString(), '4');
-      expect(data.notification.toString()).to.equal(notificationString.toString(), '5');
-      expect(data.authority.toString()).to.equal(user.toString(), '6');
+      expect(data.notification.toString()).to.equal(notificationString.toString(), '6');
+      expect(data.authority.toString()).to.equal(user.toString(), '7');
     });
 
     it("Initialize Report for Profile", async () => {
 
+      const reportTargetType: anchor.IdlTypes<JuCore>["ReportTargetType"] = { profile: {} }
       const reportType: anchor.IdlTypes<JuCore>["ReportType"] = { scam: {} }
       const notificationString = 'Profile Report test';
 
@@ -1231,15 +1512,19 @@ describe("ju-core", () => {
 
       expect(data.app.toString()).to.equal(appAccount.toString(), '1');
       expect(data.initializer.toString()).to.equal(profileAccount1.toString(), '2');
-      expect(data.target.toString()).to.equal(profileAccount2.toString(), '3');
-      expect(data.reportType.toString()).to.equal(reportType.toString(), '4');
-      expect(data.notification.toString()).to.equal(notificationString.toString(), '5');
-      expect(data.authority.toString()).to.equal(user.toString(), '6');
+      expect(data.targetType.toString()).to.equal(reportTargetType.toString(), '3');
+      expect(data.target.toString()).to.equal(profileAccount2.toString(), '4');
+      expect(data.reportType.toString()).to.equal(reportType.toString(), '5');
+      expect(data.notification.toString()).to.equal(notificationString.toString(), '6');
+      expect(data.authority.toString()).to.equal(user.toString(), '7');
     });
 
     it("Initialize Report for Subspace", async () => {
 
+      const reportTargetType: anchor.IdlTypes<JuCore>["ReportTargetType"] = { subspace: {} }
+
       const reportType: anchor.IdlTypes<JuCore>["ReportType"] = { scam: {} }
+
       const notificationString = 'Subspace Report test';
 
       try {
@@ -1269,10 +1554,11 @@ describe("ju-core", () => {
 
       expect(data.app.toString()).to.equal(appAccount.toString(), '1');
       expect(data.initializer.toString()).to.equal(profileAccount1.toString(), '2');
-      expect(data.target.toString()).to.equal(subspaceAccount.toString(), '3');
-      expect(data.reportType.toString()).to.equal(reportType.toString(), '4');
-      expect(data.notification.toString()).to.equal(notificationString.toString(), '5');
-      expect(data.authority.toString()).to.equal(user.toString(), '6');
+      expect(data.targetType.toString()).to.equal(reportTargetType.toString(), '3');
+      expect(data.target.toString()).to.equal(subspaceAccount.toString(), '4');
+      expect(data.reportType.toString()).to.equal(reportType.toString(), '5');
+      expect(data.notification.toString()).to.equal(notificationString.toString(), '6');
+      expect(data.authority.toString()).to.equal(user.toString(), '7');
     });
 
   });

@@ -45,12 +45,12 @@ function createInitializeReportInstruction(accounts, args, programId = new web3.
             isSigner: false,
         },
         {
-            pubkey: accounts.target,
+            pubkey: accounts.initializer,
             isWritable: false,
             isSigner: false,
         },
         {
-            pubkey: accounts.initializerProfile,
+            pubkey: accounts.target,
             isWritable: false,
             isSigner: false,
         },

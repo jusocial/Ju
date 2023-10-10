@@ -8,11 +8,12 @@
 import * as beet from '@metaplex-foundation/beet';
 import { ContentType, contentTypeBeet } from './ContentType';
 export type PublicationData = {
-  uuid: string;
+  isEncrypted: boolean;
   metadataUri: string;
   isMirror: boolean;
   isReply: boolean;
   contentType: ContentType;
+  tag: beet.COption<string>;
 };
 
 /**
@@ -21,11 +22,12 @@ export type PublicationData = {
  */
 export const publicationDataBeet = new beet.FixableBeetArgsStruct<PublicationData>(
   [
-    ['uuid', beet.utf8String],
+    ['isEncrypted', beet.bool],
     ['metadataUri', beet.utf8String],
     ['isMirror', beet.bool],
     ['isReply', beet.bool],
     ['contentType', contentTypeBeet],
+    ['tag', beet.coption(beet.utf8String)],
   ],
   'PublicationData',
 );

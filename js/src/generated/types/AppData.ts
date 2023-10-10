@@ -7,7 +7,21 @@
 
 import * as beet from '@metaplex-foundation/beet';
 export type AppData = {
-  metadataUri: string;
+  metadataUri: beet.COption<string>;
+  profileFirstNameRequired: boolean;
+  profileLastNameRequired: boolean;
+  profileBirthdateRequired: boolean;
+  profileCountryRequired: boolean;
+  profileCityRequired: boolean;
+  profileMetadataUriRequired: boolean;
+  subspaceNameRequired: boolean;
+  subspaceMetadataUriRequired: boolean;
+  profileDeleteAllowed: boolean;
+  subspaceDeleteAllowed: boolean;
+  publicationDeleteAllowed: boolean;
+  profileIndividualProcessorsAllowed: boolean;
+  subspaceIndividualProcessorsAllowed: boolean;
+  publicationIndividualProcessorsAllowed: boolean;
 };
 
 /**
@@ -15,6 +29,22 @@ export type AppData = {
  * @category generated
  */
 export const appDataBeet = new beet.FixableBeetArgsStruct<AppData>(
-  [['metadataUri', beet.utf8String]],
+  [
+    ['metadataUri', beet.coption(beet.utf8String)],
+    ['profileFirstNameRequired', beet.bool],
+    ['profileLastNameRequired', beet.bool],
+    ['profileBirthdateRequired', beet.bool],
+    ['profileCountryRequired', beet.bool],
+    ['profileCityRequired', beet.bool],
+    ['profileMetadataUriRequired', beet.bool],
+    ['subspaceNameRequired', beet.bool],
+    ['subspaceMetadataUriRequired', beet.bool],
+    ['profileDeleteAllowed', beet.bool],
+    ['subspaceDeleteAllowed', beet.bool],
+    ['publicationDeleteAllowed', beet.bool],
+    ['profileIndividualProcessorsAllowed', beet.bool],
+    ['subspaceIndividualProcessorsAllowed', beet.bool],
+    ['publicationIndividualProcessorsAllowed', beet.bool],
+  ],
   'AppData',
 );

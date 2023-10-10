@@ -27,20 +27,22 @@ exports.reportBeet = exports.Report = exports.reportDiscriminator = void 0;
 const web3 = __importStar(require("@solana/web3.js"));
 const beet = __importStar(require("@metaplex-foundation/beet"));
 const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
+const ReportTargetType_1 = require("../types/ReportTargetType");
 const ReportType_1 = require("../types/ReportType");
 exports.reportDiscriminator = [232, 246, 229, 227, 242, 105, 190, 2];
 class Report {
-    constructor(app, authority, initializerProfile, target, reportType, notification, createdAt) {
+    constructor(app, authority, targetType, target, initializer, reportType, notification, createdAt) {
         this.app = app;
         this.authority = authority;
-        this.initializerProfile = initializerProfile;
+        this.targetType = targetType;
         this.target = target;
+        this.initializer = initializer;
         this.reportType = reportType;
         this.notification = notification;
         this.createdAt = createdAt;
     }
     static fromArgs(args) {
-        return new Report(args.app, args.authority, args.initializerProfile, args.target, args.reportType, args.notification, args.createdAt);
+        return new Report(args.app, args.authority, args.targetType, args.target, args.initializer, args.reportType, args.notification, args.createdAt);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return Report.deserialize(accountInfo.data, offset);
@@ -78,8 +80,9 @@ class Report {
         return {
             app: this.app.toBase58(),
             authority: this.authority.toBase58(),
-            initializerProfile: this.initializerProfile.toBase58(),
+            targetType: 'ReportTargetType.' + ReportTargetType_1.ReportTargetType[this.targetType],
             target: this.target.toBase58(),
+            initializer: this.initializer.toBase58(),
             reportType: 'ReportType.' + ReportType_1.ReportType[this.reportType],
             notification: this.notification,
             createdAt: (() => {
@@ -102,8 +105,9 @@ exports.reportBeet = new beet.FixableBeetStruct([
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['app', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
-    ['initializerProfile', beetSolana.publicKey],
+    ['targetType', ReportTargetType_1.reportTargetTypeBeet],
     ['target', beetSolana.publicKey],
+    ['initializer', beetSolana.publicKey],
     ['reportType', ReportType_1.reportTypeBeet],
     ['notification', beet.coption(beet.utf8String)],
     ['createdAt', beet.i64],

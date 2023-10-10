@@ -25,7 +25,8 @@ pub struct ProcessReferencing<'info> {
     /// CHECK: Checked in core program
     pub target: AccountInfo<'info>,
 
-    pub authority: Signer<'info>,
+    /// CHECK: Checked in core program
+    pub authority: AccountInfo<'info>,
 
     pub system_program: Program<'info, System>,
 }

@@ -4,15 +4,17 @@ import * as beet from '@metaplex-foundation/beet';
 import * as beetSolana from '@metaplex-foundation/beet-solana';
 export type CollectionItemArgs = {
     app: web3.PublicKey;
-    authority: web3.PublicKey;
+    initializer: web3.PublicKey;
     target: web3.PublicKey;
+    authority: web3.PublicKey;
     createdAt: beet.bignum;
 };
 export declare const collectionItemDiscriminator: number[];
 export declare class CollectionItem implements CollectionItemArgs {
     readonly app: web3.PublicKey;
-    readonly authority: web3.PublicKey;
+    readonly initializer: web3.PublicKey;
     readonly target: web3.PublicKey;
+    readonly authority: web3.PublicKey;
     readonly createdAt: beet.bignum;
     private constructor();
     static fromArgs(args: CollectionItemArgs): CollectionItem;
@@ -22,6 +24,7 @@ export declare class CollectionItem implements CollectionItemArgs {
         app: any;
         authority: any;
         accountDiscriminator: any;
+        initializer: any;
         target: any;
         createdAt: any;
     }>;
@@ -32,8 +35,9 @@ export declare class CollectionItem implements CollectionItemArgs {
     static hasCorrectByteSize(buf: Buffer, offset?: number): boolean;
     pretty(): {
         app: string;
-        authority: string;
+        initializer: string;
         target: string;
+        authority: string;
         createdAt: number | {
             toNumber: () => number;
         };

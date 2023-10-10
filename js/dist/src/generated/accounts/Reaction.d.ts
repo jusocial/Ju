@@ -2,12 +2,14 @@
 import * as web3 from '@solana/web3.js';
 import * as beet from '@metaplex-foundation/beet';
 import * as beetSolana from '@metaplex-foundation/beet-solana';
+import { ReactionTargetType } from '../types/ReactionTargetType';
 import { ReactionType } from '../types/ReactionType';
 export type ReactionArgs = {
     app: web3.PublicKey;
     authority: web3.PublicKey;
-    initializerProfile: web3.PublicKey;
+    targetType: ReactionTargetType;
     target: web3.PublicKey;
+    initializer: web3.PublicKey;
     reactionType: ReactionType;
     createdAt: beet.bignum;
 };
@@ -15,8 +17,9 @@ export declare const reactionDiscriminator: number[];
 export declare class Reaction implements ReactionArgs {
     readonly app: web3.PublicKey;
     readonly authority: web3.PublicKey;
-    readonly initializerProfile: web3.PublicKey;
+    readonly targetType: ReactionTargetType;
     readonly target: web3.PublicKey;
+    readonly initializer: web3.PublicKey;
     readonly reactionType: ReactionType;
     readonly createdAt: beet.bignum;
     private constructor();
@@ -27,9 +30,10 @@ export declare class Reaction implements ReactionArgs {
         app: any;
         authority: any;
         accountDiscriminator: any;
+        initializer: any;
         target: any;
         createdAt: any;
-        initializerProfile: any;
+        targetType: any;
         reactionType: any;
     }>;
     static deserialize(buf: Buffer, offset?: number): [Reaction, number];
@@ -40,8 +44,9 @@ export declare class Reaction implements ReactionArgs {
     pretty(): {
         app: string;
         authority: string;
-        initializerProfile: string;
+        targetType: string;
         target: string;
+        initializer: string;
         reactionType: string;
         createdAt: number | {
             toNumber: () => number;

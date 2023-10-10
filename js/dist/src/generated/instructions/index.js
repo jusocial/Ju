@@ -14,6 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+__exportStar(require("./addDeveloper"), exports);
 __exportStar(require("./addProcessor"), exports);
 __exportStar(require("./collectPublication"), exports);
 __exportStar(require("./createProfile"), exports);
@@ -21,6 +22,7 @@ __exportStar(require("./createPublication"), exports);
 __exportStar(require("./createReaction"), exports);
 __exportStar(require("./createSubspace"), exports);
 __exportStar(require("./deleteConnection"), exports);
+__exportStar(require("./deleteDeveloper"), exports);
 __exportStar(require("./deleteProcessor"), exports);
 __exportStar(require("./deleteProfile"), exports);
 __exportStar(require("./deletePublication"), exports);

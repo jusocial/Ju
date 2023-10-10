@@ -29,6 +29,7 @@ const web3 = __importStar(require("@solana/web3.js"));
 const SubspaceData_1 = require("../types/SubspaceData");
 exports.createSubspaceStruct = new beet.FixableBeetArgsStruct([
     ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['uuid', beet.utf8String],
     ['data', SubspaceData_1.subspaceDataBeet],
 ], 'CreateSubspaceInstructionArgs');
 exports.createSubspaceInstructionDiscriminator = [209, 236, 139, 82, 188, 121, 89, 27];

@@ -3,12 +3,13 @@ import * as web3 from '@solana/web3.js';
 import * as beet from '@metaplex-foundation/beet';
 import * as beetSolana from '@metaplex-foundation/beet-solana';
 export type SubspaceArgs = {
-    uuid: string;
     app: web3.PublicKey;
     authority: web3.PublicKey;
     creator: web3.PublicKey;
     alias: beet.COption<string>;
-    metadataUri: string;
+    name: beet.COption<string>;
+    uuid: string;
+    metadataUri: beet.COption<string>;
     publishingProcessor: beet.COption<web3.PublicKey>;
     connectingProcessor: beet.COption<web3.PublicKey>;
     collectingProcessor: beet.COption<web3.PublicKey>;
@@ -16,12 +17,13 @@ export type SubspaceArgs = {
 };
 export declare const subspaceDiscriminator: number[];
 export declare class Subspace implements SubspaceArgs {
-    readonly uuid: string;
     readonly app: web3.PublicKey;
     readonly authority: web3.PublicKey;
     readonly creator: web3.PublicKey;
     readonly alias: beet.COption<string>;
-    readonly metadataUri: string;
+    readonly name: beet.COption<string>;
+    readonly uuid: string;
+    readonly metadataUri: beet.COption<string>;
     readonly publishingProcessor: beet.COption<web3.PublicKey>;
     readonly connectingProcessor: beet.COption<web3.PublicKey>;
     readonly collectingProcessor: beet.COption<web3.PublicKey>;
@@ -38,12 +40,13 @@ export declare class Subspace implements SubspaceArgs {
     static byteSize(args: SubspaceArgs): number;
     static getMinimumBalanceForRentExemption(args: SubspaceArgs, connection: web3.Connection, commitment?: web3.Commitment): Promise<number>;
     pretty(): {
-        uuid: string;
         app: string;
         authority: string;
         creator: string;
         alias: beet.COption<string>;
-        metadataUri: string;
+        name: beet.COption<string>;
+        uuid: string;
+        metadataUri: beet.COption<string>;
         publishingProcessor: beet.COption<web3.PublicKey>;
         connectingProcessor: beet.COption<web3.PublicKey>;
         collectingProcessor: beet.COption<web3.PublicKey>;

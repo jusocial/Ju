@@ -37,8 +37,8 @@ export const initializeReportStruct = new beet.FixableBeetArgsStruct<
  * Accounts required by the _initializeReport_ instruction
  *
  * @property [] app
+ * @property [] initializer
  * @property [] target
- * @property [] initializerProfile
  * @property [_writable_] report
  * @property [_writable_, **signer**] authority
  * @category Instructions
@@ -47,8 +47,8 @@ export const initializeReportStruct = new beet.FixableBeetArgsStruct<
  */
 export type InitializeReportInstructionAccounts = {
   app: web3.PublicKey;
+  initializer: web3.PublicKey;
   target: web3.PublicKey;
-  initializerProfile: web3.PublicKey;
   report: web3.PublicKey;
   authority: web3.PublicKey;
   systemProgram?: web3.PublicKey;
@@ -82,12 +82,12 @@ export function createInitializeReportInstruction(
       isSigner: false,
     },
     {
-      pubkey: accounts.target,
+      pubkey: accounts.initializer,
       isWritable: false,
       isSigner: false,
     },
     {
-      pubkey: accounts.initializerProfile,
+      pubkey: accounts.target,
       isWritable: false,
       isSigner: false,
     },

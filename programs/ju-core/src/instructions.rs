@@ -1,5 +1,59 @@
 use crate::*;
 
+/// Context to add new Protocol developer to whitelist
+///
+/// Accounts expected:
+///
+/// 0. `[]` Pubkey of the whitelisting developer
+/// 1. `[signer]` Application Authority
+/// 2. `[]` System program
+///
+#[derive(Accounts)]
+pub struct AddDeveloper<'info> {
+    #[account(
+        init,
+        seeds = [
+            DeveloperWhitelistItem::PREFIX.as_bytes(),
+        ],
+        bump,
+        payer = authority,
+        space = DeveloperWhitelistItem::LEN
+    )]
+    pub developer: Account<'info, DeveloperWhitelistItem>,
+
+    #[account(mut)]
+    pub authority: Signer<'info>,
+
+    pub system_program: Program<'info, System>,
+}
+
+/// Context to delete existing Protocol developer from whitelist
+///
+/// Accounts expected:
+///
+/// 0. `[]` Pubkey of the whitelisting developer
+/// 1. `[signer]` Application Authority
+/// 2. `[]` System program
+///
+#[derive(Accounts)]
+pub struct DeleteDeveloper<'info> {
+    #[account(
+        mut,
+        has_one = authority,
+        seeds = [
+            DeveloperWhitelistItem::PREFIX.as_bytes(),
+        ],
+        bump,
+        close = authority,
+    )]
+    pub developer: Account<'info, DeveloperWhitelistItem>,
+
+    #[account(mut)]
+    pub authority: Signer<'info>,
+
+    pub system_program: Program<'info, System>,
+}
+
 /// Context to add new Protocol external Processor
 ///
 /// Accounts expected:
@@ -470,6 +524,8 @@ pub struct InitializeConnection<'info> {
            app.key().as_ref(),
            initializer.key().as_ref(),
            target.key().as_ref(),
+           // another one Initializer seed for making unique connection for each initializer
+           initializer.key().as_ref(), 
         ],
         bump,
         payer = authority,
@@ -527,6 +583,8 @@ pub struct UpdateConnection<'info> {
            app.key().as_ref(),
            initializer.key().as_ref(),
            target.key().as_ref(),
+           // another one Initializer seed for making unique connection for each initializer
+           initializer.key().as_ref(), 
         ],
         bump
     )]
@@ -574,6 +632,8 @@ pub struct DeleteConnection<'info> {
             app.key().as_ref(),
             initializer_profile.key().as_ref(),
             target.key().as_ref(),
+            // another one Initializer seed for making unique connection for each initializer
+            initializer_profile.key().as_ref(),
         ],
         bump,
         close = authority
@@ -892,6 +952,145 @@ pub struct DeleteSubpace<'info> {
     pub system_program: Program<'info, System>,
 }
 
+/// Context to add new Subspace manager
+///
+/// Accounts expected:
+///
+/// 0. `[]` Current Application (PDA)
+/// 1. `[]` Subspace (PDA)
+/// 2. `[]` Profile as Subspace manager (PDA)
+/// 3. `[writable]` SubspaceManager PDA, it stores all SubspaceManager data
+/// 4. `[signer]` Application Authority
+/// 5. `[]` System program
+///
+#[derive(Accounts)]
+pub struct AddSubspaceManager<'info> {
+    #[account(
+        seeds = [
+            App::PREFIX.as_bytes(),
+            app.app_name.as_bytes().as_ref(),
+        ],
+        bump
+    )]
+    pub app: Account<'info, App>,
+
+    #[account(
+        has_one = authority,
+        seeds = [
+            Subspace::PREFIX.as_bytes(),
+            app.key().as_ref(),
+            subspace.creator.key().as_ref(),
+            subspace.uuid.as_bytes().as_ref(),
+        ],
+        bump,
+    )]
+    pub subspace: Account<'info, Subspace>,
+
+    #[account(
+        seeds = [
+            Profile::PREFIX.as_bytes(),
+            app.key().as_ref(),
+            profile.authority.key().as_ref(),
+        ],
+        bump
+    )]
+    pub profile: Account<'info, Profile>,
+
+    #[account(
+        seeds = [
+           Connection::PREFIX.as_bytes(),
+           app.key().as_ref(),
+           profile.key().as_ref(),
+           subspace.key().as_ref(),
+           // another one Initializer seed for making unique connection for each initializer
+           profile.key().as_ref(), 
+        ],
+        bump
+    )]
+    pub connection_proof: Box<Account<'info, Connection>>,
+
+    #[account(
+        init,
+        seeds = [
+            SubspaceManager::PREFIX.as_bytes(),
+            subspace.key().as_ref(),
+            profile.key().as_ref(),
+        ],
+        bump,
+        payer = authority,
+        space = SubspaceManager::LEN
+    )]
+    pub manager: Account<'info, SubspaceManager>,
+
+    #[account(mut)]
+    pub authority: Signer<'info>,
+
+    pub system_program: Program<'info, System>,
+}
+
+/// Context to delete existing Subspace manager
+///
+/// Accounts expected:
+///
+/// 0. `[]` Current Application (PDA)
+/// 1. `[]` Subspace (PDA)
+/// 2. `[]` Profile as Subspace manager (PDA)
+/// 3. `[writable]` SubspaceManager PDA, it stores all SubspaceManager data
+/// 4. `[signer]` Application Authority
+/// 5. `[]` System program
+///
+#[derive(Accounts)]
+pub struct DeleteSubspaceManager<'info> {
+    #[account(
+        seeds = [
+            App::PREFIX.as_bytes(),
+            app.app_name.as_bytes().as_ref(),
+        ],
+        bump
+    )]
+    pub app: Account<'info, App>,
+
+    #[account(
+        has_one = authority,
+        seeds = [
+            Subspace::PREFIX.as_bytes(),
+            app.key().as_ref(),
+            subspace.creator.key().as_ref(),
+            subspace.uuid.as_bytes().as_ref(),
+        ],
+        bump,
+    )]
+    pub subspace: Account<'info, Subspace>,
+
+    #[account(     
+        seeds = [
+            Profile::PREFIX.as_bytes(),
+            app.key().as_ref(),
+            profile.authority.key().as_ref(),
+        ],
+        bump
+    )]
+    pub profile: Account<'info, Profile>,
+
+    #[account(
+        mut,
+        has_one = authority,
+        seeds = [
+            SubspaceManager::PREFIX.as_bytes(),
+            subspace.key().as_ref(),
+            profile.key().as_ref(),
+        ],
+        bump,
+        close = authority,
+    )]
+    pub manager: Account<'info, SubspaceManager>,
+
+    #[account(mut)]
+    pub authority: Signer<'info>,
+
+    pub system_program: Program<'info, System>,
+}
+
 /// Context to create new Publication
 ///
 /// Accounts expected:
@@ -955,9 +1154,45 @@ pub struct CreatePublication<'info> {
     /// Must be passed if Publication will store in Subspace
     pub subspace: Option<Box<Account<'info, Subspace>>>,
 
+    #[account(
+        has_one = profile,
+        seeds = [
+            Publication::PREFIX.as_bytes(),
+            app.key().as_ref(),
+            target_publication.uuid.as_bytes().as_ref(),
+        ],
+        bump
+    )]
     /// Publication PDA which has to be replyed or referenced
     /// Must be passed if this mirroring or replying
     pub target_publication: Option<Box<Account<'info, Publication>>>,
+
+    #[account(
+        seeds = [
+           Connection::PREFIX.as_bytes(),
+           app.key().as_ref(),
+           profile.key().as_ref(),
+           subspace.as_ref().unwrap().key().as_ref(),
+           // another one Initializer seed for making unique connection for each initializer
+           profile.key().as_ref(), 
+        ],
+        bump
+    )]
+    /// Connection PDA that proof Publisher (Profile) is connected to Subspace
+    /// Must be passed in case Publication target is a Subspace
+    pub connection_proof: Option<Box<Account<'info, Connection>>>,
+
+    #[account(
+        seeds = [
+            SubspaceManager::PREFIX.as_bytes(),
+            subspace.as_ref().unwrap().key().as_ref(),
+            profile.key().as_ref(),
+        ],
+        bump
+    )]
+    /// SubspaceManager PDA that proof Publisher (Subspace member Profile) is a Manager of Subspace
+    /// Must be passed in case Publication target is a Subspace
+    pub subspace_manager_proof: Option<Box<Account<'info, SubspaceManager>>>,
 
     #[account(
         seeds = [
@@ -1033,6 +1268,46 @@ pub struct UpdatePublication<'info> {
         bump
     )]
     pub publication: Account<'info, Publication>,
+
+    #[account(
+        seeds = [
+            Subspace::PREFIX.as_bytes(),
+            app.key().as_ref(),
+            subspace.creator.key().as_ref(),
+            subspace.uuid.as_bytes().as_ref(),
+        ],
+        bump,
+    )]
+    /// Subspace (PDA) 
+    /// Must be passed if Publication store in Subspace
+    pub subspace: Option<Box<Account<'info, Subspace>>>,
+
+    #[account(
+        seeds = [
+           Connection::PREFIX.as_bytes(),
+           app.key().as_ref(),
+           profile.key().as_ref(),
+           subspace.as_ref().unwrap().key().as_ref(),
+           // another one Initializer seed for making unique connection for each initializer
+           profile.key().as_ref(), 
+        ],
+        bump
+    )]
+    /// Connection PDA that proof Publisher (Profile) is connected to Subspace
+    /// Must be passed in case Publication target is a Subspace
+    pub connection_proof: Option<Box<Account<'info, Connection>>>,
+
+    #[account(
+        seeds = [
+            SubspaceManager::PREFIX.as_bytes(),
+            subspace.as_ref().unwrap().key().as_ref(),
+            profile.key().as_ref(),
+        ],
+        bump
+    )]
+    /// SubspaceManager PDA that proof Publisher (Subspace member Profile) is a Manager of Subspace
+    /// Must be passed in case Publication target is a Subspace
+    pub subspace_manager_proof: Option<Box<Account<'info, SubspaceManager>>>,
 
     #[account(
         seeds = [
@@ -1180,8 +1455,8 @@ pub struct DeletePublication<'info> {
 /// Accounts expected:
 ///
 /// 0. `[]` Current Application (PDA)
-/// 1. `[]` PDA of the Publication for which the Reaction is being initialized
-/// 2. `[]` Reaction initializer Profile (PDA)
+/// 1. `[]` Reaction initializer Profile (PDA)
+/// 2. `[]` The Target for which the Reaction is being initialized
 /// 3. `[writable]` Reaction account (PDA), it will stores Reaction data
 /// 4. `[signer]` Reaction Autority
 /// 5. `[]` System program
@@ -1208,15 +1483,19 @@ pub struct CreateReaction<'info> {
     )]
     pub initializer: Box<Account<'info, Profile>>,
 
-    #[account(
-        seeds = [
-            Publication::PREFIX.as_bytes(),
-            app.key().as_ref(),
-            target.uuid.as_bytes().as_ref(),
-        ],
-        bump
-    )]
-    pub target: Account<'info, Publication>,
+    // #[account(
+    //     seeds = [
+    //         Publication::PREFIX.as_bytes(),
+    //         app.key().as_ref(),
+    //         target.uuid.as_bytes().as_ref(),
+    //     ],
+    //     bump
+    // )]
+    // pub target: Account<'info, Publication>,
+
+    /// Report target - potentialy could be a Profile or Publication
+    /// CHECK: Account checked inside instruction
+    pub target: AccountInfo<'info>,
 
     #[account(
         init,
@@ -1243,8 +1522,8 @@ pub struct CreateReaction<'info> {
 /// Accounts expected:
 ///
 /// 0. `[]` Current Application (PDA)
-/// 1. `[]` PDA of the Publication for which the Reaction is being deleted
-/// 2. `[]` Reaction initializer Profile (PDA)
+/// 1. `[]` Reaction initializer Profile (PDA)
+/// 2. `[]` The Target for which the Reaction is being initialized
 /// 3. `[writable]` Reaction account (PDA) to be deleted
 /// 4. `[signer]` Reaction Autority
 /// 5. `[]` System program
@@ -1271,15 +1550,19 @@ pub struct DeleteReaction<'info> {
     )]
     pub initializer: Box<Account<'info, Profile>>,
 
-    #[account(
-        seeds = [
-            Publication::PREFIX.as_bytes(),
-            app.key().as_ref(),
-            target.uuid.as_bytes().as_ref(),
-        ],
-        bump
-    )]
-    pub target: Account<'info, Publication>,
+    // #[account(
+    //     seeds = [
+    //         Publication::PREFIX.as_bytes(),
+    //         app.key().as_ref(),
+    //         target.uuid.as_bytes().as_ref(),
+    //     ],
+    //     bump
+    // )]
+    // pub target: Account<'info, Publication>,
+
+    /// Report target - potentialy could be a Profile or Publication
+    /// CHECK: Account checked inside instruction
+    pub target: AccountInfo<'info>,
 
     #[account(
         mut,
@@ -1306,8 +1589,8 @@ pub struct DeleteReaction<'info> {
 /// Accounts expected:
 ///
 /// 0. `[]` Current Application (PDA)
-/// 1. `[]` PDA of the Publication for which the report is being initialized
-/// 2. `[]` Report initializer Profile account (PDA)
+/// 1. `[]` Report initializer Profile account (PDA)
+/// 2. `[]` PDA of the `Target` for which the report is being initialized
 /// 3. `[writable]` Report account (PDA), it will stores all Report data
 /// 4. `[signer]` Report Autority
 /// 5. `[]` System program
@@ -1334,7 +1617,7 @@ pub struct InitializeReport<'info> {
     )]
     pub initializer: Box<Account<'info, Profile>>,
 
-    /// Report target - potentialy could be a Profile or Subspace or Publication
+    /// Report target - potentialy could be a Profile, Subspace or Publication
     /// CHECK: Account checked inside instruction
     pub target: AccountInfo<'info>,
 

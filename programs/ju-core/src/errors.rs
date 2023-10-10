@@ -59,14 +59,26 @@ pub enum CustomError {
     #[msg("Profile update not authorized")]
     UpdateNotAuthorized,
 
-    #[msg("Profile's name too long'")]
-    ProfileNameTooLong,
+    #[msg("Profile first name length is incorrect")]
+    ProfileFirstNameLengthIncorrect,
 
-    #[msg("Profile's surname too long'")]
-    ProfileSurnameTooLong,
+    #[msg("Profile last name length is incorrect")]
+    ProfileLastNameLengthIncorrect,
 
     #[msg("Subspace alias is incorrect")]
     SubspaceAliasIncorrect,
+
+    #[msg("Subspace name length is incorrect")]
+    SubspaceNameIncorrect,
+
+    #[msg("Subspace publishing permission violated")]
+    SubspacePublishingPermissionViolation,
+
+    #[msg("Subspace publishing Connection-proof account required")]
+    SubspacePublishingConnectionProofAccountRequired,
+
+    #[msg("Subspace publishing Manager-proof account required")]
+    SubspacePublishingManagerProofAccountRequired,
 
     #[msg("URI length is incorrect")]
     UriLengthIncorrect,
@@ -90,7 +102,7 @@ pub enum CustomError {
     ConnectionTargetAuthorityMismatch,
 
     #[msg("Connection validation failed")]
-    ValidationFail,
+    ConnectionValidationFail,
 
     #[msg("Alias account already exist")]
     AliasAccountExist,
@@ -128,4 +140,9 @@ pub enum CustomError {
     #[msg("Referencing external processor mismatch")]
     ReferencingProcessorMismatch,
 
+    #[msg("Reaction target account is invalid")]
+    ReactionTargetAccountInvalid,
+
+    #[msg("Report target account is invalid")]
+    ReportTargetAccountInvalid,
 }

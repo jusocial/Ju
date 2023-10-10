@@ -45,7 +45,7 @@ function createUpdateSubspaceInstruction(accounts, args, programId = new web3.Pu
             isSigner: false,
         },
         {
-            pubkey: accounts.profile,
+            pubkey: accounts.creatorProfile,
             isWritable: false,
             isSigner: false,
         },

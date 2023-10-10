@@ -16,8 +16,9 @@ import * as beetSolana from '@metaplex-foundation/beet-solana';
  */
 export type CollectionItemArgs = {
   app: web3.PublicKey;
-  authority: web3.PublicKey;
+  initializer: web3.PublicKey;
   target: web3.PublicKey;
+  authority: web3.PublicKey;
   createdAt: beet.bignum;
 };
 
@@ -32,8 +33,9 @@ export const collectionItemDiscriminator = [225, 72, 84, 206, 193, 134, 215, 4];
 export class CollectionItem implements CollectionItemArgs {
   private constructor(
     readonly app: web3.PublicKey,
-    readonly authority: web3.PublicKey,
+    readonly initializer: web3.PublicKey,
     readonly target: web3.PublicKey,
+    readonly authority: web3.PublicKey,
     readonly createdAt: beet.bignum,
   ) {}
 
@@ -41,7 +43,13 @@ export class CollectionItem implements CollectionItemArgs {
    * Creates a {@link CollectionItem} instance from the provided args.
    */
   static fromArgs(args: CollectionItemArgs) {
-    return new CollectionItem(args.app, args.authority, args.target, args.createdAt);
+    return new CollectionItem(
+      args.app,
+      args.initializer,
+      args.target,
+      args.authority,
+      args.createdAt,
+    );
   }
 
   /**
@@ -140,8 +148,9 @@ export class CollectionItem implements CollectionItemArgs {
   pretty() {
     return {
       app: this.app.toBase58(),
-      authority: this.authority.toBase58(),
+      initializer: this.initializer.toBase58(),
       target: this.target.toBase58(),
+      authority: this.authority.toBase58(),
       createdAt: (() => {
         const x = <{ toNumber: () => number }>this.createdAt;
         if (typeof x.toNumber === 'function') {
@@ -170,8 +179,9 @@ export const collectionItemBeet = new beet.BeetStruct<
   [
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['app', beetSolana.publicKey],
-    ['authority', beetSolana.publicKey],
+    ['initializer', beetSolana.publicKey],
     ['target', beetSolana.publicKey],
+    ['authority', beetSolana.publicKey],
     ['createdAt', beet.i64],
   ],
   CollectionItem.fromArgs,

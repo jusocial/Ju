@@ -19,16 +19,20 @@ __exportStar(require("./Alias"), exports);
 __exportStar(require("./App"), exports);
 __exportStar(require("./CollectionItem"), exports);
 __exportStar(require("./Connection"), exports);
+__exportStar(require("./DeveloperWhitelistItem"), exports);
 __exportStar(require("./ExternalProcessorPDA"), exports);
 __exportStar(require("./Profile"), exports);
 __exportStar(require("./Publication"), exports);
 __exportStar(require("./Reaction"), exports);
 __exportStar(require("./Report"), exports);
 __exportStar(require("./Subspace"), exports);
+__exportStar(require("./SubspaceManager"), exports);
+const DeveloperWhitelistItem_1 = require("./DeveloperWhitelistItem");
 const ExternalProcessorPDA_1 = require("./ExternalProcessorPDA");
 const App_1 = require("./App");
 const Profile_1 = require("./Profile");
 const Subspace_1 = require("./Subspace");
+const SubspaceManager_1 = require("./SubspaceManager");
 const Publication_1 = require("./Publication");
 const Connection_1 = require("./Connection");
 const CollectionItem_1 = require("./CollectionItem");
@@ -36,10 +40,12 @@ const Alias_1 = require("./Alias");
 const Reaction_1 = require("./Reaction");
 const Report_1 = require("./Report");
 exports.accountProviders = {
+    DeveloperWhitelistItem: DeveloperWhitelistItem_1.DeveloperWhitelistItem,
     ExternalProcessorPDA: ExternalProcessorPDA_1.ExternalProcessorPDA,
     App: App_1.App,
     Profile: Profile_1.Profile,
     Subspace: Subspace_1.Subspace,
+    SubspaceManager: SubspaceManager_1.SubspaceManager,
     Publication: Publication_1.Publication,
     Connection: Connection_1.Connection,
     CollectionItem: CollectionItem_1.CollectionItem,

@@ -9,7 +9,7 @@ export declare const updateSubspaceStruct: beet.FixableBeetArgsStruct<UpdateSubs
 }>;
 export type UpdateSubspaceInstructionAccounts = {
     app: web3.PublicKey;
-    profile: web3.PublicKey;
+    creatorProfile: web3.PublicKey;
     subspace: web3.PublicKey;
     currentAliasPda?: web3.PublicKey;
     newAliasPda?: web3.PublicKey;

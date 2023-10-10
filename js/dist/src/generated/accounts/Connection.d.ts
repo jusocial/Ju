@@ -2,9 +2,11 @@
 import * as web3 from '@solana/web3.js';
 import * as beet from '@metaplex-foundation/beet';
 import * as beetSolana from '@metaplex-foundation/beet-solana';
+import { ConnectionTargetType } from '../types/ConnectionTargetType';
 export type ConnectionArgs = {
     app: web3.PublicKey;
     authority: web3.PublicKey;
+    connectionTargetType: ConnectionTargetType;
     initializer: web3.PublicKey;
     target: web3.PublicKey;
     approved: boolean;
@@ -15,6 +17,7 @@ export declare const connectionDiscriminator: number[];
 export declare class Connection implements ConnectionArgs {
     readonly app: web3.PublicKey;
     readonly authority: web3.PublicKey;
+    readonly connectionTargetType: ConnectionTargetType;
     readonly initializer: web3.PublicKey;
     readonly target: web3.PublicKey;
     readonly approved: boolean;
@@ -34,6 +37,7 @@ export declare class Connection implements ConnectionArgs {
     pretty(): {
         app: string;
         authority: string;
+        connectionTargetType: string;
         initializer: string;
         target: string;
         approved: boolean;

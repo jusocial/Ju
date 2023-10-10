@@ -12,7 +12,16 @@ import * as beet from '@metaplex-foundation/beet';
  */
 export enum ReportType {
   Scam,
+  Phishing,
   Abuse,
+  Spam,
+  HateSpeech,
+  Harassment,
+  Misinformation,
+  Violence,
+  Threats,
+  Copyright,
+  Adult,
 }
 
 /**

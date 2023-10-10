@@ -27,10 +27,11 @@ exports.publicationDataBeet = void 0;
 const beet = __importStar(require("@metaplex-foundation/beet"));
 const ContentType_1 = require("./ContentType");
 exports.publicationDataBeet = new beet.FixableBeetArgsStruct([
-    ['uuid', beet.utf8String],
+    ['isEncrypted', beet.bool],
     ['metadataUri', beet.utf8String],
     ['isMirror', beet.bool],
     ['isReply', beet.bool],
     ['contentType', ContentType_1.contentTypeBeet],
+    ['tag', beet.coption(beet.utf8String)],
 ], 'PublicationData');
 //# sourceMappingURL=PublicationData.js.map

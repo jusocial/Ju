@@ -11,7 +11,6 @@ export type CollectPublicationInstructionAccounts = {
     initializer: web3.PublicKey;
     target: web3.PublicKey;
     collectionItem: web3.PublicKey;
-    collectingProcessor?: web3.PublicKey;
     authority: web3.PublicKey;
     systemProgram?: web3.PublicKey;
 };

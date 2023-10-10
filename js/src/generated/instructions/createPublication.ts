@@ -15,6 +15,7 @@ import { PublicationData, publicationDataBeet } from '../types/PublicationData';
  * @category generated
  */
 export type CreatePublicationInstructionArgs = {
+  uuid: string;
   data: PublicationData;
   externalProcessingData: beet.COption<string>;
 };
@@ -30,6 +31,7 @@ export const createPublicationStruct = new beet.FixableBeetArgsStruct<
 >(
   [
     ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['uuid', beet.utf8String],
     ['data', publicationDataBeet],
     ['externalProcessingData', beet.coption(beet.utf8String)],
   ],
@@ -45,8 +47,6 @@ export const createPublicationStruct = new beet.FixableBeetArgsStruct<
  * @property [] targetPublication (optional)
  * @property [] collectingProcessorPda (optional)
  * @property [] referencingProcessorPda (optional)
- * @property [] publishingProcessor (optional)
- * @property [] referencingProcessor (optional)
  * @property [_writable_, **signer**] authority
  * @category Instructions
  * @category CreatePublication
@@ -60,8 +60,6 @@ export type CreatePublicationInstructionAccounts = {
   targetPublication?: web3.PublicKey;
   collectingProcessorPda?: web3.PublicKey;
   referencingProcessorPda?: web3.PublicKey;
-  publishingProcessor?: web3.PublicKey;
-  referencingProcessor?: web3.PublicKey;
   authority: web3.PublicKey;
   systemProgram?: web3.PublicKey;
 };
@@ -153,41 +151,6 @@ export function createCreatePublicationInstruction(
     }
     keys.push({
       pubkey: accounts.referencingProcessorPda,
-      isWritable: false,
-      isSigner: false,
-    });
-  }
-  if (accounts.publishingProcessor != null) {
-    if (
-      accounts.subspace == null ||
-      accounts.targetPublication == null ||
-      accounts.collectingProcessorPda == null ||
-      accounts.referencingProcessorPda == null
-    ) {
-      throw new Error(
-        "When providing 'publishingProcessor' then 'accounts.subspace', 'accounts.targetPublication', 'accounts.collectingProcessorPda', 'accounts.referencingProcessorPda' need(s) to be provided as well.",
-      );
-    }
-    keys.push({
-      pubkey: accounts.publishingProcessor,
-      isWritable: false,
-      isSigner: false,
-    });
-  }
-  if (accounts.referencingProcessor != null) {
-    if (
-      accounts.subspace == null ||
-      accounts.targetPublication == null ||
-      accounts.collectingProcessorPda == null ||
-      accounts.referencingProcessorPda == null ||
-      accounts.publishingProcessor == null
-    ) {
-      throw new Error(
-        "When providing 'referencingProcessor' then 'accounts.subspace', 'accounts.targetPublication', 'accounts.collectingProcessorPda', 'accounts.referencingProcessorPda', 'accounts.publishingProcessor' need(s) to be provided as well.",
-      );
-    }
-    keys.push({
-      pubkey: accounts.referencingProcessor,
       isWritable: false,
       isSigner: false,
     });

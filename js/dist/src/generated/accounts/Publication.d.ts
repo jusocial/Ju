@@ -4,16 +4,18 @@ import * as beet from '@metaplex-foundation/beet';
 import * as beetSolana from '@metaplex-foundation/beet-solana';
 import { ContentType } from '../types/ContentType';
 export type PublicationArgs = {
-    uuid: string;
     app: web3.PublicKey;
     profile: web3.PublicKey;
     authority: web3.PublicKey;
-    metadataUri: string;
+    isEncrypted: boolean;
     subspace: beet.COption<web3.PublicKey>;
     isMirror: boolean;
     isReply: boolean;
     targetPublication: beet.COption<web3.PublicKey>;
     contentType: ContentType;
+    tag: beet.COption<string>;
+    uuid: string;
+    metadataUri: string;
     collectingProcessor: beet.COption<web3.PublicKey>;
     referencingProcessor: beet.COption<web3.PublicKey>;
     createdAt: beet.bignum;
@@ -21,16 +23,18 @@ export type PublicationArgs = {
 };
 export declare const publicationDiscriminator: number[];
 export declare class Publication implements PublicationArgs {
-    readonly uuid: string;
     readonly app: web3.PublicKey;
     readonly profile: web3.PublicKey;
     readonly authority: web3.PublicKey;
-    readonly metadataUri: string;
+    readonly isEncrypted: boolean;
     readonly subspace: beet.COption<web3.PublicKey>;
     readonly isMirror: boolean;
     readonly isReply: boolean;
     readonly targetPublication: beet.COption<web3.PublicKey>;
     readonly contentType: ContentType;
+    readonly tag: beet.COption<string>;
+    readonly uuid: string;
+    readonly metadataUri: string;
     readonly collectingProcessor: beet.COption<web3.PublicKey>;
     readonly referencingProcessor: beet.COption<web3.PublicKey>;
     readonly createdAt: beet.bignum;
@@ -47,16 +51,18 @@ export declare class Publication implements PublicationArgs {
     static byteSize(args: PublicationArgs): number;
     static getMinimumBalanceForRentExemption(args: PublicationArgs, connection: web3.Connection, commitment?: web3.Commitment): Promise<number>;
     pretty(): {
-        uuid: string;
         app: string;
         profile: string;
         authority: string;
-        metadataUri: string;
+        isEncrypted: boolean;
         subspace: beet.COption<web3.PublicKey>;
         isMirror: boolean;
         isReply: boolean;
         targetPublication: beet.COption<web3.PublicKey>;
         contentType: string;
+        tag: beet.COption<string>;
+        uuid: string;
+        metadataUri: string;
         collectingProcessor: beet.COption<web3.PublicKey>;
         referencingProcessor: beet.COption<web3.PublicKey>;
         createdAt: number | {

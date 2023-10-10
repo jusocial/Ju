@@ -58,24 +58,17 @@ function createInitializeConnectionInstruction(accounts, args, programId = new w
             isWritable: false,
             isSigner: false,
         },
-    ];
-    if (accounts.connectingProcessor != null) {
-        keys.push({
-            pubkey: accounts.connectingProcessor,
+        {
+            pubkey: accounts.authority,
+            isWritable: true,
+            isSigner: true,
+        },
+        {
+            pubkey: (_a = accounts.systemProgram) !== null && _a !== void 0 ? _a : web3.SystemProgram.programId,
             isWritable: false,
             isSigner: false,
-        });
-    }
-    keys.push({
-        pubkey: accounts.authority,
-        isWritable: true,
-        isSigner: true,
-    });
-    keys.push({
-        pubkey: (_a = accounts.systemProgram) !== null && _a !== void 0 ? _a : web3.SystemProgram.programId,
-        isWritable: false,
-        isSigner: false,
-    });
+        },
+    ];
     const ix = new web3.TransactionInstruction({
         programId,
         keys,

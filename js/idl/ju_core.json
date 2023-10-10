@@ -14,21 +14,21 @@
       "type": {
         "defined": "usize"
       },
-      "value": "10"
+      "value": "50"
     },
     {
       "name": "MIN_APPNAME_LENGTH",
       "type": {
         "defined": "usize"
       },
-      "value": "5"
+      "value": "3"
     },
     {
       "name": "MAX_APPNAME_LENGTH",
       "type": {
         "defined": "usize"
       },
-      "value": "10"
+      "value": "30"
     },
     {
       "name": "MIN_URI_LENGTH",
@@ -56,7 +56,7 @@
       "type": {
         "defined": "usize"
       },
-      "value": "10"
+      "value": "20"
     },
     {
       "name": "MAX_STATUS_LENGTH",
@@ -78,9 +78,108 @@
         "defined": "usize"
       },
       "value": "100"
+    },
+    {
+      "name": "MIN_PROFILE_FIRST_NAME_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "1"
+    },
+    {
+      "name": "MAX_PROFILE_FIRST_NAME_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "20"
+    },
+    {
+      "name": "MIN_PROFILE_LAST_NAME_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "1"
+    },
+    {
+      "name": "MAX_PROFILE_LAST_NAME_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "30"
+    },
+    {
+      "name": "MIN_SUBSPACE_NAME_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "4"
+    },
+    {
+      "name": "MAX_SUBSPACE_NAME_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "30"
+    },
+    {
+      "name": "MAX_TAG_LENGTH",
+      "type": {
+        "defined": "usize"
+      },
+      "value": "30"
     }
   ],
   "instructions": [
+    {
+      "name": "addDeveloper",
+      "docs": [
+        "Approve new Developer",
+        ""
+      ],
+      "accounts": [
+        {
+          "name": "developer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "deleteDeveloper",
+      "docs": [
+        "Delete existing Developer",
+        ""
+      ],
+      "accounts": [
+        {
+          "name": "developer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
     {
       "name": "addProcessor",
       "docs": [
@@ -195,7 +294,7 @@
           "isOptional": true,
           "docs": [
             "External Processor PDA that proof Processor passed to assign is whitelisted",
-            "Must be passed if user want to assign Profile specified Processor for additional Registering processing"
+            "Must be passed if user wants to assign External Processor for additional Registering processing"
           ]
         },
         {
@@ -205,7 +304,7 @@
           "isOptional": true,
           "docs": [
             "External Processor PDA that proof Processor passed to assign is whitelisted",
-            "Must be passed if user want to assign Profile specified Processor for additional Connecting processing"
+            "Must be passed if user wants to assign External Processor for additional Connecting processing"
           ]
         },
         {
@@ -215,7 +314,7 @@
           "isOptional": true,
           "docs": [
             "External Processor PDA that proof Processor passed to assign is whitelisted",
-            "Must be passed if user want to assign Profile specified Processor for additional Publishing processing"
+            "Must be passed if user wants to assign External Processor for additional Publishing processing"
           ]
         },
         {
@@ -225,7 +324,7 @@
           "isOptional": true,
           "docs": [
             "External Processor PDA that proof Processor passed to assign is whitelisted",
-            "Must be passed if user want to assign Profile specified Processor for additional Collecting processing"
+            "Must be passed if user wants to assign External Processor for additional Collecting processing"
           ]
         },
         {
@@ -235,7 +334,7 @@
           "isOptional": true,
           "docs": [
             "External Processor PDA that proof Processor passed to assign is whitelisted",
-            "Must be passed if user want to assign Profile specified Processor for additional Referencing processing"
+            "Must be passed if user wants to assign External Processor for additional Referencing processing"
           ]
         },
         {
@@ -288,7 +387,7 @@
           "isOptional": true,
           "docs": [
             "External Processor PDA that proof Processor passed to assign is whitelisted",
-            "Must be passed if user want to assign Profile specified Processor for additional Registering processing"
+            "Must be passed if user wants to assign External Processor for additional Registering processing"
           ]
         },
         {
@@ -298,7 +397,7 @@
           "isOptional": true,
           "docs": [
             "External Processor PDA that proof Processor passed to assign is whitelisted",
-            "Must be passed if user want to assign Profile specified Processor for additional Connecting processing"
+            "Must be passed if user wants to assign External Processor for additional Connecting processing"
           ]
         },
         {
@@ -308,7 +407,7 @@
           "isOptional": true,
           "docs": [
             "External Processor PDA that proof Processor passed to assign is whitelisted",
-            "Must be passed if user want to assign Profile specified Processor for additional Publishing processing"
+            "Must be passed if user wants to assign External Processor for additional Publishing processing"
           ]
         },
         {
@@ -318,7 +417,7 @@
           "isOptional": true,
           "docs": [
             "External Processor PDA that proof Processor passed to assign is whitelisted",
-            "Must be passed if user want to assign Profile specified Processor for additional Collecting processing"
+            "Must be passed if user wants to assign External Processor for additional Collecting processing"
           ]
         },
         {
@@ -328,7 +427,7 @@
           "isOptional": true,
           "docs": [
             "External Processor PDA that proof Processor passed to assign is whitelisted",
-            "Must be passed if user want to assign Profile specified Processor for additional Referencing processing"
+            "Must be passed if user wants to assign External Processor for additional Referencing processing"
           ]
         },
         {
@@ -389,17 +488,7 @@
           "isOptional": true,
           "docs": [
             "External Processor PDA that proof Processor passed to assign is whitelisted.",
-            "Must be passed if user want to assign Profile specified Processor for additional Connecting processing"
-          ]
-        },
-        {
-          "name": "registeringProcessor",
-          "isMut": false,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "External processor that makes additional Profile Registerin processing",
-            "Must be passed if there is any assigned Processors in (App default or Profile specified)"
+            "Must be passed if user wants to assign Profile specified Processor for additional Connecting processing"
           ]
         },
         {
@@ -436,6 +525,28 @@
         "# Arguments",
         "",
         "* `data` - A struct that holds user Profile data",
+        "",
+        "# Alias management cases:",
+        "",
+        "0) Do nothing:",
+        "* data.alias = <current_alias_value>",
+        "* current_alias_pda == None",
+        "* new_alias_pda == None",
+        "",
+        "1) Register alias if not yet registered:",
+        "* data.alias = <alias_value>",
+        "* current_alias_pda == None",
+        "* new_alias_pda == Some(alias_value)",
+        "",
+        "2) Update current alias (register new and delete current):",
+        "* data.alias = <new_alias_value>",
+        "* current_alias_pda == Some(current_alias_value)",
+        "* new_alias_pda == Some(new_alias_value)",
+        "",
+        "3) Delete current alias:",
+        "* data.alias = None",
+        "* current_alias_pda == Some(current_alias_value)",
+        "* new_alias_pda == None",
         ""
       ],
       "accounts": [
@@ -558,20 +669,7 @@
         {
           "name": "target",
           "isMut": false,
-          "isSigner": false,
-          "docs": [
-            "TODO: this is noе work for both Profile and Subspace..."
-          ]
-        },
-        {
-          "name": "connectingProcessor",
-          "isMut": false,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "A Program (external processor) that makes additional Connecting processing",
-            "/// CHECK: Not dangerous"
-          ]
+          "isSigner": false
         },
         {
           "name": "authority",
@@ -596,7 +694,7 @@
     {
       "name": "updateConnection",
       "docs": [
-        "Update connection (approve by target profile, e.g. - accept friend request)",
+        "Update connection (approve by Target profile, e.g. - accept friend request)",
         "",
         "# Arguments",
         "",
@@ -685,6 +783,7 @@
         "",
         "# Arguments",
         "",
+        "* `uuid` - A Subspace UUID",
         "* `data` - A struct that holds Subspace data",
         ""
       ],
@@ -766,6 +865,10 @@
       ],
       "args": [
         {
+          "name": "uuid",
+          "type": "string"
+        },
+        {
           "name": "data",
           "type": {
             "defined": "SubspaceData"
@@ -781,6 +884,28 @@
         "# Arguments",
         "",
         "* `data` - A struct that holds Subspace data",
+        "",
+        "# Alias management cases:",
+        "",
+        "0) Do nothing:",
+        "* data.alias = <current_alias_value>",
+        "* current_alias_pda == None",
+        "* new_alias_pda == None",
+        "",
+        "1) Register alias if not yet registered:",
+        "* data.alias = alias_value",
+        "* current_alias_pda == None",
+        "* new_alias_pda == Some(alias_value)",
+        "",
+        "2) Update current alias (register new and delete current):",
+        "* data.alias = new_alias_value",
+        "* current_alias_pda == Some(current_alias_value)",
+        "* new_alias_pda == Some(new_alias_value)",
+        "",
+        "3) Delete current alias:",
+        "* data.alias = None",
+        "* current_alias_pda == Some(current_alias_value)",
+        "* new_alias_pda == None",
         ""
       ],
       "accounts": [
@@ -790,7 +915,7 @@
           "isSigner": false
         },
         {
-          "name": "profile",
+          "name": "creatorProfile",
           "isMut": false,
           "isSigner": false
         },
@@ -914,6 +1039,7 @@
         "",
         "# Arguments",
         "",
+        "* `uuid` - Publication UUID",
         "* `data` - A struct that holds Publication parameters",
         "* `external_processing_data` - additional data that can be passed to an external processor",
         ""
@@ -951,7 +1077,7 @@
           "isOptional": true,
           "docs": [
             "Publication PDA which has to be replyed or referenced",
-            "Must be passed if this mirriring or replying"
+            "Must be passed if this mirroring or replying"
           ]
         },
         {
@@ -975,28 +1101,6 @@
           ]
         },
         {
-          "name": "publishingProcessor",
-          "isMut": false,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "External Processor that makes Publication Creation additional procesing",
-            "Must be passed if there is any assigned Processors in (App default or Publication specified)",
-            "Check: Not dangerous"
-          ]
-        },
-        {
-          "name": "referencingProcessor",
-          "isMut": false,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "External Processor that makes Publication Referencing additional procesing",
-            "Must be passed if there is any assigned Processors in (App default or Publication specified)",
-            "Check: Not dangerous"
-          ]
-        },
-        {
           "name": "authority",
           "isMut": true,
           "isSigner": true
@@ -1008,6 +1112,10 @@
         }
       ],
       "args": [
+        {
+          "name": "uuid",
+          "type": "string"
+        },
         {
           "name": "data",
           "type": {
@@ -1151,16 +1259,6 @@
           "isSigner": false
         },
         {
-          "name": "collectingProcessor",
-          "isMut": false,
-          "isSigner": false,
-          "isOptional": true,
-          "docs": [
-            "A Program (external processor) that makes Collection additional procesing",
-            "Must be passed if there is any assigned Processors in (App default or Publication specified)"
-          ]
-        },
-        {
           "name": "authority",
           "isMut": true,
           "isSigner": true
@@ -1197,14 +1295,17 @@
           "isSigner": false
         },
         {
-          "name": "target",
+          "name": "initializer",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "initializerProfile",
+          "name": "target",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "docs": [
+            "Report target - potentialy could be a Profile or Publication"
+          ]
         },
         {
           "name": "reaction",
@@ -1243,14 +1344,17 @@
           "isSigner": false
         },
         {
-          "name": "target",
+          "name": "initializer",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "initializerProfile",
+          "name": "target",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "docs": [
+            "Report target - potentialy could be a Profile or Publication"
+          ]
         },
         {
           "name": "reaction",
@@ -1287,14 +1391,17 @@
           "isSigner": false
         },
         {
-          "name": "target",
+          "name": "initializer",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "initializerProfile",
+          "name": "target",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "docs": [
+            "Report target - potentialy could be a Profile, Subspace or Publication"
+          ]
         },
         {
           "name": "report",
@@ -1324,11 +1431,34 @@
   ],
   "accounts": [
     {
+      "name": "DeveloperWhitelistItem",
+      "docs": [
+        "DeveloperWhitelistItem account is proof that pubkey owner is able to create protocol application",
+        "",
+        "# DeveloperWhitelistItem account stores:",
+        "",
+        "1. Authority address",
+        ""
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "Account authority (32)."
+            ],
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
       "name": "ExternalProcessorPDA",
       "docs": [
-        "ApprovedProcessorPDA holds data about every whitelisted Protocol external Processors",
+        "ExternalProcessorPDA that holds data about every whitelisted Protocol external Processors",
         "",
-        "App account stores:",
+        "# ExternalProcessorPDA account stores:",
         "",
         "1. Processor type",
         "2. Processor name (ASCII alphanumeric)",
@@ -1385,18 +1515,32 @@
     {
       "name": "App",
       "docs": [
-        "App account for every protocol Application",
+        "# App account for every protocol Application",
         "",
-        "App account stores:",
+        "## App account stores:",
         "",
-        "1. Unique Application name (ID) as string (ASCII alphanumeric)",
-        "2. Application authority address",
-        "3. Application metadata URI (settings)",
-        "4. Registering external Processor",
-        "5. Conecting external Processor",
-        "6. Publishing external Processor",
-        "7. Collecting external Processor",
-        "8. Referencing external Processor",
+        "1. `app_name`: Unique Application name (ID) as string (ASCII alphanumeric)",
+        "2. `authority`: Application authority address",
+        "3. `metadata_uri`: Application metadata URI (settings)",
+        "4. `profile_first_name_required`: Specifies whether the Profile first name is required",
+        "5. `profile_last_name_required`: Specifies whether the Profile last name is required",
+        "6. `profile_birthdate_required`: Specifies whether the Profile birth date is required",
+        "7. `profile_country_required`: Specifies whether the Profile country is required",
+        "8. `profile_city_required`: Specifies whether the Profile city is required",
+        "9. `profile_metadata_uri_required`: Specifies whether the Profile metadata URI is required",
+        "10. `subspace_name_required`: Specifies whether the Subspace name is required",
+        "11. `subspace_metadata_uri_required`: Specifies whether the Subspace metadata URI is required",
+        "12. `profile_delete_allowed`: Specifies the permission to delete a Profile",
+        "13. `subspace_delete_allowed`: Specifies the permission to delete a Subspace",
+        "14. `publication_delete_allowed`: Specifies the permission to delete a Publication",
+        "15. `profile_individual_processors_allowed`: Specifies the permission to assign Profile's individual external processors.",
+        "16. `subspace_individual_processors_allowed`: Specifies the permission to assign Subspace's individual external processors.",
+        "17. `publication_individual_processors_allowed`: Specifies the permission to assign Publication's individual external processors.",
+        "18. `registering_processor`: An address of an external processor for additional processing during Profile creation",
+        "19. `connecting_processor`: An address of an external processor for additional processing during Profile connection",
+        "20. `publishing_processor`: An address of an external processor for additional processing during Publication creation",
+        "21. `collecting_processor`: An address of an external processor for additional processing during Publication collection",
+        "22. `referencing_processor`: An address of an external processor for additional processing during Publication referencing",
         ""
       ],
       "type": {
@@ -1419,14 +1563,114 @@
           {
             "name": "metadataUri",
             "docs": [
-              "URI of the metadata (STRING_LENGTH_PREFIX + MAX_URI_LENGTH)."
+              "URI of the metadata (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)."
             ],
-            "type": "string"
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "profileFirstNameRequired",
+            "docs": [
+              "Specifies whether the Profile name is required."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "profileLastNameRequired",
+            "docs": [
+              "Specifies whether the Profile last name is required."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "profileBirthdateRequired",
+            "docs": [
+              "Specifies whether the Profile birth date is required."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "profileCountryRequired",
+            "docs": [
+              "Specifies whether the Profile country is required."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "profileCityRequired",
+            "docs": [
+              "Specifies whether the Profile city is required."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "profileMetadataUriRequired",
+            "docs": [
+              "Specifies whether the Profile metadata URI is required."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "subspaceNameRequired",
+            "docs": [
+              "Specifies whether the Subspace name is required."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "subspaceMetadataUriRequired",
+            "docs": [
+              "Specifies whether the Subspace metadata URI is required."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "profileDeleteAllowed",
+            "docs": [
+              "Specifies the permission to delete a Profile."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "subspaceDeleteAllowed",
+            "docs": [
+              "Specifies the permission to delete a Subspace."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "publicationDeleteAllowed",
+            "docs": [
+              "Specifies the permission to delete a Publication."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "profileIndividualProcessorsAllowed",
+            "docs": [
+              "Specifies the permission to assign Profile's individual external processors."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "subspaceIndividualProcessorsAllowed",
+            "docs": [
+              "Specifies the permission to assign Subspace's individual external processors."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "publicationIndividualProcessorsAllowed",
+            "docs": [
+              "Specifies the permission to assign Publication's individual external processors."
+            ],
+            "type": "bool"
           },
           {
             "name": "registeringProcessor",
             "docs": [
-              "An address of a Program (external processor) that makes application Profile creation additional processing (33)"
+              "An address of an external processor for additional processing during Profile creation."
             ],
             "type": {
               "option": "publicKey"
@@ -1435,7 +1679,7 @@
           {
             "name": "connectingProcessor",
             "docs": [
-              "An address of a Program (external processor) for profiles Connection additional processing (33)"
+              "An address of an external processor for additional processing during Profile connection."
             ],
             "type": {
               "option": "publicKey"
@@ -1444,7 +1688,7 @@
           {
             "name": "publishingProcessor",
             "docs": [
-              "An address of a Program (external processor) for Publication Creating additional processing (33)"
+              "An address of an external processor for additional processing during Publication creation."
             ],
             "type": {
               "option": "publicKey"
@@ -1453,7 +1697,7 @@
           {
             "name": "collectingProcessor",
             "docs": [
-              "An address of a Program (external processor) for Publication Collecting additional processing (33)"
+              "An address of an external processor for additional processing during Publication collection."
             ],
             "type": {
               "option": "publicKey"
@@ -1462,7 +1706,7 @@
           {
             "name": "referencingProcessor",
             "docs": [
-              "An address of a Program (external processor) for Publication referencing additional processing (33)"
+              "An address of an external processor for additional processing during Publication referencing."
             ],
             "type": {
               "option": "publicKey"
@@ -1476,7 +1720,7 @@
       "docs": [
         "Profile account that holds data about Application user",
         "",
-        "Profile account stores:",
+        "# Profile account stores:",
         "",
         "1. Application account (PDA)",
         "2. Profile authority address",
@@ -1484,8 +1728,15 @@
         "4. Profile metadata URI",
         "5. Profile status text",
         "6. Verification status",
-        "7. Profile creation unix timestamp",
-        "8. External connection processor (optional)",
+        "7. Profile first name",
+        "8. Profile last name",
+        "9. Profile birth date",
+        "10. Profile country code",
+        "11. Profile city code",
+        "12. Profile location coordinates",
+        "13. External connection processor (optional)",
+        "14. Profile creation unix timestamp",
+        "15. Profile modification unix timestamp",
         ""
       ],
       "type": {
@@ -1519,7 +1770,9 @@
             "docs": [
               "Profile metadata URI (STRING_LENGTH_PREFIX + MAX_URI_LENGTH)."
             ],
-            "type": "string"
+            "type": {
+              "option": "string"
+            }
           },
           {
             "name": "statusText",
@@ -1538,6 +1791,44 @@
             "type": "bool"
           },
           {
+            "name": "firstName",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "lastName",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "birthDate",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "countryCode",
+            "type": {
+              "option": "i16"
+            }
+          },
+          {
+            "name": "cityCode",
+            "type": {
+              "option": "u16"
+            }
+          },
+          {
+            "name": "currentLocation",
+            "type": {
+              "option": {
+                "defined": "LocationCoordinates"
+              }
+            }
+          },
+          {
             "name": "connectingProcessor",
             "docs": [
               "An address of a Program (external processor) for Connection additional processing (33)"
@@ -1552,6 +1843,15 @@
               "Profile creation Unix timestamp (8)"
             ],
             "type": "i64"
+          },
+          {
+            "name": "modifiedAt",
+            "docs": [
+              "The optional Unix timestamp of the Profile modification (1 + 8)"
+            ],
+            "type": {
+              "option": "i64"
+            }
           }
         ]
       }
@@ -1561,30 +1861,24 @@
       "docs": [
         "The Subspace is an account (PDA) that holds data about a application Subspace (e.g. group / \"public\")",
         "",
-        "Subspace account stores:",
+        "# Subspace account stores:",
         "",
-        "1. Subspace UUID",
-        "2. Application address",
-        "3. Profile authority address",
-        "4. Subspace owner Profile Pubkey",
-        "5. Unique application's user profile alias as string (optional, ASCII alphanumeric)",
-        "6. Subspace metadata URI",
-        "7. External Publishing processor (optional)",
-        "8. External Connecting processor (optional)",
-        "9. External Collecting processor (optional)",
-        "10. External Referencing processor (optional)",
+        "1. Application address",
+        "2. Profile authority address",
+        "3. Subspace owner Profile Pubkey",
+        "4. Unique application's user profile alias as string (optional, ASCII alphanumeric) (optional)",
+        "5. Subspace name (optional)",
+        "6. Subspace UUID",
+        "7. Subspace metadata URI (optional)",
+        "8. External Publishing processor (optional)",
+        "9. External Connecting processor (optional)",
+        "10. External Collecting processor (optional)",
+        "11. External Referencing processor (optional)",
         ""
       ],
       "type": {
         "kind": "struct",
         "fields": [
-          {
-            "name": "uuid",
-            "docs": [
-              "Subspace UUID (UUID_LENGTH)"
-            ],
-            "type": "string"
-          },
           {
             "name": "app",
             "docs": [
@@ -1609,23 +1903,41 @@
           {
             "name": "alias",
             "docs": [
-              "Profile alias (STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)."
+              "Profile alias (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)."
             ],
             "type": {
               "option": "string"
             }
           },
           {
-            "name": "metadataUri",
+            "name": "name",
             "docs": [
-              "Metadata URI (STRING_LENGTH_PREFIX + MAX_URI_LENGTH)."
+              "Subspace name"
+            ],
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "uuid",
+            "docs": [
+              "Subspace UUID (UUID_LENGTH)"
             ],
             "type": "string"
           },
           {
+            "name": "metadataUri",
+            "docs": [
+              "Metadata URI (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)."
+            ],
+            "type": {
+              "option": "string"
+            }
+          },
+          {
             "name": "publishingProcessor",
             "docs": [
-              "An address of a Program (external processor) for Publication Creating additional processing (33)"
+              "An address of a Program (external processor) for Publication Creating additional processing (1 + 32)"
             ],
             "type": {
               "option": "publicKey"
@@ -1634,7 +1946,7 @@
           {
             "name": "connectingProcessor",
             "docs": [
-              "An address of a Program (external processor) for profiles Connection additional processing (33)"
+              "An address of a Program (external processor) for profiles Connection additional processing (1 + 32)"
             ],
             "type": {
               "option": "publicKey"
@@ -1643,7 +1955,7 @@
           {
             "name": "collectingProcessor",
             "docs": [
-              "An address of a Program (external processor) for Publication Collecting additional processing (33)"
+              "An address of a Program (external processor) for Publication Collecting additional processing (1 + 32)"
             ],
             "type": {
               "option": "publicKey"
@@ -1652,10 +1964,51 @@
           {
             "name": "referencingProcessor",
             "docs": [
-              "An address of a Program (external processor) for Publication referencing additional processing (33)"
+              "An address of a Program (external processor) for Publication referencing additional processing (1 + 32)"
             ],
             "type": {
               "option": "publicKey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SubspaceManager",
+      "docs": [
+        "SubspaceManager account that holds data about Subspace management team user",
+        "",
+        "# SubspaceManager account stores:",
+        "",
+        "1. Application account (PDA)",
+        "2. Account authority address",
+        "3. Manager Role",
+        ""
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "app",
+            "docs": [
+              "Application Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "Pubkey of the account authority (32)."
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "role",
+            "docs": [
+              "Manager role"
+            ],
+            "type": {
+              "defined": "ManagementRoleType"
             }
           }
         ]
@@ -1666,34 +2019,29 @@
       "docs": [
         "The Publication is account (PDA) that holds Application's Publication data",
         "",
-        "Publication account stores:",
+        "# Publication account stores:",
         "",
-        "1. Publication UUID as string",
-        "2. Existing Protocol Application in which Publication was created",
-        "3. References to Publication's author Profile",
-        "4. Publication authority address",
+        "1. Existing Protocol Application in which Publication was created",
+        "2. References to Publication's author Profile",
+        "3. Publication authority address",
+        "4. Whether or not the publication has encrypted content",
         "5. Publication metadata URI",
         "6. Subspace in which Publication being published",
         "7. Whether or not the Publication is mirroring other existing Publication (e.g. re-post)",
         "8. Whether or not the Publication is replying to other existing Publication (e.g. comment)",
         "9. References to existing Publication if there is a mirror or reply (optional)",
         "10. Publication main content type",
-        "11. External Collecting processor (optional)",
-        "12. External Referencing processor (optional)",
-        "13. Publication create unix timestamp",
-        "14. Publication update unix timestamp (optional)",
+        "11. Publication tag",
+        "12. Publication UUID as string",
+        "13. External Collecting processor (optional)",
+        "14. External Referencing processor (optional)",
+        "15. Publication create unix timestamp",
+        "16. Publication update unix timestamp (optional)",
         ""
       ],
       "type": {
         "kind": "struct",
         "fields": [
-          {
-            "name": "uuid",
-            "docs": [
-              "Publication UUID (STRING_LENGTH_PREFIX + UUID_LENGTH)"
-            ],
-            "type": "string"
-          },
           {
             "name": "app",
             "docs": [
@@ -1716,11 +2064,11 @@
             "type": "publicKey"
           },
           {
-            "name": "metadataUri",
+            "name": "isEncrypted",
             "docs": [
-              "The URI of the publication metadata(STRING_LENGTH_PREFIX + MAX_URI_LENGTH)"
+              "Whether or not the publication has encrypted content"
             ],
-            "type": "string"
+            "type": "bool"
           },
           {
             "name": "subspace",
@@ -1748,7 +2096,7 @@
           {
             "name": "targetPublication",
             "docs": [
-              "Optional pubkey that specify target in case Publication is a mirror or reply (33)"
+              "Optional pubkey that specify target in case Publication is a mirror or reply (1 + 32)"
             ],
             "type": {
               "option": "publicKey"
@@ -1764,9 +2112,32 @@
             }
           },
           {
+            "name": "tag",
+            "docs": [
+              "Publication Tag (e.g. '#hashtag') (1 + MAX_TAG_LENGTH)"
+            ],
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "uuid",
+            "docs": [
+              "Publication UUID (STRING_LENGTH_PREFIX + UUID_LENGTH)"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "metadataUri",
+            "docs": [
+              "The URI of the publication metadata(STRING_LENGTH_PREFIX + MAX_URI_LENGTH)"
+            ],
+            "type": "string"
+          },
+          {
             "name": "collectingProcessor",
             "docs": [
-              "An address of a Program (external processor) for Publication Collecting additional processing (33)"
+              "An address of a Program (external processor) for Publication Collecting additional processing (1 + 32)"
             ],
             "type": {
               "option": "publicKey"
@@ -1775,7 +2146,7 @@
           {
             "name": "referencingProcessor",
             "docs": [
-              "An address of a Program (external processor) for Publication Referencing additional processing (33)"
+              "An address of a Program (external processor) for Publication Referencing additional processing (1 + 32)"
             ],
             "type": {
               "option": "publicKey"
@@ -1791,7 +2162,7 @@
           {
             "name": "modifiedAt",
             "docs": [
-              "The optional Unix timestamp of the Publication modification (9)"
+              "The optional Unix timestamp of the Publication modification (1 + 8)"
             ],
             "type": {
               "option": "i64"
@@ -1805,15 +2176,16 @@
       "docs": [
         "Connection account holds data about Connection between two Application's entities (e.g. following)",
         "",
-        "The Connection account stores:",
+        "# The Connection account stores:",
         "",
         "1. Application address",
         "2. Connection authority address",
-        "3. Connection initializer address (e.g. follower)",
-        "4. Target Application's Profile/Subspace address (e.g. which initializer followed)",
-        "5. Whether or not Connection is approved by target (e.g. accept friend request)",
-        "6. Connection initialize unix timestamp",
-        "7. Connection modify unix timestamp",
+        "3. Connection Target type ('profile-to-profile' or 'profile-to-subspace')",
+        "4. Connection initializer address (e.g. follower)",
+        "5. Target Application's Profile/Subspace address (e.g. which initializer followed)",
+        "6. Whether or not Connection is approved by target (e.g. accept friend request)",
+        "7. Connection initialize unix timestamp",
+        "8. Connection modify unix timestamp",
         ""
       ],
       "type": {
@@ -1834,6 +2206,15 @@
             "type": "publicKey"
           },
           {
+            "name": "connectionTargetType",
+            "docs": [
+              "Connection Target type (1)"
+            ],
+            "type": {
+              "defined": "ConnectionTargetType"
+            }
+          },
+          {
             "name": "initializer",
             "docs": [
               "Connection initializer Pubkey (32)"
@@ -1843,7 +2224,7 @@
           {
             "name": "target",
             "docs": [
-              "Connection target Pubkey (might be another Profile or Aoolication Subspace) (32)"
+              "Connection target Pubkey (might be another Profile or Application Subspace) (32)"
             ],
             "type": "publicKey"
           },
@@ -1864,7 +2245,7 @@
           {
             "name": "modifiedAt",
             "docs": [
-              "Connection approve Unix timestamp (8)"
+              "Connection approve Unix timestamp (1 + 8)"
             ],
             "type": {
               "option": "i64"
@@ -1878,12 +2259,13 @@
       "docs": [
         "CollectionItem account that creates when some Profile collects some Application Entity (e.g. Publication)",
         "",
-        "The CollectionItem account stores:",
+        "# The CollectionItem account stores:",
         "",
         "1. Application address",
-        "2. CollectionItem authority address",
+        "2. CollectionItem initializer Profile address",
         "3. CollectionItem target entity (e.g. Publication) address",
-        "4. CollectionItem creation unix timestamp",
+        "4. CollectionItem authority address",
+        "5. CollectionItem creation unix timestamp",
         ""
       ],
       "type": {
@@ -1897,9 +2279,9 @@
             "type": "publicKey"
           },
           {
-            "name": "authority",
+            "name": "initializer",
             "docs": [
-              "CollectionItem authority account Pubkey (32)"
+              "CollectionItem initializer account Pubkey (32)"
             ],
             "type": "publicKey"
           },
@@ -1907,6 +2289,13 @@
             "name": "target",
             "docs": [
               "CollectionItem target Publication Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "CollectionItem authority account Pubkey (32)"
             ],
             "type": "publicKey"
           },
@@ -1925,7 +2314,7 @@
       "docs": [
         "Alias account that creates when new Alias is claimed by user Profile or Subspace",
         "",
-        "The Alias account stores:",
+        "# The Alias account stores:",
         "",
         "1. Application address",
         "2. Profile which the alias belongs to",
@@ -1944,9 +2333,18 @@
             "type": "publicKey"
           },
           {
-            "name": "profile",
+            "name": "aliasType",
             "docs": [
-              "Alias owner Profile Pubkey (32)"
+              "Alias type (1)"
+            ],
+            "type": {
+              "defined": "AliasType"
+            }
+          },
+          {
+            "name": "owner",
+            "docs": [
+              "Alias owner (Profile or Subspace) Pubkey (32)"
             ],
             "type": "publicKey"
           },
@@ -1972,14 +2370,15 @@
       "docs": [
         "Reaction account that creates when new Publication Reaction initialized",
         "",
-        "The Reaction account stores:",
+        "# The Reaction account stores:",
         "",
         "1. Application address",
         "2. Reaction authority address",
-        "3. Reaction initializer Profile",
+        "3. Reaction Traget type",
         "4. Target Publication address",
-        "5. Reaction type variant",
-        "6. Reaction create unix timestamp",
+        "5. Reaction initializer Profile",
+        "6. Reaction type variant",
+        "7. Reaction create unix timestamp",
         ""
       ],
       "type": {
@@ -2000,16 +2399,25 @@
             "type": "publicKey"
           },
           {
-            "name": "initializerProfile",
+            "name": "targetType",
             "docs": [
-              "Reaction initializer Profile Pubkey (32)"
+              "Reaction target type (1)"
             ],
-            "type": "publicKey"
+            "type": {
+              "defined": "ReactionTargetType"
+            }
           },
           {
             "name": "target",
             "docs": [
               "Reaction target Publication Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "initializer",
+            "docs": [
+              "Reaction initializer Profile Pubkey (32)"
             ],
             "type": "publicKey"
           },
@@ -2037,15 +2445,16 @@
       "docs": [
         "Report account that creates when new Report initialized",
         "",
-        "Report account stores:",
+        "# Report account stores:",
         "",
         "1. Application address",
         "2. Report authority address",
-        "3. Report initializer Profile",
+        "3. Report Taget type",
         "4. Report Target address",
-        "5. Report type variant",
-        "6. Report notification text",
-        "7. Report create unix timestamp",
+        "5. Report initializer Profile",
+        "6. Report type variant",
+        "7. Report notification text",
+        "8. Report create unix timestamp",
         ""
       ],
       "type": {
@@ -2066,23 +2475,32 @@
             "type": "publicKey"
           },
           {
-            "name": "initializerProfile",
+            "name": "targetType",
             "docs": [
-              "Reaction initializer Pubkey (32)"
+              "Report target type (1)"
             ],
-            "type": "publicKey"
+            "type": {
+              "defined": "ReportTargetType"
+            }
           },
           {
             "name": "target",
             "docs": [
-              "Reaction target Publication Pubkey (32)"
+              "Report target Publication Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "initializer",
+            "docs": [
+              "Report initializer Pubkey (32)"
             ],
             "type": "publicKey"
           },
           {
             "name": "reportType",
             "docs": [
-              "Reaction value (1)"
+              "Report type value (1)"
             ],
             "type": {
               "defined": "ReportType"
@@ -2112,11 +2530,26 @@
     {
       "name": "AppData",
       "docs": [
-        "App instruction data struct",
+        "## App instruction data struct.",
         "",
-        "Struct contains:",
+        "The struct contains data for the application instruction.",
         "",
-        "1. `metadata_uri` - App metadata json (optional)",
+        "## Fields:",
+        "",
+        "- `metadata_uri`: The optional metadata URI for the app.",
+        "- `profile_first_name_required`: Specifies whether the Profile name is required.",
+        "- `profile_last_name_required`: Specifies whether the Profile last name is required.",
+        "- `profile_birthdate_required`: Specifies whether the Profile birth date is required.",
+        "- `profile_location_required`: Specifies whether the Profile location is required.",
+        "- `profile_metadata_uri_required`: Specifies whether the Profile metadata URI is required.",
+        "- `subspace_name_required`: Specifies whether the Subspace name is required.",
+        "- `subspace_metadata_uri_required`: Specifies whether the Subspace metadata URI is required.",
+        "- `profile_delete_allowed`: Specifies the permission to delete a Profile.",
+        "- `subspace_delete_allowed`: Specifies the permission to delete a Subspace.",
+        "- `publication_delete_allowed`: Specifies the permission to delete a Publication.",
+        "- `profile_individual_processors_allowed`: Specifies the permission to assign Profile's individual external processors.",
+        "- `subspace_individual_processors_allowed`: Specifies the permission to assign Subspace's individual external processors.",
+        "- `publication_individual_processors_allowed`: Specifies the permission to assign Publication's individual external processors.",
         ""
       ],
       "type": {
@@ -2124,7 +2557,110 @@
         "fields": [
           {
             "name": "metadataUri",
-            "type": "string"
+            "docs": [
+              "The optional metadata URI for the App."
+            ],
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "profileFirstNameRequired",
+            "docs": [
+              "Specifies whether the Profile first name is required."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "profileLastNameRequired",
+            "docs": [
+              "Specifies whether the Profile last name is required."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "profileBirthdateRequired",
+            "docs": [
+              "Specifies whether the Profile birth date is required."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "profileCountryRequired",
+            "docs": [
+              "Specifies whether the Profile country is required."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "profileCityRequired",
+            "docs": [
+              "Specifies whether the Profile city is required."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "profileMetadataUriRequired",
+            "docs": [
+              "Specifies whether the Profile metadata URI is required."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "subspaceNameRequired",
+            "docs": [
+              "Specifies whether the Subspace name is required."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "subspaceMetadataUriRequired",
+            "docs": [
+              "Specifies whether the Subspace metadata URI is required."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "profileDeleteAllowed",
+            "docs": [
+              "Specifies the permission to delete a Profile."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "subspaceDeleteAllowed",
+            "docs": [
+              "Specifies the permission to delete a Subspace."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "publicationDeleteAllowed",
+            "docs": [
+              "Specifies the permission to delete a Publication."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "profileIndividualProcessorsAllowed",
+            "docs": [
+              "Specifies the permission to assign Profile's individual external processors."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "subspaceIndividualProcessorsAllowed",
+            "docs": [
+              "Specifies the permission to assign Subspace's individual external processors."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "publicationIndividualProcessorsAllowed",
+            "docs": [
+              "Specifies the permission to assign Publication's individual external processors."
+            ],
+            "type": "bool"
           }
         ]
       }
@@ -2134,11 +2670,17 @@
       "docs": [
         "Profile instruction data struct",
         "",
-        "Struct contains:",
+        "# Struct contains:",
         "",
         "1. `alias` - Unique Application's user Profile Alias as string (ASCII alphanumeric)",
         "2. `metadata_uri` - Profile metadata URI",
-        "3. `connecting_processor` - Profile specified external processor to make additional Connection Processing (optional)",
+        "3. `status_text` - Profile status",
+        "4. `first_name` Profile first name",
+        "5. `last_name` Profile last name",
+        "6. `birth_date` - Profile birth date",
+        "7. `country_code` Profile country",
+        "8. `city_code` Profile city",
+        "9. `current_location` - Profile location coordinates",
         ""
       ],
       "type": {
@@ -2152,12 +2694,52 @@
           },
           {
             "name": "metadataUri",
-            "type": "string"
+            "type": {
+              "option": "string"
+            }
           },
           {
-            "name": "connectingProcessorToAssign",
+            "name": "statusText",
             "type": {
-              "option": "publicKey"
+              "option": "string"
+            }
+          },
+          {
+            "name": "firstName",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "lastName",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "birthDate",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "countryCode",
+            "type": {
+              "option": "i16"
+            }
+          },
+          {
+            "name": "cityCode",
+            "type": {
+              "option": "u16"
+            }
+          },
+          {
+            "name": "currentLocation",
+            "type": {
+              "option": {
+                "defined": "LocationCoordinates"
+              }
             }
           }
         ]
@@ -2168,21 +2750,16 @@
       "docs": [
         "Subspace data struct",
         "",
-        "Struct contains:",
+        "# Struct contains:",
         "",
-        "1. `uuid` - Subspace UUID",
-        "2. `alias` - Unique Application's Subspace Alias as string (ASCII alphanumeric)",
-        "3. `creator` - Subspace creator Profile address",
-        "4. `metadata_uri` - Publication metadata URI",
+        "1. `alias` - Unique Application's Subspace Alias as string (ASCII alphanumeric) (optional)",
+        "2. `name` - Subspace name (optional)",
+        "3. `metadata_uri` - Publication metadata URI (optional)",
         ""
       ],
       "type": {
         "kind": "struct",
         "fields": [
-          {
-            "name": "uuid",
-            "type": "string"
-          },
           {
             "name": "alias",
             "type": {
@@ -2190,12 +2767,16 @@
             }
           },
           {
-            "name": "creator",
-            "type": "publicKey"
+            "name": "name",
+            "type": {
+              "option": "string"
+            }
           },
           {
             "name": "metadataUri",
-            "type": "string"
+            "type": {
+              "option": "string"
+            }
           }
         ]
       }
@@ -2205,21 +2786,22 @@
       "docs": [
         "Publication data struct",
         "",
-        "Struct contains:",
+        "# Struct contains:",
         "",
-        "1. `uuid` - Publication UUID",
+        "1. `is_encrypted` - Whether or not the publication has encrypted content",
         "2. `metadata_uri` - Publication metadata URI",
         "3. `is_mirror` - Whether or not the publication is mirroring other existing publication (e.g. re-post)",
         "4. `is_reply` - Whether or not the publication is replying to other existing publication (e.g. comment)",
         "5. `content_type` - Publication content type",
+        "6. `tag` - Publication Tag",
         ""
       ],
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "uuid",
-            "type": "string"
+            "name": "isEncrypted",
+            "type": "bool"
           },
           {
             "name": "metadataUri",
@@ -2238,6 +2820,12 @@
             "type": {
               "defined": "ContentType"
             }
+          },
+          {
+            "name": "tag",
+            "type": {
+              "option": "string"
+            }
           }
         ]
       }
@@ -2247,7 +2835,7 @@
       "docs": [
         "Report data struct",
         "",
-        "Struct contains:",
+        "# Struct contains:",
         "",
         "1. `report_type` - Enum with Report variants",
         "2. `notification_string` - Additional Report information",
@@ -2272,11 +2860,36 @@
       }
     },
     {
+      "name": "LocationCoordinates",
+      "docs": [
+        "Coordinates",
+        "",
+        "# Struct contains",
+        "",
+        "* latitude",
+        "* longitude",
+        ""
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "latitude",
+            "type": "u64"
+          },
+          {
+            "name": "longitude",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
       "name": "ProcessorType",
       "docs": [
         "External Processor Type",
         "",
-        "Enum variants:",
+        "# Enum variants:",
         "",
         "* Registering",
         "* Connecting",
@@ -2307,11 +2920,34 @@
       }
     },
     {
+      "name": "AliasType",
+      "docs": [
+        "Alias type (e.g. Profile or Subspace)",
+        "",
+        "# Enum variants:",
+        "",
+        "* Profile",
+        "* Subspace",
+        ""
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Profile"
+          },
+          {
+            "name": "Subspace"
+          }
+        ]
+      }
+    },
+    {
       "name": "ConnectionTargetType",
       "docs": [
         "Connection Target type (e.g. Profile or Subspace)",
         "",
-        "Enum variants:",
+        "# Enum variants:",
         "",
         "* Profile",
         "* Subspace",
@@ -2334,7 +2970,7 @@
       "docs": [
         "Content type that publication focus (e.g. short video)",
         "",
-        "Enum variants:",
+        "# Enum variants:",
         "",
         "1. Article - Article type (e.g. - mixed content / blog post)",
         "2. Image file - Image file type",
@@ -2373,11 +3009,34 @@
       }
     },
     {
+      "name": "ReactionTargetType",
+      "docs": [
+        "Reaction Target type",
+        "",
+        "# Enum variants:",
+        "",
+        "* Profile",
+        "* Publication",
+        ""
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Profile"
+          },
+          {
+            "name": "Publication"
+          }
+        ]
+      }
+    },
+    {
       "name": "ReactionType",
       "docs": [
         "Reaction type (e.g. Like / Dislike)",
         "",
-        "Enum variants:",
+        "# Enum variants:",
         "",
         "* UpVote - (e.g. \"Like\")",
         "* DownVote - (e.g. \"Dislike\")",
@@ -2400,14 +3059,49 @@
       }
     },
     {
+      "name": "ReportTargetType",
+      "docs": [
+        "Report Target type",
+        "",
+        "# Enum variants:",
+        "",
+        "* Profile",
+        "* Subspace",
+        "* Publication",
+        ""
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Profile"
+          },
+          {
+            "name": "Subspace"
+          },
+          {
+            "name": "Publication"
+          }
+        ]
+      }
+    },
+    {
       "name": "ReportType",
       "docs": [
-        "Report type (e.g. Scam)",
+        "Report type",
         "",
-        "Enum variants:",
+        "# Enum variants:",
         "",
         "* Scam",
         "* Abuse",
+        "* Spam",
+        "* HateSpeech",
+        "* Harassment",
+        "* Misinformation",
+        "* Violence",
+        "* Threats",
+        "* Copyright",
+        "* Adult",
         ""
       ],
       "type": {
@@ -2417,7 +3111,57 @@
             "name": "Scam"
           },
           {
+            "name": "Phishing"
+          },
+          {
             "name": "Abuse"
+          },
+          {
+            "name": "Spam"
+          },
+          {
+            "name": "HateSpeech"
+          },
+          {
+            "name": "Harassment"
+          },
+          {
+            "name": "Misinformation"
+          },
+          {
+            "name": "Violence"
+          },
+          {
+            "name": "Threats"
+          },
+          {
+            "name": "Copyright"
+          },
+          {
+            "name": "Adult"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ManagementRoleType",
+      "docs": [
+        "Subspace management Roles",
+        "",
+        "# Enum variants:",
+        "",
+        "* Admin",
+        "* Publisher",
+        ""
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Admin"
+          },
+          {
+            "name": "Publisher"
           }
         ]
       }
@@ -2823,144 +3567,194 @@
     },
     {
       "code": 6008,
+      "name": "MissingRequiredField",
+      "msg": "Missing field required by Application settings"
+    },
+    {
+      "code": 6009,
+      "name": "ActionProhibitedByAppSettings",
+      "msg": "The action is prohibited by application settings"
+    },
+    {
+      "code": 6010,
       "name": "AliasLengthIncorrect",
       "msg": "Alias length is incorrect"
     },
     {
-      "code": 6009,
+      "code": 6011,
       "name": "AliasMustBeAlphanumeric",
       "msg": "Alias must contain only ASCII letters and numbers"
     },
     {
-      "code": 6010,
+      "code": 6012,
       "name": "ProfileIncorrect",
       "msg": "Profile incorrect"
     },
     {
-      "code": 6011,
+      "code": 6013,
       "name": "ProfileAliasIncorrect",
       "msg": "Profile alias is incorrect"
     },
     {
-      "code": 6012,
+      "code": 6014,
       "name": "AliasAccountRequired",
       "msg": "Alias account required to register action"
     },
     {
-      "code": 6013,
+      "code": 6015,
+      "name": "AliasAccountsMustBeNone",
+      "msg": "Alias accounts must not be passed"
+    },
+    {
+      "code": 6016,
       "name": "BothAliasAccountRequired",
       "msg": "Both alias account required to update"
     },
     {
-      "code": 6014,
+      "code": 6017,
       "name": "CurrentAliasAccountRequired",
       "msg": "Current alias account required to delete"
     },
     {
-      "code": 6015,
+      "code": 6018,
       "name": "UpdateNotAuthorized",
       "msg": "Profile update not authorized"
     },
     {
-      "code": 6016,
+      "code": 6019,
+      "name": "ProfileFirstNameLengthIncorrect",
+      "msg": "Profile first name length is incorrect"
+    },
+    {
+      "code": 6020,
+      "name": "ProfileLastNameLengthIncorrect",
+      "msg": "Profile last name length is incorrect"
+    },
+    {
+      "code": 6021,
       "name": "SubspaceAliasIncorrect",
       "msg": "Subspace alias is incorrect"
     },
     {
-      "code": 6017,
+      "code": 6022,
+      "name": "SubspaceNameIncorrect",
+      "msg": "Subspace name length is incorrect"
+    },
+    {
+      "code": 6023,
       "name": "UriLengthIncorrect",
       "msg": "URI length is incorrect"
     },
     {
-      "code": 6018,
+      "code": 6024,
       "name": "TargetPublicationRequired",
       "msg": "Missed Target Publication account"
     },
     {
-      "code": 6019,
+      "code": 6025,
       "name": "BothMirrorAndReplyNotAllowed",
       "msg": "Both mirroring and replying not allowed in the same time"
     },
     {
-      "code": 6020,
+      "code": 6026,
       "name": "SelfConnectionNotAllowed",
       "msg": "Self conections is not allowed"
     },
     {
-      "code": 6021,
+      "code": 6027,
       "name": "ConnectionTargetAccountMissed",
       "msg": "Connection target account is missed"
     },
     {
-      "code": 6022,
-      "name": "ValidationFail",
+      "code": 6028,
+      "name": "ConnectionTargetAccountInvalid",
+      "msg": "Connection target account is invalid"
+    },
+    {
+      "code": 6029,
+      "name": "ConnectionTargetAuthorityMismatch",
+      "msg": "Connection target authority mismatch"
+    },
+    {
+      "code": 6030,
+      "name": "ConnectionValidationFail",
       "msg": "Connection validation failed"
     },
     {
-      "code": 6023,
+      "code": 6031,
       "name": "AliasAccountExist",
       "msg": "Alias account already exist"
     },
     {
-      "code": 6024,
+      "code": 6032,
       "name": "SelfPublicationCollecting",
       "msg": "Forbidden to collect user's  own publication"
     },
     {
-      "code": 6025,
+      "code": 6033,
       "name": "RegisteringProcessorAccountMissed",
       "msg": "Missed registering external processor account"
     },
     {
-      "code": 6026,
+      "code": 6034,
       "name": "ConnectingProcessorAccountMissed",
       "msg": "Missed connecting external processor account"
     },
     {
-      "code": 6027,
+      "code": 6035,
       "name": "PublishingProcessorAccountMissed",
       "msg": "Missed publishing external processor account"
     },
     {
-      "code": 6028,
+      "code": 6036,
       "name": "CollectingProcessorAccountMissed",
       "msg": "Missed collecting external processor account"
     },
     {
-      "code": 6029,
+      "code": 6037,
       "name": "ReferencingProcessorAccountMissed",
       "msg": "Missed referencing external processor account"
     },
     {
-      "code": 6030,
+      "code": 6038,
       "name": "RegisteringProcessorMismatch",
       "msg": "Registering external processor mismatch"
     },
     {
-      "code": 6031,
+      "code": 6039,
       "name": "ConnectingProcessorMismatch",
       "msg": "Connecting external processor mismatch"
     },
     {
-      "code": 6032,
+      "code": 6040,
       "name": "PublishingProcessorMismatch",
       "msg": "Publishing external processor mismatch"
     },
     {
-      "code": 6033,
+      "code": 6041,
       "name": "CollectingProcessorMismatch",
       "msg": "Collecting external processor mismatch"
     },
     {
-      "code": 6034,
+      "code": 6042,
       "name": "ReferencingProcessorMismatch",
       "msg": "Referencing external processor mismatch"
+    },
+    {
+      "code": 6043,
+      "name": "ReactionTargetAccountInvalid",
+      "msg": "Reaction target account is invalid"
+    },
+    {
+      "code": 6044,
+      "name": "ReportTargetAccountInvalid",
+      "msg": "Report target account is invalid"
     }
   ],
   "metadata": {
     "address": "964vWgVEK9X8ZwZB2HyshFVmHUWbcYpRTnVYz2o3F2Xq",
     "origin": "anchor",
-    "binaryVersion": "0.26.0",
-    "libVersion": "0.26.0"
+    "binaryVersion": "0.27.0",
+    "libVersion": "0.27.0"
   }
 }

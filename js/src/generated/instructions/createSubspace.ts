@@ -15,6 +15,7 @@ import { SubspaceData, subspaceDataBeet } from '../types/SubspaceData';
  * @category generated
  */
 export type CreateSubspaceInstructionArgs = {
+  uuid: string;
   data: SubspaceData;
 };
 /**
@@ -29,6 +30,7 @@ export const createSubspaceStruct = new beet.FixableBeetArgsStruct<
 >(
   [
     ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['uuid', beet.utf8String],
     ['data', subspaceDataBeet],
   ],
   'CreateSubspaceInstructionArgs',

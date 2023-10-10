@@ -15,12 +15,13 @@ import * as beetSolana from '@metaplex-foundation/beet-solana';
  * @category generated
  */
 export type SubspaceArgs = {
-  uuid: string;
   app: web3.PublicKey;
   authority: web3.PublicKey;
   creator: web3.PublicKey;
   alias: beet.COption<string>;
-  metadataUri: string;
+  name: beet.COption<string>;
+  uuid: string;
+  metadataUri: beet.COption<string>;
   publishingProcessor: beet.COption<web3.PublicKey>;
   connectingProcessor: beet.COption<web3.PublicKey>;
   collectingProcessor: beet.COption<web3.PublicKey>;
@@ -37,12 +38,13 @@ export const subspaceDiscriminator = [105, 6, 104, 112, 174, 108, 161, 167];
  */
 export class Subspace implements SubspaceArgs {
   private constructor(
-    readonly uuid: string,
     readonly app: web3.PublicKey,
     readonly authority: web3.PublicKey,
     readonly creator: web3.PublicKey,
     readonly alias: beet.COption<string>,
-    readonly metadataUri: string,
+    readonly name: beet.COption<string>,
+    readonly uuid: string,
+    readonly metadataUri: beet.COption<string>,
     readonly publishingProcessor: beet.COption<web3.PublicKey>,
     readonly connectingProcessor: beet.COption<web3.PublicKey>,
     readonly collectingProcessor: beet.COption<web3.PublicKey>,
@@ -54,11 +56,12 @@ export class Subspace implements SubspaceArgs {
    */
   static fromArgs(args: SubspaceArgs) {
     return new Subspace(
-      args.uuid,
       args.app,
       args.authority,
       args.creator,
       args.alias,
+      args.name,
+      args.uuid,
       args.metadataUri,
       args.publishingProcessor,
       args.connectingProcessor,
@@ -161,11 +164,12 @@ export class Subspace implements SubspaceArgs {
    */
   pretty() {
     return {
-      uuid: this.uuid,
       app: this.app.toBase58(),
       authority: this.authority.toBase58(),
       creator: this.creator.toBase58(),
       alias: this.alias,
+      name: this.name,
+      uuid: this.uuid,
       metadataUri: this.metadataUri,
       publishingProcessor: this.publishingProcessor,
       connectingProcessor: this.connectingProcessor,
@@ -187,12 +191,13 @@ export const subspaceBeet = new beet.FixableBeetStruct<
 >(
   [
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
-    ['uuid', beet.utf8String],
     ['app', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
     ['creator', beetSolana.publicKey],
     ['alias', beet.coption(beet.utf8String)],
-    ['metadataUri', beet.utf8String],
+    ['name', beet.coption(beet.utf8String)],
+    ['uuid', beet.utf8String],
+    ['metadataUri', beet.coption(beet.utf8String)],
     ['publishingProcessor', beet.coption(beetSolana.publicKey)],
     ['connectingProcessor', beet.coption(beetSolana.publicKey)],
     ['collectingProcessor', beet.coption(beetSolana.publicKey)],

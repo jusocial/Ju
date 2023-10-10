@@ -17,7 +17,21 @@ import * as beetSolana from '@metaplex-foundation/beet-solana';
 export type AppArgs = {
   appName: string;
   authority: web3.PublicKey;
-  metadataUri: string;
+  metadataUri: beet.COption<string>;
+  profileFirstNameRequired: boolean;
+  profileLastNameRequired: boolean;
+  profileBirthdateRequired: boolean;
+  profileCountryRequired: boolean;
+  profileCityRequired: boolean;
+  profileMetadataUriRequired: boolean;
+  subspaceNameRequired: boolean;
+  subspaceMetadataUriRequired: boolean;
+  profileDeleteAllowed: boolean;
+  subspaceDeleteAllowed: boolean;
+  publicationDeleteAllowed: boolean;
+  profileIndividualProcessorsAllowed: boolean;
+  subspaceIndividualProcessorsAllowed: boolean;
+  publicationIndividualProcessorsAllowed: boolean;
   registeringProcessor: beet.COption<web3.PublicKey>;
   connectingProcessor: beet.COption<web3.PublicKey>;
   publishingProcessor: beet.COption<web3.PublicKey>;
@@ -37,7 +51,21 @@ export class App implements AppArgs {
   private constructor(
     readonly appName: string,
     readonly authority: web3.PublicKey,
-    readonly metadataUri: string,
+    readonly metadataUri: beet.COption<string>,
+    readonly profileFirstNameRequired: boolean,
+    readonly profileLastNameRequired: boolean,
+    readonly profileBirthdateRequired: boolean,
+    readonly profileCountryRequired: boolean,
+    readonly profileCityRequired: boolean,
+    readonly profileMetadataUriRequired: boolean,
+    readonly subspaceNameRequired: boolean,
+    readonly subspaceMetadataUriRequired: boolean,
+    readonly profileDeleteAllowed: boolean,
+    readonly subspaceDeleteAllowed: boolean,
+    readonly publicationDeleteAllowed: boolean,
+    readonly profileIndividualProcessorsAllowed: boolean,
+    readonly subspaceIndividualProcessorsAllowed: boolean,
+    readonly publicationIndividualProcessorsAllowed: boolean,
     readonly registeringProcessor: beet.COption<web3.PublicKey>,
     readonly connectingProcessor: beet.COption<web3.PublicKey>,
     readonly publishingProcessor: beet.COption<web3.PublicKey>,
@@ -53,6 +81,20 @@ export class App implements AppArgs {
       args.appName,
       args.authority,
       args.metadataUri,
+      args.profileFirstNameRequired,
+      args.profileLastNameRequired,
+      args.profileBirthdateRequired,
+      args.profileCountryRequired,
+      args.profileCityRequired,
+      args.profileMetadataUriRequired,
+      args.subspaceNameRequired,
+      args.subspaceMetadataUriRequired,
+      args.profileDeleteAllowed,
+      args.subspaceDeleteAllowed,
+      args.publicationDeleteAllowed,
+      args.profileIndividualProcessorsAllowed,
+      args.subspaceIndividualProcessorsAllowed,
+      args.publicationIndividualProcessorsAllowed,
       args.registeringProcessor,
       args.connectingProcessor,
       args.publishingProcessor,
@@ -158,6 +200,20 @@ export class App implements AppArgs {
       appName: this.appName,
       authority: this.authority.toBase58(),
       metadataUri: this.metadataUri,
+      profileFirstNameRequired: this.profileFirstNameRequired,
+      profileLastNameRequired: this.profileLastNameRequired,
+      profileBirthdateRequired: this.profileBirthdateRequired,
+      profileCountryRequired: this.profileCountryRequired,
+      profileCityRequired: this.profileCityRequired,
+      profileMetadataUriRequired: this.profileMetadataUriRequired,
+      subspaceNameRequired: this.subspaceNameRequired,
+      subspaceMetadataUriRequired: this.subspaceMetadataUriRequired,
+      profileDeleteAllowed: this.profileDeleteAllowed,
+      subspaceDeleteAllowed: this.subspaceDeleteAllowed,
+      publicationDeleteAllowed: this.publicationDeleteAllowed,
+      profileIndividualProcessorsAllowed: this.profileIndividualProcessorsAllowed,
+      subspaceIndividualProcessorsAllowed: this.subspaceIndividualProcessorsAllowed,
+      publicationIndividualProcessorsAllowed: this.publicationIndividualProcessorsAllowed,
       registeringProcessor: this.registeringProcessor,
       connectingProcessor: this.connectingProcessor,
       publishingProcessor: this.publishingProcessor,
@@ -181,7 +237,21 @@ export const appBeet = new beet.FixableBeetStruct<
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['appName', beet.utf8String],
     ['authority', beetSolana.publicKey],
-    ['metadataUri', beet.utf8String],
+    ['metadataUri', beet.coption(beet.utf8String)],
+    ['profileFirstNameRequired', beet.bool],
+    ['profileLastNameRequired', beet.bool],
+    ['profileBirthdateRequired', beet.bool],
+    ['profileCountryRequired', beet.bool],
+    ['profileCityRequired', beet.bool],
+    ['profileMetadataUriRequired', beet.bool],
+    ['subspaceNameRequired', beet.bool],
+    ['subspaceMetadataUriRequired', beet.bool],
+    ['profileDeleteAllowed', beet.bool],
+    ['subspaceDeleteAllowed', beet.bool],
+    ['publicationDeleteAllowed', beet.bool],
+    ['profileIndividualProcessorsAllowed', beet.bool],
+    ['subspaceIndividualProcessorsAllowed', beet.bool],
+    ['publicationIndividualProcessorsAllowed', beet.bool],
     ['registeringProcessor', beet.coption(beetSolana.publicKey)],
     ['connectingProcessor', beet.coption(beetSolana.publicKey)],
     ['publishingProcessor', beet.coption(beetSolana.publicKey)],

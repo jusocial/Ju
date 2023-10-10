@@ -40,12 +40,12 @@ function createDeleteReactionInstruction(accounts, programId = new web3.PublicKe
             isSigner: false,
         },
         {
-            pubkey: accounts.target,
+            pubkey: accounts.initializer,
             isWritable: false,
             isSigner: false,
         },
         {
-            pubkey: accounts.initializerProfile,
+            pubkey: accounts.target,
             isWritable: false,
             isSigner: false,
         },

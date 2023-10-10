@@ -27,16 +27,18 @@ exports.aliasBeet = exports.Alias = exports.aliasDiscriminator = void 0;
 const web3 = __importStar(require("@solana/web3.js"));
 const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
 const beet = __importStar(require("@metaplex-foundation/beet"));
+const AliasType_1 = require("../types/AliasType");
 exports.aliasDiscriminator = [175, 23, 49, 34, 113, 79, 229, 204];
 class Alias {
-    constructor(app, profile, authority, value) {
+    constructor(app, aliasType, owner, authority, value) {
         this.app = app;
-        this.profile = profile;
+        this.aliasType = aliasType;
+        this.owner = owner;
         this.authority = authority;
         this.value = value;
     }
     static fromArgs(args) {
-        return new Alias(args.app, args.profile, args.authority, args.value);
+        return new Alias(args.app, args.aliasType, args.owner, args.authority, args.value);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return Alias.deserialize(accountInfo.data, offset);
@@ -73,7 +75,8 @@ class Alias {
     pretty() {
         return {
             app: this.app.toBase58(),
-            profile: this.profile.toBase58(),
+            aliasType: 'AliasType.' + AliasType_1.AliasType[this.aliasType],
+            owner: this.owner.toBase58(),
             authority: this.authority.toBase58(),
             value: this.value,
         };
@@ -83,7 +86,8 @@ exports.Alias = Alias;
 exports.aliasBeet = new beet.FixableBeetStruct([
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['app', beetSolana.publicKey],
-    ['profile', beetSolana.publicKey],
+    ['aliasType', AliasType_1.aliasTypeBeet],
+    ['owner', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
     ['value', beet.utf8String],
 ], Alias.fromArgs, 'Alias');

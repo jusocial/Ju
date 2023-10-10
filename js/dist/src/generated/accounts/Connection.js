@@ -27,11 +27,13 @@ exports.connectionBeet = exports.Connection = exports.connectionDiscriminator = 
 const web3 = __importStar(require("@solana/web3.js"));
 const beet = __importStar(require("@metaplex-foundation/beet"));
 const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
+const ConnectionTargetType_1 = require("../types/ConnectionTargetType");
 exports.connectionDiscriminator = [209, 186, 115, 58, 36, 236, 179, 10];
 class Connection {
-    constructor(app, authority, initializer, target, approved, createdAt, modifiedAt) {
+    constructor(app, authority, connectionTargetType, initializer, target, approved, createdAt, modifiedAt) {
         this.app = app;
         this.authority = authority;
+        this.connectionTargetType = connectionTargetType;
         this.initializer = initializer;
         this.target = target;
         this.approved = approved;
@@ -39,7 +41,7 @@ class Connection {
         this.modifiedAt = modifiedAt;
     }
     static fromArgs(args) {
-        return new Connection(args.app, args.authority, args.initializer, args.target, args.approved, args.createdAt, args.modifiedAt);
+        return new Connection(args.app, args.authority, args.connectionTargetType, args.initializer, args.target, args.approved, args.createdAt, args.modifiedAt);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return Connection.deserialize(accountInfo.data, offset);
@@ -77,6 +79,7 @@ class Connection {
         return {
             app: this.app.toBase58(),
             authority: this.authority.toBase58(),
+            connectionTargetType: 'ConnectionTargetType.' + ConnectionTargetType_1.ConnectionTargetType[this.connectionTargetType],
             initializer: this.initializer.toBase58(),
             target: this.target.toBase58(),
             approved: this.approved,
@@ -101,6 +104,7 @@ exports.connectionBeet = new beet.FixableBeetStruct([
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['app', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
+    ['connectionTargetType', ConnectionTargetType_1.connectionTargetTypeBeet],
     ['initializer', beetSolana.publicKey],
     ['target', beetSolana.publicKey],
     ['approved', beet.bool],

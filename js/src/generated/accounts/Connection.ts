@@ -8,6 +8,7 @@
 import * as web3 from '@solana/web3.js';
 import * as beet from '@metaplex-foundation/beet';
 import * as beetSolana from '@metaplex-foundation/beet-solana';
+import { ConnectionTargetType, connectionTargetTypeBeet } from '../types/ConnectionTargetType';
 
 /**
  * Arguments used to create {@link Connection}
@@ -17,6 +18,7 @@ import * as beetSolana from '@metaplex-foundation/beet-solana';
 export type ConnectionArgs = {
   app: web3.PublicKey;
   authority: web3.PublicKey;
+  connectionTargetType: ConnectionTargetType;
   initializer: web3.PublicKey;
   target: web3.PublicKey;
   approved: boolean;
@@ -36,6 +38,7 @@ export class Connection implements ConnectionArgs {
   private constructor(
     readonly app: web3.PublicKey,
     readonly authority: web3.PublicKey,
+    readonly connectionTargetType: ConnectionTargetType,
     readonly initializer: web3.PublicKey,
     readonly target: web3.PublicKey,
     readonly approved: boolean,
@@ -50,6 +53,7 @@ export class Connection implements ConnectionArgs {
     return new Connection(
       args.app,
       args.authority,
+      args.connectionTargetType,
       args.initializer,
       args.target,
       args.approved,
@@ -154,6 +158,8 @@ export class Connection implements ConnectionArgs {
     return {
       app: this.app.toBase58(),
       authority: this.authority.toBase58(),
+      connectionTargetType:
+        'ConnectionTargetType.' + ConnectionTargetType[this.connectionTargetType],
       initializer: this.initializer.toBase58(),
       target: this.target.toBase58(),
       approved: this.approved,
@@ -187,6 +193,7 @@ export const connectionBeet = new beet.FixableBeetStruct<
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['app', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
+    ['connectionTargetType', connectionTargetTypeBeet],
     ['initializer', beetSolana.publicKey],
     ['target', beetSolana.publicKey],
     ['approved', beet.bool],

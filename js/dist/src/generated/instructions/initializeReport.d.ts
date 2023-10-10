@@ -9,8 +9,8 @@ export declare const initializeReportStruct: beet.FixableBeetArgsStruct<Initiali
 }>;
 export type InitializeReportInstructionAccounts = {
     app: web3.PublicKey;
+    initializer: web3.PublicKey;
     target: web3.PublicKey;
-    initializerProfile: web3.PublicKey;
     report: web3.PublicKey;
     authority: web3.PublicKey;
     systemProgram?: web3.PublicKey;

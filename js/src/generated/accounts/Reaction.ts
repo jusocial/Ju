@@ -8,6 +8,7 @@
 import * as web3 from '@solana/web3.js';
 import * as beet from '@metaplex-foundation/beet';
 import * as beetSolana from '@metaplex-foundation/beet-solana';
+import { ReactionTargetType, reactionTargetTypeBeet } from '../types/ReactionTargetType';
 import { ReactionType, reactionTypeBeet } from '../types/ReactionType';
 
 /**
@@ -18,8 +19,9 @@ import { ReactionType, reactionTypeBeet } from '../types/ReactionType';
 export type ReactionArgs = {
   app: web3.PublicKey;
   authority: web3.PublicKey;
-  initializerProfile: web3.PublicKey;
+  targetType: ReactionTargetType;
   target: web3.PublicKey;
+  initializer: web3.PublicKey;
   reactionType: ReactionType;
   createdAt: beet.bignum;
 };
@@ -36,8 +38,9 @@ export class Reaction implements ReactionArgs {
   private constructor(
     readonly app: web3.PublicKey,
     readonly authority: web3.PublicKey,
-    readonly initializerProfile: web3.PublicKey,
+    readonly targetType: ReactionTargetType,
     readonly target: web3.PublicKey,
+    readonly initializer: web3.PublicKey,
     readonly reactionType: ReactionType,
     readonly createdAt: beet.bignum,
   ) {}
@@ -49,8 +52,9 @@ export class Reaction implements ReactionArgs {
     return new Reaction(
       args.app,
       args.authority,
-      args.initializerProfile,
+      args.targetType,
       args.target,
+      args.initializer,
       args.reactionType,
       args.createdAt,
     );
@@ -150,8 +154,9 @@ export class Reaction implements ReactionArgs {
     return {
       app: this.app.toBase58(),
       authority: this.authority.toBase58(),
-      initializerProfile: this.initializerProfile.toBase58(),
+      targetType: 'ReactionTargetType.' + ReactionTargetType[this.targetType],
       target: this.target.toBase58(),
+      initializer: this.initializer.toBase58(),
       reactionType: 'ReactionType.' + ReactionType[this.reactionType],
       createdAt: (() => {
         const x = <{ toNumber: () => number }>this.createdAt;
@@ -182,8 +187,9 @@ export const reactionBeet = new beet.BeetStruct<
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['app', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
-    ['initializerProfile', beetSolana.publicKey],
+    ['targetType', reactionTargetTypeBeet],
     ['target', beetSolana.publicKey],
+    ['initializer', beetSolana.publicKey],
     ['reactionType', reactionTypeBeet],
     ['createdAt', beet.i64],
   ],

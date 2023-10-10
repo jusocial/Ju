@@ -2,6 +2,7 @@ import * as beet from '@metaplex-foundation/beet';
 import * as web3 from '@solana/web3.js';
 import { PublicationData } from '../types/PublicationData';
 export type CreatePublicationInstructionArgs = {
+    uuid: string;
     data: PublicationData;
     externalProcessingData: beet.COption<string>;
 };
@@ -16,8 +17,6 @@ export type CreatePublicationInstructionAccounts = {
     targetPublication?: web3.PublicKey;
     collectingProcessorPda?: web3.PublicKey;
     referencingProcessorPda?: web3.PublicKey;
-    publishingProcessor?: web3.PublicKey;
-    referencingProcessor?: web3.PublicKey;
     authority: web3.PublicKey;
     systemProgram?: web3.PublicKey;
 };

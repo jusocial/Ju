@@ -4,9 +4,28 @@ use crate::errors::*;
 
 // Accounts
 
-/// ApprovedProcessorPDA holds data about every whitelisted Protocol external Processors
+/// DeveloperWhitelistItem account is proof that pubkey owner is able to create protocol application
 ///
-/// # App account stores:
+/// # DeveloperWhitelistItem account stores:
+///
+/// 1. Authority address
+///
+#[account]
+pub struct DeveloperWhitelistItem {
+    /// Account authority (32).
+    pub authority: Pubkey,
+}
+
+impl DeveloperWhitelistItem {
+    pub const PREFIX: &'static str = "developer";
+
+    pub const LEN: usize = DISCRIMINATOR_LENGTH                 // Anchor internal discrimitator
+        + 32;                                                   // Pubkey
+}
+
+/// ExternalProcessorPDA that holds data about every whitelisted Protocol external Processors
+///
+/// # ExternalProcessorPDA account stores:
 ///
 /// 1. Processor type 
 /// 2. Processor name (ASCII alphanumeric)
@@ -66,8 +85,8 @@ impl ExternalProcessorPDA {
 /// 1. `app_name`: Unique Application name (ID) as string (ASCII alphanumeric)
 /// 2. `authority`: Application authority address
 /// 3. `metadata_uri`: Application metadata URI (settings)
-/// 4. `profile_name_required`: Specifies whether the Profile name is required
-/// 5. `profile_surname_required`: Specifies whether the Profile surname is required
+/// 4. `profile_first_name_required`: Specifies whether the Profile first name is required
+/// 5. `profile_last_name_required`: Specifies whether the Profile last name is required
 /// 6. `profile_birthdate_required`: Specifies whether the Profile birth date is required
 /// 7. `profile_country_required`: Specifies whether the Profile country is required
 /// 8. `profile_city_required`: Specifies whether the Profile city is required
@@ -99,9 +118,9 @@ pub struct App {
     pub metadata_uri: Option<String>,
     
     /// Specifies whether the Profile name is required.
-    pub profile_name_required: bool,
-    /// Specifies whether the Profile surname is required.
-    pub profile_surname_required: bool,
+    pub profile_first_name_required: bool,
+    /// Specifies whether the Profile last name is required.
+    pub profile_last_name_required: bool,
     /// Specifies whether the Profile birth date is required.
     pub profile_birthdate_required: bool,
     /// Specifies whether the Profile country is required.
@@ -150,7 +169,7 @@ impl App {
         + 32                                            // Pubkey (authority)
         + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)   // Option<String> (metadata_uri)
         + 1                                             // bool (profile_name_required)
-        + 1                                             // bool (profile_surname_required)
+        + 1                                             // bool (profile_last name_required)
         + 1                                             // bool (profile_birthdate_required)
         + 1                                             // bool (profile_country_required)
         + 1                                             // bool (profile_city_required)
@@ -199,8 +218,8 @@ impl App {
 /// 4. Profile metadata URI
 /// 5. Profile status text
 /// 6. Verification status
-/// 7. Profile name
-/// 8. Profile surname
+/// 7. Profile first name
+/// 8. Profile last name
 /// 9. Profile birth date
 /// 10. Profile country code
 /// 11. Profile city code
@@ -226,10 +245,10 @@ pub struct Profile {
     /// Verified status for VIP users (1)
     pub verified: bool,
 
-    // Profile's user name
-    pub name: Option<String>,
-    // Profile's user surname
-    pub surname: Option<String>,
+    // Profile's user first name
+    pub first_name: Option<String>,
+    // Profile's user last name
+    pub last_name: Option<String>,
     // Birth date as a Unix timestamp
     pub birth_date: Option<i64>,
     // Profile's country
@@ -252,22 +271,22 @@ pub struct Profile {
 impl Profile {
     pub const PREFIX: &'static str = "profile";
 
-    pub const LEN: usize = DISCRIMINATOR_LENGTH                     // Anchor internal discrimitator
-        + 32                                                        // Pubkey
-        + 32                                                        // Pubkey
-        + (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)             // String
-        + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)               // Option<String>
-        + (1 + STRING_LENGTH_PREFIX + MAX_STATUS_LENGTH)            // String
-        + 1                                                         // bool
-        + (1 + STRING_LENGTH_PREFIX + MAX_PROFILE_NAME_LENGTH)      // Option<String>
-        + (1 + STRING_LENGTH_PREFIX + MAX_PROFILE_SURNAME_LENGTH)   // Option<String>
-        + 8                                                         // i64
-        + 2                                                         // i16
-        + 2                                                         // i16
-        + (1 + 1)                                                   // Option<Enum> (`current_location`)
-        + (1 + 32)                                                  // Option<Pubkey>
-        + 8                                                         // i64
-        + (1 + 8);                                                  // Option<i64>
+    pub const LEN: usize = DISCRIMINATOR_LENGTH                         // Anchor internal discrimitator
+        + 32                                                            // Pubkey
+        + 32                                                            // Pubkey
+        + (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)                 // String
+        + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)                   // Option<String>
+        + (1 + STRING_LENGTH_PREFIX + MAX_STATUS_LENGTH)                // String
+        + 1                                                             // bool
+        + (1 + STRING_LENGTH_PREFIX + MAX_PROFILE_FIRST_NAME_LENGTH)    // Option<String>
+        + (1 + STRING_LENGTH_PREFIX + MAX_PROFILE_LAST_NAME_LENGTH)     // Option<String>
+        + 8                                                             // i64
+        + 2                                                             // i16
+        + 2                                                             // i16
+        + (1 + 1)                                                       // Option<Enum> (`current_location`)
+        + (1 + 32)                                                      // Option<Pubkey>
+        + 8                                                             // i64
+        + (1 + 8);                                                      // Option<i64>
 
     /// Method for validating Profile Alias
     ///
@@ -288,28 +307,28 @@ impl Profile {
         Ok(())
     }
 
-    /// Method for validating Profile Name
+    /// Method for validating Profile First name
     ///
     /// Parameters:
     ///
-    /// 1. `name` - Reference to Profile Name String
+    /// 1. `first_name` - Reference to Profile First name String
     /// 
-    pub fn validate_name(&self, name: &String) -> Result<()> {
-        if name.len() < MIN_PROFILE_NAME_LENGTH || name.len() > MAX_PROFILE_NAME_LENGTH {
-            return Err(error!(CustomError::ProfileNameTooLong));
+    pub fn validate_first_name(&self, first_name: &String) -> Result<()> {
+        if first_name.len() < MIN_PROFILE_FIRST_NAME_LENGTH || first_name.len() > MAX_PROFILE_FIRST_NAME_LENGTH {
+            return Err(error!(CustomError::ProfileFirstNameLengthIncorrect));
         }
         Ok(())
     }
 
-    /// Method for validating Profile Surname
+    /// Method for validating Profile Last name
     ///
     /// Parameters:
     ///
-    /// 1. `surname` - Reference to Profile Surname String
+    /// 1. `last_name` - Reference to Profile Last name String
     /// 
-    pub fn validate_surname(&self, surname: &String) -> Result<()> {
-        if surname.len() < MIN_PROFILE_SURNAME_LENGTH ||  surname.len() > MAX_PROFILE_SURNAME_LENGTH {
-            return Err(error!(CustomError::ProfileSurnameTooLong));
+    pub fn validate_last_name(&self, last_name: &String) -> Result<()> {
+        if last_name.len() < MIN_PROFILE_LAST_NAME_LENGTH ||  last_name.len() > MAX_PROFILE_LAST_NAME_LENGTH {
+            return Err(error!(CustomError::ProfileLastNameLengthIncorrect));
         }
         Ok(())
     }
@@ -325,11 +344,12 @@ impl Profile {
 /// 4. Unique application's user profile alias as string (optional, ASCII alphanumeric) (optional)
 /// 5. Subspace name (optional)
 /// 6. Subspace UUID
-/// 7. Subspace metadata URI (optional)
-/// 8. External Publishing processor (optional)
-/// 9. External Connecting processor (optional)
-/// 10. External Collecting processor (optional)
-/// 11. External Referencing processor (optional)
+/// 7. Subspace publishing permission level
+/// 8. Subspace metadata URI (optional)
+/// 9. External Publishing processor (optional)
+/// 10. External Connecting processor (optional)
+/// 11. External Collecting processor (optional)
+/// 12. External Referencing processor (optional)
 ///
 #[account]
 #[derive(Default)]
@@ -346,6 +366,8 @@ pub struct Subspace {
     pub name: Option<String>,
     /// Subspace UUID (UUID_LENGTH)
     pub uuid: String,
+    /// Subspace publishing permission level
+    pub publishing_permission: SubspacePublishingPermissionLevel,
     /// Metadata URI (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH).
     pub metadata_uri: Option<String>,
     /// An address of a Program (external processor) for Publication Creating additional processing (1 + 32)
@@ -368,6 +390,7 @@ impl Subspace {
         + (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)         // String (alias)
         + (1 + STRING_LENGTH_PREFIX + MAX_SUBSPACE_NAME_LENGTH) // String (alias)
         + (STRING_LENGTH_PREFIX + UUID_LENGTH)                  // String (uuid)
+        + 1                                                     // Enum (publishing_permission)
         + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)           // String (metadata_uri)
         + (1 + 32)                                              // Option<Pubkey>
         + (1 + 32)                                              // Option<Pubkey>
@@ -397,14 +420,45 @@ impl Subspace {
     ///
     /// Parameters:
     ///
-    /// 1. `name` - Reference to Profile Name String
+    /// 1. `name` - Reference to Subspace Name String
     /// 
     pub fn validate_name(&self, name: &String) -> Result<()> {
         if name.len() < MIN_SUBSPACE_NAME_LENGTH || name.len() > MAX_SUBSPACE_NAME_LENGTH {
-            return Err(error!(CustomError::ProfileNameTooLong));
+            return Err(error!(CustomError::SubspaceNameIncorrect));
         }
         Ok(())
     }
+}
+
+/// SubspaceManager account that holds data about Subspace management team user
+///
+/// # SubspaceManager account stores:
+///
+/// 1. Application account (PDA)
+/// 2. Account authority address
+/// 3. Manager Role
+///
+#[account]
+// #[derive(Default)]
+pub struct SubspaceManager {
+    /// Application Pubkey (32)
+    pub app: Pubkey,
+    /// Pubkey of the account authority (32).
+    pub authority: Pubkey,
+    /// Pubkey of the manager Profile (32).
+    pub profile: Pubkey,
+    /// Manager role
+    pub role: SubspaceManagementRoleType
+}
+
+impl SubspaceManager {
+    pub const PREFIX: &'static str = "subspace_manager";
+
+    pub const LEN: usize = DISCRIMINATOR_LENGTH                     // Anchor internal discrimitator
+        + 32                                                        // Pubkey
+        + 32                                                        // Pubkey
+        + 32                                                        // Pubkey
+        + 1;                                                        // Enum
 }
 
 /// The Publication is account (PDA) that holds Application's Publication data
@@ -414,18 +468,19 @@ impl Subspace {
 /// 1. Existing Protocol Application in which Publication was created
 /// 2. References to Publication's author Profile
 /// 3. Publication authority address
-/// 4. Publication metadata URI
-/// 5. Subspace in which Publication being published
-/// 6. Whether or not the Publication is mirroring other existing Publication (e.g. re-post)
-/// 7. Whether or not the Publication is replying to other existing Publication (e.g. comment)
-/// 8. References to existing Publication if there is a mirror or reply (optional)
-/// 9. Publication main content type
-/// 10. Publication tag
-/// 11. Publication UUID as string
-/// 12. External Collecting processor (optional)
-/// 13. External Referencing processor (optional)
-/// 14. Publication create unix timestamp
-/// 15. Publication update unix timestamp (optional)
+/// 4. Whether or not the publication has encrypted content
+/// 5. Publication metadata URI
+/// 6. Subspace in which Publication being published
+/// 7. Whether or not the Publication is mirroring other existing Publication (e.g. re-post)
+/// 8. Whether or not the Publication is replying to other existing Publication (e.g. comment)
+/// 9. References to existing Publication if there is a mirror or reply (optional)
+/// 10. Publication main content type
+/// 11. Publication tag
+/// 12. Publication UUID as string
+/// 13. External Collecting processor (optional)
+/// 14. External Referencing processor (optional)
+/// 15. Publication create unix timestamp
+/// 16. Publication update unix timestamp (optional)
 ///
 #[account]
 // #[derive(Default)]
@@ -436,6 +491,10 @@ pub struct Publication {
     pub profile: Pubkey,
     /// Publication authority account Pubkey (32)
     pub authority: Pubkey,
+
+    /// Whether or not the publication has encrypted content
+    pub is_encrypted: bool,
+
     /// Subspace to publish 
     pub subspace: Option<Pubkey>,
     /// Flag to determine whether publication is mirror (e.g. 'repost') (1)
@@ -469,6 +528,7 @@ impl Publication {
         + 32                                            // Pubkey
         + 32                                            // Pubkey
         + 32                                            // Pubkey
+        + 1                                             // bool
         + (1 + 32)                                      // Option<Pubkey>
         + 1                                             // bool
         + 1                                             // bool
@@ -608,18 +668,21 @@ impl Alias {
 ///
 /// 1. Application address
 /// 2. Reaction authority address
-/// 3. Target Publication address
-/// 4. Reaction initializer Profile
-/// 5. Reaction type variant
-/// 6. Reaction create unix timestamp
+/// 3. Reaction Traget type
+/// 4. Target Publication address
+/// 5. Reaction initializer Profile
+/// 6. Reaction type variant
+/// 7. Reaction create unix timestamp
 ///
 #[account]
-#[derive(Default)]
+// #[derive(Default)]
 pub struct Reaction {
     /// Application account Pubkey (32)
     pub app: Pubkey,
     /// Reaction authority account Pubkey (32)
     pub authority: Pubkey,
+    /// Reaction target type (1)
+    pub target_type: ReactionTargetType,
     /// Reaction target Publication Pubkey (32)
     pub target: Pubkey,
     /// Reaction initializer Profile Pubkey (32)
@@ -636,6 +699,7 @@ impl Reaction {
     pub const LEN: usize = DISCRIMINATOR_LENGTH         // Anchor internal discrimitator 
         + 32                                            // Pubkey
         + 32                                            // Pubkey
+        + 1                                             // Enum
         + 32                                            // Pubkey
         + 32                                            // Pubkey
         + 1                                             // Enum
@@ -648,11 +712,12 @@ impl Reaction {
 ///
 /// 1. Application address
 /// 2. Report authority address
-/// 3. Report Target address
-/// 4. Report initializer Profile
-/// 5. Report type variant
-/// 6. Report notification text
-/// 7. Report create unix timestamp
+/// 3. Report Taget type
+/// 4. Report Target address
+/// 5. Report initializer Profile
+/// 6. Report type variant
+/// 7. Report notification text
+/// 8. Report create unix timestamp
 ///
 #[account]
 // #[derive(Default)]
@@ -661,11 +726,13 @@ pub struct Report {
     pub app: Pubkey,
     /// Alias authority account Pubkey (32)
     pub authority: Pubkey,
-    /// Reaction target Publication Pubkey (32)
+    /// Report target type (1)
+    pub target_type: ReportTargetType,
+    /// Report target Publication Pubkey (32)
     pub target: Pubkey,
-    /// Reaction initializer Pubkey (32)
+    /// Report initializer Pubkey (32)
     pub initializer: Pubkey,
-    /// Reaction value (1)
+    /// Report type value (1)
     pub report_type: ReportType,
     /// Report Notification
     pub notification: Option<String>,
@@ -679,6 +746,7 @@ impl Report {
     pub const LEN: usize = DISCRIMINATOR_LENGTH                 // Anchor internal discrimitator  
         + 32                                                    // Pubkey
         + 32                                                    // Pubkey
+        + 1                                                     // Enum
         + 32                                                    // Pubkey
         + 32                                                    // Pubkey
         + 1                                                     // Enum
@@ -693,8 +761,8 @@ impl Report {
 /// ## Fields:
 ///
 /// - `metadata_uri`: The optional metadata URI for the app.
-/// - `profile_name_required`: Specifies whether the Profile name is required.
-/// - `profile_surname_required`: Specifies whether the Profile surname is required.
+/// - `profile_first_name_required`: Specifies whether the Profile name is required.
+/// - `profile_last_name_required`: Specifies whether the Profile last name is required.
 /// - `profile_birthdate_required`: Specifies whether the Profile birth date is required.
 /// - `profile_location_required`: Specifies whether the Profile location is required.
 /// - `profile_metadata_uri_required`: Specifies whether the Profile metadata URI is required.
@@ -712,10 +780,10 @@ pub struct AppData {
     /// The optional metadata URI for the App.
     pub metadata_uri: Option<String>,
 
-    /// Specifies whether the Profile name is required.
-    pub profile_name_required: bool,
-    /// Specifies whether the Profile surname is required.
-    pub profile_surname_required: bool,
+    /// Specifies whether the Profile first name is required.
+    pub profile_first_name_required: bool,
+    /// Specifies whether the Profile last name is required.
+    pub profile_last_name_required: bool,
     /// Specifies whether the Profile birth date is required.
     pub profile_birthdate_required: bool,
     /// Specifies whether the Profile country is required.
@@ -752,8 +820,8 @@ pub struct AppData {
 /// 1. `alias` - Unique Application's user Profile Alias as string (ASCII alphanumeric)
 /// 2. `metadata_uri` - Profile metadata URI
 /// 3. `status_text` - Profile status
-/// 4. `name` Profile name
-/// 5. `surname` Profile surname
+/// 4. `first_name` Profile first name
+/// 5. `last_name` Profile last name
 /// 6. `birth_date` - Profile birth date
 /// 7. `country_code` Profile country
 /// 8. `city_code` Profile city
@@ -764,8 +832,8 @@ pub struct ProfileData {
     pub alias: Option<String>,
     pub metadata_uri: Option<String>,
     pub status_text: Option<String>,
-    pub name: Option<String>,
-    pub surname: Option<String>,
+    pub first_name: Option<String>,
+    pub last_name: Option<String>,
     pub birth_date: Option<i64>,
     pub country_code: Option<i16>,
     pub city_code: Option<u16>,
@@ -784,6 +852,7 @@ pub struct ProfileData {
 pub struct SubspaceData {
     pub alias: Option<String>,
     pub name: Option<String>,
+    pub publishing_permission: SubspacePublishingPermissionLevel,
     pub metadata_uri: Option<String>,
 }
 
@@ -791,14 +860,16 @@ pub struct SubspaceData {
 ///
 /// # Struct contains:
 ///
-/// 1. `metadata_uri` - Publication metadata URI
-/// 2. `is_mirror` - Whether or not the publication is mirroring other existing publication (e.g. re-post)
-/// 3. `is_reply` - Whether or not the publication is replying to other existing publication (e.g. comment)
-/// 4. `content_type` - Publication content type
-/// 5. `tag` - Publication Tag
+/// 1. `is_encrypted` - Whether or not the publication has encrypted content
+/// 2. `metadata_uri` - Publication metadata URI
+/// 3. `is_mirror` - Whether or not the publication is mirroring other existing publication (e.g. re-post)
+/// 4. `is_reply` - Whether or not the publication is replying to other existing publication (e.g. comment)
+/// 5. `content_type` - Publication content type
+/// 6. `tag` - Publication Tag
 ///
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct PublicationData {
+    pub is_encrypted: bool,
     pub metadata_uri: String,
     pub is_mirror: bool,
     pub is_reply: bool,
@@ -890,6 +961,39 @@ pub enum ContentType {
     Link,
 }
 
+/// Subspace publishing permission level
+///
+/// # Enum variants:
+///
+/// * All
+/// * AllMembers
+/// * ApprovedMembers
+/// * Admins
+/// * Owner
+///
+#[derive(Default, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
+pub enum SubspacePublishingPermissionLevel {
+    All,
+    #[default]
+    AllMembers,
+    ApprovedMembers,
+    Admins,
+    Owner
+}
+
+/// Reaction Target type
+///
+/// # Enum variants:
+///
+/// * Profile
+/// * Publication
+///
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
+pub enum ReactionTargetType { 
+    Profile,
+    Publication
+} 
+
 /// Reaction type (e.g. Like / Dislike)
 ///
 /// # Enum variants:
@@ -906,17 +1010,62 @@ pub enum ReactionType {
     CustomVote,
 }
 
-/// Report type (e.g. Scam)
+/// Report Target type
+///
+/// # Enum variants:
+///
+/// * Profile
+/// * Subspace
+/// * Publication
+///
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
+pub enum ReportTargetType { 
+    Profile,
+    Subspace,
+    Publication
+}   
+
+/// Report type
 ///
 /// # Enum variants:
 ///
 /// * Scam
 /// * Abuse
+/// * Spam
+/// * HateSpeech
+/// * Harassment
+/// * Misinformation
+/// * Violence
+/// * Threats
+/// * Copyright
+/// * Adult
 ///
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub enum ReportType { 
     Scam,
+    Phishing,
     Abuse,
+    Spam,
+    HateSpeech,
+    Harassment,
+    Misinformation,
+    Violence,
+    Threats,
+    Copyright,
+    Adult,
+}
+
+/// Subspace management Roles
+///
+/// # Enum variants:
+///
+/// * Admin
+/// * Publisher
+///
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
+pub enum SubspaceManagementRoleType { 
+    Admin,
+    Publisher,
 }
 
 /// Coordinates

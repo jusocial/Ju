@@ -23,8 +23,8 @@ export const deleteReactionStruct = new beet.BeetArgsStruct<{
  * Accounts required by the _deleteReaction_ instruction
  *
  * @property [] app
+ * @property [] initializer
  * @property [] target
- * @property [] initializerProfile
  * @property [_writable_] reaction
  * @property [_writable_, **signer**] authority
  * @category Instructions
@@ -33,8 +33,8 @@ export const deleteReactionStruct = new beet.BeetArgsStruct<{
  */
 export type DeleteReactionInstructionAccounts = {
   app: web3.PublicKey;
+  initializer: web3.PublicKey;
   target: web3.PublicKey;
-  initializerProfile: web3.PublicKey;
   reaction: web3.PublicKey;
   authority: web3.PublicKey;
   systemProgram?: web3.PublicKey;
@@ -64,12 +64,12 @@ export function createDeleteReactionInstruction(
       isSigner: false,
     },
     {
-      pubkey: accounts.target,
+      pubkey: accounts.initializer,
       isWritable: false,
       isSigner: false,
     },
     {
-      pubkey: accounts.initializerProfile,
+      pubkey: accounts.target,
       isWritable: false,
       isSigner: false,
     },

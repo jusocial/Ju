@@ -6,13 +6,10 @@
  */
 
 import * as beet from '@metaplex-foundation/beet';
-import * as web3 from '@solana/web3.js';
-import * as beetSolana from '@metaplex-foundation/beet-solana';
 export type SubspaceData = {
-  uuid: string;
   alias: beet.COption<string>;
-  creator: web3.PublicKey;
-  metadataUri: string;
+  name: beet.COption<string>;
+  metadataUri: beet.COption<string>;
 };
 
 /**
@@ -21,10 +18,9 @@ export type SubspaceData = {
  */
 export const subspaceDataBeet = new beet.FixableBeetArgsStruct<SubspaceData>(
   [
-    ['uuid', beet.utf8String],
     ['alias', beet.coption(beet.utf8String)],
-    ['creator', beetSolana.publicKey],
-    ['metadataUri', beet.utf8String],
+    ['name', beet.coption(beet.utf8String)],
+    ['metadataUri', beet.coption(beet.utf8String)],
   ],
   'SubspaceData',
 );

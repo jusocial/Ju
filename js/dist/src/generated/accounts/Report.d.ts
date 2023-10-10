@@ -2,12 +2,14 @@
 import * as web3 from '@solana/web3.js';
 import * as beet from '@metaplex-foundation/beet';
 import * as beetSolana from '@metaplex-foundation/beet-solana';
+import { ReportTargetType } from '../types/ReportTargetType';
 import { ReportType } from '../types/ReportType';
 export type ReportArgs = {
     app: web3.PublicKey;
     authority: web3.PublicKey;
-    initializerProfile: web3.PublicKey;
+    targetType: ReportTargetType;
     target: web3.PublicKey;
+    initializer: web3.PublicKey;
     reportType: ReportType;
     notification: beet.COption<string>;
     createdAt: beet.bignum;
@@ -16,8 +18,9 @@ export declare const reportDiscriminator: number[];
 export declare class Report implements ReportArgs {
     readonly app: web3.PublicKey;
     readonly authority: web3.PublicKey;
-    readonly initializerProfile: web3.PublicKey;
+    readonly targetType: ReportTargetType;
     readonly target: web3.PublicKey;
+    readonly initializer: web3.PublicKey;
     readonly reportType: ReportType;
     readonly notification: beet.COption<string>;
     readonly createdAt: beet.bignum;
@@ -35,8 +38,9 @@ export declare class Report implements ReportArgs {
     pretty(): {
         app: string;
         authority: string;
-        initializerProfile: string;
+        targetType: string;
         target: string;
+        initializer: string;
         reportType: string;
         notification: beet.COption<string>;
         createdAt: number | {

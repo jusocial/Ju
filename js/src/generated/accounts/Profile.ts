@@ -8,6 +8,7 @@
 import * as web3 from '@solana/web3.js';
 import * as beet from '@metaplex-foundation/beet';
 import * as beetSolana from '@metaplex-foundation/beet-solana';
+import { LocationCoordinates, locationCoordinatesBeet } from '../types/LocationCoordinates';
 
 /**
  * Arguments used to create {@link Profile}
@@ -18,11 +19,18 @@ export type ProfileArgs = {
   app: web3.PublicKey;
   authority: web3.PublicKey;
   alias: beet.COption<string>;
-  metadataUri: string;
+  metadataUri: beet.COption<string>;
   statusText: beet.COption<string>;
   verified: boolean;
+  firstName: beet.COption<string>;
+  lastName: beet.COption<string>;
+  birthDate: beet.COption<beet.bignum>;
+  countryCode: beet.COption<number>;
+  cityCode: beet.COption<number>;
+  currentLocation: beet.COption<LocationCoordinates>;
   connectingProcessor: beet.COption<web3.PublicKey>;
   createdAt: beet.bignum;
+  modifiedAt: beet.COption<beet.bignum>;
 };
 
 export const profileDiscriminator = [184, 101, 165, 188, 95, 63, 127, 188];
@@ -38,11 +46,18 @@ export class Profile implements ProfileArgs {
     readonly app: web3.PublicKey,
     readonly authority: web3.PublicKey,
     readonly alias: beet.COption<string>,
-    readonly metadataUri: string,
+    readonly metadataUri: beet.COption<string>,
     readonly statusText: beet.COption<string>,
     readonly verified: boolean,
+    readonly firstName: beet.COption<string>,
+    readonly lastName: beet.COption<string>,
+    readonly birthDate: beet.COption<beet.bignum>,
+    readonly countryCode: beet.COption<number>,
+    readonly cityCode: beet.COption<number>,
+    readonly currentLocation: beet.COption<LocationCoordinates>,
     readonly connectingProcessor: beet.COption<web3.PublicKey>,
     readonly createdAt: beet.bignum,
+    readonly modifiedAt: beet.COption<beet.bignum>,
   ) {}
 
   /**
@@ -56,8 +71,15 @@ export class Profile implements ProfileArgs {
       args.metadataUri,
       args.statusText,
       args.verified,
+      args.firstName,
+      args.lastName,
+      args.birthDate,
+      args.countryCode,
+      args.cityCode,
+      args.currentLocation,
       args.connectingProcessor,
       args.createdAt,
+      args.modifiedAt,
     );
   }
 
@@ -161,6 +183,12 @@ export class Profile implements ProfileArgs {
       metadataUri: this.metadataUri,
       statusText: this.statusText,
       verified: this.verified,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      birthDate: this.birthDate,
+      countryCode: this.countryCode,
+      cityCode: this.cityCode,
+      currentLocation: this.currentLocation,
       connectingProcessor: this.connectingProcessor,
       createdAt: (() => {
         const x = <{ toNumber: () => number }>this.createdAt;
@@ -173,6 +201,7 @@ export class Profile implements ProfileArgs {
         }
         return x;
       })(),
+      modifiedAt: this.modifiedAt,
     };
   }
 }
@@ -192,11 +221,18 @@ export const profileBeet = new beet.FixableBeetStruct<
     ['app', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
     ['alias', beet.coption(beet.utf8String)],
-    ['metadataUri', beet.utf8String],
+    ['metadataUri', beet.coption(beet.utf8String)],
     ['statusText', beet.coption(beet.utf8String)],
     ['verified', beet.bool],
+    ['firstName', beet.coption(beet.utf8String)],
+    ['lastName', beet.coption(beet.utf8String)],
+    ['birthDate', beet.coption(beet.i64)],
+    ['countryCode', beet.coption(beet.i16)],
+    ['cityCode', beet.coption(beet.u16)],
+    ['currentLocation', beet.coption(locationCoordinatesBeet)],
     ['connectingProcessor', beet.coption(beetSolana.publicKey)],
     ['createdAt', beet.i64],
+    ['modifiedAt', beet.coption(beet.i64)],
   ],
   Profile.fromArgs,
   'Profile',

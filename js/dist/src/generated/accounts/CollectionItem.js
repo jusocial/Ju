@@ -29,14 +29,15 @@ const beet = __importStar(require("@metaplex-foundation/beet"));
 const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
 exports.collectionItemDiscriminator = [225, 72, 84, 206, 193, 134, 215, 4];
 class CollectionItem {
-    constructor(app, authority, target, createdAt) {
+    constructor(app, initializer, target, authority, createdAt) {
         this.app = app;
-        this.authority = authority;
+        this.initializer = initializer;
         this.target = target;
+        this.authority = authority;
         this.createdAt = createdAt;
     }
     static fromArgs(args) {
-        return new CollectionItem(args.app, args.authority, args.target, args.createdAt);
+        return new CollectionItem(args.app, args.initializer, args.target, args.authority, args.createdAt);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return CollectionItem.deserialize(accountInfo.data, offset);
@@ -72,8 +73,9 @@ class CollectionItem {
     pretty() {
         return {
             app: this.app.toBase58(),
-            authority: this.authority.toBase58(),
+            initializer: this.initializer.toBase58(),
             target: this.target.toBase58(),
+            authority: this.authority.toBase58(),
             createdAt: (() => {
                 const x = this.createdAt;
                 if (typeof x.toNumber === 'function') {
@@ -93,8 +95,9 @@ exports.CollectionItem = CollectionItem;
 exports.collectionItemBeet = new beet.BeetStruct([
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['app', beetSolana.publicKey],
-    ['authority', beetSolana.publicKey],
+    ['initializer', beetSolana.publicKey],
     ['target', beetSolana.publicKey],
+    ['authority', beetSolana.publicKey],
     ['createdAt', beet.i64],
 ], CollectionItem.fromArgs, 'CollectionItem');
 //# sourceMappingURL=CollectionItem.js.map

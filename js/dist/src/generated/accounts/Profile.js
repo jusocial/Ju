@@ -27,20 +27,28 @@ exports.profileBeet = exports.Profile = exports.profileDiscriminator = void 0;
 const web3 = __importStar(require("@solana/web3.js"));
 const beet = __importStar(require("@metaplex-foundation/beet"));
 const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
+const LocationCoordinates_1 = require("../types/LocationCoordinates");
 exports.profileDiscriminator = [184, 101, 165, 188, 95, 63, 127, 188];
 class Profile {
-    constructor(app, authority, alias, metadataUri, statusText, verified, connectingProcessor, createdAt) {
+    constructor(app, authority, alias, metadataUri, statusText, verified, firstName, lastName, birthDate, countryCode, cityCode, currentLocation, connectingProcessor, createdAt, modifiedAt) {
         this.app = app;
         this.authority = authority;
         this.alias = alias;
         this.metadataUri = metadataUri;
         this.statusText = statusText;
         this.verified = verified;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+        this.countryCode = countryCode;
+        this.cityCode = cityCode;
+        this.currentLocation = currentLocation;
         this.connectingProcessor = connectingProcessor;
         this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
     }
     static fromArgs(args) {
-        return new Profile(args.app, args.authority, args.alias, args.metadataUri, args.statusText, args.verified, args.connectingProcessor, args.createdAt);
+        return new Profile(args.app, args.authority, args.alias, args.metadataUri, args.statusText, args.verified, args.firstName, args.lastName, args.birthDate, args.countryCode, args.cityCode, args.currentLocation, args.connectingProcessor, args.createdAt, args.modifiedAt);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return Profile.deserialize(accountInfo.data, offset);
@@ -82,6 +90,12 @@ class Profile {
             metadataUri: this.metadataUri,
             statusText: this.statusText,
             verified: this.verified,
+            firstName: this.firstName,
+            lastName: this.lastName,
+            birthDate: this.birthDate,
+            countryCode: this.countryCode,
+            cityCode: this.cityCode,
+            currentLocation: this.currentLocation,
             connectingProcessor: this.connectingProcessor,
             createdAt: (() => {
                 const x = this.createdAt;
@@ -95,6 +109,7 @@ class Profile {
                 }
                 return x;
             })(),
+            modifiedAt: this.modifiedAt,
         };
     }
 }
@@ -104,10 +119,17 @@ exports.profileBeet = new beet.FixableBeetStruct([
     ['app', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
     ['alias', beet.coption(beet.utf8String)],
-    ['metadataUri', beet.utf8String],
+    ['metadataUri', beet.coption(beet.utf8String)],
     ['statusText', beet.coption(beet.utf8String)],
     ['verified', beet.bool],
+    ['firstName', beet.coption(beet.utf8String)],
+    ['lastName', beet.coption(beet.utf8String)],
+    ['birthDate', beet.coption(beet.i64)],
+    ['countryCode', beet.coption(beet.i16)],
+    ['cityCode', beet.coption(beet.u16)],
+    ['currentLocation', beet.coption(LocationCoordinates_1.locationCoordinatesBeet)],
     ['connectingProcessor', beet.coption(beetSolana.publicKey)],
     ['createdAt', beet.i64],
+    ['modifiedAt', beet.coption(beet.i64)],
 ], Profile.fromArgs, 'Profile');
 //# sourceMappingURL=Profile.js.map

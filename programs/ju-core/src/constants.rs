@@ -6,8 +6,6 @@ use solana_program::pubkey::Pubkey;
 pub const PROTOCOL_AUTHORITY: Pubkey =
     solana_program::pubkey!("juadminGJxEdGpZ3MJP8sM3QypwzuzZpko1ueonUQgK");
 
-// pub const PROTOCOL_AUTHORITY: Pubkey = Pubkey::from_str("juadminGJxEdGpZ3MJP8sM3QypwzuzZpko1ueonUQgK").unwrap();
-
 #[constant]
 pub const MIN_PROCESSORNAME_LENGTH: usize = 5;
 #[constant]
@@ -23,7 +21,7 @@ pub const MAX_URI_LENGTH: usize = 100;
 #[constant]
 pub const MIN_ALIAS_LENGTH: usize = 4;
 #[constant]
-pub const MAX_ALIAS_LENGTH: usize = 30;
+pub const MAX_ALIAS_LENGTH: usize = 20;
 #[constant]
 pub const MAX_STATUS_LENGTH: usize = 64;
 #[constant]
@@ -32,18 +30,18 @@ pub const UUID_LENGTH: usize = 32;
 pub const MAX_NOTIFICATION_LENGTH: usize = 100;
 
 #[constant]
-pub const  MIN_PROFILE_NAME_LENGTH: usize = 2;
+pub const  MIN_PROFILE_FIRST_NAME_LENGTH: usize = 1;
 #[constant]
-pub const  MAX_PROFILE_NAME_LENGTH: usize = 20;
+pub const  MAX_PROFILE_FIRST_NAME_LENGTH: usize = 20;
 #[constant]
-pub const  MIN_PROFILE_SURNAME_LENGTH: usize = 2;
+pub const  MIN_PROFILE_LAST_NAME_LENGTH: usize = 1;
 #[constant]
-pub const  MAX_PROFILE_SURNAME_LENGTH: usize = 30;
+pub const  MAX_PROFILE_LAST_NAME_LENGTH: usize = 30;
 
 #[constant]
-pub const  MIN_SUBSPACE_NAME_LENGTH:usize = 6;
+pub const  MIN_SUBSPACE_NAME_LENGTH:usize = 4;
 #[constant]
-pub const  MAX_SUBSPACE_NAME_LENGTH:usize = 20;
+pub const  MAX_SUBSPACE_NAME_LENGTH:usize = 30;
 
 #[constant]
 pub const MAX_TAG_LENGTH: usize = 30;

@@ -37,7 +37,7 @@ export const updateSubspaceStruct = new beet.FixableBeetArgsStruct<
  * Accounts required by the _updateSubspace_ instruction
  *
  * @property [] app
- * @property [] profile
+ * @property [] creatorProfile
  * @property [_writable_] subspace
  * @property [_writable_] currentAliasPda (optional)
  * @property [_writable_] newAliasPda (optional)
@@ -52,7 +52,7 @@ export const updateSubspaceStruct = new beet.FixableBeetArgsStruct<
  */
 export type UpdateSubspaceInstructionAccounts = {
   app: web3.PublicKey;
-  profile: web3.PublicKey;
+  creatorProfile: web3.PublicKey;
   subspace: web3.PublicKey;
   currentAliasPda?: web3.PublicKey;
   newAliasPda?: web3.PublicKey;
@@ -97,7 +97,7 @@ export function createUpdateSubspaceInstruction(
       isSigner: false,
     },
     {
-      pubkey: accounts.profile,
+      pubkey: accounts.creatorProfile,
       isWritable: false,
       isSigner: false,
     },

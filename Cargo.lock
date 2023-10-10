@@ -792,11 +792,6 @@ name = "ju-core"
 version = "0.1.0"
 dependencies = [
  "anchor-lang",
- "collecting-processor",
- "connecting-processor",
- "publishing-processor",
- "referencing-processor",
- "registering-processor",
  "solana-program",
 ]
 

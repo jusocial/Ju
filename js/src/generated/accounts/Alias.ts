@@ -8,6 +8,7 @@
 import * as web3 from '@solana/web3.js';
 import * as beetSolana from '@metaplex-foundation/beet-solana';
 import * as beet from '@metaplex-foundation/beet';
+import { AliasType, aliasTypeBeet } from '../types/AliasType';
 
 /**
  * Arguments used to create {@link Alias}
@@ -16,7 +17,8 @@ import * as beet from '@metaplex-foundation/beet';
  */
 export type AliasArgs = {
   app: web3.PublicKey;
-  profile: web3.PublicKey;
+  aliasType: AliasType;
+  owner: web3.PublicKey;
   authority: web3.PublicKey;
   value: string;
 };
@@ -32,7 +34,8 @@ export const aliasDiscriminator = [175, 23, 49, 34, 113, 79, 229, 204];
 export class Alias implements AliasArgs {
   private constructor(
     readonly app: web3.PublicKey,
-    readonly profile: web3.PublicKey,
+    readonly aliasType: AliasType,
+    readonly owner: web3.PublicKey,
     readonly authority: web3.PublicKey,
     readonly value: string,
   ) {}
@@ -41,7 +44,7 @@ export class Alias implements AliasArgs {
    * Creates a {@link Alias} instance from the provided args.
    */
   static fromArgs(args: AliasArgs) {
-    return new Alias(args.app, args.profile, args.authority, args.value);
+    return new Alias(args.app, args.aliasType, args.owner, args.authority, args.value);
   }
 
   /**
@@ -139,7 +142,8 @@ export class Alias implements AliasArgs {
   pretty() {
     return {
       app: this.app.toBase58(),
-      profile: this.profile.toBase58(),
+      aliasType: 'AliasType.' + AliasType[this.aliasType],
+      owner: this.owner.toBase58(),
       authority: this.authority.toBase58(),
       value: this.value,
     };
@@ -159,7 +163,8 @@ export const aliasBeet = new beet.FixableBeetStruct<
   [
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['app', beetSolana.publicKey],
-    ['profile', beetSolana.publicKey],
+    ['aliasType', aliasTypeBeet],
+    ['owner', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
     ['value', beet.utf8String],
   ],

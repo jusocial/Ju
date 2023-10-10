@@ -14,14 +14,19 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+__exportStar(require("./AliasType"), exports);
 __exportStar(require("./AppData"), exports);
 __exportStar(require("./ConnectionTargetType"), exports);
 __exportStar(require("./ContentType"), exports);
+__exportStar(require("./LocationCoordinates"), exports);
+__exportStar(require("./ManagementRoleType"), exports);
 __exportStar(require("./ProcessorType"), exports);
 __exportStar(require("./ProfileData"), exports);
 __exportStar(require("./PublicationData"), exports);
+__exportStar(require("./ReactionTargetType"), exports);
 __exportStar(require("./ReactionType"), exports);
 __exportStar(require("./ReportData"), exports);
+__exportStar(require("./ReportTargetType"), exports);
 __exportStar(require("./ReportType"), exports);
 __exportStar(require("./SubspaceData"), exports);
 //# sourceMappingURL=index.js.map

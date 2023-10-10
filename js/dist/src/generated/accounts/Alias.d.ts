@@ -2,16 +2,19 @@
 import * as web3 from '@solana/web3.js';
 import * as beetSolana from '@metaplex-foundation/beet-solana';
 import * as beet from '@metaplex-foundation/beet';
+import { AliasType } from '../types/AliasType';
 export type AliasArgs = {
     app: web3.PublicKey;
-    profile: web3.PublicKey;
+    aliasType: AliasType;
+    owner: web3.PublicKey;
     authority: web3.PublicKey;
     value: string;
 };
 export declare const aliasDiscriminator: number[];
 export declare class Alias implements AliasArgs {
     readonly app: web3.PublicKey;
-    readonly profile: web3.PublicKey;
+    readonly aliasType: AliasType;
+    readonly owner: web3.PublicKey;
     readonly authority: web3.PublicKey;
     readonly value: string;
     private constructor();
@@ -27,7 +30,8 @@ export declare class Alias implements AliasArgs {
     static getMinimumBalanceForRentExemption(args: AliasArgs, connection: web3.Connection, commitment?: web3.Commitment): Promise<number>;
     pretty(): {
         app: string;
-        profile: string;
+        aliasType: string;
+        owner: string;
         authority: string;
         value: string;
     };

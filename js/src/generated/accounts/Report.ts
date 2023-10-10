@@ -8,6 +8,7 @@
 import * as web3 from '@solana/web3.js';
 import * as beet from '@metaplex-foundation/beet';
 import * as beetSolana from '@metaplex-foundation/beet-solana';
+import { ReportTargetType, reportTargetTypeBeet } from '../types/ReportTargetType';
 import { ReportType, reportTypeBeet } from '../types/ReportType';
 
 /**
@@ -18,8 +19,9 @@ import { ReportType, reportTypeBeet } from '../types/ReportType';
 export type ReportArgs = {
   app: web3.PublicKey;
   authority: web3.PublicKey;
-  initializerProfile: web3.PublicKey;
+  targetType: ReportTargetType;
   target: web3.PublicKey;
+  initializer: web3.PublicKey;
   reportType: ReportType;
   notification: beet.COption<string>;
   createdAt: beet.bignum;
@@ -37,8 +39,9 @@ export class Report implements ReportArgs {
   private constructor(
     readonly app: web3.PublicKey,
     readonly authority: web3.PublicKey,
-    readonly initializerProfile: web3.PublicKey,
+    readonly targetType: ReportTargetType,
     readonly target: web3.PublicKey,
+    readonly initializer: web3.PublicKey,
     readonly reportType: ReportType,
     readonly notification: beet.COption<string>,
     readonly createdAt: beet.bignum,
@@ -51,8 +54,9 @@ export class Report implements ReportArgs {
     return new Report(
       args.app,
       args.authority,
-      args.initializerProfile,
+      args.targetType,
       args.target,
+      args.initializer,
       args.reportType,
       args.notification,
       args.createdAt,
@@ -155,8 +159,9 @@ export class Report implements ReportArgs {
     return {
       app: this.app.toBase58(),
       authority: this.authority.toBase58(),
-      initializerProfile: this.initializerProfile.toBase58(),
+      targetType: 'ReportTargetType.' + ReportTargetType[this.targetType],
       target: this.target.toBase58(),
+      initializer: this.initializer.toBase58(),
       reportType: 'ReportType.' + ReportType[this.reportType],
       notification: this.notification,
       createdAt: (() => {
@@ -188,8 +193,9 @@ export const reportBeet = new beet.FixableBeetStruct<
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['app', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
-    ['initializerProfile', beetSolana.publicKey],
+    ['targetType', reportTargetTypeBeet],
     ['target', beetSolana.publicKey],
+    ['initializer', beetSolana.publicKey],
     ['reportType', reportTypeBeet],
     ['notification', beet.coption(beet.utf8String)],
     ['createdAt', beet.i64],

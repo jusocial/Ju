@@ -1,3 +1,4 @@
+export * from './addDeveloper';
 export * from './addProcessor';
 export * from './collectPublication';
 export * from './createProfile';
@@ -5,6 +6,7 @@ export * from './createPublication';
 export * from './createReaction';
 export * from './createSubspace';
 export * from './deleteConnection';
+export * from './deleteDeveloper';
 export * from './deleteProcessor';
 export * from './deleteProfile';
 export * from './deletePublication';
