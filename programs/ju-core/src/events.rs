@@ -84,6 +84,17 @@ pub struct DeleteSubspaceEvent {
     pub deleted_at: i64,
 }
 
+/// An Event that is fired when new Subspace Manager added.
+#[event]
+pub struct NewSubspaceManagerEvent {
+    /// Application PDA address
+    pub app: Pubkey,
+    /// Manager Profile PDA address
+    pub profile: Pubkey,
+    /// Subspace creation unix timestamp
+    pub created_at: i64,
+}
+
 /// An Event that is fired when new Publication is created.
 #[event]
 pub struct NewPublicationEvent {

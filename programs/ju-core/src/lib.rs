@@ -1137,6 +1137,14 @@ pub mod ju_core {
         manager.profile = *ctx.accounts.profile.to_account_info().key;
         manager.role = manager_role;
 
+        let now = Clock::get()?.unix_timestamp;
+        // Emit new Event
+        emit!(NewSubspaceManagerEvent {
+            app: *ctx.accounts.app.to_account_info().key,
+            profile: *ctx.accounts.profile.to_account_info().key,
+            created_at: now,
+        });
+
         Ok(())
     }
 
@@ -1308,137 +1316,6 @@ pub mod ju_core {
         publication.content_type = data.content_type;
         publication.tag = data.tag;
         publication.authority = *ctx.accounts.authority.to_account_info().key;
-
-        // // In case target of the Publication is a Subspace
-        // if ctx.accounts.subspace.is_some() {
-        //     let target_subspace = &ctx.accounts.subspace.as_ref().unwrap();
-        //     let mut is_publishing_allowed = false;
-
-        //     match target_subspace.publishing_permission {
-        //         SubspacePublishingPermissionLevel::All => {
-        //             is_publishing_allowed = true;
-        //         }
-        //         SubspacePublishingPermissionLevel::AllMembers => {
-        //             match &ctx.accounts.connection_proof {
-        //                 Some(connection_proof) => {
-        //                     if connection_proof.initializer.eq(&ctx
-        //                         .accounts
-        //                         .profile
-        //                         .to_account_info()
-        //                         .key)
-        //                         && connection_proof
-        //                             .target
-        //                             .eq(target_subspace.to_account_info().key)
-        //                     {
-        //                         is_publishing_allowed = true;
-        //                     }
-        //                 }
-        //                 None => {}
-        //             }
-        //             match &ctx.accounts.subspace_manager_proof {
-        //                 Some(subspace_manager_proof) => {
-        //                     if subspace_manager_proof.profile.eq(&ctx
-        //                         .accounts
-        //                         .profile
-        //                         .to_account_info()
-        //                         .key)
-        //                     {
-        //                         is_publishing_allowed = true;
-        //                     }
-        //                 }
-        //                 None => {}
-        //             }
-        //             if ctx
-        //                 .accounts
-        //                 .authority
-        //                 .key
-        //                 .eq(&target_subspace.authority.key())
-        //             {
-        //                 is_publishing_allowed = true;
-        //             }
-        //         }
-        //         SubspacePublishingPermissionLevel::ApprovedMembers => {
-        //             match &ctx.accounts.connection_proof {
-        //                 Some(connection_proof) => {
-        //                     if connection_proof.initializer.eq(&ctx
-        //                         .accounts
-        //                         .profile
-        //                         .to_account_info()
-        //                         .key)
-        //                         && connection_proof
-        //                             .target
-        //                             .eq(target_subspace.to_account_info().key)
-        //                         && connection_proof.approved == true
-        //                     {
-        //                         is_publishing_allowed = true;
-        //                     }
-        //                 }
-        //                 None => {}
-        //             }
-        //             match &ctx.accounts.subspace_manager_proof {
-        //                 Some(subspace_manager_proof) => {
-        //                     if subspace_manager_proof.profile.eq(&ctx
-        //                         .accounts
-        //                         .profile
-        //                         .to_account_info()
-        //                         .key)
-        //                     {
-        //                         is_publishing_allowed = true;
-        //                     }
-        //                 }
-        //                 None => {}
-        //             }
-        //             if ctx
-        //                 .accounts
-        //                 .authority
-        //                 .key
-        //                 .eq(&target_subspace.authority.key())
-        //             {
-        //                 is_publishing_allowed = true;
-        //             }
-        //         }
-        //         SubspacePublishingPermissionLevel::Admins => {
-        //             match &ctx.accounts.subspace_manager_proof {
-        //                 Some(subspace_manager_proof) => {
-        //                     if subspace_manager_proof.profile.eq(&ctx
-        //                         .accounts
-        //                         .profile
-        //                         .to_account_info()
-        //                         .key)
-        //                     {
-        //                         is_publishing_allowed = true;
-        //                     }
-        //                 }
-        //                 None => {}
-        //             }
-        //             if ctx
-        //                 .accounts
-        //                 .authority
-        //                 .key
-        //                 .eq(&target_subspace.authority.key())
-        //             {
-        //                 is_publishing_allowed = true;
-        //             }
-        //         }
-        //         SubspacePublishingPermissionLevel::Owner => {
-        //             if ctx
-        //                 .accounts
-        //                 .authority
-        //                 .key
-        //                 .eq(&target_subspace.authority.key())
-        //             {
-        //                 is_publishing_allowed = true;
-        //             }
-        //         }
-        //     }
-
-        //     require!(
-        //         is_publishing_allowed,
-        //         CustomError::SubspacePublishingPermissionViolation
-        //     );
-
-        //     publication.subspace = Some(*target_subspace.to_account_info().key);
-        // }
 
         // In case target of the Publication is a Subspace
         if ctx.accounts.subspace.is_some() {
