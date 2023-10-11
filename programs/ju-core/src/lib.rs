@@ -1115,10 +1115,11 @@ pub mod ju_core {
         let manager = &mut ctx.accounts.manager;
 
         manager.app = *ctx.accounts.app.to_account_info().key;
-        manager.authority = *ctx.accounts.authority.to_account_info().key;
-
+        manager.subspace = *ctx.accounts.subspace.to_account_info().key;
         manager.profile = *ctx.accounts.profile.to_account_info().key;
         manager.role = manager_role;
+
+        manager.authority = *ctx.accounts.authority.to_account_info().key;
 
         let now = Clock::get()?.unix_timestamp;
         // Emit new Event

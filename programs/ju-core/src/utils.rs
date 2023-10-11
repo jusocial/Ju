@@ -15,7 +15,7 @@ use crate::*;
 /// * `Ok(())` - If the length of the metadata URI is within the acceptable range.
 /// * `Err(CustomError::UriLengthIncorrect)` - If the length of the metadata URI is outside
 ///   the acceptable range.
-/// 
+///
 pub fn validate_metadata_uri(metadata_uri: &str) -> Result<()> {
     if metadata_uri.len() < MIN_URI_LENGTH || metadata_uri.len() > MAX_URI_LENGTH {
         return Err(error!(CustomError::UriLengthIncorrect));
@@ -38,14 +38,12 @@ pub fn validate_metadata_uri(metadata_uri: &str) -> Result<()> {
 ///
 /// * `Ok(ConnectionTargetType)` - If the target account is of type `Account<Profile>`
 ///   or `Account<Subspace>`, the corresponding `ConnectionTargetType` is returned.
-/// 
+///
 /// * `Err(CustomError::ConnectionTargetAccountInvalid)` - If the target account is neither
 ///   `Account<Profile>` nor `Account<Subspace>`, an error is returned indicating an invalid
 ///   connection target account.
-/// 
-pub fn get_connection_target_type(
-    target_account: &AccountInfo,
-) -> Result<ConnectionTargetType> {
+///
+pub fn get_connection_target_type(target_account: &AccountInfo) -> Result<ConnectionTargetType> {
     if Account::<Profile>::try_from(target_account).is_ok() {
         return Ok(ConnectionTargetType::Profile);
     }
@@ -56,7 +54,6 @@ pub fn get_connection_target_type(
 
     Err(error!(CustomError::ConnectionTargetAccountInvalid))
 }
-
 
 /// Retrieves the `connecting_processor` value from the target account.
 ///
@@ -78,8 +75,10 @@ pub fn get_connection_target_type(
 ///
 /// The `connecting_processor` value from the target account if it exists, or `None` if it is
 /// not available.
-/// 
-pub fn get_connecting_processor_from_target(target_account: &AccountInfo) -> Result<Option<Pubkey>> {
+///
+pub fn get_connecting_processor_from_target(
+    target_account: &AccountInfo,
+) -> Result<Option<Pubkey>> {
     if let Ok(profile_account) = Account::<Profile>::try_from(target_account) {
         return Ok(profile_account.connecting_processor);
     }
@@ -91,20 +90,19 @@ pub fn get_connecting_processor_from_target(target_account: &AccountInfo) -> Res
     Err(error!(CustomError::ConnectionTargetAccountInvalid))
 }
 
-
 /// Asserts the authority field of a Connection target account.
-/// 
+///
 /// This function checks the authority field of the given connection target account
 /// and verifies it against the provided authority public key. The connection target
 /// account can be one of two types: `Account<Profile>` or `Account<Subspace>`.
-/// 
+///
 /// # Parameters
 /// - `authority`: The public key of the authority to assert.
 /// - `target_account`: The account info of the connection target account.
-/// 
+///
 /// # Returns
 /// Returns `Ok()` if the authority field matches. Otherwise, returns an error.
-/// 
+///
 pub fn assert_connection_target_authority(
     authority: &Pubkey,
     target_account: &AccountInfo,
@@ -134,8 +132,7 @@ pub fn assert_connection_target_authority(
     Err(error!(CustomError::ConnectionTargetAccountInvalid))
 }
 
-
-/// Validates the target account for a reaction 
+/// Validates the target account for a reaction
 /// based on the provided app and target account information.
 ///
 /// # Arguments
@@ -145,14 +142,14 @@ pub fn assert_connection_target_authority(
 ///
 /// # Errors
 ///
-/// Returns an error of type `CustomError::ReactionTargetAccountInvalid` 
+/// Returns an error of type `CustomError::ReactionTargetAccountInvalid`
 /// if the target account is invalid or does not belong to the specified application.
 ///
 /// # Returns
 ///
 /// Returns `Ok(ReactionTargetType)` if the target account is valid and belongs to the specified application.
 /// Otherwise, returns an error.
-/// 
+///
 pub fn validate_reaction_target(
     app: &Pubkey,
     target_account: &AccountInfo,
@@ -172,7 +169,7 @@ pub fn validate_reaction_target(
     Err(error!(CustomError::ReactionTargetAccountInvalid))
 }
 
-/// Validates the target account for a report 
+/// Validates the target account for a report
 /// based on the provided app and target account information.
 ///
 /// # Arguments
@@ -182,14 +179,14 @@ pub fn validate_reaction_target(
 ///
 /// # Errors
 ///
-/// Returns an error of type `CustomError::ReportTargetAccountInvalid` 
+/// Returns an error of type `CustomError::ReportTargetAccountInvalid`
 /// if the target account is invalid or does not belong to the specified application.
 ///
 /// # Returns
 ///
 /// Returns `Ok(ReportTargetType)` if the target account is valid and belongs to the specified application.
 /// Otherwise, returns an error.
-/// 
+///
 pub fn validate_report_target(
     app: &Pubkey,
     target_account: &AccountInfo,
@@ -214,7 +211,6 @@ pub fn validate_report_target(
 
     Err(error!(CustomError::ReportTargetAccountInvalid))
 }
-
 
 /// Checks if a profile has permission to publish content in a given subspace.
 ///
@@ -272,14 +268,14 @@ pub fn is_publishing_allowed(
         }
         SubspacePublishingPermissionLevel::Admins => {
             if let Some(subspace_manager_proof) = subspace_manager_proof {
-                if subspace_manager_proof.profile == *profile_key {
+                if subspace_manager_proof.profile == *profile_key
+                    && subspace_manager_proof.role == SubspaceManagementRoleType::Admin
+                {
                     return true;
                 }
             }
             authority_key == &subspace.authority.key()
         }
-        SubspacePublishingPermissionLevel::Owner => {
-            authority_key == &subspace.authority.key()
-        }
+        SubspacePublishingPermissionLevel::Owner => authority_key == &subspace.authority.key(),
     }
 }

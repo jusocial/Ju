@@ -430,19 +430,23 @@ impl Subspace {
 ///
 /// # SubspaceManager account stores:
 ///
-/// 1. Application account (PDA)
-/// 2. Account authority address
-/// 3. Manager Role
+/// 1. Application (PDA) address
+/// 2. Subspace (PDA) address
+/// 3. Profile (PDA) address
+/// 4. Account authority address
+/// 5. Manager Role
 ///
 #[account]
 // #[derive(Default)]
 pub struct SubspaceManager {
     /// Application Pubkey (32)
     pub app: Pubkey,
-    /// Pubkey of the account authority (32).
-    pub authority: Pubkey,
+    /// Subspace Pubkey (32)
+    pub subspace: Pubkey,
     /// Pubkey of the manager Profile (32).
     pub profile: Pubkey,
+    /// Pubkey of the account authority (32).
+    pub authority: Pubkey,
     /// Manager role
     pub role: SubspaceManagementRoleType
 }
@@ -451,6 +455,7 @@ impl SubspaceManager {
     pub const PREFIX: &'static str = "subspace_manager";
 
     pub const LEN: usize = DISCRIMINATOR_LENGTH                     // Anchor internal discrimitator
+        + 32                                                        // Pubkey
         + 32                                                        // Pubkey
         + 32                                                        // Pubkey
         + 32                                                        // Pubkey
