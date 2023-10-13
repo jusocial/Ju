@@ -65,8 +65,8 @@ impl ExternalProcessorPDA {
     /// 
     pub fn validate_name(&self, processor_name: &String) -> Result<()> {
 
-        if !processor_name.chars().all(|x| x.is_ascii_alphanumeric()) {
-            return Err(error!(CustomError::ProcessorNameMustBeAlphanumeric));
+        if !processor_name.chars().all(|x| x.is_ascii_lowercase() || x.is_ascii_digit()) {
+            return Err(error!(CustomError::ProcessorNameInvalid));
         }
 
         if processor_name.len() < MIN_PROCESSORNAME_LENGTH || processor_name.len() > MAX_PROCESSORNAME_LENGTH {
@@ -191,8 +191,8 @@ impl App {
     /// 1. `app_name` - Reference to Protocol unique Application name String
     /// 
     pub fn validate_name(&self, app_name: &String) -> Result<()> {
-        if !app_name.chars().all(|x| x.is_ascii_alphanumeric()) {
-            return Err(error!(CustomError::AppNameMustBeAlphanumeric));
+        if !app_name.chars().all(|x| x.is_ascii_lowercase() || x.is_ascii_digit()) {
+            return Err(error!(CustomError::AppNameInvalid));
         }
 
         if app_name.len() < MIN_APPNAME_LENGTH || app_name.len() > MAX_APPNAME_LENGTH {
@@ -297,8 +297,8 @@ impl Profile {
     /// 
     pub fn validate_alias(&self, alias: &String) -> Result<()> {
 
-        if !alias.chars().all(|x| x.is_ascii_alphanumeric()) {
-            return Err(error!(CustomError::AliasMustBeAlphanumeric));
+        if !alias.chars().all(|x| x.is_ascii_lowercase() || x.is_ascii_digit() || x == '_') {
+            return Err(error!(CustomError::AliasInvalid));
         }
 
         if alias.len() < MIN_ALIAS_LENGTH || alias.len() > MAX_ALIAS_LENGTH {
@@ -406,8 +406,8 @@ impl Subspace {
     /// 
     pub fn validate_alias(&self, alias: &String) -> Result<()> {
 
-        if !alias.chars().all(|x| x.is_ascii_alphanumeric()) {
-            return Err(error!(CustomError::AliasMustBeAlphanumeric));
+        if !alias.chars().all(|x| x.is_ascii_lowercase() || x.is_ascii_digit() || x == '_') {
+            return Err(error!(CustomError::AliasInvalid));
         }
 
         if alias.len() < MIN_ALIAS_LENGTH || alias.len() > MAX_ALIAS_LENGTH {

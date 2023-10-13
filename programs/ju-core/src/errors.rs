@@ -11,8 +11,8 @@ pub enum CustomError {
     #[msg("Procesor name length is incorrect")]
     ProcessorNameLengthIncorrect,
 
-    #[msg("Processor name must contain only ASCII letters and numbers")]
-    ProcessorNameMustBeAlphanumeric,
+    #[msg("Processor name must contain only ASCII letters in lower case and numbers")]
+    ProcessorNameInvalid,
 
     #[msg("Procesor trying to use is not whitelisted")]
     ProcessorNotWhitelisted,
@@ -20,8 +20,8 @@ pub enum CustomError {
     #[msg("Application name (ID) length is incorrect")]
     AppNameLengthIncorrect,
 
-    #[msg("Application name (ID) must contain only ASCII letters and numbers")]
-    AppNameMustBeAlphanumeric,
+    #[msg("Application name must contain only ASCII letters in lower case and numbers")]
+    AppNameInvalid,
 
     #[msg("App management action not authorized")]
     AppManagementNotAthorized,
@@ -35,8 +35,8 @@ pub enum CustomError {
     #[msg("Alias length is incorrect")]
     AliasLengthIncorrect,
 
-    #[msg("Alias must contain only ASCII letters and numbers")]
-    AliasMustBeAlphanumeric,
+    #[msg("Alias must contain only ASCII letters in lower case, numbers and underscores")]
+    AliasInvalid,
 
     #[msg("Profile incorrect")]
     ProfileIncorrect,
