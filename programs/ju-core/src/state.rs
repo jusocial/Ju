@@ -210,19 +210,20 @@ impl App {
 ///
 /// 1. Application account (PDA)
 /// 2. Profile authority address
-/// 3. Unique Application's user Profile Alias as string (ASCII alphanumeric)
-/// 4. Profile metadata URI
-/// 5. Profile status text
-/// 6. Verification status
-/// 7. Profile first name
-/// 8. Profile last name
-/// 9. Profile birth date
-/// 10. Profile country code
-/// 11. Profile city code
-/// 12. Profile location coordinates
-/// 13. External connection processor (optional)
-/// 14. Profile creation unix timestamp
-/// 15. Profile modification unix timestamp
+/// 3. Messenger key (optional)
+/// 4. Unique Application's user Profile Alias as string (ASCII alphanumeric)
+/// 5. Profile metadata URI
+/// 6. Profile status text
+/// 7. Verification status
+/// 8. Profile first name
+/// 9. Profile last name
+/// 10. Profile birth date
+/// 12. Profile country code
+/// 12. Profile city code
+/// 13. Profile location coordinates
+/// 14. External connection processor (optional)
+/// 15. Profile creation unix timestamp
+/// 16. Profile modification unix timestamp
 ///
 #[account]
 #[derive(Default)]
@@ -231,6 +232,9 @@ pub struct Profile {
     pub app: Pubkey,
     /// Pubkey of the profile owner (32).
     pub authority: Pubkey,
+
+    /// Messenger Pubkey (33)
+    pub messenger_key: Option<Pubkey>,
 
     /// Profile alias (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH).
     pub alias: Option<String>,
@@ -270,6 +274,7 @@ impl Profile {
     pub const LEN: usize = DISCRIMINATOR_LENGTH                         // Anchor internal discrimitator
         + 32                                                            // Pubkey
         + 32                                                            // Pubkey
+        + 33                                                            // Option<Pubkey>
         + (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)                 // String
         + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)                   // Option<String>
         + (1 + STRING_LENGTH_PREFIX + MAX_STATUS_LENGTH)                // String
@@ -816,6 +821,7 @@ pub struct AppData {
 /// # Struct contains:
 ///
 /// 1. `alias` - Unique Application's user Profile Alias as string (ASCII alphanumeric)
+/// 2. `messenger_key` - Messenger key
 /// 2. `metadata_uri` - Profile metadata URI
 /// 3. `status_text` - Profile status
 /// 4. `first_name` Profile first name
@@ -828,6 +834,7 @@ pub struct AppData {
 #[derive(Default, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct ProfileData {
     pub alias: Option<String>,
+    pub messenger_key: Option<Pubkey>,
     pub metadata_uri: Option<String>,
     pub status_text: Option<String>,
     pub first_name: Option<String>,

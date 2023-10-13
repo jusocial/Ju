@@ -426,6 +426,9 @@ pub mod ju_core {
         profile.current_location = data.current_location;
         profile.status_text = data.status_text;
 
+        // Set Messenger key
+        profile.messenger_key = data.messenger_key;
+
         // Assign Profile specified Connecting external Processor
         if ctx.accounts.app.profile_individual_processors_allowed {
             match &ctx.accounts.connecting_processor_pda {
@@ -581,6 +584,9 @@ pub mod ju_core {
         profile.current_location = data.current_location;
         profile.status_text = data.status_text;
 
+        // Set Messenger key
+        profile.messenger_key = data.messenger_key;
+        
         let now = Clock::get()?.unix_timestamp;
         // Emit new Event
         emit!(UpdateProfileEvent {
