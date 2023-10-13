@@ -126,6 +126,7 @@ pub mod ju_core {
         app.metadata_uri = data.metadata_uri;
 
         // Application Settings and Requirements
+        app.profile_gender_required = data.profile_gender_required;
         app.profile_first_name_required = data.profile_first_name_required;
         app.profile_last_name_required = data.profile_last_name_required;
         app.profile_birthdate_required = data.profile_birthdate_required;
@@ -230,6 +231,7 @@ pub mod ju_core {
         app.metadata_uri = data.metadata_uri;
 
         // Application Settings and Requirements
+        app.profile_gender_required = data.profile_gender_required;
         app.profile_first_name_required = data.profile_first_name_required;
         app.profile_last_name_required = data.profile_last_name_required;
         app.profile_birthdate_required = data.profile_birthdate_required;
@@ -383,6 +385,9 @@ pub mod ju_core {
         profile.alias = data.alias;
 
         // Check Application level required fields
+        if ctx.accounts.app.profile_gender_required && data.gender.is_none() {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
         if ctx.accounts.app.profile_first_name_required && data.first_name.is_none() {
             return Err(error!(CustomError::MissingRequiredField));
         }
@@ -420,6 +425,7 @@ pub mod ju_core {
         }
         profile.metadata_uri = data.metadata_uri;
 
+        profile.gender = data.gender;
         profile.birth_date = data.birth_date;
         profile.country_code = data.country_code;
         profile.city_code = data.city_code;
@@ -541,6 +547,9 @@ pub mod ju_core {
         }
 
         // Check Application level required fields
+        if ctx.accounts.app.profile_gender_required && data.gender.is_none() {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
         if ctx.accounts.app.profile_first_name_required && data.first_name.is_none() {
             return Err(error!(CustomError::MissingRequiredField));
         }
@@ -578,6 +587,7 @@ pub mod ju_core {
         }
         profile.metadata_uri = data.metadata_uri;
 
+        profile.gender = data.gender;
         profile.birth_date = data.birth_date;
         profile.country_code = data.country_code;
         profile.city_code = data.city_code;
@@ -586,7 +596,7 @@ pub mod ju_core {
 
         // Set Messenger key
         profile.messenger_key = data.messenger_key;
-        
+
         let now = Clock::get()?.unix_timestamp;
         // Emit new Event
         emit!(UpdateProfileEvent {

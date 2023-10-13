@@ -85,24 +85,25 @@ impl ExternalProcessorPDA {
 /// 1. `app_name`: Unique Application name (ID) as string (ASCII alphanumeric)
 /// 2. `authority`: Application authority address
 /// 3. `metadata_uri`: Application metadata URI (settings)
-/// 4. `profile_first_name_required`: Specifies whether the Profile first name is required
-/// 5. `profile_last_name_required`: Specifies whether the Profile last name is required
-/// 6. `profile_birthdate_required`: Specifies whether the Profile birth date is required
-/// 7. `profile_country_required`: Specifies whether the Profile country is required
-/// 8. `profile_city_required`: Specifies whether the Profile city is required
-/// 9. `profile_metadata_uri_required`: Specifies whether the Profile metadata URI is required
-/// 10. `subspace_metadata_uri_required`: Specifies whether the Subspace metadata URI is required
-/// 11. `profile_delete_allowed`: Specifies the permission to delete a Profile
-/// 12. `subspace_delete_allowed`: Specifies the permission to delete a Subspace
-/// 13. `publication_delete_allowed`: Specifies the permission to delete a Publication
-/// 14. `profile_individual_processors_allowed`: Specifies the permission to assign Profile's individual external processors.
-/// 15. `subspace_individual_processors_allowed`: Specifies the permission to assign Subspace's individual external processors.
-/// 16. `publication_individual_processors_allowed`: Specifies the permission to assign Publication's individual external processors.
-/// 17. `registering_processor`: An address of an external processor for additional processing during Profile creation
-/// 18. `connecting_processor`: An address of an external processor for additional processing during Profile connection
-/// 19. `publishing_processor`: An address of an external processor for additional processing during Publication creation
-/// 20. `collecting_processor`: An address of an external processor for additional processing during Publication collection
-/// 21. `referencing_processor`: An address of an external processor for additional processing during Publication referencing
+/// 4. `profile_gender_required`: Specifies whether the Profile gender is required
+/// 5. `profile_first_name_required`: Specifies whether the Profile first name is required
+/// 6. `profile_last_name_required`: Specifies whether the Profile last name is required
+/// 7. `profile_birthdate_required`: Specifies whether the Profile birth date is required
+/// 8. `profile_country_required`: Specifies whether the Profile country is required
+/// 9. `profile_city_required`: Specifies whether the Profile city is required
+/// 10. `profile_metadata_uri_required`: Specifies whether the Profile metadata URI is required
+/// 11. `subspace_metadata_uri_required`: Specifies whether the Subspace metadata URI is required
+/// 12. `profile_delete_allowed`: Specifies the permission to delete a Profile
+/// 13. `subspace_delete_allowed`: Specifies the permission to delete a Subspace
+/// 14. `publication_delete_allowed`: Specifies the permission to delete a Publication
+/// 15. `profile_individual_processors_allowed`: Specifies the permission to assign Profile's individual external processors.
+/// 16. `subspace_individual_processors_allowed`: Specifies the permission to assign Subspace's individual external processors.
+/// 17. `publication_individual_processors_allowed`: Specifies the permission to assign Publication's individual external processors.
+/// 18. `registering_processor`: An address of an external processor for additional processing during Profile creation
+/// 19. `connecting_processor`: An address of an external processor for additional processing during Profile connection
+/// 20. `publishing_processor`: An address of an external processor for additional processing during Publication creation
+/// 21. `collecting_processor`: An address of an external processor for additional processing during Publication collection
+/// 22. `referencing_processor`: An address of an external processor for additional processing during Publication referencing
 ///
 #[account]
 #[derive(Default)]
@@ -116,6 +117,8 @@ pub struct App {
     /// URI of the metadata (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH).
     pub metadata_uri: Option<String>,
     
+    /// Specifies whether the Profile gender is required.
+    pub profile_gender_required: bool,
     /// Specifies whether the Profile name is required.
     pub profile_first_name_required: bool,
     /// Specifies whether the Profile last name is required.
@@ -165,7 +168,8 @@ impl App {
         + (STRING_LENGTH_PREFIX + MAX_APPNAME_LENGTH)   // String (app_name)
         + 32                                            // Pubkey (authority)
         + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)   // Option<String> (metadata_uri)
-        + 1                                             // bool (profile_name_required)
+        + 1                                             // bool (profile_gender_required)
+        + 1                                             // bool (profile_first_name_required)
         + 1                                             // bool (profile_last name_required)
         + 1                                             // bool (profile_birthdate_required)
         + 1                                             // bool (profile_country_required)
@@ -215,15 +219,16 @@ impl App {
 /// 5. Profile metadata URI
 /// 6. Profile status text
 /// 7. Verification status
-/// 8. Profile first name
-/// 9. Profile last name
-/// 10. Profile birth date
+/// 8. Profile gender
+/// 9. Profile first name
+/// 10. Profile last name
+/// 11. Profile birth date
 /// 12. Profile country code
-/// 12. Profile city code
-/// 13. Profile location coordinates
-/// 14. External connection processor (optional)
-/// 15. Profile creation unix timestamp
-/// 16. Profile modification unix timestamp
+/// 13. Profile city code
+/// 14. Profile location coordinates
+/// 15. External connection processor (optional)
+/// 16. Profile creation unix timestamp
+/// 17. Profile modification unix timestamp
 ///
 #[account]
 #[derive(Default)]
@@ -244,6 +249,9 @@ pub struct Profile {
     pub status_text: Option<String>,
     /// Verified status for VIP users (1)
     pub verified: bool,
+
+    /// Profile's user gender
+    pub gender: Option<Gender>,
 
     // Profile's user first name
     pub first_name: Option<String>,
@@ -279,6 +287,7 @@ impl Profile {
         + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)                   // Option<String>
         + (1 + STRING_LENGTH_PREFIX + MAX_STATUS_LENGTH)                // String
         + 1                                                             // bool
+        + (1 + 1)                                                       // Option<Enum>
         + (1 + STRING_LENGTH_PREFIX + MAX_PROFILE_FIRST_NAME_LENGTH)    // Option<String>
         + (1 + STRING_LENGTH_PREFIX + MAX_PROFILE_LAST_NAME_LENGTH)     // Option<String>
         + 8                                                             // i64
@@ -767,7 +776,8 @@ impl Report {
 /// ## Fields:
 ///
 /// - `metadata_uri`: The optional metadata URI for the app.
-/// - `profile_first_name_required`: Specifies whether the Profile name is required.
+/// - `profile_gender_required`: Specifies whether the Profile gender is required.
+/// - `profile_first_name_required`: Specifies whether the Profile first name is required.
 /// - `profile_last_name_required`: Specifies whether the Profile last name is required.
 /// - `profile_birthdate_required`: Specifies whether the Profile birth date is required.
 /// - `profile_location_required`: Specifies whether the Profile location is required.
@@ -784,6 +794,9 @@ impl Report {
 pub struct AppData {
     /// The optional metadata URI for the App.
     pub metadata_uri: Option<String>,
+
+    /// Specifies whether the Profile gender is required.
+    pub profile_gender_required: bool,
 
     /// Specifies whether the Profile first name is required.
     pub profile_first_name_required: bool,
@@ -824,12 +837,13 @@ pub struct AppData {
 /// 2. `messenger_key` - Messenger key
 /// 2. `metadata_uri` - Profile metadata URI
 /// 3. `status_text` - Profile status
-/// 4. `first_name` Profile first name
-/// 5. `last_name` Profile last name
-/// 6. `birth_date` - Profile birth date
-/// 7. `country_code` Profile country
-/// 8. `city_code` Profile city
-/// 9. `current_location` - Profile location coordinates
+/// 4. `gender` - Profile gender
+/// 5. `first_name` Profile first name
+/// 6. `last_name` Profile last name
+/// 7. `birth_date` - Profile birth date
+/// 8. `country_code` Profile country
+/// 9. `city_code` Profile city
+/// 10. `current_location` - Profile location coordinates
 ///
 #[derive(Default, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct ProfileData {
@@ -837,6 +851,7 @@ pub struct ProfileData {
     pub messenger_key: Option<Pubkey>,
     pub metadata_uri: Option<String>,
     pub status_text: Option<String>,
+    pub gender: Option<Gender>,
     pub first_name: Option<String>,
     pub last_name: Option<String>,
     pub birth_date: Option<i64>,
@@ -940,6 +955,21 @@ pub enum ConnectionTargetType {
     #[default]
     Profile,
     Subspace,
+}
+
+/// Gender type
+///
+/// # Enum variants:
+///
+/// 1. Male
+/// 2. Female
+/// 3. Other (or Prefer not to say)
+///
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
+pub enum Gender {
+    Male,
+    Female,
+    OtherOrPreferNotToSay
 }
 
 
