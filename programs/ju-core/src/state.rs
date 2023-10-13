@@ -1099,8 +1099,8 @@ pub enum ReportType {
 ///
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub enum SubspaceManagementRoleType { 
-    Admin,
     Publisher,
+    Admin
 }
 
 /// Coordinates
