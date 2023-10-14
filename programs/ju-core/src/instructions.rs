@@ -79,6 +79,16 @@ pub struct AddProcessor<'info> {
     )]
     pub processor_pda: Account<'info, ExternalProcessorPDA>,
 
+    // #[account(
+    //     seeds = [
+    //         DeveloperWhitelistItem::PREFIX.as_bytes(),
+    //         developer.authority.key().as_ref()
+    //     ],
+    //     bump
+    // )]
+    // /// Developer whitelist proof
+    // pub developer: Option<Box<Account<'info, DeveloperWhitelistItem>>>,
+
     #[account(mut)]
     pub authority: Signer<'info>,
 
