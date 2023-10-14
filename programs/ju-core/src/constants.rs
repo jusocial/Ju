@@ -17,7 +17,7 @@ pub const MAX_APPNAME_LENGTH: usize = 30;
 #[constant]
 pub const MIN_URI_LENGTH: usize = 5;
 #[constant]
-pub const MAX_URI_LENGTH: usize = 100;
+pub const MAX_URI_LENGTH: usize = 200;
 #[constant]
 pub const MIN_ALIAS_LENGTH: usize = 4;
 #[constant]
@@ -27,7 +27,7 @@ pub const MAX_STATUS_LENGTH: usize = 64;
 #[constant]
 pub const UUID_LENGTH: usize = 32;
 #[constant]
-pub const MAX_NOTIFICATION_LENGTH: usize = 100;
+pub const MAX_NOTIFICATION_LENGTH: usize = 200;
 
 #[constant]
 pub const  MIN_PROFILE_FIRST_NAME_LENGTH: usize = 1;
