@@ -63,6 +63,9 @@ pub enum CustomError {
     #[msg("Profile update not authorized")]
     UpdateNotAuthorized,
 
+    #[msg("Profile birth date is incorrect")]
+    BirthDateIncorrect,
+
     #[msg("Profile first name length is incorrect")]
     ProfileFirstNameLengthIncorrect,
 

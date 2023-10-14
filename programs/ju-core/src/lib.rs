@@ -403,9 +403,11 @@ pub mod ju_core {
         if ctx.accounts.app.profile_last_name_required && data.last_name.is_empty() {
             return Err(error!(CustomError::MissingRequiredField));
         }
-        if ctx.accounts.app.profile_birthdate_required && data.birth_date == 0 {
-            return Err(error!(CustomError::MissingRequiredField));
+        
+        if ctx.accounts.app.profile_birthdate_required  {
+            validate_birth_date(&data.birth_date)?;
         }
+
         if ctx.accounts.app.profile_country_required && data.country_code == 0 {
             return Err(error!(CustomError::MissingRequiredField));
         }
@@ -433,7 +435,6 @@ pub mod ju_core {
 
         profile.gender = data.gender;
 
-        // TODO: Validate birthdate
         profile.birth_date = data.birth_date;
 
         profile.country_code = data.country_code;
@@ -562,9 +563,11 @@ pub mod ju_core {
         if ctx.accounts.app.profile_last_name_required && data.last_name.is_empty() {
             return Err(error!(CustomError::MissingRequiredField));
         }
-        if ctx.accounts.app.profile_birthdate_required && data.birth_date == 0 {
-            return Err(error!(CustomError::MissingRequiredField));
+
+        if ctx.accounts.app.profile_birthdate_required  {
+            validate_birth_date(&data.birth_date)?;
         }
+
         if ctx.accounts.app.profile_country_required && data.country_code == 0 {
             return Err(error!(CustomError::MissingRequiredField));
         }
@@ -591,7 +594,6 @@ pub mod ju_core {
 
         profile.gender = data.gender;
 
-        // TODO: Validate birthdate
         profile.birth_date = data.birth_date;
 
         profile.country_code = data.country_code;

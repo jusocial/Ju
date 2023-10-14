@@ -1,5 +1,47 @@
 use crate::*;
 
+/// Validates a birth date to ensure it falls within an acceptable range.
+///
+/// This function calculates the minimum allowed birth date based on the current time
+/// and the maximum allowed age. It then compares the provided `birth_date` with this
+/// calculated minimum birth date. If the birth date is outside the acceptable range,
+/// an error of type `CustomError::BirthDateIncorrect` is returned.
+///
+/// # Arguments
+///
+/// * `birth_date` - The birth date as a Unix timestamp in seconds.
+///
+/// # Returns
+///
+/// * `Ok(())` - If the birth date is within the acceptable age range.
+/// * `Err(CustomError::BirthDateIncorrect)` - If the birth date is outside the
+///   acceptable age range.
+///
+pub fn validate_birth_date(birth_date: &i64) -> Result<()> {
+    const SECONDS_IN_MINUTE: i64 = 60;
+    const MINUTES_IN_YEAR: i64 = 60 * 24 * 365;
+
+     // Maximum allowed age in minutes
+    const MAX_AGE_IN_MINUTES: i64 = MAX_AGE_IN_YEARS * MINUTES_IN_YEAR; 
+
+    // Calculate the current Unix timestamp in minutes
+    let current_timestamp = Clock::get()?.unix_timestamp / SECONDS_IN_MINUTE;
+
+    // Calculate the minimum allowed birth date in minutes
+    let min_birth_date = current_timestamp - MAX_AGE_IN_MINUTES;
+
+    // Convert the input birth date to minutes (assuming it's in seconds)
+    let birth_date_minutes = birth_date / SECONDS_IN_MINUTE;
+
+    if birth_date_minutes < min_birth_date {
+        return Err(error!(CustomError::BirthDateIncorrect));
+    }
+
+    // Additional validation logic can be added here, if needed.
+
+    Ok(())
+}
+
 /// Validates the length of a metadata URI.
 ///
 /// This function checks if the length of the provided `metadata_uri` string is within

@@ -46,6 +46,9 @@ pub const  MAX_SUBSPACE_NAME_LENGTH:usize = 32;
 #[constant]
 pub const MAX_TAG_LENGTH: usize = 20;
 
+#[constant]
+pub const MAX_AGE_IN_YEARS: i64 = 120;
+
 pub const DISCRIMINATOR_LENGTH: usize = 8;
 
 // Stores the size of the string.
