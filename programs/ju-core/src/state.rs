@@ -212,26 +212,29 @@ impl App {
 ///
 /// # Profile account stores:
 ///
-/// 1. Application account (PDA)
-/// 2. Profile authority address
-/// 3. Verification status
-/// 4. Profile birth date (0 if not set)
-/// 5. Profile country code (0 if not set)
-/// 6. Profile city code (0 if not set)
-/// 7. Profile first name
-/// 8. Profile last name
-/// 9. Profile gender
-/// 10. Unique Application's user Profile Alias as string (ASCII alphanumeric)
-/// 11. Profile status text
-/// 12. Profile metadata URI
-/// 13. Profile location coordinates
-/// 14. External connection processor (optional)
-/// 15. Profile creation unix timestamp
+/// 1. Profile creation unix timestamp
+/// 2. Application account (PDA)
+/// 3. Profile authority address
+/// 4. Verification status
+/// 5. Profile birth date (0 if not set)
+/// 6. Profile country code (0 if not set)
+/// 7. Profile city code (0 if not set)
+/// 8. Profile first name
+/// 9. Profile last name
+/// 10. Profile gender
+/// 11. Unique Application's user Profile Alias as string (ASCII alphanumeric)
+/// 12. Profile status text
+/// 13. Profile metadata URI
+/// 14. Profile location coordinates
+/// 15. External connection processor (optional)
 /// 16. Profile modification unix timestamp
 ///
 #[account]
 #[derive(Default)]
 pub struct Profile {
+    /// Profile creation Unix timestamp (8)
+    pub created_at: i64,
+
     /// Application Pubkey (32)
     pub app: Pubkey,
     /// Pubkey of the profile owner (32).
@@ -270,8 +273,6 @@ pub struct Profile {
     /// An address of a Program (external processor) for Connection additional processing (33)
     pub connecting_processor: Option<Pubkey>,
 
-    /// Profile creation Unix timestamp (8)
-    pub created_at: i64,
     /// The optional Unix timestamp of the Profile modification (1 + 8)
     pub modified_at: Option<i64>,
 }
@@ -280,6 +281,7 @@ impl Profile {
     pub const PREFIX: &'static str = "profile";
 
     pub const LEN: usize = DISCRIMINATOR_LENGTH                         // Anchor internal discrimitator
+        + 8                                                             // i64 (`created`)
         + 32                                                            // Pubkey (`app`)
         + 32                                                            // Pubkey (`authority`)
         + 1                                                             // bool (`is_verified`)
@@ -294,7 +296,6 @@ impl Profile {
         + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)                   // Option<String> (`metadata uri`)
         + (1 + 8 + 8)                                                   // Option<{u64, u64}> (`current_location`)
         + (1 + 32)                                                      // Option<Pubkey> (`connecting_processor`)
-        + 8                                                             // i64 (`created`)
         + (1 + 8);                                                      // Option<i64> (`modified`)
 
     /// Method for validating Profile Alias
