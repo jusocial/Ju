@@ -82,23 +82,24 @@ impl ExternalProcessorPDA {
 ///
 /// ## App account stores:
 ///
-/// 1. `app_name`: Unique Application name (ID) as string (ASCII alphanumeric)
-/// 2. `authority`: Application authority address
-/// 3. `metadata_uri`: Application metadata URI (settings)
-/// 4. `profile_gender_required`: Specifies whether the Profile gender is required
-/// 5. `profile_first_name_required`: Specifies whether the Profile first name is required
-/// 6. `profile_last_name_required`: Specifies whether the Profile last name is required
-/// 7. `profile_birthdate_required`: Specifies whether the Profile birth date is required
-/// 8. `profile_country_required`: Specifies whether the Profile country is required
-/// 9. `profile_city_required`: Specifies whether the Profile city is required
-/// 10. `profile_metadata_required`: Specifies whether the Profile metadata required
-/// 11. `subspace_metadata_required`: Specifies whether the Subspace metadata required
-/// 12. `profile_delete_allowed`: Specifies the permission to delete a Profile
-/// 13. `subspace_delete_allowed`: Specifies the permission to delete a Subspace
-/// 14. `publication_delete_allowed`: Specifies the permission to delete a Publication
-/// 15. `profile_individual_processors_allowed`: Specifies the permission to assign Profile's individual external processors.
-/// 16. `subspace_individual_processors_allowed`: Specifies the permission to assign Subspace's individual external processors.
-/// 17. `publication_individual_processors_allowed`: Specifies the permission to assign Publication's individual external processors.
+/// 1. `authority`: Application authority address
+/// 2. `profile_gender_required`: Specifies whether the Profile gender is required
+/// 3. `profile_first_name_required`: Specifies whether the Profile first name is required
+/// 4. `profile_last_name_required`: Specifies whether the Profile last name is required
+/// 5. `profile_birthdate_required`: Specifies whether the Profile birth date is required
+/// 6. `profile_country_required`: Specifies whether the Profile country is required
+/// 7. `profile_region_required`: Specifies whether the Profile region is required
+/// 8. `profile_city_required`: Specifies whether the Profile city is required
+/// 9. `profile_metadata_required`: Specifies whether the Profile metadata required
+/// 10. `subspace_metadata_required`: Specifies whether the Subspace metadata required
+/// 11. `profile_delete_allowed`: Specifies the permission to delete a Profile
+/// 12. `subspace_delete_allowed`: Specifies the permission to delete a Subspace
+/// 13. `publication_delete_allowed`: Specifies the permission to delete a Publication
+/// 14. `profile_individual_processors_allowed`: Specifies the permission to assign Profile's individual external processors.
+/// 15. `subspace_individual_processors_allowed`: Specifies the permission to assign Subspace's individual external processors.
+/// 16. `publication_individual_processors_allowed`: Specifies the permission to assign Publication's individual external processors.
+/// 17. `app_name`: Unique Application name (ID) as string (ASCII alphanumeric)
+/// 18. `metadata_uri`: Application metadata URI (settings)
 /// 18. `registering_processor`: An address of an external processor for additional processing during Profile creation
 /// 19. `connecting_processor`: An address of an external processor for additional processing during Profile connection
 /// 20. `publishing_processor`: An address of an external processor for additional processing during Publication creation
@@ -108,25 +109,24 @@ impl ExternalProcessorPDA {
 #[account]
 #[derive(Default)]
 pub struct App {
-    /// App name/ID (STRING_LENGTH_PREFIX + MAX_APPID_LENGTH).
-    pub app_name: String,
-
     /// Pubkey of the application creator (32).
     pub authority: Pubkey,
-
-    /// URI of the metadata (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH).
-    pub metadata_uri: Option<String>,
     
     /// Specifies whether the Profile gender is required.
     pub profile_gender_required: bool,
+
     /// Specifies whether the Profile name is required.
     pub profile_first_name_required: bool,
     /// Specifies whether the Profile last name is required.
     pub profile_last_name_required: bool,
+
     /// Specifies whether the Profile birth date is required.
     pub profile_birthdate_required: bool,
+
     /// Specifies whether the Profile country is required.
     pub profile_country_required: bool,
+    /// Specifies whether the Profile region is required.
+    pub profile_region_required: bool,
     /// Specifies whether the Profile city is required.
     pub profile_city_required: bool,
 
@@ -149,6 +149,11 @@ pub struct App {
     /// Specifies the permission to assign Publication's individual external processors.
     pub publication_individual_processors_allowed: bool,
 
+     /// App name/ID (STRING_LENGTH_PREFIX + MAX_APPID_LENGTH).
+     pub app_name: String,
+    /// URI of the metadata (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH).
+    pub metadata_uri: Option<String>,
+
     /// An address of an external processor for additional processing during Profile creation.
     pub registering_processor: Option<Pubkey>,
     /// An address of an external processor for additional processing during Profile connection.
@@ -165,28 +170,29 @@ impl App {
     pub const PREFIX: &'static str = "app";
 
     pub const LEN: usize = DISCRIMINATOR_LENGTH         // Anchor internal discriminator
-        + (STRING_LENGTH_PREFIX + MAX_APPNAME_LENGTH)   // String (app_name)
-        + 32                                            // Pubkey (authority)
-        + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)   // Option<String> (metadata_uri)
-        + 1                                             // bool (profile_gender_required)
-        + 1                                             // bool (profile_first_name_required)
-        + 1                                             // bool (profile_last name_required)
-        + 1                                             // bool (profile_birthdate_required)
-        + 1                                             // bool (profile_country_required)
-        + 1                                             // bool (profile_city_required)
-        + 1                                             // bool (profile_metadata_required)
-        + 1                                             // bool (subspace_metadata_required)
-        + 1                                             // bool (profile_delete_allowed)
-        + 1                                             // bool (subspace_delete_allowed)
-        + 1                                             // bool (publication_delete_allowed)
-        + 1                                             // bool (profile_individual_processors_allowed)
-        + 1                                             // bool (subspace_individual_processors_allowed)
-        + 1                                             // bool (publication_individual_processors_allowed)
-        + (1 + 32)                                      // Option<Pubkey> (registering_processor)
-        + (1 + 32)                                      // Option<Pubkey> (connecting_processor)
-        + (1 + 32)                                      // Option<Pubkey> (publishing_processor)
-        + (1 + 32)                                      // Option<Pubkey> (collecting_processor)
-        + (1 + 32);                                     // Option<Pubkey> (referencing_processor)
+        + 32                                            // Pubkey (`authority`)
+        + 1                                             // bool (`profile_gender_required`)
+        + 1                                             // bool (`profile_first_name_required`)
+        + 1                                             // bool (`profile_last name_required`)
+        + 1                                             // bool (`profile_birthdate_required`)
+        + 1                                             // bool (`profile_country_required`)
+        + 1                                             // bool (`profile_region_required`)
+        + 1                                             // bool (`profile_city_required`)
+        + 1                                             // bool (`profile_metadata_required`)
+        + 1                                             // bool (`subspace_metadata_required`)
+        + 1                                             // bool (`profile_delete_allowed`)
+        + 1                                             // bool (`subspace_delete_allowed`)
+        + 1                                             // bool (`publication_delete_allowed`)
+        + 1                                             // bool (`profile_individual_processors_allowed`)
+        + 1                                             // bool (`subspace_individual_processors_allowed`)
+        + 1                                             // bool (`publication_individual_processors_allowed`)
+        + (STRING_LENGTH_PREFIX + MAX_APPNAME_LENGTH)   // String (`app_name`)
+        + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)   // Option<String> (`metadata_uri`)
+        + (1 + 32)                                      // Option<Pubkey> (`registering_processor`)
+        + (1 + 32)                                      // Option<Pubkey> (`connecting_processor`)
+        + (1 + 32)                                      // Option<Pubkey> (`publishing_processor`)
+        + (1 + 32)                                      // Option<Pubkey> (`collecting_processor`)
+        + (1 + 32);                                     // Option<Pubkey> (`referencing_processor`)
 
     /// Method for validating App Name
     ///
@@ -218,16 +224,17 @@ impl App {
 /// 4. Verification status
 /// 5. Profile birth date (0 if not set)
 /// 6. Profile country code (0 if not set)
-/// 7. Profile city code (0 if not set)
-/// 8. Profile first name
-/// 9. Profile last name
-/// 10. Profile gender
-/// 11. Unique Application's user Profile Alias as string (ASCII alphanumeric)
-/// 12. Profile status text
-/// 13. Profile metadata URI
-/// 14. Profile location coordinates
-/// 15. External connection processor (optional)
-/// 16. Profile modification unix timestamp
+/// 7. Profile region code (0 if not set)
+/// 8. Profile city code (0 if not set)
+/// 9. Profile first name
+/// 10. Profile last name
+/// 11. Profile gender
+/// 12. Unique Application's user Profile Alias as string (ASCII alphanumeric)
+/// 13. Profile status text
+/// 14. Profile metadata URI
+/// 15. Profile location coordinates
+/// 16. External connection processor (optional)
+/// 17. Profile modification unix timestamp
 ///
 #[account]
 #[derive(Default)]
@@ -247,6 +254,8 @@ pub struct Profile {
     pub birth_date: i64,
     // Profile's country
     pub country_code: i16,
+    // Profile's region (region)
+    pub region_code: i16,
     // Profile's city
     pub city_code: i16,    
 
@@ -287,6 +296,7 @@ impl Profile {
         + 1                                                             // bool (`is_verified`)
         + 8                                                             // i64 (`birth_date`)
         + 2                                                             // i16 (`country_code`)
+        + 2                                                             // i16 (`region_code`)
         + 2                                                             // i16 (`city_code`)
         + (MAX_PROFILE_FIRST_NAME_LENGTH)                               // [u8; MAX_PROFILE_FIRST_NAME_LENGTH] (`first_name`)
         + (MAX_PROFILE_LAST_NAME_LENGTH)                                // [u8; MAX_PROFILE_LAST_NAME_LENGTH] (`last_name`)  
@@ -822,7 +832,9 @@ impl Report {
 /// - `profile_first_name_required`: Specifies whether the Profile first name is required.
 /// - `profile_last_name_required`: Specifies whether the Profile last name is required.
 /// - `profile_birthdate_required`: Specifies whether the Profile birth date is required.
-/// - `profile_location_required`: Specifies whether the Profile location is required.
+/// - `profile_country_required`: Specifies whether the Profile Country code is required.
+/// - `profile_region_required`: Specifies whether the Profile State code is required.
+/// - `profile_city_required`: Specifies whether the Profile City code is required.
 /// - `profile_metadata_required`: Specifies whether the Profile metadata required.
 /// - `subspace_metadata_required`: Specifies whether the Subspace metadata required.
 /// - `profile_delete_allowed`: Specifies the permission to delete a Profile.
@@ -845,9 +857,13 @@ pub struct AppData {
     /// Specifies whether the Profile last name is required.
     pub profile_last_name_required: bool,
     /// Specifies whether the Profile birth date is required.
+    /// 
     pub profile_birthdate_required: bool,
     /// Specifies whether the Profile country is required.
+    /// 
     pub profile_country_required: bool,
+    /// Specifies whether the Profile region is required.
+    pub profile_region_required: bool,
     /// Specifies whether the Profile city is required.
     pub profile_city_required: bool,
 
@@ -883,8 +899,9 @@ pub struct AppData {
 /// 6. `last_name` Profile last name
 /// 7. `birth_date` - Profile birth date
 /// 8. `country_code` Profile country
-/// 9. `city_code` Profile city
-/// 10. `current_location` - Profile location coordinates
+/// 9. `region_code` Profile region (region)
+/// 10. `city_code` Profile city
+/// 11. `current_location` - Profile location coordinates
 ///
 #[derive(Default, AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
 pub struct ProfileData {
@@ -896,6 +913,7 @@ pub struct ProfileData {
     pub last_name: String,
     pub birth_date: i64,
     pub country_code: i16,
+    pub region_code: i16,
     pub city_code: i16,
     pub current_location: Option<LocationCoordinates>,
 }

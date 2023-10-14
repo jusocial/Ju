@@ -138,6 +138,7 @@ pub mod ju_core {
         app.profile_last_name_required = data.profile_last_name_required;
         app.profile_birthdate_required = data.profile_birthdate_required;
         app.profile_country_required = data.profile_country_required;
+        app.profile_region_required = data.profile_region_required;
         app.profile_city_required = data.profile_city_required;
         app.profile_metadata_required = data.profile_metadata_required;
 
@@ -244,6 +245,7 @@ pub mod ju_core {
         app.profile_birthdate_required = data.profile_birthdate_required;
         app.profile_country_required = data.profile_country_required;
         app.profile_city_required = data.profile_city_required;
+        app.profile_region_required = data.profile_region_required;
         app.profile_metadata_required = data.profile_metadata_required;
 
         app.subspace_metadata_required = data.subspace_metadata_required;
@@ -407,6 +409,9 @@ pub mod ju_core {
         if ctx.accounts.app.profile_country_required && data.country_code == 0 {
             return Err(error!(CustomError::MissingRequiredField));
         }
+        if ctx.accounts.app.profile_region_required && data.region_code == 0 {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
         if ctx.accounts.app.profile_city_required && data.city_code == 0 {
             return Err(error!(CustomError::MissingRequiredField));
         }
@@ -557,11 +562,13 @@ pub mod ju_core {
         if ctx.accounts.app.profile_last_name_required && data.last_name.is_empty() {
             return Err(error!(CustomError::MissingRequiredField));
         }
-
         if ctx.accounts.app.profile_birthdate_required && data.birth_date == 0 {
             return Err(error!(CustomError::MissingRequiredField));
         }
         if ctx.accounts.app.profile_country_required && data.country_code == 0 {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
+        if ctx.accounts.app.profile_region_required && data.region_code == 0 {
             return Err(error!(CustomError::MissingRequiredField));
         }
         if ctx.accounts.app.profile_city_required && data.city_code == 0 {
