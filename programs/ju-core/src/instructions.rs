@@ -146,6 +146,16 @@ pub struct InitializeApp<'info> {
     /// Current App (PDA) account
     pub app: Account<'info, App>,
 
+    // #[account(
+    //     seeds = [
+    //         DeveloperWhitelistItem::PREFIX.as_bytes(),
+    //         developer.authority.key().as_ref()
+    //     ],
+    //     bump
+    // )]
+    // /// Developer whitelist proof
+    // pub developer: Option<Box<Account<'info, DeveloperWhitelistItem>>>,
+
     #[account(
         seeds = [
             ExternalProcessorPDA::PREFIX.as_bytes(),

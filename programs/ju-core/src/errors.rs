@@ -2,6 +2,10 @@ use anchor_lang::prelude::error_code;
 
 #[error_code]
 pub enum CustomError {
+
+    #[msg("Developer not authorized")]
+    DeveloperNotAthorized,
+
     #[msg("Procesor management action not authorized")]
     ProcessorManagementNotAthorized,
 
@@ -109,6 +113,9 @@ pub enum CustomError {
 
     #[msg("Forbidden to collect user's  own publication")]
     SelfPublicationCollecting,
+
+    #[msg("Publication Tag is incorrect")]
+    PublicationTagIncorrect,
 
     #[msg("Missed registering external processor account")]
     RegisteringProcessorAccountMissed,

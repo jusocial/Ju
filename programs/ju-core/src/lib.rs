@@ -27,6 +27,13 @@ pub mod ju_core {
     pub fn add_developer(ctx: Context<AddDeveloper>) -> Result<()> {
         let developer = &mut ctx.accounts.developer;
 
+        // Check if actor is protocol authority
+        require_keys_eq!(
+            *ctx.accounts.authority.to_account_info().key,
+            PROTOCOL_AUTHORITY,
+            CustomError::DeveloperNotAthorized
+        );
+
         developer.authority = *ctx.accounts.authority.to_account_info().key;
 
         Ok(())
@@ -132,9 +139,9 @@ pub mod ju_core {
         app.profile_birthdate_required = data.profile_birthdate_required;
         app.profile_country_required = data.profile_country_required;
         app.profile_city_required = data.profile_city_required;
-        app.profile_metadata_uri_required = data.profile_metadata_uri_required;
+        app.profile_metadata_required = data.profile_metadata_required;
 
-        app.subspace_metadata_uri_required = data.subspace_metadata_uri_required;
+        app.subspace_metadata_required = data.subspace_metadata_required;
 
         app.profile_delete_allowed = data.profile_delete_allowed;
         app.subspace_delete_allowed = data.subspace_delete_allowed;
@@ -237,9 +244,9 @@ pub mod ju_core {
         app.profile_birthdate_required = data.profile_birthdate_required;
         app.profile_country_required = data.profile_country_required;
         app.profile_city_required = data.profile_city_required;
-        app.profile_metadata_uri_required = data.profile_metadata_uri_required;
+        app.profile_metadata_required = data.profile_metadata_required;
 
-        app.subspace_metadata_uri_required = data.subspace_metadata_uri_required;
+        app.subspace_metadata_required = data.subspace_metadata_required;
 
         app.profile_delete_allowed = data.profile_delete_allowed;
         app.subspace_delete_allowed = data.subspace_delete_allowed;
@@ -388,36 +395,30 @@ pub mod ju_core {
         if ctx.accounts.app.profile_gender_required && data.gender.is_none() {
             return Err(error!(CustomError::MissingRequiredField));
         }
-        if ctx.accounts.app.profile_first_name_required && data.first_name.is_none() {
+        if ctx.accounts.app.profile_first_name_required && data.first_name.is_empty() {
             return Err(error!(CustomError::MissingRequiredField));
         }
-        if ctx.accounts.app.profile_last_name_required && data.last_name.is_none() {
+        if ctx.accounts.app.profile_last_name_required && data.last_name.is_empty() {
             return Err(error!(CustomError::MissingRequiredField));
         }
-        if ctx.accounts.app.profile_birthdate_required && data.birth_date.is_none() {
+        if ctx.accounts.app.profile_birthdate_required && data.birth_date == 0 {
             return Err(error!(CustomError::MissingRequiredField));
         }
-        if ctx.accounts.app.profile_country_required && data.country_code.is_none() {
+        if ctx.accounts.app.profile_country_required && data.country_code == 0 {
             return Err(error!(CustomError::MissingRequiredField));
         }
-        if ctx.accounts.app.profile_city_required && data.city_code.is_none() {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
-        if ctx.accounts.app.profile_metadata_uri_required && data.metadata_uri.is_none() {
+        if ctx.accounts.app.profile_city_required && data.city_code == 0 {
             return Err(error!(CustomError::MissingRequiredField));
         }
 
-        // Validate first name
-        if data.first_name.is_some() {
-            profile.validate_first_name(data.first_name.as_ref().unwrap())?;
+        if ctx.accounts.app.profile_metadata_required && data.metadata_uri.is_none() {
+            return Err(error!(CustomError::MissingRequiredField));
         }
-        profile.first_name = data.first_name;
 
-        // Validate last name
-        if data.last_name.is_some() {
-            profile.validate_last_name(data.last_name.as_ref().unwrap())?;
-        }
-        profile.last_name = data.last_name;
+        // Validate and assign firt name
+        profile.first_name = profile.validate_first_name(&data.first_name)?;
+        // Validate and assign last name
+        profile.last_name = profile.validate_last_name(&data.last_name)?;
 
         // Validate metadata URI
         if data.metadata_uri.is_some() {
@@ -426,14 +427,14 @@ pub mod ju_core {
         profile.metadata_uri = data.metadata_uri;
 
         profile.gender = data.gender;
+
+        // TODO: Validate birthdate
         profile.birth_date = data.birth_date;
+
         profile.country_code = data.country_code;
         profile.city_code = data.city_code;
         profile.current_location = data.current_location;
         profile.status_text = data.status_text;
-
-        // Set Messenger key
-        profile.messenger_key = data.messenger_key;
 
         // Assign Profile specified Connecting external Processor
         if ctx.accounts.app.profile_individual_processors_allowed {
@@ -550,36 +551,30 @@ pub mod ju_core {
         if ctx.accounts.app.profile_gender_required && data.gender.is_none() {
             return Err(error!(CustomError::MissingRequiredField));
         }
-        if ctx.accounts.app.profile_first_name_required && data.first_name.is_none() {
+        if ctx.accounts.app.profile_first_name_required && data.first_name.is_empty() {
             return Err(error!(CustomError::MissingRequiredField));
         }
-        if ctx.accounts.app.profile_last_name_required && data.last_name.is_none() {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
-        if ctx.accounts.app.profile_birthdate_required && data.birth_date.is_none() {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
-        if ctx.accounts.app.profile_country_required && data.country_code.is_none() {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
-        if ctx.accounts.app.profile_city_required && data.city_code.is_none() {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
-        if ctx.accounts.app.profile_metadata_uri_required && data.metadata_uri.is_none() {
+        if ctx.accounts.app.profile_last_name_required && data.last_name.is_empty() {
             return Err(error!(CustomError::MissingRequiredField));
         }
 
-        // Validate first name
-        if data.first_name.is_some() {
-            profile.validate_first_name(data.first_name.as_ref().unwrap())?;
+        if ctx.accounts.app.profile_birthdate_required && data.birth_date == 0 {
+            return Err(error!(CustomError::MissingRequiredField));
         }
-        profile.first_name = data.first_name;
+        if ctx.accounts.app.profile_country_required && data.country_code == 0 {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
+        if ctx.accounts.app.profile_city_required && data.city_code == 0 {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
+        if ctx.accounts.app.profile_metadata_required && data.metadata_uri.is_none() {
+            return Err(error!(CustomError::MissingRequiredField));
+        }
 
-        // Validate last name
-        if data.last_name.is_some() {
-            profile.validate_last_name(data.last_name.as_ref().unwrap())?;
-        }
-        profile.last_name = data.last_name;
+        // Validate and assign firt name
+        profile.first_name = profile.validate_first_name(&data.first_name)?;
+        // Validate and assign last name
+        profile.last_name = profile.validate_last_name(&data.last_name)?;
 
         // Validate metadata URI
         if data.metadata_uri.is_some() {
@@ -588,14 +583,14 @@ pub mod ju_core {
         profile.metadata_uri = data.metadata_uri;
 
         profile.gender = data.gender;
+
+        // TODO: Validate birthdate
         profile.birth_date = data.birth_date;
+
         profile.country_code = data.country_code;
         profile.city_code = data.city_code;
         profile.current_location = data.current_location;
         profile.status_text = data.status_text;
-
-        // Set Messenger key
-        profile.messenger_key = data.messenger_key;
 
         let now = Clock::get()?.unix_timestamp;
         // Emit new Event
@@ -839,12 +834,11 @@ pub mod ju_core {
         subspace.authority = *ctx.accounts.authority.to_account_info().key;
 
         // Validate name
-        subspace.validate_name(&data.name)?;
-        subspace.name = data.name;
+        subspace.name = subspace.validate_name(&data.name)?;
 
         subspace.publishing_permission = data.publishing_permission;
 
-        if ctx.accounts.app.subspace_metadata_uri_required && data.metadata_uri.is_none() {
+        if ctx.accounts.app.subspace_metadata_required && data.metadata_uri.is_none() {
             return Err(error!(CustomError::MissingRequiredField));
         }
         // Validate metadata URI
@@ -1006,12 +1000,11 @@ pub mod ju_core {
         }
 
         // Validate name
-        subspace.validate_name(&data.name)?;
-        subspace.name = data.name;
+        subspace.name = subspace.validate_name(&data.name)?;
 
         subspace.publishing_permission = data.publishing_permission;
 
-        if ctx.accounts.app.subspace_metadata_uri_required && data.metadata_uri.is_none() {
+        if ctx.accounts.app.subspace_metadata_required && data.metadata_uri.is_none() {
             return Err(error!(CustomError::MissingRequiredField));
         }
 
@@ -1349,7 +1342,9 @@ pub mod ju_core {
         publication.app = *ctx.accounts.app.to_account_info().key;
         publication.profile = *ctx.accounts.profile.to_account_info().key;
         publication.content_type = data.content_type;
-        publication.tag = data.tag;
+
+        publication.tag = publication.validate_tag(&data.tag)?;
+
         publication.authority = *ctx.accounts.authority.to_account_info().key;
 
         // In case target of the Publication is a Subspace
@@ -1369,12 +1364,11 @@ pub mod ju_core {
                 CustomError::SubspacePublishingPermissionViolation
             );
 
-
             if !data.is_reply {
                 // Only on initial publishing or miroring
                 publication.subspace = Some(*target_subspace.to_account_info().key);
             } else {
-                // In case this is replying 
+                // In case this is replying
                 publication.subspace = None;
             }
         }
@@ -1383,14 +1377,13 @@ pub mod ju_core {
         publication.is_reply = data.is_reply;
 
         if ctx.accounts.target_publication.is_some() {
-            publication.target_publication = Some(
-                *ctx.accounts
-                    .target_publication
-                    .as_ref()
-                    .unwrap()
-                    .to_account_info()
-                    .key,
-            );
+            publication.target_publication = *ctx
+                .accounts
+                .target_publication
+                .as_ref()
+                .unwrap()
+                .to_account_info()
+                .key;
         }
 
         // Validate metadata URI
@@ -1460,7 +1453,8 @@ pub mod ju_core {
         let publication = &mut ctx.accounts.publication;
 
         publication.content_type = data.content_type;
-        publication.tag = data.tag;
+
+        publication.tag = publication.validate_tag(&data.tag)?;
 
         // Validate metadata URI
         validate_metadata_uri(&data.metadata_uri)?;
