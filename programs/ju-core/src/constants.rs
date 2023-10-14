@@ -9,7 +9,7 @@ pub const PROTOCOL_AUTHORITY: Pubkey =
 #[constant]
 pub const MIN_PROCESSORNAME_LENGTH: usize = 5;
 #[constant]
-pub const MAX_PROCESSORNAME_LENGTH: usize = 50;
+pub const MAX_PROCESSORNAME_LENGTH: usize = 200;
 #[constant]
 pub const MIN_APPNAME_LENGTH: usize = 3;
 #[constant]
@@ -44,7 +44,7 @@ pub const  MIN_SUBSPACE_NAME_LENGTH:usize = 4;
 pub const  MAX_SUBSPACE_NAME_LENGTH:usize = 32;
 
 #[constant]
-pub const MAX_TAG_LENGTH: usize = 20;
+pub const MAX_TAG_LENGTH: usize = 32;
 
 #[constant]
 pub const MAX_AGE_IN_YEARS: i64 = 120;
