@@ -113,10 +113,9 @@ impl ExternalProcessorPDA {
 /// 20. `publishing_processor`: An address of an external processor for additional processing during Publication creation
 /// 21. `collecting_processor`: An address of an external processor for additional processing during Publication collection
 /// 22. `referencing_processor`: An address of an external processor for additional processing during Publication referencing
-/// *
-/// 23. `reserved_1`: Reserved field 1
-/// 24. `reserved_1`: Reserved field 2
-/// 25. `reserved_1`: Reserved field 3
+/// 23.  ***** `reserved_1`: Reserved field 1
+/// 24.  ***** `reserved_1`: Reserved field 2
+/// 25.  ***** `reserved_1`: Reserved field 3
 ///
 #[account]
 #[derive(Default)]
@@ -243,23 +242,24 @@ impl App {
 /// 1. Profile creation unix timestamp
 /// 2. Application account (PDA)
 /// 3. Profile authority address
-/// 4. ***** Reserved field 1
-/// 5. ***** Reserved field 2
-/// 6. ***** Reserved field 3
-/// 7. Verification status
-/// 8. Profile birth date (0 if not set)
-/// 9. Profile country code (0 if not set)
-/// 10. Profile region code (0 if not set)
-/// 11. Profile city code (0 if not set)
-/// 12. Profile first name
-/// 13. Profile last name
-/// 14. Profile gender
-/// 15. Unique Application's user Profile Alias as string (ASCII alphanumeric)
-/// 16. Profile status text
-/// 17. Profile metadata URI
-/// 18. Profile location coordinates
-/// 19. External connection processor (optional)
-/// 20. Profile modification unix timestamp
+/// 4. Exchange key
+/// 5. Verification status
+/// 6. Profile birth date (0 if not set)
+/// 7. Profile country code (0 if not set)
+/// 8. Profile region code (0 if not set)
+/// 9. Profile city code (0 if not set)
+/// 10. Profile first name
+/// 11. Profile last name
+/// 12. Profile gender
+/// 13. Unique Application's user Profile Alias as string (ASCII alphanumeric)
+/// 14. Profile status text
+/// 15. Profile metadata URI
+/// 16. Profile location coordinates
+/// 17. External connection processor (optional)
+/// 28. Profile modification unix timestamp
+/// 19. ***** Reserved field 1
+/// 20. ***** Reserved field 2
+/// 21. ***** Reserved field 3
 ///
 #[account]
 #[derive(Default)]
@@ -271,15 +271,10 @@ pub struct Profile {
     pub app: Pubkey,
     /// Pubkey of the profile owner (32).
     pub authority: Pubkey,
+    // Exchange key
+    pub exchange_key: Pubkey,
 
-    // Reserved field 1
-    pub reserved_1: [u8; 32],
-    // Reserved field 2
-    pub reserved_2: [u8; 32],
-    // Reserved field 3
-    pub reserved_3: [u8; 32],
-
-    /// Verified status for VIP users (1)
+    /// Verified status for users (1)
     pub is_verified: bool,
 
     // Birth date as a Unix timestamp
@@ -316,6 +311,13 @@ pub struct Profile {
 
     /// The optional Unix timestamp of the Profile modification (1 + 8)
     pub modified_at: Option<i64>,
+
+    // Reserved field 1
+    pub reserved_1: [u8; 32],
+    // Reserved field 2
+    pub reserved_2: [u8; 32],
+    // Reserved field 3
+    pub reserved_3: [u8; 32],
 }
 
 impl Profile {
@@ -325,9 +327,7 @@ impl Profile {
         + 8                                                             // i64 (`created`)
         + 32                                                            // Pubkey (`app`)
         + 32                                                            // Pubkey (`authority`)
-        + 32                                                            // [u8;32] (`reserved_1`)
-        + 32                                                            // [u8;32] (`reserved_2`)
-        + 32                                                            // [u8;32] (`reserved_3`)
+        + 32                                                            // Pubkey (`exchange_key`)
         + 1                                                             // bool (`is_verified`)
         + 8                                                             // i64 (`birth_date`)
         + 2                                                             // i16 (`country_code`)
@@ -341,7 +341,10 @@ impl Profile {
         + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)                   // Option<String> (`metadata uri`)
         + (1 + 8 + 8)                                                   // Option<{u64, u64}> (`current_location`)
         + (1 + 32)                                                      // Option<Pubkey> (`connecting_processor`)
-        + (1 + 8);                                                      // Option<i64> (`modified`)
+        + (1 + 8)                                                       // Option<i64> (`modified`)
+        + 32                                                            // Pubkey (`reserved_1`)
+        + 32                                                            // Pubkey (`reserved_2`)
+        + 32;                                                           // Pubkey (`reserved_3`)
 
     /// Method for validating Profile Alias
     ///
@@ -407,19 +410,19 @@ impl Profile {
 ///
 /// 1. Application address
 /// 2. Profile authority address
-/// 3. ***** Reserved field 1
-/// 4. ***** Reserved field 2
-/// 5. ***** Reserved field 3
-/// 6. Subspace owner Profile Pubkey
-/// 7. Subspace name
-/// 8. Subspace publishing permission level
-/// 9. Unique application's user profile alias as string (optional, ASCII alphanumeric) (optional)
-/// 10. Subspace UUID
-/// 11. Subspace metadata URI (optional)
-/// 12. External Publishing processor (optional)
-/// 13. External Connecting processor (optional)
-/// 14. External Collecting processor (optional)
-/// 15. External Referencing processor (optional)
+/// 3. Subspace owner Profile Pubkey
+/// 4. Exchange key
+/// 5. Subspace name
+/// 6. Subspace publishing permission level
+/// 7. Unique application's user profile alias as string (optional, ASCII alphanumeric) (optional)
+/// 8. Subspace UUID
+/// 9. Subspace metadata URI (optional)
+/// 10. External Publishing processor (optional)
+/// 11. External Connecting processor (optional)
+/// 12. External Collecting processor (optional)
+/// 13. External Referencing processor (optional)
+/// 14. ***** Reserved field 1
+/// 15. ***** Reserved field 2
 ///
 #[account]
 #[derive(Default)]
@@ -428,6 +431,8 @@ pub struct Subspace {
     pub app: Pubkey,
     /// Pubkey of the profile owner (32).
     pub authority: Pubkey,
+    // Exchange key
+    pub exchange_key: Pubkey,
 
     // Reserved field 1
     pub reserved_1: [u8; 32],
@@ -464,9 +469,7 @@ impl Subspace {
     pub const LEN: usize = DISCRIMINATOR_LENGTH                 // Anchor internal discrimitator     
         + 32                                                    // Pubkey (`app`)
         + 32                                                    // Pubkey (`authority`)
-        + 32                                                    // [u8;32] (`reserved_1`)
-        + 32                                                    // [u8;32] (`reserved_2`)
-        + 32                                                    // [u8;32] (`reserved_3`)
+        + 32                                                    // Pubkey (`exchange_key`)
         + 32                                                    // Pubkey (`creator`)
         + 1                                                     // Enum (`publishing_permission`)
         + (MAX_SUBSPACE_NAME_LENGTH)                            // [u8; MAX_SUBSPACE_NAME_LENGTH] (`name`)
@@ -476,7 +479,9 @@ impl Subspace {
         + (1 + 32)                                              // Option<Pubkey> (`publishing_processor`)
         + (1 + 32)                                              // Option<Pubkey> (`connecting_processor`)
         + (1 + 32)                                              // Option<Pubkey> (`collecting_processor`)
-        + (1 + 32);                                             // Option<Pubkey> (`referencing_processor`)
+        + (1 + 32)                                              // Option<Pubkey> (`referencing_processor`)
+        + 32                                                    // [u8;32] (`reserved_1`)
+        + 32;                                                   // [u8;32] (`reserved_2`)
 
     /// Method for validating Subspace Alias
     ///
