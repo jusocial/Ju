@@ -32,15 +32,18 @@ impl DeveloperWhitelistProof {
 /// # ExternalProcessorPDA account stores:
 ///
 /// 1. Processor type 
-/// 2. Processor name (ASCII alphanumeric)
-/// 3. Processor PDA authority address
-/// 4. Processor developer walet
-/// 5. Processorr program address
+/// 2. Proccessor Approve status
+/// 3. Processor name (ASCII alphanumeric)
+/// 4. Processor PDA authority address
+/// 5. Processor developer walet
+/// 6. Processorr program address
 ///
 #[account]
 pub struct ExternalProcessorPDA {
     /// Processot type (1)
     pub processor_type: ProcessorType,
+    /// Approve status
+    pub is_approved: bool,
     /// Processor name (STRING_LENGTH_PREFIX + MAX_PROCESSORNAME_LENGTH).
     pub processor_name: String,
     /// Processor PDA authority (32).
@@ -55,11 +58,12 @@ impl ExternalProcessorPDA {
     pub const PREFIX: &'static str = "processor";
 
     pub const LEN: usize = DISCRIMINATOR_LENGTH                 // Anchor internal discrimitator
-        + 1                                                     // Enum
-        + (STRING_LENGTH_PREFIX + MAX_PROCESSORNAME_LENGTH)     // String      
-        + 32                                                    // Pubkey
-        + 33                                                    // Option<Pubkey>
-        + 32;                                                   // Pubkey
+        + 1                                                     // Enum (`processor_type`)
+        + 1                                                     // bool (`is_approved`)
+        + (STRING_LENGTH_PREFIX + MAX_PROCESSORNAME_LENGTH)     // String (`processor_name`)    
+        + 32                                                    // Pubkey (`authority`)
+        + 33                                                    // Option<Pubkey> (`developer_wallet`)
+        + 32;                                                   // Pubkey (`program_address`)
 
     /// Method for validating Processor Name
     ///
