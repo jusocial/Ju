@@ -22,10 +22,14 @@ declare_id!("964vWgVEK9X8ZwZB2HyshFVmHUWbcYpRTnVYz2o3F2Xq");
 pub mod ju_core {
     use super::*;
 
-    /// Approve new Developer
+    /// Approve new Developer whitelis proof
     ///
-    pub fn add_developer(ctx: Context<AddDeveloper>) -> Result<()> {
-        let developer = &mut ctx.accounts.developer;
+    /// # Arguments
+    ///
+    /// * `developer` - Developer Pubkey
+    ///
+    pub fn add_developer(ctx: Context<AddDeveloper>, developer: Pubkey) -> Result<()> {
+        let developer_witelist_proof = &mut ctx.accounts.developer_witelist_proof;
 
         // Check if actor is protocol authority
         require_keys_eq!(
@@ -34,14 +38,33 @@ pub mod ju_core {
             CustomError::DeveloperNotAthorized
         );
 
-        developer.authority = *ctx.accounts.authority.to_account_info().key;
+        developer_witelist_proof.developer = developer;
+        developer_witelist_proof.authority = *ctx.accounts.authority.to_account_info().key;
+
+        let now = Clock::get()?.unix_timestamp;
+
+        // Emit new Event
+        emit!(NewDeveloperEvent {
+            developer: developer,
+            created_at: now,
+        });
 
         Ok(())
     }
 
-    /// Delete existing Developer
+    /// Delete existing Developer whitelis proof
     ///
-    pub fn delete_developer(_ctx: Context<DeleteDeveloper>) -> Result<()> {
+    pub fn delete_developer(ctx: Context<DeleteDeveloper>) -> Result<()> {
+        let developer = ctx.accounts.developer_witelist_proof.developer;
+
+        let now = Clock::get()?.unix_timestamp;
+
+        // Emit new Event
+        emit!(DeleteDeveloperEvent {
+            developer: developer,
+            deleted_at: now,
+        });
+
         Ok(())
     }
 
@@ -61,6 +84,14 @@ pub mod ju_core {
         program_address: Pubkey,
         developer_wallet: Option<Pubkey>,
     ) -> Result<()> {
+
+        // Validate permission
+        if (*ctx.accounts.authority.to_account_info().key != PROTOCOL_AUTHORITY)
+            && ctx.accounts.developer_witelist_proof.is_none()
+        {
+            return Err(error!(CustomError::DeveloperActionNotAthorized));
+        }
+
         let processor_pda = &mut ctx.accounts.processor_pda;
         // Validate Processor name
         processor_pda.validate_name(&processor_name)?;
@@ -112,11 +143,13 @@ pub mod ju_core {
         app_name: String,
         data: AppData,
     ) -> Result<()> {
-        // ********************************
-        //
-        // TODO: Implement Developer access
-        //
-        // ********************************
+        
+        // Validate permission
+        if (*ctx.accounts.authority.to_account_info().key != PROTOCOL_AUTHORITY)
+            && ctx.accounts.developer_witelist_proof.is_none()
+        {
+            return Err(error!(CustomError::DeveloperActionNotAthorized));
+        }
 
         let app = &mut ctx.accounts.app;
 
@@ -403,8 +436,8 @@ pub mod ju_core {
         if ctx.accounts.app.profile_last_name_required && data.last_name.is_empty() {
             return Err(error!(CustomError::MissingRequiredField));
         }
-        
-        if ctx.accounts.app.profile_birthdate_required  {
+
+        if ctx.accounts.app.profile_birthdate_required {
             validate_birth_date(&data.birth_date)?;
         }
 
@@ -564,7 +597,7 @@ pub mod ju_core {
             return Err(error!(CustomError::MissingRequiredField));
         }
 
-        if ctx.accounts.app.profile_birthdate_required  {
+        if ctx.accounts.app.profile_birthdate_required {
             validate_birth_date(&data.birth_date)?;
         }
 

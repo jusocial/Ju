@@ -4,22 +4,26 @@ use crate::errors::*;
 
 // Accounts
 
-/// DeveloperWhitelistItem account is proof that pubkey owner is able to create protocol application
+/// DeveloperWhitelistProof account is proof that pubkey owner is able to create protocol application
 ///
-/// # DeveloperWhitelistItem account stores:
+/// # DeveloperWhitelistProof account stores:
 ///
 /// 1. Authority address
+/// 2. Developer address
 ///
 #[account]
-pub struct DeveloperWhitelistItem {
+pub struct DeveloperWhitelistProof {
     /// Account authority (32).
     pub authority: Pubkey,
+    /// Developer address (32).
+    pub developer: Pubkey,
 }
 
-impl DeveloperWhitelistItem {
+impl DeveloperWhitelistProof {
     pub const PREFIX: &'static str = "developer";
 
     pub const LEN: usize = DISCRIMINATOR_LENGTH                 // Anchor internal discrimitator
+        + 32                                                    // Pubkey
         + 32;                                                   // Pubkey
 }
 

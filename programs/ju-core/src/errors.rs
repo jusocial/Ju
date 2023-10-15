@@ -6,8 +6,8 @@ pub enum CustomError {
     #[msg("Developer not authorized")]
     DeveloperNotAthorized,
 
-    #[msg("Procesor management action not authorized")]
-    ProcessorManagementNotAthorized,
+    #[msg("Developer action not authorized")]
+    DeveloperActionNotAthorized,
 
     #[msg("Procesor type mismatch")]
     ProcessorTypeMismatch,

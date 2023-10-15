@@ -2,6 +2,23 @@ use anchor_lang::prelude::*;
 
 /// An Event that is fired when new Protocol external Processor whitelisted.
 #[event]
+pub struct NewDeveloperEvent {
+    /// Developer address
+    pub developer: Pubkey,
+    /// Profile creation unix timestamp
+    pub created_at: i64,
+}
+
+/// An Event that is fired when existing Protocol external Processor deleted from "whitelist".
+#[event]
+pub struct DeleteDeveloperEvent {
+    /// Developer address
+    pub developer: Pubkey,
+    /// Profile creation unix timestamp
+    pub deleted_at: i64,
+}
+
+#[event]
 pub struct NewExternalProcessorEvent {
     /// Application PDA address
     pub program_address: Pubkey,

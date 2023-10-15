@@ -9,18 +9,19 @@ use crate::*;
 /// 2. `[]` System program
 ///
 #[derive(Accounts)]
+#[instruction(developer: Pubkey)]
 pub struct AddDeveloper<'info> {
     #[account(
         init,
         seeds = [
-            DeveloperWhitelistItem::PREFIX.as_bytes(),
-            authority.key().as_ref()
+            DeveloperWhitelistProof::PREFIX.as_bytes(),
+            developer.as_ref()
         ],
         bump,
         payer = authority,
-        space = DeveloperWhitelistItem::LEN
+        space = DeveloperWhitelistProof::LEN
     )]
-    pub developer: Account<'info, DeveloperWhitelistItem>,
+    pub developer_witelist_proof: Account<'info, DeveloperWhitelistProof>,
 
     #[account(mut)]
     pub authority: Signer<'info>,
@@ -42,13 +43,13 @@ pub struct DeleteDeveloper<'info> {
         mut,
         has_one = authority,
         seeds = [
-            DeveloperWhitelistItem::PREFIX.as_bytes(),
-            authority.key().as_ref()
+            DeveloperWhitelistProof::PREFIX.as_bytes(),
+            developer_witelist_proof.developer.key().as_ref()
         ],
         bump,
         close = authority,
     )]
-    pub developer: Account<'info, DeveloperWhitelistItem>,
+    pub developer_witelist_proof: Account<'info, DeveloperWhitelistProof>,
 
     #[account(mut)]
     pub authority: Signer<'info>,
@@ -79,15 +80,16 @@ pub struct AddProcessor<'info> {
     )]
     pub processor_pda: Account<'info, ExternalProcessorPDA>,
 
-    // #[account(
-    //     seeds = [
-    //         DeveloperWhitelistItem::PREFIX.as_bytes(),
-    //         developer.authority.key().as_ref()
-    //     ],
-    //     bump
-    // )]
-    // /// Developer whitelist proof
-    // pub developer: Option<Box<Account<'info, DeveloperWhitelistItem>>>,
+    #[account(
+        has_one = authority,
+        seeds = [
+            DeveloperWhitelistProof::PREFIX.as_bytes(),
+            developer_witelist_proof.authority.key().as_ref()
+        ],
+        bump
+    )]
+    /// Developer whitelist proof
+    pub developer_witelist_proof: Option<Box<Account<'info, DeveloperWhitelistProof>>>,
 
     #[account(mut)]
     pub authority: Signer<'info>,
@@ -118,10 +120,7 @@ pub struct DeleteProcessor<'info> {
     )]
     pub processor: Account<'info, ExternalProcessorPDA>,
 
-    #[account(
-        mut,
-        address = PROTOCOL_AUTHORITY @CustomError::ProcessorManagementNotAthorized
-    )]
+    #[account(mut)]
     pub authority: Signer<'info>,
 
     pub system_program: Program<'info, System>,
@@ -132,13 +131,14 @@ pub struct DeleteProcessor<'info> {
 /// Accounts expected:
 ///
 /// 0. `[]` PDA of the Application being created
-/// 1. `[]` External Registering Processor PDA that proof Processor passed to assign is whitelisted (optional)
-/// 2. `[]` External Connecting Processor PDA that proof Processor passed to assign is whitelisted (optional)
-/// 3. `[]` External Publishing Processor PDA that proof Processor passed to assign is whitelisted (optional)
-/// 4. `[]` External Collecting Processor PDA that proof Processor passed to assign is whitelisted (optional)
-/// 5. `[]` External Referencing Processor PDA that proof Processor passed to assign is whitelisted (optional)
-/// 6. `[signer]` Application Authority
-/// 7. `[]` System program
+/// 1. `[]` Developer whitelist proof PDA
+/// 2. `[]` External Registering Processor PDA that proof Processor passed to assign is whitelisted (optional)
+/// 3. `[]` External Connecting Processor PDA that proof Processor passed to assign is whitelisted (optional)
+/// 4. `[]` External Publishing Processor PDA that proof Processor passed to assign is whitelisted (optional)
+/// 5. `[]` External Collecting Processor PDA that proof Processor passed to assign is whitelisted (optional)
+/// 6. `[]` External Referencing Processor PDA that proof Processor passed to assign is whitelisted (optional)
+/// 7. `[signer]` Application Authority
+/// 8. `[]` System program
 ///
 #[derive(Accounts)]
 #[instruction(app_name: String)]
@@ -156,15 +156,16 @@ pub struct InitializeApp<'info> {
     /// Current App (PDA) account
     pub app: Account<'info, App>,
 
-    // #[account(
-    //     seeds = [
-    //         DeveloperWhitelistItem::PREFIX.as_bytes(),
-    //         developer.authority.key().as_ref()
-    //     ],
-    //     bump
-    // )]
-    // /// Developer whitelist proof
-    // pub developer: Option<Box<Account<'info, DeveloperWhitelistItem>>>,
+    #[account(
+        has_one = authority,
+        seeds = [
+            DeveloperWhitelistProof::PREFIX.as_bytes(),
+            developer_witelist_proof.authority.key().as_ref()
+        ],
+        bump
+    )]
+    /// Developer whitelist proof
+    pub developer_witelist_proof: Option<Box<Account<'info, DeveloperWhitelistProof>>>,
 
     #[account(
         seeds = [
