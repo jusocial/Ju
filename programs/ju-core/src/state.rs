@@ -109,6 +109,10 @@ impl ExternalProcessorPDA {
 /// 20. `publishing_processor`: An address of an external processor for additional processing during Publication creation
 /// 21. `collecting_processor`: An address of an external processor for additional processing during Publication collection
 /// 22. `referencing_processor`: An address of an external processor for additional processing during Publication referencing
+/// *
+/// 23. `reserved_1`: Reserved field 1
+/// 24. `reserved_1`: Reserved field 2
+/// 25. `reserved_1`: Reserved field 3
 ///
 #[account]
 #[derive(Default)]
@@ -153,8 +157,8 @@ pub struct App {
     /// Specifies the permission to assign Publication's individual external processors.
     pub publication_individual_processors_allowed: bool,
 
-     /// App name/ID (STRING_LENGTH_PREFIX + MAX_APPID_LENGTH).
-     pub app_name: String,
+    /// App name/ID (STRING_LENGTH_PREFIX + MAX_APPID_LENGTH).
+    pub app_name: String,
     /// URI of the metadata (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH).
     pub metadata_uri: Option<String>,
 
@@ -168,6 +172,13 @@ pub struct App {
     pub collecting_processor: Option<Pubkey>,
     /// An address of an external processor for additional processing during Publication referencing.
     pub referencing_processor: Option<Pubkey>,
+
+    // Reserved field 1
+    pub reserved_1: [u8; 32],
+    // Reserved field 2
+    pub reserved_2: [u8; 32],
+    // Reserved field 3
+    pub reserved_3: [u8; 32],
 }
 
 impl App {
@@ -196,7 +207,10 @@ impl App {
         + (1 + 32)                                      // Option<Pubkey> (`connecting_processor`)
         + (1 + 32)                                      // Option<Pubkey> (`publishing_processor`)
         + (1 + 32)                                      // Option<Pubkey> (`collecting_processor`)
-        + (1 + 32);                                     // Option<Pubkey> (`referencing_processor`)
+        + (1 + 32)                                      // Option<Pubkey> (`referencing_processor`)
+        + 32                                            // [u8;32] (`reserved_1`)
+        + 32                                            // [u8;32] (`reserved_2`)
+        + 32;                                           // [u8;32] (`reserved_3`)
 
     /// Method for validating App Name
     ///
@@ -225,20 +239,23 @@ impl App {
 /// 1. Profile creation unix timestamp
 /// 2. Application account (PDA)
 /// 3. Profile authority address
-/// 4. Verification status
-/// 5. Profile birth date (0 if not set)
-/// 6. Profile country code (0 if not set)
-/// 7. Profile region code (0 if not set)
-/// 8. Profile city code (0 if not set)
-/// 9. Profile first name
-/// 10. Profile last name
-/// 11. Profile gender
-/// 12. Unique Application's user Profile Alias as string (ASCII alphanumeric)
-/// 13. Profile status text
-/// 14. Profile metadata URI
-/// 15. Profile location coordinates
-/// 16. External connection processor (optional)
-/// 17. Profile modification unix timestamp
+/// 4. ***** Reserved field 1
+/// 5. ***** Reserved field 2
+/// 6. ***** Reserved field 3
+/// 7. Verification status
+/// 8. Profile birth date (0 if not set)
+/// 9. Profile country code (0 if not set)
+/// 10. Profile region code (0 if not set)
+/// 11. Profile city code (0 if not set)
+/// 12. Profile first name
+/// 13. Profile last name
+/// 14. Profile gender
+/// 15. Unique Application's user Profile Alias as string (ASCII alphanumeric)
+/// 16. Profile status text
+/// 17. Profile metadata URI
+/// 18. Profile location coordinates
+/// 19. External connection processor (optional)
+/// 20. Profile modification unix timestamp
 ///
 #[account]
 #[derive(Default)]
@@ -250,6 +267,13 @@ pub struct Profile {
     pub app: Pubkey,
     /// Pubkey of the profile owner (32).
     pub authority: Pubkey,
+
+    // Reserved field 1
+    pub reserved_1: [u8; 32],
+    // Reserved field 2
+    pub reserved_2: [u8; 32],
+    // Reserved field 3
+    pub reserved_3: [u8; 32],
 
     /// Verified status for VIP users (1)
     pub is_verified: bool,
@@ -297,6 +321,9 @@ impl Profile {
         + 8                                                             // i64 (`created`)
         + 32                                                            // Pubkey (`app`)
         + 32                                                            // Pubkey (`authority`)
+        + 32                                                            // [u8;32] (`reserved_1`)
+        + 32                                                            // [u8;32] (`reserved_2`)
+        + 32                                                            // [u8;32] (`reserved_3`)
         + 1                                                             // bool (`is_verified`)
         + 8                                                             // i64 (`birth_date`)
         + 2                                                             // i16 (`country_code`)
@@ -376,16 +403,19 @@ impl Profile {
 ///
 /// 1. Application address
 /// 2. Profile authority address
-/// 3. Subspace owner Profile Pubkey
-/// 4. Subspace name
-/// 5. Subspace publishing permission level
-/// 6. Unique application's user profile alias as string (optional, ASCII alphanumeric) (optional)
-/// 7. Subspace UUID
-/// 8. Subspace metadata URI (optional)
-/// 9. External Publishing processor (optional)
-/// 10. External Connecting processor (optional)
-/// 11. External Collecting processor (optional)
-/// 12. External Referencing processor (optional)
+/// 3. ***** Reserved field 1
+/// 4. ***** Reserved field 2
+/// 5. ***** Reserved field 3
+/// 6. Subspace owner Profile Pubkey
+/// 7. Subspace name
+/// 8. Subspace publishing permission level
+/// 9. Unique application's user profile alias as string (optional, ASCII alphanumeric) (optional)
+/// 10. Subspace UUID
+/// 11. Subspace metadata URI (optional)
+/// 12. External Publishing processor (optional)
+/// 13. External Connecting processor (optional)
+/// 14. External Collecting processor (optional)
+/// 15. External Referencing processor (optional)
 ///
 #[account]
 #[derive(Default)]
@@ -394,6 +424,14 @@ pub struct Subspace {
     pub app: Pubkey,
     /// Pubkey of the profile owner (32).
     pub authority: Pubkey,
+
+    // Reserved field 1
+    pub reserved_1: [u8; 32],
+    // Reserved field 2
+    pub reserved_2: [u8; 32],
+    // Reserved field 3
+    pub reserved_3: [u8; 32],
+
     /// Subspace creator Profile Pubkey (32)
     pub creator: Pubkey,
     /// Subspace publishing permission level
@@ -422,6 +460,9 @@ impl Subspace {
     pub const LEN: usize = DISCRIMINATOR_LENGTH                 // Anchor internal discrimitator     
         + 32                                                    // Pubkey (`app`)
         + 32                                                    // Pubkey (`authority`)
+        + 32                                                    // [u8;32] (`reserved_1`)
+        + 32                                                    // [u8;32] (`reserved_2`)
+        + 32                                                    // [u8;32] (`reserved_3`)
         + 32                                                    // Pubkey (`creator`)
         + 1                                                     // Enum (`publishing_permission`)
         + (MAX_SUBSPACE_NAME_LENGTH)                            // [u8; MAX_SUBSPACE_NAME_LENGTH] (`name`)
@@ -513,27 +554,31 @@ impl SubspaceManager {
 /// # Publication account stores:
 ///
 /// 1. Publication create unix timestamp
-/// 2. Existing Protocol Application in which Publication was created
-/// 3. References to Publication's author Profile
-/// 4. Publication authority address
-/// 5. Whether or not the publication has encrypted content
-/// 6. Whether or not the Publication is mirroring other existing Publication (e.g. re-post)
-/// 7. Whether or not the Publication is replying to other existing Publication (e.g. comment)
-/// 8. Publication main content type
-/// 9. Publication tag
-/// 10. References to existing Publication if there is a mirror or reply (optional)
-/// 11. Subspace in which Publication being published (optional)
-/// 12. Publication UUID as string
-/// 13. Publication metadata URI
-/// 14. External Collecting processor (optional)
-/// 15. External Referencing processor (optional)
-/// 16. Publication update unix timestamp (optional)
+/// 2. ***** Reserved field 1
+/// 3. Existing Protocol Application in which Publication was created
+/// 4. References to Publication's author Profile
+/// 5. Publication authority address
+/// 6. Whether or not the publication has encrypted content
+/// 7. Whether or not the Publication is mirroring other existing Publication (e.g. re-post)
+/// 8. Whether or not the Publication is replying to other existing Publication (e.g. comment)
+/// 9. Publication main content type
+/// 10. Publication tag
+/// 11. References to existing Publication if there is a mirror or reply (optional)
+/// 12. Subspace in which Publication being published (optional)
+/// 13. Publication UUID as string
+/// 14. Publication metadata URI
+/// 15. External Collecting processor (optional)
+/// 16. External Referencing processor (optional)
+/// 17. Publication update unix timestamp (optional)
 ///
 #[account]
 // #[derive(Default)]
 pub struct Publication {
     /// Unix timestamp of the Publication creation (8)
     pub created_at: i64,
+
+    // Reserved field 1
+    pub reserved_1: [u8; 32],
 
     /// Application account Pubkey (32)
     pub app: Pubkey,
@@ -576,7 +621,8 @@ impl Publication {
     pub const PREFIX: &'static str = "publication";
     
     pub const LEN: usize = DISCRIMINATOR_LENGTH         // Anchor internal discrimitator   
-        + 8                                             // i64 (`created_at`) 
+        + 8                                             // i64 (`created_at`)
+        + 32                                            // [u8;32] (`reserved_1`) 
         + 32                                            // Pubkey (`app`)
         + 32                                            // Pubkey (`profile`)
         + 32                                            // Pubkey (`authority`)
