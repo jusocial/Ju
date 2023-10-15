@@ -29,7 +29,7 @@ pub mod ju_core {
     /// * `developer` - Developer Pubkey
     ///
     pub fn add_developer(ctx: Context<AddDeveloper>, developer: Pubkey) -> Result<()> {
-        let developer_witelist_proof = &mut ctx.accounts.developer_witelist_proof;
+        let developer_whitelist_proof = &mut ctx.accounts.developer_whitelist_proof;
 
         // Check if actor is protocol authority
         require_keys_eq!(
@@ -38,8 +38,8 @@ pub mod ju_core {
             CustomError::DeveloperNotAthorized
         );
 
-        developer_witelist_proof.developer = developer;
-        developer_witelist_proof.authority = *ctx.accounts.authority.to_account_info().key;
+        developer_whitelist_proof.developer = developer;
+        developer_whitelist_proof.authority = *ctx.accounts.authority.to_account_info().key;
 
         let now = Clock::get()?.unix_timestamp;
 
@@ -55,7 +55,7 @@ pub mod ju_core {
     /// Delete existing Developer whitelis proof
     ///
     pub fn delete_developer(ctx: Context<DeleteDeveloper>) -> Result<()> {
-        let developer = ctx.accounts.developer_witelist_proof.developer;
+        let developer = ctx.accounts.developer_whitelist_proof.developer;
 
         let now = Clock::get()?.unix_timestamp;
 
@@ -87,7 +87,7 @@ pub mod ju_core {
 
         // Validate permission
         if (*ctx.accounts.authority.to_account_info().key != PROTOCOL_AUTHORITY)
-            && ctx.accounts.developer_witelist_proof.is_none()
+            && ctx.accounts.developer_whitelist_proof.is_none()
         {
             return Err(error!(CustomError::DeveloperActionNotAthorized));
         }
@@ -146,7 +146,7 @@ pub mod ju_core {
         
         // Validate permission
         if (*ctx.accounts.authority.to_account_info().key != PROTOCOL_AUTHORITY)
-            && ctx.accounts.developer_witelist_proof.is_none()
+            && ctx.accounts.developer_whitelist_proof.is_none()
         {
             return Err(error!(CustomError::DeveloperActionNotAthorized));
         }

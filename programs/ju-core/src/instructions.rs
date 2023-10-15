@@ -21,7 +21,7 @@ pub struct AddDeveloper<'info> {
         payer = authority,
         space = DeveloperWhitelistProof::LEN
     )]
-    pub developer_witelist_proof: Account<'info, DeveloperWhitelistProof>,
+    pub developer_whitelist_proof: Account<'info, DeveloperWhitelistProof>,
 
     #[account(mut)]
     pub authority: Signer<'info>,
@@ -44,12 +44,12 @@ pub struct DeleteDeveloper<'info> {
         has_one = authority,
         seeds = [
             DeveloperWhitelistProof::PREFIX.as_bytes(),
-            developer_witelist_proof.developer.key().as_ref()
+            developer_whitelist_proof.developer.key().as_ref()
         ],
         bump,
         close = authority,
     )]
-    pub developer_witelist_proof: Account<'info, DeveloperWhitelistProof>,
+    pub developer_whitelist_proof: Account<'info, DeveloperWhitelistProof>,
 
     #[account(mut)]
     pub authority: Signer<'info>,
@@ -84,12 +84,12 @@ pub struct AddProcessor<'info> {
         has_one = authority,
         seeds = [
             DeveloperWhitelistProof::PREFIX.as_bytes(),
-            developer_witelist_proof.authority.key().as_ref()
+            developer_whitelist_proof.authority.key().as_ref()
         ],
         bump
     )]
     /// Developer whitelist proof
-    pub developer_witelist_proof: Option<Box<Account<'info, DeveloperWhitelistProof>>>,
+    pub developer_whitelist_proof: Option<Box<Account<'info, DeveloperWhitelistProof>>>,
 
     #[account(mut)]
     pub authority: Signer<'info>,
@@ -160,12 +160,12 @@ pub struct InitializeApp<'info> {
         has_one = authority,
         seeds = [
             DeveloperWhitelistProof::PREFIX.as_bytes(),
-            developer_witelist_proof.authority.key().as_ref()
+            developer_whitelist_proof.authority.key().as_ref()
         ],
         bump
     )]
     /// Developer whitelist proof
-    pub developer_witelist_proof: Option<Box<Account<'info, DeveloperWhitelistProof>>>,
+    pub developer_whitelist_proof: Option<Box<Account<'info, DeveloperWhitelistProof>>>,
 
     #[account(
         seeds = [
