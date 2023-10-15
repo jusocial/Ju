@@ -1158,7 +1158,7 @@ pub struct DeleteSubspaceManager<'info> {
         ],
         bump,
     )]
-    pub subspace: Account<'info, Subspace>,
+    pub subspace: Box<Account<'info, Subspace>>,
 
     #[account(     
         seeds = [
@@ -1168,7 +1168,7 @@ pub struct DeleteSubspaceManager<'info> {
         ],
         bump
     )]
-    pub profile: Account<'info, Profile>,
+    pub profile: Box<Account<'info, Profile>>,
 
     #[account(
         mut,
@@ -1181,7 +1181,7 @@ pub struct DeleteSubspaceManager<'info> {
         bump,
         close = authority,
     )]
-    pub manager: Account<'info, SubspaceManager>,
+    pub manager: Box<Account<'info, SubspaceManager>>,
 
     #[account(mut)]
     pub authority: Signer<'info>,
