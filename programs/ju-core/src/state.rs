@@ -434,13 +434,6 @@ pub struct Subspace {
     // Exchange key
     pub exchange_key: Pubkey,
 
-    // Reserved field 1
-    pub reserved_1: [u8; 32],
-    // Reserved field 2
-    pub reserved_2: [u8; 32],
-    // Reserved field 3
-    pub reserved_3: [u8; 32],
-
     /// Subspace creator Profile Pubkey (32)
     pub creator: Pubkey,
     /// Subspace publishing permission level
@@ -461,6 +454,11 @@ pub struct Subspace {
     pub collecting_processor: Option<Pubkey>,
     /// An address of a Program (external processor) for Publication referencing additional processing (1 + 32)
     pub referencing_processor: Option<Pubkey>,
+
+    // Reserved field 1
+    pub reserved_1: [u8; 32],
+    // Reserved field 2
+    pub reserved_2: [u8; 32],
 }
 
 impl Subspace {
