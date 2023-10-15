@@ -239,24 +239,24 @@ impl App {
 ///
 /// # Profile account stores:
 ///
-/// 1. Profile creation unix timestamp
-/// 2. Application account (PDA)
-/// 3. Profile authority address
-/// 4. Exchange key
-/// 5. Verification status
-/// 6. Profile birth date (0 if not set)
-/// 7. Profile country code (0 if not set)
-/// 8. Profile region code (0 if not set)
-/// 9. Profile city code (0 if not set)
-/// 10. Profile first name
-/// 11. Profile last name
-/// 12. Profile gender
-/// 13. Unique Application's user Profile Alias as string (ASCII alphanumeric)
-/// 14. Profile status text
-/// 15. Profile metadata URI
-/// 16. Profile location coordinates
-/// 17. External connection processor (optional)
-/// 28. Profile modification unix timestamp
+/// 1. Application account (PDA)
+/// 2. Profile authority address
+/// 3. Exchange key
+/// 4. Verification status
+/// 5. Profile country code (0 if not set)
+/// 6. Profile region code (0 if not set)
+/// 7. Profile city code (0 if not set)
+/// 8. Profile first name
+/// 9. Profile last name
+/// 10. Profile birth date as unix timestamp (0 if not set)
+/// 11. Profile gender
+/// 12. Unique Application's user Profile Alias as string (ASCII alphanumeric)
+/// 13. Profile status text
+/// 14. Profile metadata URI
+/// 15. Profile location coordinates
+/// 16. External connection processor (optional)
+/// 17. Profile creation unix timestamp
+/// 18. Profile modification unix timestamp
 /// 19. ***** Reserved field 1
 /// 20. ***** Reserved field 2
 /// 21. ***** Reserved field 3
@@ -264,9 +264,6 @@ impl App {
 #[account]
 #[derive(Default)]
 pub struct Profile {
-    /// Profile creation Unix timestamp (8)
-    pub created_at: i64,
-
     /// Application Pubkey (32)
     pub app: Pubkey,
     /// Pubkey of the profile owner (32).
@@ -277,19 +274,20 @@ pub struct Profile {
     /// Verified status for users (1)
     pub is_verified: bool,
 
-    // Birth date as a Unix timestamp
-    pub birth_date: i64,
     // Profile's country
-    pub country_code: i16,
+    pub country_code: u16,
     // Profile's region (region)
-    pub region_code: i16,
+    pub region_code: u16,
     // Profile's city
-    pub city_code: i16,    
+    pub city_code: u16,    
 
     // Profile's user first name
     pub first_name: [u8; MAX_PROFILE_FIRST_NAME_LENGTH],
     // Profile's user last name
     pub last_name: [u8; MAX_PROFILE_LAST_NAME_LENGTH],
+
+    // Birth date as unix timestamp
+    pub birth_date: i64,
 
     /// Profile's user gender
     pub gender: Option<Gender>,
@@ -309,6 +307,8 @@ pub struct Profile {
     /// An address of a Program (external processor) for Connection additional processing (33)
     pub connecting_processor: Option<Pubkey>,
 
+    /// Profile creation Unix timestamp (8)
+    pub created_at: i64,
     /// The optional Unix timestamp of the Profile modification (1 + 8)
     pub modified_at: Option<i64>,
 
@@ -324,23 +324,23 @@ impl Profile {
     pub const PREFIX: &'static str = "profile";
 
     pub const LEN: usize = DISCRIMINATOR_LENGTH                         // Anchor internal discrimitator
-        + 8                                                             // i64 (`created`)
         + 32                                                            // Pubkey (`app`)
         + 32                                                            // Pubkey (`authority`)
         + 32                                                            // Pubkey (`exchange_key`)
         + 1                                                             // bool (`is_verified`)
-        + 8                                                             // i64 (`birth_date`)
-        + 2                                                             // i16 (`country_code`)
-        + 2                                                             // i16 (`region_code`)
-        + 2                                                             // i16 (`city_code`)
+        + 2                                                             // u16 (`country_code`)
+        + 2                                                             // u16 (`region_code`)
+        + 2                                                             // u16 (`city_code`)
         + (MAX_PROFILE_FIRST_NAME_LENGTH)                               // [u8; MAX_PROFILE_FIRST_NAME_LENGTH] (`first_name`)
-        + (MAX_PROFILE_LAST_NAME_LENGTH)                                // [u8; MAX_PROFILE_LAST_NAME_LENGTH] (`last_name`)  
+        + (MAX_PROFILE_LAST_NAME_LENGTH)                                // [u8; MAX_PROFILE_LAST_NAME_LENGTH] (`last_name`)
+        + 8                                                             // i64 (`birth_date`)  
         + (1 + 1)                                                       // Option<Enum> (`gender`) 
         + (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)                 // Option<String> (`alias`) 
         + (STRING_LENGTH_PREFIX + MAX_STATUS_LENGTH)                    // String (`status_text`) 
         + (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)                   // Option<String> (`metadata uri`)
         + (1 + 8 + 8)                                                   // Option<{u64, u64}> (`current_location`)
         + (1 + 32)                                                      // Option<Pubkey> (`connecting_processor`)
+        + 8                                                             // i64 (`created`)
         + (1 + 8)                                                       // Option<i64> (`modified`)
         + 32                                                            // Pubkey (`reserved_1`)
         + 32                                                            // Pubkey (`reserved_2`)
@@ -421,8 +421,9 @@ impl Profile {
 /// 11. External Connecting processor (optional)
 /// 12. External Collecting processor (optional)
 /// 13. External Referencing processor (optional)
-/// 14. ***** Reserved field 1
-/// 15. ***** Reserved field 2
+/// 14. Profile creation unix timestamp
+/// 15. ***** Reserved field 1
+/// 16. ***** Reserved field 2
 ///
 #[account]
 #[derive(Default)]
@@ -455,6 +456,9 @@ pub struct Subspace {
     /// An address of a Program (external processor) for Publication referencing additional processing (1 + 32)
     pub referencing_processor: Option<Pubkey>,
 
+    /// Subspace creation Unix timestamp (8)
+    pub created_at: i64,
+
     // Reserved field 1
     pub reserved_1: [u8; 32],
     // Reserved field 2
@@ -478,6 +482,7 @@ impl Subspace {
         + (1 + 32)                                              // Option<Pubkey> (`connecting_processor`)
         + (1 + 32)                                              // Option<Pubkey> (`collecting_processor`)
         + (1 + 32)                                              // Option<Pubkey> (`referencing_processor`)
+        + 8                                                     // i64 (`created`)
         + 32                                                    // [u8;32] (`reserved_1`)
         + 32;                                                   // [u8;32] (`reserved_2`)
 
@@ -560,33 +565,27 @@ impl SubspaceManager {
 ///
 /// # Publication account stores:
 ///
-/// 1. Publication create unix timestamp
-/// 2. ***** Reserved field 1
-/// 3. Existing Protocol Application in which Publication was created
-/// 4. References to Publication's author Profile
-/// 5. Publication authority address
-/// 6. Whether or not the publication has encrypted content
-/// 7. Whether or not the Publication is mirroring other existing Publication (e.g. re-post)
-/// 8. Whether or not the Publication is replying to other existing Publication (e.g. comment)
-/// 9. Publication main content type
-/// 10. Publication tag
-/// 11. References to existing Publication if there is a mirror or reply (optional)
-/// 12. Subspace in which Publication being published (optional)
-/// 13. Publication UUID as string
-/// 14. Publication metadata URI
-/// 15. External Collecting processor (optional)
-/// 16. External Referencing processor (optional)
+/// 1. Existing Protocol Application in which Publication was created
+/// 2. References to Publication's author Profile
+/// 3. Publication authority address
+/// 4. Whether or not the publication has encrypted content
+/// 5. Whether or not the Publication is mirroring other existing Publication (e.g. re-post)
+/// 6. Whether or not the Publication is replying to other existing Publication (e.g. comment)
+/// 7. Publication main content type
+/// 8. Publication tag
+/// 9. ***** Reserved field 1
+/// 10. References to existing Publication if there is a mirror or reply (optional)
+/// 11. Subspace in which Publication being published (optional)
+/// 12. Publication UUID as string
+/// 13. Publication metadata URI
+/// 14. External Collecting processor (optional)
+/// 15. External Referencing processor (optional)
+/// 16. Publication create unix timestamp
 /// 17. Publication update unix timestamp (optional)
 ///
 #[account]
 // #[derive(Default)]
 pub struct Publication {
-    /// Unix timestamp of the Publication creation (8)
-    pub created_at: i64,
-
-    // Reserved field 1
-    pub reserved_1: [u8; 32],
-
     /// Application account Pubkey (32)
     pub app: Pubkey,
     /// Publication author profile account Pubkey (32)
@@ -601,11 +600,14 @@ pub struct Publication {
     pub is_reply: bool,
     /// Publication content main type (1)
     pub content_type: ContentType,
-    /// Publication Tag (e.g. '#hashtag')
+    /// Publication Tag (e.g. 'hashtag')
     pub tag: [u8; MAX_TAG_LENGTH],
 
     /// Pubkey that specify target in case Publication is a mirror or reply (32), default value if not mirror or reply
     pub target_publication: Pubkey,
+
+    // Reserved field 1
+    pub reserved_1: [u8; 32],
 
     /// Subspace to publish 
     pub subspace: Option<Pubkey>,
@@ -620,6 +622,8 @@ pub struct Publication {
     /// An address of a Program (external processor) for Publication Referencing additional processing (1 + 32)
     pub referencing_processor: Option<Pubkey>,
 
+    /// Unix timestamp of the Publication creation (8)
+    pub created_at: i64,
     /// The optional Unix timestamp of the Publication modification (1 + 8)
     pub modified_at: Option<i64>,
 }
@@ -628,8 +632,6 @@ impl Publication {
     pub const PREFIX: &'static str = "publication";
     
     pub const LEN: usize = DISCRIMINATOR_LENGTH         // Anchor internal discrimitator   
-        + 8                                             // i64 (`created_at`)
-        + 32                                            // [u8;32] (`reserved_1`) 
         + 32                                            // Pubkey (`app`)
         + 32                                            // Pubkey (`profile`)
         + 32                                            // Pubkey (`authority`)
@@ -639,11 +641,13 @@ impl Publication {
         + 1                                             // Enum (`content_type`) 
         + (MAX_TAG_LENGTH)                              // [u8; MAX_TAG_LENGTH] (`tag`)
         + 32                                            // Pubkey (`target_publication`)
+        + 32                                            // [u8;32] (`reserved_1`) 
         + (1 + 32)                                      // Option<Pubkey> (`subspace`) 
         + (STRING_LENGTH_PREFIX + UUID_LENGTH)          // String (`uuid`)
         + (STRING_LENGTH_PREFIX + MAX_URI_LENGTH)       // String (`metadata_uri`)                               
         + (1 + 32)                                      // Option<Pubkey> (`collecting_processor`)
-        + (1 + 32)                                      // Option<Pubkey> (`referencing_processor`)    
+        + (1 + 32)                                      // Option<Pubkey> (`referencing_processor`) 
+        + 8                                             // i64 (`created_at`)   
         + (1 + 8);                                      // Option<i64> (`modified_at`)
 
 
@@ -969,9 +973,9 @@ pub struct ProfileData {
     pub first_name: String,
     pub last_name: String,
     pub birth_date: i64,
-    pub country_code: i16,
-    pub region_code: i16,
-    pub city_code: i16,
+    pub country_code: u16,
+    pub region_code: u16,
+    pub city_code: u16,
     pub current_location: Option<LocationCoordinates>,
 }
 

@@ -4,7 +4,7 @@ use anchor_lang::prelude::*;
 use solana_program::pubkey::Pubkey;
 
 pub const PROTOCOL_AUTHORITY: Pubkey =
-    solana_program::pubkey!("J5xBSdY8TcEVxVorxfVQM7bdo7Ufjak6dCdjiohy8Rn6");
+    solana_program::pubkey!("CXbSC7kX8Akaxk78Dqb5xU74YGBLekq9KexDLbdQRbL6");
 
 #[constant]
 pub const MIN_PROCESSORNAME_LENGTH: usize = 5;
@@ -46,8 +46,14 @@ pub const  MAX_SUBSPACE_NAME_LENGTH:usize = 32;
 #[constant]
 pub const MAX_TAG_LENGTH: usize = 32;
 
+
+// Maximum allowed age in years
 #[constant]
 pub const MAX_AGE_IN_YEARS: i64 = 120;
+
+// Minimum allowed age years
+#[constant]
+pub const MIN_AGE_IN_YEARS: i64 = 6;
 
 pub const DISCRIMINATOR_LENGTH: usize = 8;
 
@@ -55,3 +61,6 @@ pub const DISCRIMINATOR_LENGTH: usize = 8;
 pub const STRING_LENGTH_PREFIX: usize = 4;
 // Stores the size of the string.
 // pub const ENUM_LENGTH_PREFIX: usize = 1;
+
+
+pub const SECONDS_IN_YEAR: i64 = 31_536_000;
