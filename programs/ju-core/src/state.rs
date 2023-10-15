@@ -573,9 +573,9 @@ impl SubspaceManager {
 /// 6. Whether or not the Publication is replying to other existing Publication (e.g. comment)
 /// 7. Publication main content type
 /// 8. Publication tag
-/// 9. ***** Reserved field 1
-/// 10. References to existing Publication if there is a mirror or reply (optional)
-/// 11. Subspace in which Publication being published (optional)
+/// 9. References to existing Publication if there is a mirror or reply
+/// 10. Subspace in which Publication being published
+/// 11. ***** Reserved field 1
 /// 12. Publication UUID as string
 /// 13. Publication metadata URI
 /// 14. External Collecting processor (optional)
@@ -605,12 +605,11 @@ pub struct Publication {
 
     /// Pubkey that specify target in case Publication is a mirror or reply (32), default value if not mirror or reply
     pub target_publication: Pubkey,
+    /// Subspace to publish, default value if publishing in profile space
+    pub subspace: Pubkey,
 
     // Reserved field 1
     pub reserved_1: [u8; 32],
-
-    /// Subspace to publish 
-    pub subspace: Option<Pubkey>,
 
     /// Publication UUID (STRING_LENGTH_PREFIX + UUID_LENGTH)
     pub uuid: String,
@@ -641,8 +640,8 @@ impl Publication {
         + 1                                             // Enum (`content_type`) 
         + (MAX_TAG_LENGTH)                              // [u8; MAX_TAG_LENGTH] (`tag`)
         + 32                                            // Pubkey (`target_publication`)
+        + 32                                            // Pubkey (`subspace`) 
         + 32                                            // [u8;32] (`reserved_1`) 
-        + (1 + 32)                                      // Option<Pubkey> (`subspace`) 
         + (STRING_LENGTH_PREFIX + UUID_LENGTH)          // String (`uuid`)
         + (STRING_LENGTH_PREFIX + MAX_URI_LENGTH)       // String (`metadata_uri`)                               
         + (1 + 32)                                      // Option<Pubkey> (`collecting_processor`)

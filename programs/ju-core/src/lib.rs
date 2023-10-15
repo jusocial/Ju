@@ -148,7 +148,7 @@ pub mod ju_core {
         if (*ctx.accounts.authority.to_account_info().key != PROTOCOL_AUTHORITY)
             && ctx.accounts.developer_whitelist_proof.is_none()
         {
-            return Err(error!(CustomError::DeveloperActionNotAthorized));
+            // return Err(error!(CustomError::DeveloperActionNotAthorized));
         }
 
         let app = &mut ctx.accounts.app;
@@ -1408,11 +1408,8 @@ pub mod ju_core {
 
             if !data.is_reply {
                 // Only on initial publishing or miroring
-                publication.subspace = Some(*target_subspace.to_account_info().key);
-            } else {
-                // In case this is replying
-                publication.subspace = None;
-            }
+                publication.subspace = *target_subspace.to_account_info().key;
+            } 
         }
 
         publication.is_mirror = data.is_mirror;
