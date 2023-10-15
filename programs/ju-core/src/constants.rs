@@ -44,7 +44,7 @@ pub const  MIN_SUBSPACE_NAME_LENGTH:usize = 4;
 pub const  MAX_SUBSPACE_NAME_LENGTH:usize = 32;
 
 #[constant]
-pub const MAX_TAG_LENGTH: usize = 32;
+pub const MAX_TAG_LENGTH: usize = 12;
 
 
 // Maximum allowed age in years
