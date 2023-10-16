@@ -30,15 +30,16 @@ const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
 const ProcessorType_1 = require("../types/ProcessorType");
 exports.externalProcessorPDADiscriminator = [204, 224, 184, 182, 78, 32, 108, 104];
 class ExternalProcessorPDA {
-    constructor(processorType, processorName, authority, developerWallet, programAddress) {
+    constructor(processorType, isApproved, processorName, authority, developerWallet, programAddress) {
         this.processorType = processorType;
+        this.isApproved = isApproved;
         this.processorName = processorName;
         this.authority = authority;
         this.developerWallet = developerWallet;
         this.programAddress = programAddress;
     }
     static fromArgs(args) {
-        return new ExternalProcessorPDA(args.processorType, args.processorName, args.authority, args.developerWallet, args.programAddress);
+        return new ExternalProcessorPDA(args.processorType, args.isApproved, args.processorName, args.authority, args.developerWallet, args.programAddress);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return ExternalProcessorPDA.deserialize(accountInfo.data, offset);
@@ -75,6 +76,7 @@ class ExternalProcessorPDA {
     pretty() {
         return {
             processorType: 'ProcessorType.' + ProcessorType_1.ProcessorType[this.processorType],
+            isApproved: this.isApproved,
             processorName: this.processorName,
             authority: this.authority.toBase58(),
             developerWallet: this.developerWallet,
@@ -86,6 +88,7 @@ exports.ExternalProcessorPDA = ExternalProcessorPDA;
 exports.externalProcessorPDABeet = new beet.FixableBeetStruct([
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['processorType', ProcessorType_1.processorTypeBeet],
+    ['isApproved', beet.bool],
     ['processorName', beet.utf8String],
     ['authority', beetSolana.publicKey],
     ['developerWallet', beet.coption(beetSolana.publicKey)],

@@ -35,7 +35,7 @@ function createDeleteDeveloperInstruction(accounts, programId = new web3.PublicK
     });
     const keys = [
         {
-            pubkey: accounts.developer,
+            pubkey: accounts.developerWhitelistProof,
             isWritable: true,
             isSigner: false,
         },

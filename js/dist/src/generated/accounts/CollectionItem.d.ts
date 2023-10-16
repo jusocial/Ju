@@ -8,6 +8,8 @@ export type CollectionItemArgs = {
     target: web3.PublicKey;
     authority: web3.PublicKey;
     createdAt: beet.bignum;
+    searchable3Day: beet.bignum;
+    searchableDay: beet.bignum;
 };
 export declare const collectionItemDiscriminator: number[];
 export declare class CollectionItem implements CollectionItemArgs {
@@ -16,6 +18,8 @@ export declare class CollectionItem implements CollectionItemArgs {
     readonly target: web3.PublicKey;
     readonly authority: web3.PublicKey;
     readonly createdAt: beet.bignum;
+    readonly searchable3Day: beet.bignum;
+    readonly searchableDay: beet.bignum;
     private constructor();
     static fromArgs(args: CollectionItemArgs): CollectionItem;
     static fromAccountInfo(accountInfo: web3.AccountInfo<Buffer>, offset?: number): [CollectionItem, number];
@@ -27,6 +31,8 @@ export declare class CollectionItem implements CollectionItemArgs {
         initializer: any;
         target: any;
         createdAt: any;
+        searchable3Day: any;
+        searchableDay: any;
     }>;
     static deserialize(buf: Buffer, offset?: number): [CollectionItem, number];
     serialize(): [Buffer, number];
@@ -39,6 +45,12 @@ export declare class CollectionItem implements CollectionItemArgs {
         target: string;
         authority: string;
         createdAt: number | {
+            toNumber: () => number;
+        };
+        searchable3Day: number | {
+            toNumber: () => number;
+        };
+        searchableDay: number | {
             toNumber: () => number;
         };
     };

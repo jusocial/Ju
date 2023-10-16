@@ -15,6 +15,8 @@ export type CreatePublicationInstructionAccounts = {
     publication: web3.PublicKey;
     subspace?: web3.PublicKey;
     targetPublication?: web3.PublicKey;
+    connectionProof?: web3.PublicKey;
+    subspaceManagerProof?: web3.PublicKey;
     collectingProcessorPda?: web3.PublicKey;
     referencingProcessorPda?: web3.PublicKey;
     authority: web3.PublicKey;

@@ -14,7 +14,7 @@
       "type": {
         "defined": "usize"
       },
-      "value": "50"
+      "value": "200"
     },
     {
       "name": "MIN_APPNAME_LENGTH",
@@ -42,7 +42,7 @@
       "type": {
         "defined": "usize"
       },
-      "value": "100"
+      "value": "200"
     },
     {
       "name": "MIN_ALIAS_LENGTH",
@@ -77,14 +77,7 @@
       "type": {
         "defined": "usize"
       },
-      "value": "100"
-    },
-    {
-      "name": "MIN_PROFILE_FIRST_NAME_LENGTH",
-      "type": {
-        "defined": "usize"
-      },
-      "value": "1"
+      "value": "200"
     },
     {
       "name": "MAX_PROFILE_FIRST_NAME_LENGTH",
@@ -92,13 +85,6 @@
         "defined": "usize"
       },
       "value": "20"
-    },
-    {
-      "name": "MIN_PROFILE_LAST_NAME_LENGTH",
-      "type": {
-        "defined": "usize"
-      },
-      "value": "1"
     },
     {
       "name": "MAX_PROFILE_LAST_NAME_LENGTH",
@@ -119,26 +105,40 @@
       "type": {
         "defined": "usize"
       },
-      "value": "30"
+      "value": "32"
     },
     {
       "name": "MAX_TAG_LENGTH",
       "type": {
         "defined": "usize"
       },
-      "value": "30"
+      "value": "12"
+    },
+    {
+      "name": "MAX_AGE_IN_YEARS",
+      "type": "i64",
+      "value": "120"
+    },
+    {
+      "name": "MIN_AGE_IN_YEARS",
+      "type": "i64",
+      "value": "6"
     }
   ],
   "instructions": [
     {
       "name": "addDeveloper",
       "docs": [
-        "Approve new Developer",
+        "Approve new Developer whitelis proof",
+        "",
+        "# Arguments",
+        "",
+        "* `developer` - Developer Pubkey",
         ""
       ],
       "accounts": [
         {
-          "name": "developer",
+          "name": "developerWhitelistProof",
           "isMut": true,
           "isSigner": false
         },
@@ -153,17 +153,22 @@
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "developer",
+          "type": "publicKey"
+        }
+      ]
     },
     {
       "name": "deleteDeveloper",
       "docs": [
-        "Delete existing Developer",
+        "Delete existing Developer whitelis proof",
         ""
       ],
       "accounts": [
         {
-          "name": "developer",
+          "name": "developerWhitelistProof",
           "isMut": true,
           "isSigner": false
         },
@@ -198,6 +203,15 @@
           "name": "processorPda",
           "isMut": true,
           "isSigner": false
+        },
+        {
+          "name": "developerWhitelistProof",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "Developer whitelist proof"
+          ]
         },
         {
           "name": "authority",
@@ -285,6 +299,15 @@
           "isSigner": false,
           "docs": [
             "Current App (PDA) account"
+          ]
+        },
+        {
+          "name": "developerWhitelistProof",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "Developer whitelist proof"
           ]
         },
         {
@@ -1033,6 +1056,158 @@
       "args": []
     },
     {
+      "name": "addSubspaceManager",
+      "docs": [
+        "Approve new Subspace manager",
+        "",
+        "/// # Arguments",
+        "",
+        "* `manager_role` - Subspace manager Role",
+        ""
+      ],
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "subspace",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "profile",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "connectionProof",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "manager",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "managerRole",
+          "type": {
+            "defined": "SubspaceManagementRoleType"
+          }
+        }
+      ]
+    },
+    {
+      "name": "updateSubspaceManager",
+      "docs": [
+        "Update an existing Subspace manager",
+        "",
+        "/// # Arguments",
+        "",
+        "* `manager_role` - Subspace manager Role",
+        ""
+      ],
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "subspace",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "profile",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "connectionProof",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "manager",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "managerRole",
+          "type": {
+            "defined": "SubspaceManagementRoleType"
+          }
+        }
+      ]
+    },
+    {
+      "name": "deleteSubspaceManager",
+      "docs": [
+        "Delete existing Subspace manager",
+        ""
+      ],
+      "accounts": [
+        {
+          "name": "app",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "subspace",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "profile",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "manager",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "createPublication",
       "docs": [
         "Create new publication",
@@ -1078,6 +1253,26 @@
           "docs": [
             "Publication PDA which has to be replyed or referenced",
             "Must be passed if this mirroring or replying"
+          ]
+        },
+        {
+          "name": "connectionProof",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "Connection PDA that proof Publisher (Profile) is connected to Subspace",
+            "Must be passed in case Publication target is a Subspace"
+          ]
+        },
+        {
+          "name": "subspaceManagerProof",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "SubspaceManager PDA that proof Publisher (Subspace member Profile) is a Manager of Subspace",
+            "Must be passed in case Publication target is a Subspace"
           ]
         },
         {
@@ -1155,6 +1350,36 @@
           "name": "publication",
           "isMut": true,
           "isSigner": false
+        },
+        {
+          "name": "subspace",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "Subspace (PDA)",
+            "Must be passed if Publication store in Subspace"
+          ]
+        },
+        {
+          "name": "connectionProof",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "Connection PDA that proof Publisher (Profile) is connected to Subspace",
+            "Must be passed in case Publication target is a Subspace"
+          ]
+        },
+        {
+          "name": "subspaceManagerProof",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "SubspaceManager PDA that proof Publisher (Subspace member Profile) is a Manager of Subspace",
+            "Must be passed in case Publication target is a Subspace"
+          ]
         },
         {
           "name": "collectingProcessorPda",
@@ -1431,13 +1656,14 @@
   ],
   "accounts": [
     {
-      "name": "DeveloperWhitelistItem",
+      "name": "DeveloperWhitelistProof",
       "docs": [
-        "DeveloperWhitelistItem account is proof that pubkey owner is able to create protocol application",
+        "DeveloperWhitelistProof account is proof that pubkey owner is able to create protocol application",
         "",
-        "# DeveloperWhitelistItem account stores:",
+        "# DeveloperWhitelistProof account stores:",
         "",
         "1. Authority address",
+        "2. Developer address",
         ""
       ],
       "type": {
@@ -1447,6 +1673,13 @@
             "name": "authority",
             "docs": [
               "Account authority (32)."
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "developer",
+            "docs": [
+              "Developer address (32)."
             ],
             "type": "publicKey"
           }
@@ -1461,10 +1694,11 @@
         "# ExternalProcessorPDA account stores:",
         "",
         "1. Processor type",
-        "2. Processor name (ASCII alphanumeric)",
-        "3. Processor PDA authority address",
-        "4. Processor developer walet",
-        "5. Processorr program address",
+        "2. Proccessor Approve status",
+        "3. Processor name (ASCII alphanumeric)",
+        "4. Processor PDA authority address",
+        "5. Processor developer walet",
+        "6. Processorr program address",
         ""
       ],
       "type": {
@@ -1478,6 +1712,13 @@
             "type": {
               "defined": "ProcessorType"
             }
+          },
+          {
+            "name": "isApproved",
+            "docs": [
+              "Approve status"
+            ],
+            "type": "bool"
           },
           {
             "name": "processorName",
@@ -1519,40 +1760,30 @@
         "",
         "## App account stores:",
         "",
-        "1. `app_name`: Unique Application name (ID) as string (ASCII alphanumeric)",
-        "2. `authority`: Application authority address",
-        "3. `metadata_uri`: Application metadata URI (settings)",
-        "4. `profile_first_name_required`: Specifies whether the Profile first name is required",
-        "5. `profile_last_name_required`: Specifies whether the Profile last name is required",
-        "6. `profile_birthdate_required`: Specifies whether the Profile birth date is required",
-        "7. `profile_country_required`: Specifies whether the Profile country is required",
-        "8. `profile_city_required`: Specifies whether the Profile city is required",
-        "9. `profile_metadata_uri_required`: Specifies whether the Profile metadata URI is required",
-        "10. `subspace_name_required`: Specifies whether the Subspace name is required",
-        "11. `subspace_metadata_uri_required`: Specifies whether the Subspace metadata URI is required",
-        "12. `profile_delete_allowed`: Specifies the permission to delete a Profile",
-        "13. `subspace_delete_allowed`: Specifies the permission to delete a Subspace",
-        "14. `publication_delete_allowed`: Specifies the permission to delete a Publication",
-        "15. `profile_individual_processors_allowed`: Specifies the permission to assign Profile's individual external processors.",
-        "16. `subspace_individual_processors_allowed`: Specifies the permission to assign Subspace's individual external processors.",
-        "17. `publication_individual_processors_allowed`: Specifies the permission to assign Publication's individual external processors.",
-        "18. `registering_processor`: An address of an external processor for additional processing during Profile creation",
-        "19. `connecting_processor`: An address of an external processor for additional processing during Profile connection",
-        "20. `publishing_processor`: An address of an external processor for additional processing during Publication creation",
-        "21. `collecting_processor`: An address of an external processor for additional processing during Publication collection",
-        "22. `referencing_processor`: An address of an external processor for additional processing during Publication referencing",
+        "1. `authority`: Application authority address",
+        "2. `profile_metadata_required`: Specifies whether the Profile metadata required",
+        "3. `subspace_metadata_required`: Specifies whether the Subspace metadata required",
+        "4. `profile_delete_allowed`: Specifies the permission to delete a Profile",
+        "5. `subspace_delete_allowed`: Specifies the permission to delete a Subspace",
+        "6. `publication_delete_allowed`: Specifies the permission to delete a Publication",
+        "7. `profile_individual_processors_allowed`: Specifies the permission to assign Profile's individual external processors.",
+        "8. `subspace_individual_processors_allowed`: Specifies the permission to assign Subspace's individual external processors.",
+        "9. `publication_individual_processors_allowed`: Specifies the permission to assign Publication's individual external processors.",
+        "10. `app_name`: Unique Application name (ID) as string (ASCII alphanumeric)",
+        "11. `metadata_uri`: Application metadata URI (settings)",
+        "12. `registering_processor`: An address of an external processor for additional processing during Profile creation",
+        "13. `connecting_processor`: An address of an external processor for additional processing during Profile connection",
+        "14. `publishing_processor`: An address of an external processor for additional processing during Publication creation",
+        "15. `collecting_processor`: An address of an external processor for additional processing during Publication collection",
+        "16. `referencing_processor`: An address of an external processor for additional processing during Publication referencing",
+        "17.  ***** `reserved_1`: Reserved field 1",
+        "18.  ***** `reserved_1`: Reserved field 2",
+        "19.  ***** `reserved_1`: Reserved field 3",
         ""
       ],
       "type": {
         "kind": "struct",
         "fields": [
-          {
-            "name": "appName",
-            "docs": [
-              "App name/ID (STRING_LENGTH_PREFIX + MAX_APPID_LENGTH)."
-            ],
-            "type": "string"
-          },
           {
             "name": "authority",
             "docs": [
@@ -1561,67 +1792,16 @@
             "type": "publicKey"
           },
           {
-            "name": "metadataUri",
+            "name": "profileMetadataRequired",
             "docs": [
-              "URI of the metadata (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)."
-            ],
-            "type": {
-              "option": "string"
-            }
-          },
-          {
-            "name": "profileFirstNameRequired",
-            "docs": [
-              "Specifies whether the Profile name is required."
+              "Specifies whether the Profile metadata required."
             ],
             "type": "bool"
           },
           {
-            "name": "profileLastNameRequired",
+            "name": "subspaceMetadataRequired",
             "docs": [
-              "Specifies whether the Profile last name is required."
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "profileBirthdateRequired",
-            "docs": [
-              "Specifies whether the Profile birth date is required."
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "profileCountryRequired",
-            "docs": [
-              "Specifies whether the Profile country is required."
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "profileCityRequired",
-            "docs": [
-              "Specifies whether the Profile city is required."
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "profileMetadataUriRequired",
-            "docs": [
-              "Specifies whether the Profile metadata URI is required."
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "subspaceNameRequired",
-            "docs": [
-              "Specifies whether the Subspace name is required."
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "subspaceMetadataUriRequired",
-            "docs": [
-              "Specifies whether the Subspace metadata URI is required."
+              "Specifies whether the Subspace metadata required."
             ],
             "type": "bool"
           },
@@ -1668,6 +1848,22 @@
             "type": "bool"
           },
           {
+            "name": "appName",
+            "docs": [
+              "App name/ID (STRING_LENGTH_PREFIX + MAX_APPID_LENGTH)."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "metadataUri",
+            "docs": [
+              "URI of the metadata (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)."
+            ],
+            "type": {
+              "option": "string"
+            }
+          },
+          {
             "name": "registeringProcessor",
             "docs": [
               "An address of an external processor for additional processing during Profile creation."
@@ -1711,6 +1907,33 @@
             "type": {
               "option": "publicKey"
             }
+          },
+          {
+            "name": "reserved1",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "reserved2",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "reserved3",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
           }
         ]
       }
@@ -1724,19 +1947,29 @@
         "",
         "1. Application account (PDA)",
         "2. Profile authority address",
-        "3. Unique Application's user Profile Alias as string (ASCII alphanumeric)",
-        "4. Profile metadata URI",
-        "5. Profile status text",
-        "6. Verification status",
-        "7. Profile first name",
-        "8. Profile last name",
-        "9. Profile birth date",
-        "10. Profile country code",
-        "11. Profile city code",
-        "12. Profile location coordinates",
-        "13. External connection processor (optional)",
-        "14. Profile creation unix timestamp",
-        "15. Profile modification unix timestamp",
+        "3. Exchange key",
+        "4. Verification status",
+        "5. Profile country code",
+        "6. Profile region code",
+        "7. Profile city code",
+        "8. Profile first name",
+        "9. Profile last name",
+        "10. Profile birth date as unix timestamp",
+        "11. Profile birth seachable number of 10-years-period (decade)",
+        "12. Profile birth seachable number of 5-years-period",
+        "13. Profile birth seachable number of week-period",
+        "14. Profile birth seachable number of day",
+        "15. Profile gender",
+        "16. Unique Application's user Profile Alias as string (ASCII alphanumeric)",
+        "17. Profile status text",
+        "18. Profile metadata URI",
+        "19. Profile location coordinates",
+        "20. External connection processor (optional)",
+        "21. Profile creation unix timestamp",
+        "22. Profile modification unix timestamp",
+        "23. ***** Reserved field 1",
+        "24. ***** Reserved field 2",
+        "25. ***** Reserved field 3",
         ""
       ],
       "type": {
@@ -1757,6 +1990,78 @@
             "type": "publicKey"
           },
           {
+            "name": "exchangeKey",
+            "type": "publicKey"
+          },
+          {
+            "name": "isVerified",
+            "docs": [
+              "Verified status for users (1)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "countryCode",
+            "type": "u16"
+          },
+          {
+            "name": "regionCode",
+            "type": "u16"
+          },
+          {
+            "name": "cityCode",
+            "type": "u16"
+          },
+          {
+            "name": "firstName",
+            "type": {
+              "array": [
+                "u8",
+                20
+              ]
+            }
+          },
+          {
+            "name": "lastName",
+            "type": {
+              "array": [
+                "u8",
+                30
+              ]
+            }
+          },
+          {
+            "name": "birthDate",
+            "type": "i64"
+          },
+          {
+            "name": "searchable10Years",
+            "type": "i64"
+          },
+          {
+            "name": "searchable5Years",
+            "type": "i64"
+          },
+          {
+            "name": "searchableWeek",
+            "type": "i64"
+          },
+          {
+            "name": "searchableDay",
+            "type": "i64"
+          },
+          {
+            "name": "gender",
+            "docs": [
+              "Profile's user gender"
+            ],
+            "type": {
+              "option": {
+                "defined": "Gender"
+              }
+            }
+          },
+          {
             "name": "alias",
             "docs": [
               "Profile alias (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)."
@@ -1766,58 +2071,19 @@
             }
           },
           {
+            "name": "statusText",
+            "docs": [
+              "Profile Status text (STRING_LENGTH_PREFIX + MAX_STATUS_LENGTH)"
+            ],
+            "type": "string"
+          },
+          {
             "name": "metadataUri",
             "docs": [
               "Profile metadata URI (STRING_LENGTH_PREFIX + MAX_URI_LENGTH)."
             ],
             "type": {
               "option": "string"
-            }
-          },
-          {
-            "name": "statusText",
-            "docs": [
-              "Profile Status text (1 + STRING_LENGTH_PREFIX + MAX_STATUS_LENGTH)"
-            ],
-            "type": {
-              "option": "string"
-            }
-          },
-          {
-            "name": "verified",
-            "docs": [
-              "Verified status for VIP users (1)"
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "firstName",
-            "type": {
-              "option": "string"
-            }
-          },
-          {
-            "name": "lastName",
-            "type": {
-              "option": "string"
-            }
-          },
-          {
-            "name": "birthDate",
-            "type": {
-              "option": "i64"
-            }
-          },
-          {
-            "name": "countryCode",
-            "type": {
-              "option": "i16"
-            }
-          },
-          {
-            "name": "cityCode",
-            "type": {
-              "option": "u16"
             }
           },
           {
@@ -1852,6 +2118,33 @@
             "type": {
               "option": "i64"
             }
+          },
+          {
+            "name": "reserved1",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "reserved2",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "reserved3",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
           }
         ]
       }
@@ -1866,14 +2159,19 @@
         "1. Application address",
         "2. Profile authority address",
         "3. Subspace owner Profile Pubkey",
-        "4. Unique application's user profile alias as string (optional, ASCII alphanumeric) (optional)",
-        "5. Subspace name (optional)",
-        "6. Subspace UUID",
-        "7. Subspace metadata URI (optional)",
-        "8. External Publishing processor (optional)",
-        "9. External Connecting processor (optional)",
-        "10. External Collecting processor (optional)",
-        "11. External Referencing processor (optional)",
+        "4. Exchange key",
+        "5. Subspace name",
+        "6. Subspace publishing permission level",
+        "7. Unique application's user profile alias as string (optional, ASCII alphanumeric) (optional)",
+        "8. Subspace UUID",
+        "9. Subspace metadata URI (optional)",
+        "10. External Publishing processor (optional)",
+        "11. External Connecting processor (optional)",
+        "12. External Collecting processor (optional)",
+        "13. External Referencing processor (optional)",
+        "14. Profile creation unix timestamp",
+        "15. ***** Reserved field 1",
+        "16. ***** Reserved field 2",
         ""
       ],
       "type": {
@@ -1894,6 +2192,10 @@
             "type": "publicKey"
           },
           {
+            "name": "exchangeKey",
+            "type": "publicKey"
+          },
+          {
             "name": "creator",
             "docs": [
               "Subspace creator Profile Pubkey (32)"
@@ -1901,18 +2203,30 @@
             "type": "publicKey"
           },
           {
-            "name": "alias",
+            "name": "publishingPermission",
             "docs": [
-              "Profile alias (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)."
+              "Subspace publishing permission level"
             ],
             "type": {
-              "option": "string"
+              "defined": "SubspacePublishingPermissionLevel"
             }
           },
           {
             "name": "name",
             "docs": [
               "Subspace name"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "alias",
+            "docs": [
+              "Profile alias (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)."
             ],
             "type": {
               "option": "string"
@@ -1969,6 +2283,31 @@
             "type": {
               "option": "publicKey"
             }
+          },
+          {
+            "name": "createdAt",
+            "docs": [
+              "Subspace creation Unix timestamp (8)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "reserved1",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "reserved2",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
           }
         ]
       }
@@ -1980,9 +2319,11 @@
         "",
         "# SubspaceManager account stores:",
         "",
-        "1. Application account (PDA)",
-        "2. Account authority address",
-        "3. Manager Role",
+        "1. Application (PDA) address",
+        "2. Subspace (PDA) address",
+        "3. Profile (PDA) address",
+        "4. Account authority address",
+        "5. Manager Role",
         ""
       ],
       "type": {
@@ -1992,6 +2333,20 @@
             "name": "app",
             "docs": [
               "Application Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "subspace",
+            "docs": [
+              "Subspace Pubkey (32)"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "profile",
+            "docs": [
+              "Pubkey of the manager Profile (32)."
             ],
             "type": "publicKey"
           },
@@ -2008,7 +2363,7 @@
               "Manager role"
             ],
             "type": {
-              "defined": "ManagementRoleType"
+              "defined": "SubspaceManagementRoleType"
             }
           }
         ]
@@ -2025,18 +2380,20 @@
         "2. References to Publication's author Profile",
         "3. Publication authority address",
         "4. Whether or not the publication has encrypted content",
-        "5. Publication metadata URI",
-        "6. Subspace in which Publication being published",
-        "7. Whether or not the Publication is mirroring other existing Publication (e.g. re-post)",
-        "8. Whether or not the Publication is replying to other existing Publication (e.g. comment)",
-        "9. References to existing Publication if there is a mirror or reply (optional)",
-        "10. Publication main content type",
-        "11. Publication tag",
-        "12. Publication UUID as string",
-        "13. External Collecting processor (optional)",
-        "14. External Referencing processor (optional)",
-        "15. Publication create unix timestamp",
-        "16. Publication update unix timestamp (optional)",
+        "5. Whether or not the Publication is mirroring other existing Publication (e.g. re-post)",
+        "6. Whether or not the Publication is replying to other existing Publication (e.g. comment)",
+        "7. Publication main content type",
+        "8. Publication tag",
+        "9. Searchable number of 3-day-perid",
+        "10. Searchable number of day",
+        "11. References to existing Publication if there is a mirror or reply",
+        "12. Subspace in which Publication being published",
+        "13. Publication UUID as string",
+        "14. Publication metadata URI",
+        "15. External Collecting processor (optional)",
+        "16. External Referencing processor (optional)",
+        "17. Publication create unix timestamp",
+        "18. Publication update unix timestamp (optional)",
         ""
       ],
       "type": {
@@ -2071,15 +2428,6 @@
             "type": "bool"
           },
           {
-            "name": "subspace",
-            "docs": [
-              "Subspace to publish"
-            ],
-            "type": {
-              "option": "publicKey"
-            }
-          },
-          {
             "name": "isMirror",
             "docs": [
               "Flag to determine whether publication is mirror (e.g. 'repost') (1)"
@@ -2094,15 +2442,6 @@
             "type": "bool"
           },
           {
-            "name": "targetPublication",
-            "docs": [
-              "Optional pubkey that specify target in case Publication is a mirror or reply (1 + 32)"
-            ],
-            "type": {
-              "option": "publicKey"
-            }
-          },
-          {
             "name": "contentType",
             "docs": [
               "Publication content main type (1)"
@@ -2114,11 +2453,36 @@
           {
             "name": "tag",
             "docs": [
-              "Publication Tag (e.g. '#hashtag') (1 + MAX_TAG_LENGTH)"
+              "Publication Tag (e.g. 'hashtag')"
             ],
             "type": {
-              "option": "string"
+              "array": [
+                "u8",
+                12
+              ]
             }
+          },
+          {
+            "name": "searchable3Day",
+            "type": "i64"
+          },
+          {
+            "name": "searchableDay",
+            "type": "i64"
+          },
+          {
+            "name": "targetPublication",
+            "docs": [
+              "Pubkey that specify target in case Publication is a mirror or reply (32), default value if not mirror or reply"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "subspace",
+            "docs": [
+              "Subspace to publish, default value if publishing in profile space"
+            ],
+            "type": "publicKey"
           },
           {
             "name": "uuid",
@@ -2185,7 +2549,9 @@
         "5. Target Application's Profile/Subspace address (e.g. which initializer followed)",
         "6. Whether or not Connection is approved by target (e.g. accept friend request)",
         "7. Connection initialize unix timestamp",
-        "8. Connection modify unix timestamp",
+        "8. Searchable number of 3-day-period",
+        "8. Searchable number of day",
+        "9. Connection modify unix timestamp",
         ""
       ],
       "type": {
@@ -2243,6 +2609,14 @@
             "type": "i64"
           },
           {
+            "name": "searchable3Day",
+            "type": "i64"
+          },
+          {
+            "name": "searchableDay",
+            "type": "i64"
+          },
+          {
             "name": "modifiedAt",
             "docs": [
               "Connection approve Unix timestamp (1 + 8)"
@@ -2266,6 +2640,8 @@
         "3. CollectionItem target entity (e.g. Publication) address",
         "4. CollectionItem authority address",
         "5. CollectionItem creation unix timestamp",
+        "6. Searchable number of 3-day-period",
+        "7. Searchable number of day",
         ""
       ],
       "type": {
@@ -2304,6 +2680,14 @@
             "docs": [
               "Unix timestamp of the CollectionItem creation (8)"
             ],
+            "type": "i64"
+          },
+          {
+            "name": "searchable3Day",
+            "type": "i64"
+          },
+          {
+            "name": "searchableDay",
             "type": "i64"
           }
         ]
@@ -2379,6 +2763,8 @@
         "5. Reaction initializer Profile",
         "6. Reaction type variant",
         "7. Reaction create unix timestamp",
+        "8. Searchable number of 3-day-period",
+        "9. Searchable number of day",
         ""
       ],
       "type": {
@@ -2436,6 +2822,14 @@
               "Unix timestamp of the Reaction creation (8)"
             ],
             "type": "i64"
+          },
+          {
+            "name": "searchable3Day",
+            "type": "i64"
+          },
+          {
+            "name": "searchableDay",
+            "type": "i64"
           }
         ]
       }
@@ -2453,8 +2847,9 @@
         "4. Report Target address",
         "5. Report initializer Profile",
         "6. Report type variant",
-        "7. Report notification text",
-        "8. Report create unix timestamp",
+        "7. Searchable number of day",
+        "8. Report notification text",
+        "9. Report create unix timestamp",
         ""
       ],
       "type": {
@@ -2507,6 +2902,10 @@
             }
           },
           {
+            "name": "searchableDay",
+            "type": "i64"
+          },
+          {
             "name": "notification",
             "docs": [
               "Report Notification"
@@ -2537,13 +2936,8 @@
         "## Fields:",
         "",
         "- `metadata_uri`: The optional metadata URI for the app.",
-        "- `profile_first_name_required`: Specifies whether the Profile name is required.",
-        "- `profile_last_name_required`: Specifies whether the Profile last name is required.",
-        "- `profile_birthdate_required`: Specifies whether the Profile birth date is required.",
-        "- `profile_location_required`: Specifies whether the Profile location is required.",
-        "- `profile_metadata_uri_required`: Specifies whether the Profile metadata URI is required.",
-        "- `subspace_name_required`: Specifies whether the Subspace name is required.",
-        "- `subspace_metadata_uri_required`: Specifies whether the Subspace metadata URI is required.",
+        "- `profile_metadata_required`: Specifies whether the Profile metadata required.",
+        "- `subspace_metadata_required`: Specifies whether the Subspace metadata required.",
         "- `profile_delete_allowed`: Specifies the permission to delete a Profile.",
         "- `subspace_delete_allowed`: Specifies the permission to delete a Subspace.",
         "- `publication_delete_allowed`: Specifies the permission to delete a Publication.",
@@ -2565,58 +2959,16 @@
             }
           },
           {
-            "name": "profileFirstNameRequired",
+            "name": "profileMetadataRequired",
             "docs": [
-              "Specifies whether the Profile first name is required."
+              "Specifies whether the Profile metadata is required."
             ],
             "type": "bool"
           },
           {
-            "name": "profileLastNameRequired",
+            "name": "subspaceMetadataRequired",
             "docs": [
-              "Specifies whether the Profile last name is required."
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "profileBirthdateRequired",
-            "docs": [
-              "Specifies whether the Profile birth date is required."
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "profileCountryRequired",
-            "docs": [
-              "Specifies whether the Profile country is required."
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "profileCityRequired",
-            "docs": [
-              "Specifies whether the Profile city is required."
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "profileMetadataUriRequired",
-            "docs": [
-              "Specifies whether the Profile metadata URI is required."
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "subspaceNameRequired",
-            "docs": [
-              "Specifies whether the Subspace name is required."
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "subspaceMetadataUriRequired",
-            "docs": [
-              "Specifies whether the Subspace metadata URI is required."
+              "Specifies whether the Subspace metadata is required."
             ],
             "type": "bool"
           },
@@ -2675,12 +3027,14 @@
         "1. `alias` - Unique Application's user Profile Alias as string (ASCII alphanumeric)",
         "2. `metadata_uri` - Profile metadata URI",
         "3. `status_text` - Profile status",
-        "4. `first_name` Profile first name",
-        "5. `last_name` Profile last name",
-        "6. `birth_date` - Profile birth date",
-        "7. `country_code` Profile country",
-        "8. `city_code` Profile city",
-        "9. `current_location` - Profile location coordinates",
+        "4. `gender` - Profile gender",
+        "5. `first_name` Profile first name",
+        "6. `last_name` Profile last name",
+        "7. `birth_date` - Profile birth date",
+        "8. `country_code` Profile country",
+        "9. `region_code` Profile region (region)",
+        "10. `city_code` Profile city",
+        "11. `current_location` - Profile location coordinates",
         ""
       ],
       "type": {
@@ -2700,39 +3054,39 @@
           },
           {
             "name": "statusText",
+            "type": "string"
+          },
+          {
+            "name": "gender",
             "type": {
-              "option": "string"
+              "option": {
+                "defined": "Gender"
+              }
             }
           },
           {
             "name": "firstName",
-            "type": {
-              "option": "string"
-            }
+            "type": "string"
           },
           {
             "name": "lastName",
-            "type": {
-              "option": "string"
-            }
+            "type": "string"
           },
           {
             "name": "birthDate",
-            "type": {
-              "option": "i64"
-            }
+            "type": "i64"
           },
           {
             "name": "countryCode",
-            "type": {
-              "option": "i16"
-            }
+            "type": "u16"
+          },
+          {
+            "name": "regionCode",
+            "type": "u16"
           },
           {
             "name": "cityCode",
-            "type": {
-              "option": "u16"
-            }
+            "type": "u16"
           },
           {
             "name": "currentLocation",
@@ -2753,7 +3107,7 @@
         "# Struct contains:",
         "",
         "1. `alias` - Unique Application's Subspace Alias as string (ASCII alphanumeric) (optional)",
-        "2. `name` - Subspace name (optional)",
+        "2. `name` - Subspace name",
         "3. `metadata_uri` - Publication metadata URI (optional)",
         ""
       ],
@@ -2768,8 +3122,12 @@
           },
           {
             "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "publishingPermission",
             "type": {
-              "option": "string"
+              "defined": "SubspacePublishingPermissionLevel"
             }
           },
           {
@@ -2823,9 +3181,7 @@
           },
           {
             "name": "tag",
-            "type": {
-              "option": "string"
-            }
+            "type": "string"
           }
         ]
       }
@@ -2966,6 +3322,33 @@
       }
     },
     {
+      "name": "Gender",
+      "docs": [
+        "Gender type",
+        "",
+        "# Enum variants:",
+        "",
+        "1. Male",
+        "2. Female",
+        "3. Other (or Prefer not to say)",
+        ""
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Male"
+          },
+          {
+            "name": "Female"
+          },
+          {
+            "name": "OtherOrPreferNotToSay"
+          }
+        ]
+      }
+    },
+    {
       "name": "ContentType",
       "docs": [
         "Content type that publication focus (e.g. short video)",
@@ -3004,6 +3387,41 @@
           },
           {
             "name": "Link"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SubspacePublishingPermissionLevel",
+      "docs": [
+        "Subspace publishing permission level",
+        "",
+        "# Enum variants:",
+        "",
+        "* All",
+        "* AllMembers",
+        "* ApprovedMembers",
+        "* Admins",
+        "* Owner",
+        ""
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "All"
+          },
+          {
+            "name": "AllMembers"
+          },
+          {
+            "name": "ApprovedMembers"
+          },
+          {
+            "name": "Admins"
+          },
+          {
+            "name": "Owner"
           }
         ]
       }
@@ -3144,7 +3562,7 @@
       }
     },
     {
-      "name": "ManagementRoleType",
+      "name": "SubspaceManagementRoleType",
       "docs": [
         "Subspace management Roles",
         "",
@@ -3158,16 +3576,46 @@
         "kind": "enum",
         "variants": [
           {
-            "name": "Admin"
+            "name": "Publisher"
           },
           {
-            "name": "Publisher"
+            "name": "Admin"
           }
         ]
       }
     }
   ],
   "events": [
+    {
+      "name": "NewDeveloperEvent",
+      "fields": [
+        {
+          "name": "developer",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "createdAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DeleteDeveloperEvent",
+      "fields": [
+        {
+          "name": "developer",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "deletedAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
     {
       "name": "NewExternalProcessorEvent",
       "fields": [
@@ -3313,6 +3761,46 @@
         },
         {
           "name": "deletedAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "NewSubspaceManagerEvent",
+      "fields": [
+        {
+          "name": "app",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "profile",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "createdAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "UpdateSubspaceManagerEvent",
+      "fields": [
+        {
+          "name": "app",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "profile",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "modifiedAt",
           "type": "i64",
           "index": false
         }
@@ -3527,226 +4015,256 @@
   "errors": [
     {
       "code": 6000,
-      "name": "ProcessorManagementNotAthorized",
-      "msg": "Procesor management action not authorized"
+      "name": "DeveloperNotAthorized",
+      "msg": "Developer not authorized"
     },
     {
       "code": 6001,
+      "name": "DeveloperActionNotAthorized",
+      "msg": "Developer action not authorized"
+    },
+    {
+      "code": 6002,
       "name": "ProcessorTypeMismatch",
       "msg": "Procesor type mismatch"
     },
     {
-      "code": 6002,
+      "code": 6003,
       "name": "ProcessorNameLengthIncorrect",
       "msg": "Procesor name length is incorrect"
     },
     {
-      "code": 6003,
-      "name": "ProcessorNameMustBeAlphanumeric",
-      "msg": "Processor name must contain only ASCII letters and numbers"
+      "code": 6004,
+      "name": "ProcessorNameInvalid",
+      "msg": "Processor name must contain only ASCII letters in lower case and numbers"
     },
     {
-      "code": 6004,
+      "code": 6005,
       "name": "ProcessorNotWhitelisted",
       "msg": "Procesor trying to use is not whitelisted"
     },
     {
-      "code": 6005,
+      "code": 6006,
       "name": "AppNameLengthIncorrect",
       "msg": "Application name (ID) length is incorrect"
     },
     {
-      "code": 6006,
-      "name": "AppNameMustBeAlphanumeric",
-      "msg": "Application name (ID) must contain only ASCII letters and numbers"
+      "code": 6007,
+      "name": "AppNameInvalid",
+      "msg": "Application name must contain only ASCII letters in lower case and numbers"
     },
     {
-      "code": 6007,
+      "code": 6008,
       "name": "AppManagementNotAthorized",
       "msg": "App management action not authorized"
     },
     {
-      "code": 6008,
+      "code": 6009,
       "name": "MissingRequiredField",
       "msg": "Missing field required by Application settings"
     },
     {
-      "code": 6009,
+      "code": 6010,
       "name": "ActionProhibitedByAppSettings",
       "msg": "The action is prohibited by application settings"
     },
     {
-      "code": 6010,
+      "code": 6011,
       "name": "AliasLengthIncorrect",
       "msg": "Alias length is incorrect"
     },
     {
-      "code": 6011,
-      "name": "AliasMustBeAlphanumeric",
-      "msg": "Alias must contain only ASCII letters and numbers"
+      "code": 6012,
+      "name": "AliasInvalid",
+      "msg": "Alias must contain only ASCII letters in lower case, numbers and underscores"
     },
     {
-      "code": 6012,
+      "code": 6013,
       "name": "ProfileIncorrect",
       "msg": "Profile incorrect"
     },
     {
-      "code": 6013,
+      "code": 6014,
       "name": "ProfileAliasIncorrect",
       "msg": "Profile alias is incorrect"
     },
     {
-      "code": 6014,
+      "code": 6015,
       "name": "AliasAccountRequired",
       "msg": "Alias account required to register action"
     },
     {
-      "code": 6015,
+      "code": 6016,
       "name": "AliasAccountsMustBeNone",
       "msg": "Alias accounts must not be passed"
     },
     {
-      "code": 6016,
+      "code": 6017,
       "name": "BothAliasAccountRequired",
       "msg": "Both alias account required to update"
     },
     {
-      "code": 6017,
+      "code": 6018,
       "name": "CurrentAliasAccountRequired",
       "msg": "Current alias account required to delete"
     },
     {
-      "code": 6018,
+      "code": 6019,
       "name": "UpdateNotAuthorized",
       "msg": "Profile update not authorized"
     },
     {
-      "code": 6019,
+      "code": 6020,
+      "name": "BirthDateIncorrect",
+      "msg": "Profile birth date is incorrect"
+    },
+    {
+      "code": 6021,
       "name": "ProfileFirstNameLengthIncorrect",
       "msg": "Profile first name length is incorrect"
     },
     {
-      "code": 6020,
+      "code": 6022,
       "name": "ProfileLastNameLengthIncorrect",
       "msg": "Profile last name length is incorrect"
     },
     {
-      "code": 6021,
+      "code": 6023,
       "name": "SubspaceAliasIncorrect",
       "msg": "Subspace alias is incorrect"
     },
     {
-      "code": 6022,
+      "code": 6024,
       "name": "SubspaceNameIncorrect",
       "msg": "Subspace name length is incorrect"
     },
     {
-      "code": 6023,
+      "code": 6025,
+      "name": "SubspacePublishingPermissionViolation",
+      "msg": "Subspace publishing permission violated"
+    },
+    {
+      "code": 6026,
+      "name": "SubspacePublishingConnectionProofAccountRequired",
+      "msg": "Subspace publishing Connection-proof account required"
+    },
+    {
+      "code": 6027,
+      "name": "SubspacePublishingManagerProofAccountRequired",
+      "msg": "Subspace publishing Manager-proof account required"
+    },
+    {
+      "code": 6028,
       "name": "UriLengthIncorrect",
       "msg": "URI length is incorrect"
     },
     {
-      "code": 6024,
+      "code": 6029,
       "name": "TargetPublicationRequired",
       "msg": "Missed Target Publication account"
     },
     {
-      "code": 6025,
+      "code": 6030,
       "name": "BothMirrorAndReplyNotAllowed",
       "msg": "Both mirroring and replying not allowed in the same time"
     },
     {
-      "code": 6026,
+      "code": 6031,
       "name": "SelfConnectionNotAllowed",
       "msg": "Self conections is not allowed"
     },
     {
-      "code": 6027,
+      "code": 6032,
       "name": "ConnectionTargetAccountMissed",
       "msg": "Connection target account is missed"
     },
     {
-      "code": 6028,
+      "code": 6033,
       "name": "ConnectionTargetAccountInvalid",
       "msg": "Connection target account is invalid"
     },
     {
-      "code": 6029,
+      "code": 6034,
       "name": "ConnectionTargetAuthorityMismatch",
       "msg": "Connection target authority mismatch"
     },
     {
-      "code": 6030,
+      "code": 6035,
       "name": "ConnectionValidationFail",
       "msg": "Connection validation failed"
     },
     {
-      "code": 6031,
+      "code": 6036,
       "name": "AliasAccountExist",
       "msg": "Alias account already exist"
     },
     {
-      "code": 6032,
+      "code": 6037,
       "name": "SelfPublicationCollecting",
       "msg": "Forbidden to collect user's  own publication"
     },
     {
-      "code": 6033,
+      "code": 6038,
+      "name": "PublicationTagIncorrect",
+      "msg": "Publication Tag is incorrect"
+    },
+    {
+      "code": 6039,
       "name": "RegisteringProcessorAccountMissed",
       "msg": "Missed registering external processor account"
     },
     {
-      "code": 6034,
+      "code": 6040,
       "name": "ConnectingProcessorAccountMissed",
       "msg": "Missed connecting external processor account"
     },
     {
-      "code": 6035,
+      "code": 6041,
       "name": "PublishingProcessorAccountMissed",
       "msg": "Missed publishing external processor account"
     },
     {
-      "code": 6036,
+      "code": 6042,
       "name": "CollectingProcessorAccountMissed",
       "msg": "Missed collecting external processor account"
     },
     {
-      "code": 6037,
+      "code": 6043,
       "name": "ReferencingProcessorAccountMissed",
       "msg": "Missed referencing external processor account"
     },
     {
-      "code": 6038,
+      "code": 6044,
       "name": "RegisteringProcessorMismatch",
       "msg": "Registering external processor mismatch"
     },
     {
-      "code": 6039,
+      "code": 6045,
       "name": "ConnectingProcessorMismatch",
       "msg": "Connecting external processor mismatch"
     },
     {
-      "code": 6040,
+      "code": 6046,
       "name": "PublishingProcessorMismatch",
       "msg": "Publishing external processor mismatch"
     },
     {
-      "code": 6041,
+      "code": 6047,
       "name": "CollectingProcessorMismatch",
       "msg": "Collecting external processor mismatch"
     },
     {
-      "code": 6042,
+      "code": 6048,
       "name": "ReferencingProcessorMismatch",
       "msg": "Referencing external processor mismatch"
     },
     {
-      "code": 6043,
+      "code": 6049,
       "name": "ReactionTargetAccountInvalid",
       "msg": "Reaction target account is invalid"
     },
     {
-      "code": 6044,
+      "code": 6050,
       "name": "ReportTargetAccountInvalid",
       "msg": "Report target account is invalid"
     }

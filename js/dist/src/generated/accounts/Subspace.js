@@ -27,23 +27,29 @@ exports.subspaceBeet = exports.Subspace = exports.subspaceDiscriminator = void 0
 const web3 = __importStar(require("@solana/web3.js"));
 const beet = __importStar(require("@metaplex-foundation/beet"));
 const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
+const SubspacePublishingPermissionLevel_1 = require("../types/SubspacePublishingPermissionLevel");
 exports.subspaceDiscriminator = [105, 6, 104, 112, 174, 108, 161, 167];
 class Subspace {
-    constructor(app, authority, creator, alias, name, uuid, metadataUri, publishingProcessor, connectingProcessor, collectingProcessor, referencingProcessor) {
+    constructor(app, authority, exchangeKey, creator, publishingPermission, name, alias, uuid, metadataUri, publishingProcessor, connectingProcessor, collectingProcessor, referencingProcessor, createdAt, reserved1, reserved2) {
         this.app = app;
         this.authority = authority;
+        this.exchangeKey = exchangeKey;
         this.creator = creator;
-        this.alias = alias;
+        this.publishingPermission = publishingPermission;
         this.name = name;
+        this.alias = alias;
         this.uuid = uuid;
         this.metadataUri = metadataUri;
         this.publishingProcessor = publishingProcessor;
         this.connectingProcessor = connectingProcessor;
         this.collectingProcessor = collectingProcessor;
         this.referencingProcessor = referencingProcessor;
+        this.createdAt = createdAt;
+        this.reserved1 = reserved1;
+        this.reserved2 = reserved2;
     }
     static fromArgs(args) {
-        return new Subspace(args.app, args.authority, args.creator, args.alias, args.name, args.uuid, args.metadataUri, args.publishingProcessor, args.connectingProcessor, args.collectingProcessor, args.referencingProcessor);
+        return new Subspace(args.app, args.authority, args.exchangeKey, args.creator, args.publishingPermission, args.name, args.alias, args.uuid, args.metadataUri, args.publishingProcessor, args.connectingProcessor, args.collectingProcessor, args.referencingProcessor, args.createdAt, args.reserved1, args.reserved2);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return Subspace.deserialize(accountInfo.data, offset);
@@ -81,15 +87,32 @@ class Subspace {
         return {
             app: this.app.toBase58(),
             authority: this.authority.toBase58(),
+            exchangeKey: this.exchangeKey.toBase58(),
             creator: this.creator.toBase58(),
-            alias: this.alias,
+            publishingPermission: 'SubspacePublishingPermissionLevel.' +
+                SubspacePublishingPermissionLevel_1.SubspacePublishingPermissionLevel[this.publishingPermission],
             name: this.name,
+            alias: this.alias,
             uuid: this.uuid,
             metadataUri: this.metadataUri,
             publishingProcessor: this.publishingProcessor,
             connectingProcessor: this.connectingProcessor,
             collectingProcessor: this.collectingProcessor,
             referencingProcessor: this.referencingProcessor,
+            createdAt: (() => {
+                const x = this.createdAt;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            reserved1: this.reserved1,
+            reserved2: this.reserved2,
         };
     }
 }
@@ -98,14 +121,19 @@ exports.subspaceBeet = new beet.FixableBeetStruct([
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['app', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
+    ['exchangeKey', beetSolana.publicKey],
     ['creator', beetSolana.publicKey],
+    ['publishingPermission', SubspacePublishingPermissionLevel_1.subspacePublishingPermissionLevelBeet],
+    ['name', beet.uniformFixedSizeArray(beet.u8, 32)],
     ['alias', beet.coption(beet.utf8String)],
-    ['name', beet.coption(beet.utf8String)],
     ['uuid', beet.utf8String],
     ['metadataUri', beet.coption(beet.utf8String)],
     ['publishingProcessor', beet.coption(beetSolana.publicKey)],
     ['connectingProcessor', beet.coption(beetSolana.publicKey)],
     ['collectingProcessor', beet.coption(beetSolana.publicKey)],
     ['referencingProcessor', beet.coption(beetSolana.publicKey)],
+    ['createdAt', beet.i64],
+    ['reserved1', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['reserved2', beet.uniformFixedSizeArray(beet.u8, 32)],
 ], Subspace.fromArgs, 'Subspace');
 //# sourceMappingURL=Subspace.js.map

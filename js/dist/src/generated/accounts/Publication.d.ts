@@ -8,12 +8,14 @@ export type PublicationArgs = {
     profile: web3.PublicKey;
     authority: web3.PublicKey;
     isEncrypted: boolean;
-    subspace: beet.COption<web3.PublicKey>;
     isMirror: boolean;
     isReply: boolean;
-    targetPublication: beet.COption<web3.PublicKey>;
     contentType: ContentType;
-    tag: beet.COption<string>;
+    tag: number[];
+    searchable3Day: beet.bignum;
+    searchableDay: beet.bignum;
+    targetPublication: web3.PublicKey;
+    subspace: web3.PublicKey;
     uuid: string;
     metadataUri: string;
     collectingProcessor: beet.COption<web3.PublicKey>;
@@ -27,12 +29,14 @@ export declare class Publication implements PublicationArgs {
     readonly profile: web3.PublicKey;
     readonly authority: web3.PublicKey;
     readonly isEncrypted: boolean;
-    readonly subspace: beet.COption<web3.PublicKey>;
     readonly isMirror: boolean;
     readonly isReply: boolean;
-    readonly targetPublication: beet.COption<web3.PublicKey>;
     readonly contentType: ContentType;
-    readonly tag: beet.COption<string>;
+    readonly tag: number[];
+    readonly searchable3Day: beet.bignum;
+    readonly searchableDay: beet.bignum;
+    readonly targetPublication: web3.PublicKey;
+    readonly subspace: web3.PublicKey;
     readonly uuid: string;
     readonly metadataUri: string;
     readonly collectingProcessor: beet.COption<web3.PublicKey>;
@@ -55,12 +59,18 @@ export declare class Publication implements PublicationArgs {
         profile: string;
         authority: string;
         isEncrypted: boolean;
-        subspace: beet.COption<web3.PublicKey>;
         isMirror: boolean;
         isReply: boolean;
-        targetPublication: beet.COption<web3.PublicKey>;
         contentType: string;
-        tag: beet.COption<string>;
+        tag: number[];
+        searchable3Day: number | {
+            toNumber: () => number;
+        };
+        searchableDay: number | {
+            toNumber: () => number;
+        };
+        targetPublication: string;
+        subspace: string;
         uuid: string;
         metadataUri: string;
         collectingProcessor: beet.COption<web3.PublicKey>;

@@ -24,18 +24,23 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createAddDeveloperInstruction = exports.addDeveloperInstructionDiscriminator = exports.addDeveloperStruct = void 0;
-const beet = __importStar(require("@metaplex-foundation/beet"));
 const web3 = __importStar(require("@solana/web3.js"));
-exports.addDeveloperStruct = new beet.BeetArgsStruct([['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)]], 'AddDeveloperInstructionArgs');
+const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
+const beet = __importStar(require("@metaplex-foundation/beet"));
+exports.addDeveloperStruct = new beet.BeetArgsStruct([
+    ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
+    ['developer', beetSolana.publicKey],
+], 'AddDeveloperInstructionArgs');
 exports.addDeveloperInstructionDiscriminator = [145, 91, 232, 218, 116, 139, 165, 136];
-function createAddDeveloperInstruction(accounts, programId = new web3.PublicKey('964vWgVEK9X8ZwZB2HyshFVmHUWbcYpRTnVYz2o3F2Xq')) {
+function createAddDeveloperInstruction(accounts, args, programId = new web3.PublicKey('964vWgVEK9X8ZwZB2HyshFVmHUWbcYpRTnVYz2o3F2Xq')) {
     var _a;
     const [data] = exports.addDeveloperStruct.serialize({
         instructionDiscriminator: exports.addDeveloperInstructionDiscriminator,
+        ...args,
     });
     const keys = [
         {
-            pubkey: accounts.developer,
+            pubkey: accounts.developerWhitelistProof,
             isWritable: true,
             isSigner: false,
         },

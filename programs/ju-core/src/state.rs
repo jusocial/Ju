@@ -91,56 +91,31 @@ impl ExternalProcessorPDA {
 /// ## App account stores:
 ///
 /// 1. `authority`: Application authority address
-/// 2. `profile_gender_required`: Specifies whether the Profile gender is required
-/// 3. `profile_first_name_required`: Specifies whether the Profile first name is required
-/// 4. `profile_last_name_required`: Specifies whether the Profile last name is required
-/// 5. `profile_birthdate_required`: Specifies whether the Profile birth date is required
-/// 6. `profile_country_required`: Specifies whether the Profile country is required
-/// 7. `profile_region_required`: Specifies whether the Profile region is required
-/// 8. `profile_city_required`: Specifies whether the Profile city is required
-/// 9. `profile_metadata_required`: Specifies whether the Profile metadata required
-/// 10. `subspace_metadata_required`: Specifies whether the Subspace metadata required
-/// 11. `profile_delete_allowed`: Specifies the permission to delete a Profile
-/// 12. `subspace_delete_allowed`: Specifies the permission to delete a Subspace
-/// 13. `publication_delete_allowed`: Specifies the permission to delete a Publication
-/// 14. `profile_individual_processors_allowed`: Specifies the permission to assign Profile's individual external processors.
-/// 15. `subspace_individual_processors_allowed`: Specifies the permission to assign Subspace's individual external processors.
-/// 16. `publication_individual_processors_allowed`: Specifies the permission to assign Publication's individual external processors.
-/// 17. `app_name`: Unique Application name (ID) as string (ASCII alphanumeric)
-/// 18. `metadata_uri`: Application metadata URI (settings)
-/// 18. `registering_processor`: An address of an external processor for additional processing during Profile creation
-/// 19. `connecting_processor`: An address of an external processor for additional processing during Profile connection
-/// 20. `publishing_processor`: An address of an external processor for additional processing during Publication creation
-/// 21. `collecting_processor`: An address of an external processor for additional processing during Publication collection
-/// 22. `referencing_processor`: An address of an external processor for additional processing during Publication referencing
-/// 23.  ***** `reserved_1`: Reserved field 1
-/// 24.  ***** `reserved_1`: Reserved field 2
-/// 25.  ***** `reserved_1`: Reserved field 3
+/// 2. `profile_metadata_required`: Specifies whether the Profile metadata required
+/// 3. `subspace_metadata_required`: Specifies whether the Subspace metadata required
+/// 4. `profile_delete_allowed`: Specifies the permission to delete a Profile
+/// 5. `subspace_delete_allowed`: Specifies the permission to delete a Subspace
+/// 6. `publication_delete_allowed`: Specifies the permission to delete a Publication
+/// 7. `profile_individual_processors_allowed`: Specifies the permission to assign Profile's individual external processors.
+/// 8. `subspace_individual_processors_allowed`: Specifies the permission to assign Subspace's individual external processors.
+/// 9. `publication_individual_processors_allowed`: Specifies the permission to assign Publication's individual external processors.
+/// 10. `app_name`: Unique Application name (ID) as string (ASCII alphanumeric)
+/// 11. `metadata_uri`: Application metadata URI (settings)
+/// 12. `registering_processor`: An address of an external processor for additional processing during Profile creation
+/// 13. `connecting_processor`: An address of an external processor for additional processing during Profile connection
+/// 14. `publishing_processor`: An address of an external processor for additional processing during Publication creation
+/// 15. `collecting_processor`: An address of an external processor for additional processing during Publication collection
+/// 16. `referencing_processor`: An address of an external processor for additional processing during Publication referencing
+/// 17.  ***** `reserved_1`: Reserved field 1
+/// 18.  ***** `reserved_1`: Reserved field 2
+/// 19.  ***** `reserved_1`: Reserved field 3
 ///
 #[account]
 #[derive(Default)]
 pub struct App {
     /// Pubkey of the application creator (32).
     pub authority: Pubkey,
-    
-    /// Specifies whether the Profile gender is required.
-    pub profile_gender_required: bool,
-
-    /// Specifies whether the Profile name is required.
-    pub profile_first_name_required: bool,
-    /// Specifies whether the Profile last name is required.
-    pub profile_last_name_required: bool,
-
-    /// Specifies whether the Profile birth date is required.
-    pub profile_birthdate_required: bool,
-
-    /// Specifies whether the Profile country is required.
-    pub profile_country_required: bool,
-    /// Specifies whether the Profile region is required.
-    pub profile_region_required: bool,
-    /// Specifies whether the Profile city is required.
-    pub profile_city_required: bool,
-
+ 
     /// Specifies whether the Profile metadata required.
     pub profile_metadata_required: bool,
     /// Specifies whether the Subspace metadata required.
@@ -189,13 +164,6 @@ impl App {
 
     pub const LEN: usize = DISCRIMINATOR_LENGTH         // Anchor internal discriminator
         + 32                                            // Pubkey (`authority`)
-        + 1                                             // bool (`profile_gender_required`)
-        + 1                                             // bool (`profile_first_name_required`)
-        + 1                                             // bool (`profile_last name_required`)
-        + 1                                             // bool (`profile_birthdate_required`)
-        + 1                                             // bool (`profile_country_required`)
-        + 1                                             // bool (`profile_region_required`)
-        + 1                                             // bool (`profile_city_required`)
         + 1                                             // bool (`profile_metadata_required`)
         + 1                                             // bool (`subspace_metadata_required`)
         + 1                                             // bool (`profile_delete_allowed`)
@@ -243,23 +211,27 @@ impl App {
 /// 2. Profile authority address
 /// 3. Exchange key
 /// 4. Verification status
-/// 5. Profile country code (0 if not set)
-/// 6. Profile region code (0 if not set)
-/// 7. Profile city code (0 if not set)
+/// 5. Profile country code 
+/// 6. Profile region code
+/// 7. Profile city code
 /// 8. Profile first name
 /// 9. Profile last name
-/// 10. Profile birth date as unix timestamp (0 if not set)
-/// 11. Profile gender
-/// 12. Unique Application's user Profile Alias as string (ASCII alphanumeric)
-/// 13. Profile status text
-/// 14. Profile metadata URI
-/// 15. Profile location coordinates
-/// 16. External connection processor (optional)
-/// 17. Profile creation unix timestamp
-/// 18. Profile modification unix timestamp
-/// 19. ***** Reserved field 1
-/// 20. ***** Reserved field 2
-/// 21. ***** Reserved field 3
+/// 10. Profile birth date as unix timestamp
+/// 11. Profile birth seachable number of 10-years-period (decade)
+/// 12. Profile birth seachable number of 5-years-period
+/// 13. Profile birth seachable number of week-period
+/// 14. Profile birth seachable number of day
+/// 15. Profile gender
+/// 16. Unique Application's user Profile Alias as string (ASCII alphanumeric)
+/// 17. Profile status text
+/// 18. Profile metadata URI
+/// 19. Profile location coordinates
+/// 20. External connection processor (optional)
+/// 21. Profile creation unix timestamp
+/// 22. Profile modification unix timestamp
+/// 23. ***** Reserved field 1
+/// 24. ***** Reserved field 2
+/// 25. ***** Reserved field 3
 ///
 #[account]
 #[derive(Default)]
@@ -286,8 +258,16 @@ pub struct Profile {
     // Profile's user last name
     pub last_name: [u8; MAX_PROFILE_LAST_NAME_LENGTH],
 
-    // Birth date as unix timestamp
-    pub birth_date: i64,
+    // Birth date unix timestamp
+    pub birth_date: i64, 
+    // Seachable 10 years period
+    pub searchable_10_years: i64,
+    // Seachable 5 years period
+    pub searchable_5_years: i64,
+    // Seachable 5 years period
+    pub searchable_week: i64,
+    // Seachable 5 years period
+    pub searchable_day: i64,
 
     /// Profile's user gender
     pub gender: Option<Gender>,
@@ -333,7 +313,11 @@ impl Profile {
         + 2                                                             // u16 (`city_code`)
         + (MAX_PROFILE_FIRST_NAME_LENGTH)                               // [u8; MAX_PROFILE_FIRST_NAME_LENGTH] (`first_name`)
         + (MAX_PROFILE_LAST_NAME_LENGTH)                                // [u8; MAX_PROFILE_LAST_NAME_LENGTH] (`last_name`)
-        + 8                                                             // i64 (`birth_date`)  
+        + 8                                                             // i64 (`birth_date`) 
+        + 8                                                             // i64 (`searchable_10_years`)
+        + 8                                                             // i64 (`searchable_5_years`)
+        + 8                                                             // i64 (`searchable_week`)
+        + 8                                                             // i64 (`searchable_day`)
         + (1 + 1)                                                       // Option<Enum> (`gender`) 
         + (1 + STRING_LENGTH_PREFIX + MAX_ALIAS_LENGTH)                 // Option<String> (`alias`) 
         + (STRING_LENGTH_PREFIX + MAX_STATUS_LENGTH)                    // String (`status_text`) 
@@ -402,6 +386,7 @@ impl Profile {
     
         Ok(bytes)
     }
+
 }
 
 /// The Subspace is an account (PDA) that holds data about a application Subspace (e.g. group / "public")
@@ -573,15 +558,16 @@ impl SubspaceManager {
 /// 6. Whether or not the Publication is replying to other existing Publication (e.g. comment)
 /// 7. Publication main content type
 /// 8. Publication tag
-/// 9. References to existing Publication if there is a mirror or reply
-/// 10. Subspace in which Publication being published
-/// 11. ***** Reserved field 1
-/// 12. Publication UUID as string
-/// 13. Publication metadata URI
-/// 14. External Collecting processor (optional)
-/// 15. External Referencing processor (optional)
-/// 16. Publication create unix timestamp
-/// 17. Publication update unix timestamp (optional)
+/// 9. Searchable number of 3-day-perid
+/// 10. Searchable number of day
+/// 11. References to existing Publication if there is a mirror or reply
+/// 12. Subspace in which Publication being published
+/// 13. Publication UUID as string
+/// 14. Publication metadata URI
+/// 15. External Collecting processor (optional)
+/// 16. External Referencing processor (optional)
+/// 17. Publication create unix timestamp
+/// 18. Publication update unix timestamp (optional)
 ///
 #[account]
 // #[derive(Default)]
@@ -603,13 +589,15 @@ pub struct Publication {
     /// Publication Tag (e.g. 'hashtag')
     pub tag: [u8; MAX_TAG_LENGTH],
 
+    // Searchable 3 day period
+    pub searchable_3_day: i64,
+    // Searchable day
+    pub searchable_day: i64,
+
     /// Pubkey that specify target in case Publication is a mirror or reply (32), default value if not mirror or reply
     pub target_publication: Pubkey,
     /// Subspace to publish, default value if publishing in profile space
     pub subspace: Pubkey,
-
-    // Reserved field 1
-    pub reserved_1: [u8; 32],
 
     /// Publication UUID (STRING_LENGTH_PREFIX + UUID_LENGTH)
     pub uuid: String,
@@ -639,9 +627,10 @@ impl Publication {
         + 1                                             // bool (`is_reply`)
         + 1                                             // Enum (`content_type`) 
         + (MAX_TAG_LENGTH)                              // [u8; MAX_TAG_LENGTH] (`tag`)
+        + 8                                             // i64 (`searchable_3_day`)
+        + 8                                             // i64 (`searchable_day`)
         + 32                                            // Pubkey (`target_publication`)
         + 32                                            // Pubkey (`subspace`) 
-        + 32                                            // [u8;32] (`reserved_1`) 
         + (STRING_LENGTH_PREFIX + UUID_LENGTH)          // String (`uuid`)
         + (STRING_LENGTH_PREFIX + MAX_URI_LENGTH)       // String (`metadata_uri`)                               
         + (1 + 32)                                      // Option<Pubkey> (`collecting_processor`)
@@ -681,7 +670,9 @@ impl Publication {
 /// 5. Target Application's Profile/Subspace address (e.g. which initializer followed)
 /// 6. Whether or not Connection is approved by target (e.g. accept friend request)
 /// 7. Connection initialize unix timestamp
-/// 8. Connection modify unix timestamp
+/// 8. Searchable number of 3-day-period
+/// 8. Searchable number of day
+/// 9. Connection modify unix timestamp
 ///
 #[account]
 #[derive(Default)]
@@ -700,6 +691,10 @@ pub struct Connection {
     pub approved: bool,
     /// Connection initialization Unix timestamp (8)
     pub created_at: i64,
+    // Searchable 3 day period
+    pub searchable_3_day: i64,
+    // Searchable day
+    pub searchable_day: i64,
     /// Connection approve Unix timestamp (1 + 8)
     pub modified_at: Option<i64>,
 }
@@ -715,6 +710,8 @@ impl Connection {
         + 32                                            // Pubkey
         + 1                                             // bool
         + 8                                             // i64
+        + 8                                             // i64
+        + 8                                             // i64
         + (1 + 8);                                      // Option<i64>
 }
 
@@ -727,6 +724,8 @@ impl Connection {
 /// 3. CollectionItem target entity (e.g. Publication) address
 /// 4. CollectionItem authority address
 /// 5. CollectionItem creation unix timestamp
+/// 6. Searchable number of 3-day-period
+/// 7. Searchable number of day
 ///
 #[account]
 #[derive(Default)]
@@ -741,6 +740,10 @@ pub struct CollectionItem {
     pub authority: Pubkey,
     /// Unix timestamp of the CollectionItem creation (8)
     pub created_at: i64,
+    // Searchable 3 day
+    pub searchable_3_day: i64,
+    // Searchable day
+    pub searchable_day: i64,
 }
 
 impl CollectionItem {
@@ -751,6 +754,8 @@ impl CollectionItem {
         + 32                                            // Pubkey
         + 32                                            // Pubkey
         + 32                                            // Pubkey
+        + 8                                             // i64
+        + 8                                             // i64
         + 8;                                            // i64
 }
 
@@ -800,6 +805,8 @@ impl Alias {
 /// 5. Reaction initializer Profile
 /// 6. Reaction type variant
 /// 7. Reaction create unix timestamp
+/// 8. Searchable number of 3-day-period
+/// 9. Searchable number of day
 ///
 #[account]
 // #[derive(Default)]
@@ -818,6 +825,10 @@ pub struct Reaction {
     pub reaction_type: ReactionType,
     /// Unix timestamp of the Reaction creation (8)
     pub created_at: i64,
+    // Searchable 3 day
+    pub searchable_3_day: i64,
+    // Searchable day
+    pub searchable_day: i64,
 }
 
 impl Reaction {
@@ -830,6 +841,8 @@ impl Reaction {
         + 32                                            // Pubkey
         + 32                                            // Pubkey
         + 1                                             // Enum
+        + 8                                             // i64
+        + 8                                             // i64
         + 8;                                            // i64
 }
 
@@ -843,8 +856,9 @@ impl Reaction {
 /// 4. Report Target address
 /// 5. Report initializer Profile
 /// 6. Report type variant
-/// 7. Report notification text
-/// 8. Report create unix timestamp
+/// 7. Searchable number of day
+/// 8. Report notification text
+/// 9. Report create unix timestamp
 ///
 #[account]
 // #[derive(Default)]
@@ -861,6 +875,8 @@ pub struct Report {
     pub initializer: Pubkey,
     /// Report type value (1)
     pub report_type: ReportType,
+    // Searchable day
+    pub searchable_day: i64,
     /// Report Notification
     pub notification: Option<String>,
     /// Unix timestamp of the Report creation (8)
@@ -877,6 +893,7 @@ impl Report {
         + 32                                                    // Pubkey
         + 32                                                    // Pubkey
         + 1                                                     // Enum
+        + 8                                                     // i64
         + (1 + STRING_LENGTH_PREFIX + MAX_NOTIFICATION_LENGTH)  // Option<String>
         + 8;                                                    // i64
 }
@@ -888,13 +905,6 @@ impl Report {
 /// ## Fields:
 ///
 /// - `metadata_uri`: The optional metadata URI for the app.
-/// - `profile_gender_required`: Specifies whether the Profile gender is required.
-/// - `profile_first_name_required`: Specifies whether the Profile first name is required.
-/// - `profile_last_name_required`: Specifies whether the Profile last name is required.
-/// - `profile_birthdate_required`: Specifies whether the Profile birth date is required.
-/// - `profile_country_required`: Specifies whether the Profile Country code is required.
-/// - `profile_region_required`: Specifies whether the Profile State code is required.
-/// - `profile_city_required`: Specifies whether the Profile City code is required.
 /// - `profile_metadata_required`: Specifies whether the Profile metadata required.
 /// - `subspace_metadata_required`: Specifies whether the Subspace metadata required.
 /// - `profile_delete_allowed`: Specifies the permission to delete a Profile.
@@ -908,24 +918,6 @@ impl Report {
 pub struct AppData {
     /// The optional metadata URI for the App.
     pub metadata_uri: Option<String>,
-
-    /// Specifies whether the Profile gender is required.
-    pub profile_gender_required: bool,
-
-    /// Specifies whether the Profile first name is required.
-    pub profile_first_name_required: bool,
-    /// Specifies whether the Profile last name is required.
-    pub profile_last_name_required: bool,
-    /// Specifies whether the Profile birth date is required.
-    /// 
-    pub profile_birthdate_required: bool,
-    /// Specifies whether the Profile country is required.
-    /// 
-    pub profile_country_required: bool,
-    /// Specifies whether the Profile region is required.
-    pub profile_region_required: bool,
-    /// Specifies whether the Profile city is required.
-    pub profile_city_required: bool,
 
     /// Specifies whether the Profile metadata is required.
     pub profile_metadata_required: bool,

@@ -16,6 +16,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./addDeveloper"), exports);
 __exportStar(require("./addProcessor"), exports);
+__exportStar(require("./addSubspaceManager"), exports);
 __exportStar(require("./collectPublication"), exports);
 __exportStar(require("./createProfile"), exports);
 __exportStar(require("./createPublication"), exports);
@@ -28,6 +29,7 @@ __exportStar(require("./deleteProfile"), exports);
 __exportStar(require("./deletePublication"), exports);
 __exportStar(require("./deleteReaction"), exports);
 __exportStar(require("./deleteSubspace"), exports);
+__exportStar(require("./deleteSubspaceManager"), exports);
 __exportStar(require("./initializeApp"), exports);
 __exportStar(require("./initializeConnection"), exports);
 __exportStar(require("./initializeReport"), exports);
@@ -36,4 +38,5 @@ __exportStar(require("./updateConnection"), exports);
 __exportStar(require("./updateProfile"), exports);
 __exportStar(require("./updatePublication"), exports);
 __exportStar(require("./updateSubspace"), exports);
+__exportStar(require("./updateSubspaceManager"), exports);
 //# sourceMappingURL=index.js.map

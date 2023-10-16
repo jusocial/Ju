@@ -64,3 +64,6 @@ pub const STRING_LENGTH_PREFIX: usize = 4;
 
 
 pub const SECONDS_IN_YEAR: i64 = 31_536_000;
+pub const SECONDS_IN_DAY: i64 = 86_400;
+pub const SECONDS_IN_5_YEARS: i64 = 5 * SECONDS_IN_YEAR;
+pub const SECONDS_IN_10_YEARS: i64 = 10 * SECONDS_IN_YEAR;

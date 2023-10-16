@@ -12,6 +12,7 @@ export declare const addProcessorStruct: beet.FixableBeetArgsStruct<AddProcessor
 }>;
 export type AddProcessorInstructionAccounts = {
     processorPda: web3.PublicKey;
+    developerWhitelistProof?: web3.PublicKey;
     authority: web3.PublicKey;
     systemProgram?: web3.PublicKey;
 };

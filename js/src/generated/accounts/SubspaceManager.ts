@@ -8,7 +8,10 @@
 import * as web3 from '@solana/web3.js';
 import * as beetSolana from '@metaplex-foundation/beet-solana';
 import * as beet from '@metaplex-foundation/beet';
-import { ManagementRoleType, managementRoleTypeBeet } from '../types/ManagementRoleType';
+import {
+  SubspaceManagementRoleType,
+  subspaceManagementRoleTypeBeet,
+} from '../types/SubspaceManagementRoleType';
 
 /**
  * Arguments used to create {@link SubspaceManager}
@@ -17,8 +20,10 @@ import { ManagementRoleType, managementRoleTypeBeet } from '../types/ManagementR
  */
 export type SubspaceManagerArgs = {
   app: web3.PublicKey;
+  subspace: web3.PublicKey;
+  profile: web3.PublicKey;
   authority: web3.PublicKey;
-  role: ManagementRoleType;
+  role: SubspaceManagementRoleType;
 };
 
 export const subspaceManagerDiscriminator = [62, 248, 84, 105, 144, 134, 79, 169];
@@ -32,15 +37,17 @@ export const subspaceManagerDiscriminator = [62, 248, 84, 105, 144, 134, 79, 169
 export class SubspaceManager implements SubspaceManagerArgs {
   private constructor(
     readonly app: web3.PublicKey,
+    readonly subspace: web3.PublicKey,
+    readonly profile: web3.PublicKey,
     readonly authority: web3.PublicKey,
-    readonly role: ManagementRoleType,
+    readonly role: SubspaceManagementRoleType,
   ) {}
 
   /**
    * Creates a {@link SubspaceManager} instance from the provided args.
    */
   static fromArgs(args: SubspaceManagerArgs) {
-    return new SubspaceManager(args.app, args.authority, args.role);
+    return new SubspaceManager(args.app, args.subspace, args.profile, args.authority, args.role);
   }
 
   /**
@@ -139,8 +146,10 @@ export class SubspaceManager implements SubspaceManagerArgs {
   pretty() {
     return {
       app: this.app.toBase58(),
+      subspace: this.subspace.toBase58(),
+      profile: this.profile.toBase58(),
       authority: this.authority.toBase58(),
-      role: 'ManagementRoleType.' + ManagementRoleType[this.role],
+      role: 'SubspaceManagementRoleType.' + SubspaceManagementRoleType[this.role],
     };
   }
 }
@@ -158,8 +167,10 @@ export const subspaceManagerBeet = new beet.BeetStruct<
   [
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['app', beetSolana.publicKey],
+    ['subspace', beetSolana.publicKey],
+    ['profile', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
-    ['role', managementRoleTypeBeet],
+    ['role', subspaceManagementRoleTypeBeet],
   ],
   SubspaceManager.fromArgs,
   'SubspaceManager',

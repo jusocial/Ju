@@ -2,7 +2,12 @@ type ErrorWithCode = Error & {
     code: number;
 };
 type MaybeErrorWithCode = ErrorWithCode | null | undefined;
-export declare class ProcessorManagementNotAthorizedError extends Error {
+export declare class DeveloperNotAthorizedError extends Error {
+    readonly code: number;
+    readonly name: string;
+    constructor();
+}
+export declare class DeveloperActionNotAthorizedError extends Error {
     readonly code: number;
     readonly name: string;
     constructor();
@@ -17,7 +22,7 @@ export declare class ProcessorNameLengthIncorrectError extends Error {
     readonly name: string;
     constructor();
 }
-export declare class ProcessorNameMustBeAlphanumericError extends Error {
+export declare class ProcessorNameInvalidError extends Error {
     readonly code: number;
     readonly name: string;
     constructor();
@@ -32,7 +37,7 @@ export declare class AppNameLengthIncorrectError extends Error {
     readonly name: string;
     constructor();
 }
-export declare class AppNameMustBeAlphanumericError extends Error {
+export declare class AppNameInvalidError extends Error {
     readonly code: number;
     readonly name: string;
     constructor();
@@ -57,7 +62,7 @@ export declare class AliasLengthIncorrectError extends Error {
     readonly name: string;
     constructor();
 }
-export declare class AliasMustBeAlphanumericError extends Error {
+export declare class AliasInvalidError extends Error {
     readonly code: number;
     readonly name: string;
     constructor();
@@ -97,6 +102,11 @@ export declare class UpdateNotAuthorizedError extends Error {
     readonly name: string;
     constructor();
 }
+export declare class BirthDateIncorrectError extends Error {
+    readonly code: number;
+    readonly name: string;
+    constructor();
+}
 export declare class ProfileFirstNameLengthIncorrectError extends Error {
     readonly code: number;
     readonly name: string;
@@ -113,6 +123,21 @@ export declare class SubspaceAliasIncorrectError extends Error {
     constructor();
 }
 export declare class SubspaceNameIncorrectError extends Error {
+    readonly code: number;
+    readonly name: string;
+    constructor();
+}
+export declare class SubspacePublishingPermissionViolationError extends Error {
+    readonly code: number;
+    readonly name: string;
+    constructor();
+}
+export declare class SubspacePublishingConnectionProofAccountRequiredError extends Error {
+    readonly code: number;
+    readonly name: string;
+    constructor();
+}
+export declare class SubspacePublishingManagerProofAccountRequiredError extends Error {
     readonly code: number;
     readonly name: string;
     constructor();
@@ -163,6 +188,11 @@ export declare class AliasAccountExistError extends Error {
     constructor();
 }
 export declare class SelfPublicationCollectingError extends Error {
+    readonly code: number;
+    readonly name: string;
+    constructor();
+}
+export declare class PublicationTagIncorrectError extends Error {
     readonly code: number;
     readonly name: string;
     constructor();

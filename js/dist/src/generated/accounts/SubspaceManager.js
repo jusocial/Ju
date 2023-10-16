@@ -27,16 +27,18 @@ exports.subspaceManagerBeet = exports.SubspaceManager = exports.subspaceManagerD
 const web3 = __importStar(require("@solana/web3.js"));
 const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
 const beet = __importStar(require("@metaplex-foundation/beet"));
-const ManagementRoleType_1 = require("../types/ManagementRoleType");
+const SubspaceManagementRoleType_1 = require("../types/SubspaceManagementRoleType");
 exports.subspaceManagerDiscriminator = [62, 248, 84, 105, 144, 134, 79, 169];
 class SubspaceManager {
-    constructor(app, authority, role) {
+    constructor(app, subspace, profile, authority, role) {
         this.app = app;
+        this.subspace = subspace;
+        this.profile = profile;
         this.authority = authority;
         this.role = role;
     }
     static fromArgs(args) {
-        return new SubspaceManager(args.app, args.authority, args.role);
+        return new SubspaceManager(args.app, args.subspace, args.profile, args.authority, args.role);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return SubspaceManager.deserialize(accountInfo.data, offset);
@@ -72,8 +74,10 @@ class SubspaceManager {
     pretty() {
         return {
             app: this.app.toBase58(),
+            subspace: this.subspace.toBase58(),
+            profile: this.profile.toBase58(),
             authority: this.authority.toBase58(),
-            role: 'ManagementRoleType.' + ManagementRoleType_1.ManagementRoleType[this.role],
+            role: 'SubspaceManagementRoleType.' + SubspaceManagementRoleType_1.SubspaceManagementRoleType[this.role],
         };
     }
 }
@@ -81,7 +85,9 @@ exports.SubspaceManager = SubspaceManager;
 exports.subspaceManagerBeet = new beet.BeetStruct([
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['app', beetSolana.publicKey],
+    ['subspace', beetSolana.publicKey],
+    ['profile', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
-    ['role', ManagementRoleType_1.managementRoleTypeBeet],
+    ['role', SubspaceManagementRoleType_1.subspaceManagementRoleTypeBeet],
 ], SubspaceManager.fromArgs, 'SubspaceManager');
 //# sourceMappingURL=SubspaceManager.js.map

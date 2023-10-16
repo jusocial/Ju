@@ -35,6 +35,7 @@ pub fn validate_birth_date(birth_date: &i64) -> Result<()> {
     Ok(())
 }
 
+
 /// Validates the length of a metadata URI.
 ///
 /// This function checks if the length of the provided `metadata_uri` string is within

@@ -10,15 +10,14 @@ import * as beet from '@metaplex-foundation/beet';
  * @category enums
  * @category generated
  */
-export enum ManagementRoleType {
-  Admin,
-  Publisher,
+export enum Gender {
+  Male,
+  Female,
+  OtherOrPreferNotToSay,
 }
 
 /**
  * @category userTypes
  * @category generated
  */
-export const managementRoleTypeBeet = beet.fixedScalarEnum(
-  ManagementRoleType,
-) as beet.FixedSizeBeet<ManagementRoleType, ManagementRoleType>;
+export const genderBeet = beet.fixedScalarEnum(Gender) as beet.FixedSizeBeet<Gender, Gender>;

@@ -10,6 +10,7 @@ export declare const initializeAppStruct: beet.FixableBeetArgsStruct<InitializeA
 }>;
 export type InitializeAppInstructionAccounts = {
     app: web3.PublicKey;
+    developerWhitelistProof?: web3.PublicKey;
     registeringProcessorPda?: web3.PublicKey;
     connectingProcessorPda?: web3.PublicKey;
     publishingProcessorPda?: web3.PublicKey;

@@ -22,14 +22,14 @@ export const deleteDeveloperStruct = new beet.BeetArgsStruct<{
 /**
  * Accounts required by the _deleteDeveloper_ instruction
  *
- * @property [_writable_] developer
+ * @property [_writable_] developerWhitelistProof
  * @property [_writable_, **signer**] authority
  * @category Instructions
  * @category DeleteDeveloper
  * @category generated
  */
 export type DeleteDeveloperInstructionAccounts = {
-  developer: web3.PublicKey;
+  developerWhitelistProof: web3.PublicKey;
   authority: web3.PublicKey;
   systemProgram?: web3.PublicKey;
 };
@@ -53,7 +53,7 @@ export function createDeleteDeveloperInstruction(
   });
   const keys: web3.AccountMeta[] = [
     {
-      pubkey: accounts.developer,
+      pubkey: accounts.developerWhitelistProof,
       isWritable: true,
       isSigner: false,
     },

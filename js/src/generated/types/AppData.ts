@@ -8,14 +8,8 @@
 import * as beet from '@metaplex-foundation/beet';
 export type AppData = {
   metadataUri: beet.COption<string>;
-  profileFirstNameRequired: boolean;
-  profileLastNameRequired: boolean;
-  profileBirthdateRequired: boolean;
-  profileCountryRequired: boolean;
-  profileCityRequired: boolean;
-  profileMetadataUriRequired: boolean;
-  subspaceNameRequired: boolean;
-  subspaceMetadataUriRequired: boolean;
+  profileMetadataRequired: boolean;
+  subspaceMetadataRequired: boolean;
   profileDeleteAllowed: boolean;
   subspaceDeleteAllowed: boolean;
   publicationDeleteAllowed: boolean;
@@ -31,14 +25,8 @@ export type AppData = {
 export const appDataBeet = new beet.FixableBeetArgsStruct<AppData>(
   [
     ['metadataUri', beet.coption(beet.utf8String)],
-    ['profileFirstNameRequired', beet.bool],
-    ['profileLastNameRequired', beet.bool],
-    ['profileBirthdateRequired', beet.bool],
-    ['profileCountryRequired', beet.bool],
-    ['profileCityRequired', beet.bool],
-    ['profileMetadataUriRequired', beet.bool],
-    ['subspaceNameRequired', beet.bool],
-    ['subspaceMetadataUriRequired', beet.bool],
+    ['profileMetadataRequired', beet.bool],
+    ['subspaceMetadataRequired', beet.bool],
     ['profileDeleteAllowed', beet.bool],
     ['subspaceDeleteAllowed', beet.bool],
     ['publicationDeleteAllowed', beet.bool],

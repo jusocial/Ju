@@ -17,6 +17,7 @@ import { ProcessorType, processorTypeBeet } from '../types/ProcessorType';
  */
 export type ExternalProcessorPDAArgs = {
   processorType: ProcessorType;
+  isApproved: boolean;
   processorName: string;
   authority: web3.PublicKey;
   developerWallet: beet.COption<web3.PublicKey>;
@@ -34,6 +35,7 @@ export const externalProcessorPDADiscriminator = [204, 224, 184, 182, 78, 32, 10
 export class ExternalProcessorPDA implements ExternalProcessorPDAArgs {
   private constructor(
     readonly processorType: ProcessorType,
+    readonly isApproved: boolean,
     readonly processorName: string,
     readonly authority: web3.PublicKey,
     readonly developerWallet: beet.COption<web3.PublicKey>,
@@ -46,6 +48,7 @@ export class ExternalProcessorPDA implements ExternalProcessorPDAArgs {
   static fromArgs(args: ExternalProcessorPDAArgs) {
     return new ExternalProcessorPDA(
       args.processorType,
+      args.isApproved,
       args.processorName,
       args.authority,
       args.developerWallet,
@@ -154,6 +157,7 @@ export class ExternalProcessorPDA implements ExternalProcessorPDAArgs {
   pretty() {
     return {
       processorType: 'ProcessorType.' + ProcessorType[this.processorType],
+      isApproved: this.isApproved,
       processorName: this.processorName,
       authority: this.authority.toBase58(),
       developerWallet: this.developerWallet,
@@ -175,6 +179,7 @@ export const externalProcessorPDABeet = new beet.FixableBeetStruct<
   [
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['processorType', processorTypeBeet],
+    ['isApproved', beet.bool],
     ['processorName', beet.utf8String],
     ['authority', beetSolana.publicKey],
     ['developerWallet', beet.coption(beetSolana.publicKey)],

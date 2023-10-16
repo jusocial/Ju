@@ -11,6 +11,7 @@ export type ReportArgs = {
     target: web3.PublicKey;
     initializer: web3.PublicKey;
     reportType: ReportType;
+    searchableDay: beet.bignum;
     notification: beet.COption<string>;
     createdAt: beet.bignum;
 };
@@ -22,6 +23,7 @@ export declare class Report implements ReportArgs {
     readonly target: web3.PublicKey;
     readonly initializer: web3.PublicKey;
     readonly reportType: ReportType;
+    readonly searchableDay: beet.bignum;
     readonly notification: beet.COption<string>;
     readonly createdAt: beet.bignum;
     private constructor();
@@ -42,6 +44,9 @@ export declare class Report implements ReportArgs {
         target: string;
         initializer: string;
         reportType: string;
+        searchableDay: number | {
+            toNumber: () => number;
+        };
         notification: beet.COption<string>;
         createdAt: number | {
             toNumber: () => number;

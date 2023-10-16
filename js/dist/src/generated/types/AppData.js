@@ -27,14 +27,8 @@ exports.appDataBeet = void 0;
 const beet = __importStar(require("@metaplex-foundation/beet"));
 exports.appDataBeet = new beet.FixableBeetArgsStruct([
     ['metadataUri', beet.coption(beet.utf8String)],
-    ['profileFirstNameRequired', beet.bool],
-    ['profileLastNameRequired', beet.bool],
-    ['profileBirthdateRequired', beet.bool],
-    ['profileCountryRequired', beet.bool],
-    ['profileCityRequired', beet.bool],
-    ['profileMetadataUriRequired', beet.bool],
-    ['subspaceNameRequired', beet.bool],
-    ['subspaceMetadataUriRequired', beet.bool],
+    ['profileMetadataRequired', beet.bool],
+    ['subspaceMetadataRequired', beet.bool],
     ['profileDeleteAllowed', beet.bool],
     ['subspaceDeleteAllowed', beet.bool],
     ['publicationDeleteAllowed', beet.bool],

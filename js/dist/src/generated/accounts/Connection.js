@@ -30,7 +30,7 @@ const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
 const ConnectionTargetType_1 = require("../types/ConnectionTargetType");
 exports.connectionDiscriminator = [209, 186, 115, 58, 36, 236, 179, 10];
 class Connection {
-    constructor(app, authority, connectionTargetType, initializer, target, approved, createdAt, modifiedAt) {
+    constructor(app, authority, connectionTargetType, initializer, target, approved, createdAt, searchable3Day, searchableDay, modifiedAt) {
         this.app = app;
         this.authority = authority;
         this.connectionTargetType = connectionTargetType;
@@ -38,10 +38,12 @@ class Connection {
         this.target = target;
         this.approved = approved;
         this.createdAt = createdAt;
+        this.searchable3Day = searchable3Day;
+        this.searchableDay = searchableDay;
         this.modifiedAt = modifiedAt;
     }
     static fromArgs(args) {
-        return new Connection(args.app, args.authority, args.connectionTargetType, args.initializer, args.target, args.approved, args.createdAt, args.modifiedAt);
+        return new Connection(args.app, args.authority, args.connectionTargetType, args.initializer, args.target, args.approved, args.createdAt, args.searchable3Day, args.searchableDay, args.modifiedAt);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return Connection.deserialize(accountInfo.data, offset);
@@ -95,6 +97,30 @@ class Connection {
                 }
                 return x;
             })(),
+            searchable3Day: (() => {
+                const x = this.searchable3Day;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            searchableDay: (() => {
+                const x = this.searchableDay;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
             modifiedAt: this.modifiedAt,
         };
     }
@@ -109,6 +135,8 @@ exports.connectionBeet = new beet.FixableBeetStruct([
     ['target', beetSolana.publicKey],
     ['approved', beet.bool],
     ['createdAt', beet.i64],
+    ['searchable3Day', beet.i64],
+    ['searchableDay', beet.i64],
     ['modifiedAt', beet.coption(beet.i64)],
 ], Connection.fromArgs, 'Connection');
 //# sourceMappingURL=Connection.js.map

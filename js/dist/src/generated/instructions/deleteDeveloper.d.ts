@@ -4,7 +4,7 @@ export declare const deleteDeveloperStruct: beet.BeetArgsStruct<{
     instructionDiscriminator: number[];
 }>;
 export type DeleteDeveloperInstructionAccounts = {
-    developer: web3.PublicKey;
+    developerWhitelistProof: web3.PublicKey;
     authority: web3.PublicKey;
     systemProgram?: web3.PublicKey;
 };

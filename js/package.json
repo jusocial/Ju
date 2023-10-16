@@ -1,7 +1,7 @@
 {
   "name": "@ju-protocol/ju-core",
-  "version": "0.1.3",
-  "programVersion": "0.1.3",
+  "version": "0.1.91",
+  "programVersion": "0.1.91",
   "description": "Ju Protocol JavaScript API. This package is for the current generation of Ju Protocol",
   "main": "dist/src/ju-core.js",
   "types": "dist/src/ju-core.d.ts",

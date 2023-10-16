@@ -44,6 +44,7 @@ export const addProcessorStruct = new beet.FixableBeetArgsStruct<
  * Accounts required by the _addProcessor_ instruction
  *
  * @property [_writable_] processorPda
+ * @property [] developerWhitelistProof (optional)
  * @property [_writable_, **signer**] authority
  * @category Instructions
  * @category AddProcessor
@@ -51,6 +52,7 @@ export const addProcessorStruct = new beet.FixableBeetArgsStruct<
  */
 export type AddProcessorInstructionAccounts = {
   processorPda: web3.PublicKey;
+  developerWhitelistProof?: web3.PublicKey;
   authority: web3.PublicKey;
   systemProgram?: web3.PublicKey;
 };
@@ -59,6 +61,11 @@ export const addProcessorInstructionDiscriminator = [46, 244, 27, 237, 198, 63, 
 
 /**
  * Creates a _AddProcessor_ instruction.
+ *
+ * Optional accounts that are not provided will be omitted from the accounts
+ * array passed with the instruction.
+ * An optional account that is set cannot follow an optional account that is unset.
+ * Otherwise an Error is raised.
  *
  * @param accounts that will be accessed while the instruction is processed
  * @param args to provide as instruction data to the program
@@ -82,17 +89,25 @@ export function createAddProcessorInstruction(
       isWritable: true,
       isSigner: false,
     },
-    {
-      pubkey: accounts.authority,
-      isWritable: true,
-      isSigner: true,
-    },
-    {
-      pubkey: accounts.systemProgram ?? web3.SystemProgram.programId,
+  ];
+
+  if (accounts.developerWhitelistProof != null) {
+    keys.push({
+      pubkey: accounts.developerWhitelistProof,
       isWritable: false,
       isSigner: false,
-    },
-  ];
+    });
+  }
+  keys.push({
+    pubkey: accounts.authority,
+    isWritable: true,
+    isSigner: true,
+  });
+  keys.push({
+    pubkey: accounts.systemProgram ?? web3.SystemProgram.programId,
+    isWritable: false,
+    isSigner: false,
+  });
 
   const ix = new web3.TransactionInstruction({
     programId,

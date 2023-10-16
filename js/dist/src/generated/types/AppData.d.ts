@@ -1,14 +1,8 @@
 import * as beet from '@metaplex-foundation/beet';
 export type AppData = {
     metadataUri: beet.COption<string>;
-    profileFirstNameRequired: boolean;
-    profileLastNameRequired: boolean;
-    profileBirthdateRequired: boolean;
-    profileCountryRequired: boolean;
-    profileCityRequired: boolean;
-    profileMetadataUriRequired: boolean;
-    subspaceNameRequired: boolean;
-    subspaceMetadataUriRequired: boolean;
+    profileMetadataRequired: boolean;
+    subspaceMetadataRequired: boolean;
     profileDeleteAllowed: boolean;
     subspaceDeleteAllowed: boolean;
     publicationDeleteAllowed: boolean;

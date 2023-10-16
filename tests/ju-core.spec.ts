@@ -3,7 +3,7 @@ import { Program } from "@project-serum/anchor";
 import { JuCore } from "../target/types/ju_core";
 import { expect } from "chai";
 import * as uuid from 'uuid';
-import { airdrop, birthDate } from "./utils.spec";
+import { airdrop, birthDate, toText } from "./utils.spec";
 
 
 const provider = anchor.getProvider();
@@ -12,6 +12,7 @@ describe("ju-core", () => {
   // Configure the client to use the local cluster.
   anchor.setProvider(provider);
   const user = provider.publicKey;
+  console.log('user :>> ', user);
   const { SystemProgram } = anchor.web3;
 
   const program = anchor.workspace.JuCore as Program<JuCore>;
@@ -76,7 +77,7 @@ describe("ju-core", () => {
     ],
     program.programId
   );
-  const profileAlias2 = "julia";
+  const profileAlias2 = "julia_2";
   const [profileAliasAccount2, profileAliasAccountBump2] = anchor.web3.PublicKey.findProgramAddressSync(
     [
       Buffer.from("alias"),
@@ -112,8 +113,6 @@ describe("ju-core", () => {
   /* Publications Setup */
   const publicationId = uuid.v4().replace(/-/g, '');
   const uri = "https://example.com/publication-1";
-  const isMirror = false;
-  const isReply = false;
   const contentType = { article: {} };
 
   const [publicationAccount, publicationAccountBump] = anchor.web3.PublicKey.findProgramAddressSync(
@@ -122,6 +121,43 @@ describe("ju-core", () => {
       appAccount.toBuffer(),
       Buffer.from(publicationId),
     ],
+    program.programId
+  );
+
+
+  const mirrorPublicationId = uuid.v4().replace(/-/g, '');
+  const mirrorPublication1Seed = [
+    Buffer.from("publication"),
+    appAccount.toBuffer(),
+    Buffer.from(mirrorPublicationId),
+  ];
+  const [mirrorPublication1Account, mirrorPublication1Bump] = anchor.web3.PublicKey.findProgramAddressSync(
+    mirrorPublication1Seed,
+    program.programId
+  );
+
+
+  const publication1ReplyId = uuid.v4().replace(/-/g, '');
+  const publication1ReplySeed = [
+    Buffer.from("publication"),
+    appAccount.toBuffer(),
+    Buffer.from(publication1ReplyId),
+  ];
+  const [publication1ReplyAccount, publication1ReplyBump] = anchor.web3.PublicKey.findProgramAddressSync(
+    publication1ReplySeed,
+    program.programId
+  );
+
+
+  const subspacePublicationId = uuid.v4().replace(/-/g, '');
+
+  const subspacePublicationSeed = [
+    Buffer.from("publication"),
+    appAccount.toBuffer(),
+    Buffer.from(subspacePublicationId),
+  ];
+  const [subspacePublicationAccount, _subspacePublicationBump] = anchor.web3.PublicKey.findProgramAddressSync(
+    subspacePublicationSeed,
     program.programId
   );
 
@@ -186,7 +222,55 @@ describe("ju-core", () => {
   );
 
 
+  // Messenger keys
+  const profile1MessengerKey = anchor.web3.Keypair.generate().publicKey;
+  const profile2MessengerKey = anchor.web3.Keypair.generate().publicKey;
+  const profile3MessengerKey = anchor.web3.Keypair.generate().publicKey;
+  const profile4MessengerKey = anchor.web3.Keypair.generate().publicKey;
 
+  const genderMale: anchor.IdlTypes<JuCore>["Gender"] = { male: {} }
+  const genderFemale: anchor.IdlTypes<JuCore>["Gender"] = { female: {} }
+  const genderOtherOrPreferNotToSay: anchor.IdlTypes<JuCore>["Gender"] = { otherOrPreferNotToSay: {} }
+
+
+  const [developerWhitelistProof1, developerWhitelistProof1Bump] = anchor.web3.PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("developer"),
+      user.toBuffer(),
+    ],
+    program.programId
+  );
+
+
+  describe("Developers whitelist", async () => {
+
+    it("Add Developer", async () => {
+
+      try {
+        /* Call the addProcessor function via RPC */
+        const tx = await program.methods.addDeveloper(user)
+          .accounts(
+            {
+              developerWhitelistProof: developerWhitelistProof1,
+              authority: user,
+              systemProgram: SystemProgram.programId,
+            }
+          )
+          .rpc();
+
+      } catch (error: any) {
+        console.log('error :>> ', error);
+      }
+      /* Fetch the Processor PDA account and check the value  */
+      const data = await program.account.developerWhitelistProof.fetch(developerWhitelistProof1);
+      // console.log('Developer whitelist-proof PDA account: ', data);
+
+      expect(data.developer.toString()).to.equal(user.toString());
+      expect(data.authority.toString()).to.equal(user.toString());
+    });
+
+  });
+  
   describe("External Processor", async () => {
 
     it("Add Processor", async () => {
@@ -203,6 +287,7 @@ describe("ju-core", () => {
           .accounts(
             {
               processorPda: testProcessorPDA1,
+              developerWhitelistProof: null,
               authority: user,
               systemProgram: SystemProgram.programId,
             }
@@ -231,14 +316,9 @@ describe("ju-core", () => {
       /* Call the initializeApp function via RPC */
       let appData: anchor.IdlTypes<JuCore>["AppData"] = {
         metadataUri: appMetadataUri,
-        profileFirstNameRequired: true,
-        profileLastNameRequired: true,
-        profileBirthdateRequired: true,
-        profileCountryRequired: false,
-        profileCityRequired: false,
-        profileMetadataUriRequired: true,
 
-        subspaceMetadataUriRequired: true,
+        profileMetadataRequired: true,
+        subspaceMetadataRequired: true,
 
         profileIndividualProcessorsAllowed: false,
         subspaceIndividualProcessorsAllowed: false,
@@ -256,12 +336,14 @@ describe("ju-core", () => {
         const tx = await program.methods.initializeApp(appName, appData)
           .accounts({
             app: appAccount,
+            developerWhitelistProof: null,
             registeringProcessorPda: null,
             connectingProcessorPda: null,
             publishingProcessorPda: null,
             collectingProcessorPda: null,
             referencingProcessorPda: testProcessorPDA1,
             // referencingProcessorPda: null,
+            // developer: developer1,
             authority: user,
             systemProgram: SystemProgram.programId,
           })
@@ -283,14 +365,9 @@ describe("ju-core", () => {
       const newUri = "https://example.com/app-updated-uri";
       let appData2: anchor.IdlTypes<JuCore>["AppData"] = {
         metadataUri: newUri,
-        profileFirstNameRequired: true,
-        profileLastNameRequired: true,
-        profileBirthdateRequired: true,
-        profileCountryRequired: false,
-        profileCityRequired: false,
-        profileMetadataUriRequired: true,
 
-        subspaceMetadataUriRequired: true,
+        profileMetadataRequired: true,
+        subspaceMetadataRequired: true,
 
         profileIndividualProcessorsAllowed: false,
         subspaceIndividualProcessorsAllowed: false,
@@ -342,19 +419,21 @@ describe("ju-core", () => {
 
     const profile1Name = 'John';
     const profile1Surname = 'Doe';
-    const profile1Birthdate = birthDate(1972, 0, 24);
+    const profile1Birthdate = birthDate(1972, 1, 24);
     const uri = "https://example.com/profile-1-uri";
     const profile1StatusText = 'Hey there!';
 
 
     const updatedProfile1Name = 'Bob';
     const updatedProfile1Surname = 'Jackson';
-    const updatedProfile1Birthdate = birthDate(1984, 0, 26);
+    const updatedProfile1Birthdate = birthDate(1984, 1, 26);
 
 
     const profile2Name = 'Alice';
     const profile2Surname = 'Smith';
     const profile2Birthdate = birthDate(1982, 11, 29);
+
+    console.log('birthDate(1972, 0, 24) :>> ', birthDate(1972, 0, 24).toNumber());
 
     it("Creates Profile 1", async () => {
 
@@ -364,11 +443,13 @@ describe("ju-core", () => {
           alias: profileAlias1,
           metadataUri: uri,
           statusText: profile1StatusText,
+          gender: genderMale,
           firstName: profile1Name,
           lastName: profile1Surname,
           birthDate: birthDate(1972, 0, 24),
-          countryCode: null,
-          cityCode: null,
+          countryCode: 0,
+          regionCode: 0,
+          cityCode: 0,
           currentLocation: null
         };
         const tx = await program.methods.createProfile(profileInstructionData1, null)
@@ -390,16 +471,17 @@ describe("ju-core", () => {
       }
       /* Fetch the account and check the values */
       const data = await program.account.profile.fetch(profileAccount1);
-      console.log('profileAccount1 :>> ', profileAccount1);
-      console.log('Profile 1 account: ', data);
+      // console.log('profileAccount1 :>> ', profileAccount1);
+      // console.log('Profile 1 account: ', data);
 
       /* Fetch the Alias PDA account and check the value of Profile */
       const aliasPda = await program.account.alias.fetch(profileAliasAccount1);
       // console.log('Alias acoount: ', aliasPda);
 
       expect(data.metadataUri.toString()).to.equal(uri);
-      expect(data.firstName.toString()).to.equal(profile1Name);
-      expect(data.lastName.toString()).to.equal(profile1Surname);
+      expect(data.gender.toString()).to.equal(genderMale.toString());
+      expect(toText(data.firstName)).to.equal(profile1Name);
+      expect(toText(data.lastName)).to.equal(profile1Surname);
       expect(data.birthDate.toString()).to.equal(birthDate(1972, 0, 24).toString());
 
       expect(data.alias.toString()).to.equal(profileAlias1);
@@ -420,11 +502,13 @@ describe("ju-core", () => {
           alias: profileAlias1,
           metadataUri: updatedUri,
           statusText: updatedProfile1StatusText,
+          gender: genderMale,
           firstName: profile1Name,
           lastName: profile1Surname,
           birthDate: profile1Birthdate,
-          countryCode: null,
-          cityCode: null,
+          countryCode: 0,
+          regionCode: 0,
+          cityCode: 0,
           currentLocation: null
         };
         const tx = await program.methods.updateProfile(profileInstructionData1)
@@ -456,8 +540,9 @@ describe("ju-core", () => {
       expect(data.app.toString()).to.equal(appAccount.toString());
       expect(data.metadataUri).to.equal(updatedUri);
 
-      expect(data.firstName.toString()).to.equal(profile1Name);
-      expect(data.lastName.toString()).to.equal(profile1Surname);
+      expect(data.gender.toString()).to.equal(genderMale.toString());
+      expect(toText(data.firstName)).to.equal(profile1Name);
+      expect(toText(data.lastName)).to.equal(profile1Surname);
       expect(data.birthDate.toString()).to.equal(profile1Birthdate.toString());
 
       expect(data.statusText.toString()).to.equal(updatedProfile1StatusText);
@@ -487,11 +572,13 @@ describe("ju-core", () => {
         let profileInstructionData1: anchor.IdlTypes<JuCore>["ProfileData"] = {
           alias: updatedProfileAlias1,
           metadataUri: updatedUri,
-          statusText: null,
+          gender: genderOtherOrPreferNotToSay,
+          statusText: '',
           firstName: updatedProfile1Name,
           lastName: updatedProfile1Surname,
           birthDate: updatedProfile1Birthdate,
           countryCode: 7,
+          regionCode: 333,
           cityCode: 31,
           currentLocation: null
         };
@@ -532,8 +619,9 @@ describe("ju-core", () => {
 
       expect(data.app.toString()).to.equal(appAccount.toString());
 
-      expect(data.firstName.toString()).to.equal(updatedProfile1Name);
-      expect(data.lastName.toString()).to.equal(updatedProfile1Surname);
+      expect(data.gender.toString()).to.equal(genderOtherOrPreferNotToSay.toString());
+      expect(toText(data.firstName)).to.equal(updatedProfile1Name);
+      expect(toText(data.lastName)).to.equal(updatedProfile1Surname);
       expect(data.birthDate.toString()).to.equal(updatedProfile1Birthdate.toString());
 
       expect(data.metadataUri).to.equal(updatedUri);
@@ -559,11 +647,13 @@ describe("ju-core", () => {
         let profileInstructionData1: anchor.IdlTypes<JuCore>["ProfileData"] = {
           alias: null,
           metadataUri: uri,
-          statusText: null,
+          statusText: '',
+          gender: genderMale,
           firstName: 'Konrad',
           lastName: 'Mikhelson',
           birthDate: birthDate(1984, 0, 26),
           countryCode: 7,
+          regionCode: 321,
           cityCode: 31,
           currentLocation: null
         };
@@ -589,7 +679,7 @@ describe("ju-core", () => {
 
       /* Fetch the account and check the values */
       const data = await program.account.profile.fetch(profileAccount1);
-      // console.log('Updated Profile 1 account: ', data);
+      console.log('Updated Profile 1 account: ', data);
 
       try {
         const aliasPda = await program.account.alias.fetch(updatedProfileAliasAccount1);
@@ -602,6 +692,7 @@ describe("ju-core", () => {
       expect(data.app.toString()).to.equal(appAccount.toString());
       expect(data.metadataUri).to.equal(uri);
       expect(data.alias).to.equal(null);
+      expect(data.gender.toString()).to.equal(genderMale.toString());
       expect(data.authority.toString()).to.equal(user.toString());
     });
 
@@ -619,11 +710,13 @@ describe("ju-core", () => {
           alias: profileAlias2,
           statusText: profile2StatusText,
           metadataUri: profile2MetadataUri,
+          gender: genderFemale,
           firstName: profile2Name,
           lastName: profile2Surname,
           birthDate: profile2Birthdate,
-          countryCode: null,
-          cityCode: null,
+          countryCode: 0,
+          regionCode: 0,
+          cityCode: 0,
           currentLocation: null
         };
         const tx = await program.methods.createProfile(profileInstructionData2, null)
@@ -650,8 +743,9 @@ describe("ju-core", () => {
 
       expect(data.metadataUri).to.equal(profile2MetadataUri);
 
-      expect(data.firstName.toString()).to.equal(profile2Name);
-      expect(data.lastName.toString()).to.equal(profile2Surname);
+      expect(data.gender.toString()).to.equal(genderFemale.toString());
+      expect(toText(data.firstName)).to.equal(profile2Name);
+      expect(toText(data.lastName)).to.equal(profile2Surname);
       expect(data.birthDate.toString()).to.equal(profile2Birthdate.toString());
 
       expect(data.statusText.toString()).to.equal(profile2StatusText);
@@ -714,7 +808,7 @@ describe("ju-core", () => {
 
     it("Update Subspace", async () => {
 
-      const publishingPermission: anchor.IdlTypes<JuCore>["SubspacePublishingPermissionLevel"] = { allMembers: {} }
+      const publishingPermission: anchor.IdlTypes<JuCore>["SubspacePublishingPermissionLevel"] = { admins: {} }
       const newUri = "https://example.com/subspace-1-updated-uri";
 
       try {
@@ -785,7 +879,7 @@ describe("ju-core", () => {
 
       /* Fetch the account and check the values */
       const data = await program.account.connection.fetch(connectionAccount_2_1);
-      // console.log('Connection (following) account: ', data);
+      console.log('Connection (following) account: ', data);
 
       expect(data.app.toString()).to.equal(appAccount.toString());
       expect(data.initializer.toString()).to.equal(profileAccount2.toString());
@@ -941,7 +1035,7 @@ describe("ju-core", () => {
 
   describe("Subspaces Management: ", async () => {
 
-    it("Create Subspace Manager", async () => {
+    it("Add Profile 2 as Subspace Manager", async () => {
 
       const managerRole: anchor.IdlTypes<JuCore>["SubspaceManagementRoleType"] = { publisher: {} }
 
@@ -968,24 +1062,61 @@ describe("ju-core", () => {
       const data = await program.account.subspaceManager.fetch(subspaceManager2);
       // console.log('Updated Subspace data: ', data);
 
-      expect(data.profile.toString()).to.equal(profileAccount2.toString());
-      expect(data.role.toString()).to.equal(managerRole.toString());
+      expect(data.app.toString()).to.equal(appAccount.toString(), '1');
+      expect(data.profile.toString()).to.equal(profileAccount2.toString(), '2');
+      expect(data.subspace.toString()).to.equal(subspaceAccount.toString(), '3');
+      expect(data.role.toString()).to.equal(managerRole.toString(), '4');
     });
+
+
+    it("it can Update Subspace Manager (Profile 2) with {Admin} credentials", async () => {
+
+      const managerRole: anchor.IdlTypes<JuCore>["SubspaceManagementRoleType"] = { admin: {} }
+
+      try {
+        /* Call ix via RPC */
+        const tx = await program.methods.updateSubspaceManager(managerRole)
+          .accounts({
+            app: appAccount,
+            subspace: subspaceAccount,
+            profile: profileAccount2,
+            connectionProof: connectionAccount_2_sub,
+            manager: subspaceManager2,
+            authority: user,
+            systemProgram: SystemProgram.programId,
+          })
+          // .signers([user2])
+          .rpc();
+
+        // console.log("Tx signature: ", tx);
+      } catch (error: any) {
+        console.log('error :>> ', error);
+      }
+      /* Fetch the account and check the values */
+      const data = await program.account.subspaceManager.fetch(subspaceManager2);
+      // console.log('Updated Subspace Manager data: ', data);
+
+      expect(data.app.toString()).to.equal(appAccount.toString(), '1');
+      expect(data.profile.toString()).to.equal(profileAccount2.toString(), '2');
+      expect(data.subspace.toString()).to.equal(subspaceAccount.toString(), '3');
+      expect(data.role.toString()).to.equal(managerRole.toString(), '4');
+    });
+
   });
 
 
   describe("Publication", async () => {
 
-    it("Create Publication", async () => {
+    it("Create Publication into Profile1 space", async () => {
 
       /* Call the createPublication function via RPC */
       let publicationInstructionData: anchor.IdlTypes<JuCore>["PublicationData"] = {
         isEncrypted: false,
         metadataUri: uri,
-        isMirror: isMirror,
-        isReply: isReply,
+        isMirror: false,
+        isReply: false,
         contentType: contentType,
-        tag: null
+        tag: ''
       };
       try {
         const tx = await program.methods.createPublication(publicationId, publicationInstructionData, null)
@@ -994,7 +1125,7 @@ describe("ju-core", () => {
             profile: profileAccount1,
             publication: publicationAccount,
             subspace: null,
-            targetPublication: program.programId,
+            targetPublication: null,
             connectionProof: null,
             subspaceManagerProof: null,
             collectingProcessorPda: null,
@@ -1015,8 +1146,8 @@ describe("ju-core", () => {
       expect(data.profile.toString()).to.equal(profileAccount1.toString());
       expect(data.uuid.toString()).to.equal(publicationId.toString());
       expect(data.metadataUri.toString()).to.equal(uri.toString());
-      expect(data.isMirror).to.equal(isMirror);
-      expect(data.isReply).to.equal(isReply);
+      expect(data.isMirror).to.equal(false);
+      expect(data.isReply).to.equal(false);
       expect(data.contentType.toString()).to.equal(contentType.toString());
       expect(data.authority.toString()).to.equal(user.toString());
     });
@@ -1026,8 +1157,6 @@ describe("ju-core", () => {
 
       // const updatePublicationId = uuid.v4().replace(/-/g, '');
       const newURI = "https://example.com/publication_updated1";
-      const isMirror = false;
-      const isReply = false;
       const contentType = { article: {} };
       const publicationTag = 'solana';
 
@@ -1035,8 +1164,8 @@ describe("ju-core", () => {
       let publicationInstructionData: anchor.IdlTypes<JuCore>["PublicationData"] = {
         isEncrypted: false,
         metadataUri: newURI,
-        isMirror: isMirror,
-        isReply: isReply,
+        isMirror: false,
+        isReply: false,
         contentType: contentType,
         tag: publicationTag,
       };
@@ -1072,41 +1201,24 @@ describe("ju-core", () => {
       expect(data.profile.toString()).to.equal(profileAccount1.toString());
       expect(data.uuid.toString()).to.equal(publicationId.toString());
       expect(data.metadataUri.toString()).to.equal(newURI.toString());
-      expect(data.isMirror).to.equal(isMirror);
-      expect(data.isReply).to.equal(isReply);
       expect(data.contentType.toString()).to.equal(contentType.toString());
-      expect(data.tag.toString()).to.equal(publicationTag.toString());
+      expect(toText(data.tag)).to.equal(publicationTag.toString());
       expect(data.authority.toString()).to.equal(user.toString());
     });
 
 
-    it("Create Mirror", async () => {
-
-      const mirrorPublicationId = uuid.v4().replace(/-/g, '');
-
-      const mirrorPublicationSeed = [
-        Buffer.from("publication"),
-        appAccount.toBuffer(),
-        Buffer.from(mirrorPublicationId),
-      ];
-
-      const [mirrorPublicationAccount, _] = anchor.web3.PublicKey.findProgramAddressSync(
-        mirrorPublicationSeed,
-        program.programId
-      );
+    it("Create Publication1 Mirror", async () => {
 
       const mirrorURI = "https://example.com/publication-mirror-uri";
-      const isMirror = true;
-      const isReply = false;
       const contentType = { article: {} };
 
       let publicationInstructionData: anchor.IdlTypes<JuCore>["PublicationData"] = {
         isEncrypted: true,
         metadataUri: mirrorURI,
-        isMirror: isMirror,
-        isReply: isReply,
+        isMirror: true,
+        isReply: false,
         contentType: contentType,
-        tag: null
+        tag: ''
       };
 
       try {
@@ -1119,7 +1231,7 @@ describe("ju-core", () => {
           .accounts({
             app: appAccount,
             profile: profileAccount1,
-            publication: mirrorPublicationAccount,
+            publication: mirrorPublication1Account,
             subspace: null,
             targetPublication: publicationAccount,
             connectionProof: null,
@@ -1137,22 +1249,78 @@ describe("ju-core", () => {
       }
 
       /* Fetch the account and check the values */
-      const data = await program.account.publication.fetch(mirrorPublicationAccount);
+      const data = await program.account.publication.fetch(mirrorPublication1Account);
       // console.log('Publication Mirror account data: ', data);
 
-      expect(data.app.toString()).to.equal(appAccount.toString());
-      expect(data.profile.toString()).to.equal(profileAccount1.toString());
-      expect(data.uuid.toString()).to.equal(mirrorPublicationId.toString());
-      expect(data.metadataUri.toString()).to.equal(mirrorURI.toString());
-      expect(data.isMirror).to.equal(isMirror);
-      expect(data.isReply).to.equal(isReply);
-      expect(data.contentType.toString()).to.equal(contentType.toString());
-      expect(data.authority.toString()).to.equal(user.toString());
+      expect(data.app.toString()).to.equal(appAccount.toString(), '1');
+      expect(data.profile.toString()).to.equal(profileAccount1.toString(), '2');
+      expect(data.uuid.toString()).to.equal(mirrorPublicationId.toString(), '3');
+      expect(data.metadataUri.toString()).to.equal(mirrorURI.toString(), '4');
+      expect(data.isMirror).to.equal(true, '5');
+      expect(data.isReply).to.equal(false, '6');
+      expect(data.targetPublication.toString()).to.equal(publicationAccount.toString(), '7');
+      expect(data.contentType.toString()).to.equal(contentType.toString(), '8');
+      expect(data.authority.toString()).to.equal(user.toString(), '9');
     });
 
-    it("Profile2 CAN'T create Publication into Subspace without connection proof", async () => {
 
-      const subspacePublicationId = uuid.v4().replace(/-/g, '');
+    it("Profile 2 can Create Publication1 Reply into Profile space", async () => {
+
+      const replyURI = "https://example.com/publication-1-reply-uri";
+
+      let publicationInstructionData: anchor.IdlTypes<JuCore>["PublicationData"] = {
+        isEncrypted: false,
+        metadataUri: replyURI,
+        isMirror: false,
+        isReply: true,
+        contentType: { article: {} },
+        tag: ''
+      };
+
+      try {
+        /* Call the create function via RPC */
+        const tx = await program.methods.createPublication(
+          publication1ReplyId,
+          publicationInstructionData,
+          null
+        )
+          .accounts({
+            app: appAccount,
+            profile: profileAccount2,
+            publication: publication1ReplyAccount,
+            subspace: null,
+            targetPublication: publicationAccount,
+            connectionProof: null,
+            subspaceManagerProof: null,
+            collectingProcessorPda: null,
+            referencingProcessorPda: null,
+            authority: user2.publicKey,
+            systemProgram: SystemProgram.programId,
+          })
+          .signers([user2])
+          .rpc();
+
+        // console.log("Tx signature: ", tx);
+      } catch (error: any) {
+        console.log('error :>> ', error);
+      }
+
+      /* Fetch the account and check the values */
+      const data = await program.account.publication.fetch(publication1ReplyAccount);
+      console.log('Publication 1 Reply account data: ', data);
+
+      expect(data.app.toString()).to.equal(appAccount.toString(), '1');
+      expect(data.profile.toString()).to.equal(profileAccount2.toString(), '2');
+      expect(data.uuid.toString()).to.equal(publication1ReplyId.toString(), '3');
+      expect(data.metadataUri.toString()).to.equal(replyURI.toString(), '4');
+      expect(data.isMirror).to.equal(false, '5');
+      expect(data.isReply).to.equal(true, '6');
+      expect(data.targetPublication.toString()).to.equal(publicationAccount.toString(), '7');
+      expect(data.authority.toString()).to.equal(user2.publicKey.toString(), '9');
+    });
+
+
+    it("Profile2 CAN'T create Publication into Subspace without connection proof", async () => {
 
       const uri = "https://example.com/publication-to-subspace";
       const isMirror = false;
@@ -1160,15 +1328,6 @@ describe("ju-core", () => {
       const contentType = { video: {} };
       const publicationTag = 'subspacepub';
 
-      const subspacePublicationSeed = [
-        Buffer.from("publication"),
-        appAccount.toBuffer(),
-        Buffer.from(subspacePublicationId),
-      ];
-      const [subspacePublicationAccount, _] = anchor.web3.PublicKey.findProgramAddressSync(
-        subspacePublicationSeed,
-        program.programId
-      );
 
       /* Call the create function via RPC */
       let publicationInstructionData: anchor.IdlTypes<JuCore>["PublicationData"] = {
@@ -1201,47 +1360,32 @@ describe("ju-core", () => {
         // console.log('error :>> ', error);
         expect(String(error)).contain('Error Code: SubspacePublishingPermissionViolation.')
       }
-      /* Fetch the account and check the values */
-      // const data = await program.account.publication.fetch(subspacePublicationAccount);
-      // console.log('Publication data: ', data);
-
-      // expect(data.app.toString()).to.equal(appAccount.toString());
-      // expect(data.profile.toString()).to.equal(profileAccount1.toString());
-      // expect(data.uuid.toString()).to.equal(subspacePublicationId.toString());
-      // expect(data.metadataUri.toString()).to.equal(uri.toString());
-      // expect(data.isMirror).to.equal(isMirror);
-      // expect(data.isReply).to.equal(isReply);
-      // expect(data.contentType.toString()).to.equal(contentType.toString());
-      // expect(data.subspace.toString()).to.equal(subspaceAccount.toString());
-      // expect(data.authority.toString()).to.equal(user.toString());
     });
 
     it("Profile2 CAN createPublication into Subspace with subspace-manager proof", async () => {
 
       const subspacePublicationId = uuid.v4().replace(/-/g, '');
 
-      const uri = "https://example.com/publication-to-subspace";
-      const isMirror = false;
-      const isReply = false;
-      const contentType = { video: {} };
-      const publicationTag = 'subspacepub';
-
       const subspacePublicationSeed = [
         Buffer.from("publication"),
         appAccount.toBuffer(),
         Buffer.from(subspacePublicationId),
       ];
-      const [subspacePublicationAccount, _] = anchor.web3.PublicKey.findProgramAddressSync(
+      const [subspacePublicationAccount, _subspacePublicationBump] = anchor.web3.PublicKey.findProgramAddressSync(
         subspacePublicationSeed,
         program.programId
       );
+
+      const uri = "https://example.com/publication-to-subspace";
+      const contentType = { video: {} };
+      const publicationTag = 'subspacepub';
 
       /* Call the create function via RPC */
       let publicationInstructionData: anchor.IdlTypes<JuCore>["PublicationData"] = {
         isEncrypted: true,
         metadataUri: uri,
-        isMirror: isMirror,
-        isReply: isReply,
+        isMirror: false,
+        isReply: false,
         contentType: contentType,
         tag: publicationTag,
       };
@@ -1270,18 +1414,156 @@ describe("ju-core", () => {
       }
       /* Fetch the account and check the values */
       const data = await program.account.publication.fetch(subspacePublicationAccount);
-      console.log('Publication data: ', data);
+      // console.log('Publication data: ', data);
 
       expect(data.app.toString()).to.equal(appAccount.toString(), '1');
       expect(data.profile.toString()).to.equal(profileAccount2.toString(), '2');
       expect(data.uuid.toString()).to.equal(subspacePublicationId.toString(), '3');
       expect(data.metadataUri.toString()).to.equal(uri.toString(), '4');
-      expect(data.isMirror).to.equal(isMirror, '5');
-      expect(data.isReply).to.equal(isReply, '6');
+      expect(data.isMirror).to.equal(false, '5');
+      expect(data.isReply).to.equal(false, '6');
       expect(data.contentType.toString()).to.equal(contentType.toString(), '7');
       expect(data.subspace.toString()).to.equal(subspaceAccount.toString(), '8');
       expect(data.authority.toString()).to.equal(user2.publicKey.toString(), '9');
     });
+
+    // it("It can query all Subspace publications", async () => {
+
+    //   /* Fetch the account and check the values */
+    //   const data = await program.account.publication.all([
+    //     {
+    //       memcmp: {
+    //         offset: 213, 
+    //         bytes: subspaceAccount.toBase58(),
+    //       }
+    //     }
+    //   ]);
+    //   // console.log('Publication data: ', data);
+
+    //   expect(data.length).to.equal(2);
+    //   // data.forEach(item => {console.log('item :>> ', item);})
+    //   // expect(data.every(account => {
+    //   //   return account.account.profile.toBase58() === profileAccount1.toBase58()
+    //   // }))
+    // });
+
+    // it("It can query all Mirrored publications", async () => {
+
+    //   /* Fetch the account and check the values */
+    //   const data = await program.account.publication.all([
+    //     {
+    //       memcmp: {
+    //         offset: 145, // is_mirror
+    //         bytes: '2',  // '2' = `1 (true)` in base58
+    //       }
+    //     }
+    //   ]);
+
+    //   expect(data.length).to.equal(1);
+    //   // data.forEach(item => {console.log('item :>> ', item);})
+    //   // expect(data.every(account => {
+    //   //   return account.account.metadataUri.toString() === "https://example.com/publication-mirror-uri";
+    //   // }))
+    // });
+
+    // it("It can query all Replyed publications", async () => {
+
+    //   /* Fetch the account and check the values */
+    //   const data = await program.account.publication.all([
+    //     {
+    //       memcmp: {
+    //         offset: 146, // is_reply
+    //         bytes: '2',  // '2' = `1 (true)` in base58
+    //       }
+    //     }
+    //   ]);
+
+    //   expect(data.length).to.equal(1);
+    //   // data.forEach(item => {console.log('item :>> ', item);})
+    //   // expect(data.every(account => {
+    //   //   console.log('account.account :>> ', account.account);
+    //   //   return account.account.isReply === true;
+    //   // }))
+    // });
+
+
+    // it("It can query all publications Targeted to Publication1", async () => {
+
+    //   /* Fetch the account and check the values */
+    //   const data = await program.account.publication.all([
+    //     {
+    //       memcmp: {
+    //         offset: 180, // `target_publication` offset
+    //         bytes: publicationAccount.toBase58(),
+    //       }
+    //     }
+    //   ]);
+    //   // console.log('Publication data: ', data);
+
+    //   expect(data.length).to.equal(2);
+    //   data.forEach(item => {console.log('item :>> ', item);})
+    //   // expect(data.every(account => {
+    //   //   return account.account.profile.toBase58() === profileAccount1.toBase58()
+    //   // }))
+    // });
+
+    // it("It can query all replyes for Publication1", async () => {
+
+    //   /* Fetch the account and check the values */
+    //   const data = await program.account.publication.all([
+    //     {
+    //       memcmp: {
+    //         offset: 146, // is_reply
+    //         bytes: '2',  // '2' = `1 (true)` in base58
+    //       }
+    //     },
+    //     {
+    //       memcmp: {
+    //         offset: 180, // `target_publication` offset
+    //         bytes: publicationAccount.toBase58(),
+    //       }
+    //     }
+    //   ]);
+    //   // console.log('Publication data: ', data);
+
+    //   expect(data.length).to.equal(1);
+    // });
+
+    // it("It can query all replyes for Publication1", async () => {
+
+    //   /* Fetch the account and check the values */
+    //   const data = await program.account.publication.all([
+    //     {
+    //       memcmp: {
+    //         offset: 146, // is_reply
+    //         bytes: '2',  // '2' = `1 (true)` in base58
+    //       }
+    //     },
+    //     {
+    //       memcmp: {
+    //         offset: 180, // `target_publication` offset
+    //         bytes: publicationAccount.toBase58(),
+    //       }
+    //     }
+    //   ]);
+    //   // console.log('Publication data: ', data);
+
+    //   expect(data.length).to.equal(1);
+    // });
+
+    // it("It can query all Profiles that 20 years old", async () => {
+
+    //   const data = await program.account.profile.all([
+    //     {
+    //       memcmp: {
+    //         offset: 146, // is_reply
+    //         bytes: '2',  // '2' = `1 (true)` in base58
+    //       }
+    //     },
+    //   ]);
+
+    //   expect(data.length).to.equal(1);
+    // });
 
   });
 
@@ -1330,7 +1612,7 @@ describe("ju-core", () => {
       }
       /* Fetch the account and check the values */
       const data = await program.account.reaction.fetch(reactionToProfileAccount);
-      // console.log('Reaction data: ', data);
+      console.log('Reaction data: ', data);
 
       expect(data.app.toString()).to.equal(appAccount.toString(), '1');
       expect(data.initializer.toString()).to.equal(profileAccount1.toString(), '2');

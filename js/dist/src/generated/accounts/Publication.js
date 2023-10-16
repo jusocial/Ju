@@ -30,17 +30,19 @@ const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
 const ContentType_1 = require("../types/ContentType");
 exports.publicationDiscriminator = [213, 137, 189, 150, 94, 132, 251, 247];
 class Publication {
-    constructor(app, profile, authority, isEncrypted, subspace, isMirror, isReply, targetPublication, contentType, tag, uuid, metadataUri, collectingProcessor, referencingProcessor, createdAt, modifiedAt) {
+    constructor(app, profile, authority, isEncrypted, isMirror, isReply, contentType, tag, searchable3Day, searchableDay, targetPublication, subspace, uuid, metadataUri, collectingProcessor, referencingProcessor, createdAt, modifiedAt) {
         this.app = app;
         this.profile = profile;
         this.authority = authority;
         this.isEncrypted = isEncrypted;
-        this.subspace = subspace;
         this.isMirror = isMirror;
         this.isReply = isReply;
-        this.targetPublication = targetPublication;
         this.contentType = contentType;
         this.tag = tag;
+        this.searchable3Day = searchable3Day;
+        this.searchableDay = searchableDay;
+        this.targetPublication = targetPublication;
+        this.subspace = subspace;
         this.uuid = uuid;
         this.metadataUri = metadataUri;
         this.collectingProcessor = collectingProcessor;
@@ -49,7 +51,7 @@ class Publication {
         this.modifiedAt = modifiedAt;
     }
     static fromArgs(args) {
-        return new Publication(args.app, args.profile, args.authority, args.isEncrypted, args.subspace, args.isMirror, args.isReply, args.targetPublication, args.contentType, args.tag, args.uuid, args.metadataUri, args.collectingProcessor, args.referencingProcessor, args.createdAt, args.modifiedAt);
+        return new Publication(args.app, args.profile, args.authority, args.isEncrypted, args.isMirror, args.isReply, args.contentType, args.tag, args.searchable3Day, args.searchableDay, args.targetPublication, args.subspace, args.uuid, args.metadataUri, args.collectingProcessor, args.referencingProcessor, args.createdAt, args.modifiedAt);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return Publication.deserialize(accountInfo.data, offset);
@@ -89,12 +91,36 @@ class Publication {
             profile: this.profile.toBase58(),
             authority: this.authority.toBase58(),
             isEncrypted: this.isEncrypted,
-            subspace: this.subspace,
             isMirror: this.isMirror,
             isReply: this.isReply,
-            targetPublication: this.targetPublication,
             contentType: 'ContentType.' + ContentType_1.ContentType[this.contentType],
             tag: this.tag,
+            searchable3Day: (() => {
+                const x = this.searchable3Day;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            searchableDay: (() => {
+                const x = this.searchableDay;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            targetPublication: this.targetPublication.toBase58(),
+            subspace: this.subspace.toBase58(),
             uuid: this.uuid,
             metadataUri: this.metadataUri,
             collectingProcessor: this.collectingProcessor,
@@ -122,12 +148,14 @@ exports.publicationBeet = new beet.FixableBeetStruct([
     ['profile', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
     ['isEncrypted', beet.bool],
-    ['subspace', beet.coption(beetSolana.publicKey)],
     ['isMirror', beet.bool],
     ['isReply', beet.bool],
-    ['targetPublication', beet.coption(beetSolana.publicKey)],
     ['contentType', ContentType_1.contentTypeBeet],
-    ['tag', beet.coption(beet.utf8String)],
+    ['tag', beet.uniformFixedSizeArray(beet.u8, 12)],
+    ['searchable3Day', beet.i64],
+    ['searchableDay', beet.i64],
+    ['targetPublication', beetSolana.publicKey],
+    ['subspace', beetSolana.publicKey],
     ['uuid', beet.utf8String],
     ['metadataUri', beet.utf8String],
     ['collectingProcessor', beet.coption(beetSolana.publicKey)],

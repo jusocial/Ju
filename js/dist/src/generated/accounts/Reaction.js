@@ -31,7 +31,7 @@ const ReactionTargetType_1 = require("../types/ReactionTargetType");
 const ReactionType_1 = require("../types/ReactionType");
 exports.reactionDiscriminator = [226, 61, 100, 191, 223, 221, 142, 139];
 class Reaction {
-    constructor(app, authority, targetType, target, initializer, reactionType, createdAt) {
+    constructor(app, authority, targetType, target, initializer, reactionType, createdAt, searchable3Day, searchableDay) {
         this.app = app;
         this.authority = authority;
         this.targetType = targetType;
@@ -39,9 +39,11 @@ class Reaction {
         this.initializer = initializer;
         this.reactionType = reactionType;
         this.createdAt = createdAt;
+        this.searchable3Day = searchable3Day;
+        this.searchableDay = searchableDay;
     }
     static fromArgs(args) {
-        return new Reaction(args.app, args.authority, args.targetType, args.target, args.initializer, args.reactionType, args.createdAt);
+        return new Reaction(args.app, args.authority, args.targetType, args.target, args.initializer, args.reactionType, args.createdAt, args.searchable3Day, args.searchableDay);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return Reaction.deserialize(accountInfo.data, offset);
@@ -94,6 +96,30 @@ class Reaction {
                 }
                 return x;
             })(),
+            searchable3Day: (() => {
+                const x = this.searchable3Day;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            searchableDay: (() => {
+                const x = this.searchableDay;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
         };
     }
 }
@@ -107,5 +133,7 @@ exports.reactionBeet = new beet.BeetStruct([
     ['initializer', beetSolana.publicKey],
     ['reactionType', ReactionType_1.reactionTypeBeet],
     ['createdAt', beet.i64],
+    ['searchable3Day', beet.i64],
+    ['searchableDay', beet.i64],
 ], Reaction.fromArgs, 'Reaction');
 //# sourceMappingURL=Reaction.js.map

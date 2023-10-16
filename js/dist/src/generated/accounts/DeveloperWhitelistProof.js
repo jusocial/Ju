@@ -23,58 +23,61 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.developerWhitelistItemBeet = exports.DeveloperWhitelistItem = exports.developerWhitelistItemDiscriminator = void 0;
+exports.developerWhitelistProofBeet = exports.DeveloperWhitelistProof = exports.developerWhitelistProofDiscriminator = void 0;
 const web3 = __importStar(require("@solana/web3.js"));
 const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
 const beet = __importStar(require("@metaplex-foundation/beet"));
-exports.developerWhitelistItemDiscriminator = [182, 76, 197, 16, 209, 139, 164, 47];
-class DeveloperWhitelistItem {
-    constructor(authority) {
+exports.developerWhitelistProofDiscriminator = [151, 62, 246, 164, 78, 115, 182, 59];
+class DeveloperWhitelistProof {
+    constructor(authority, developer) {
         this.authority = authority;
+        this.developer = developer;
     }
     static fromArgs(args) {
-        return new DeveloperWhitelistItem(args.authority);
+        return new DeveloperWhitelistProof(args.authority, args.developer);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
-        return DeveloperWhitelistItem.deserialize(accountInfo.data, offset);
+        return DeveloperWhitelistProof.deserialize(accountInfo.data, offset);
     }
     static async fromAccountAddress(connection, address, commitmentOrConfig) {
         const accountInfo = await connection.getAccountInfo(address, commitmentOrConfig);
         if (accountInfo == null) {
-            throw new Error(`Unable to find DeveloperWhitelistItem account at ${address}`);
+            throw new Error(`Unable to find DeveloperWhitelistProof account at ${address}`);
         }
-        return DeveloperWhitelistItem.fromAccountInfo(accountInfo, 0)[0];
+        return DeveloperWhitelistProof.fromAccountInfo(accountInfo, 0)[0];
     }
     static gpaBuilder(programId = new web3.PublicKey('964vWgVEK9X8ZwZB2HyshFVmHUWbcYpRTnVYz2o3F2Xq')) {
-        return beetSolana.GpaBuilder.fromStruct(programId, exports.developerWhitelistItemBeet);
+        return beetSolana.GpaBuilder.fromStruct(programId, exports.developerWhitelistProofBeet);
     }
     static deserialize(buf, offset = 0) {
-        return exports.developerWhitelistItemBeet.deserialize(buf, offset);
+        return exports.developerWhitelistProofBeet.deserialize(buf, offset);
     }
     serialize() {
-        return exports.developerWhitelistItemBeet.serialize({
-            accountDiscriminator: exports.developerWhitelistItemDiscriminator,
+        return exports.developerWhitelistProofBeet.serialize({
+            accountDiscriminator: exports.developerWhitelistProofDiscriminator,
             ...this,
         });
     }
     static get byteSize() {
-        return exports.developerWhitelistItemBeet.byteSize;
+        return exports.developerWhitelistProofBeet.byteSize;
     }
     static async getMinimumBalanceForRentExemption(connection, commitment) {
-        return connection.getMinimumBalanceForRentExemption(DeveloperWhitelistItem.byteSize, commitment);
+        return connection.getMinimumBalanceForRentExemption(DeveloperWhitelistProof.byteSize, commitment);
     }
     static hasCorrectByteSize(buf, offset = 0) {
-        return buf.byteLength - offset === DeveloperWhitelistItem.byteSize;
+        return buf.byteLength - offset === DeveloperWhitelistProof.byteSize;
     }
     pretty() {
         return {
             authority: this.authority.toBase58(),
+            developer: this.developer.toBase58(),
         };
     }
 }
-exports.DeveloperWhitelistItem = DeveloperWhitelistItem;
-exports.developerWhitelistItemBeet = new beet.BeetStruct([
+exports.DeveloperWhitelistProof = DeveloperWhitelistProof;
+exports.developerWhitelistProofBeet = new beet.BeetStruct([
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['authority', beetSolana.publicKey],
-], DeveloperWhitelistItem.fromArgs, 'DeveloperWhitelistItem');
-//# sourceMappingURL=DeveloperWhitelistItem.js.map
+    ['developer', beetSolana.publicKey],
+], DeveloperWhitelistProof.fromArgs, 'DeveloperWhitelistProof');
+//# sourceMappingURL=DeveloperWhitelistProof.js.map

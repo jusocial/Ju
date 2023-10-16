@@ -39,6 +39,7 @@ export const initializeAppStruct = new beet.FixableBeetArgsStruct<
  * Accounts required by the _initializeApp_ instruction
  *
  * @property [_writable_] app
+ * @property [] developerWhitelistProof (optional)
  * @property [] registeringProcessorPda (optional)
  * @property [] connectingProcessorPda (optional)
  * @property [] publishingProcessorPda (optional)
@@ -51,6 +52,7 @@ export const initializeAppStruct = new beet.FixableBeetArgsStruct<
  */
 export type InitializeAppInstructionAccounts = {
   app: web3.PublicKey;
+  developerWhitelistProof?: web3.PublicKey;
   registeringProcessorPda?: web3.PublicKey;
   connectingProcessorPda?: web3.PublicKey;
   publishingProcessorPda?: web3.PublicKey;
@@ -94,7 +96,19 @@ export function createInitializeAppInstruction(
     },
   ];
 
+  if (accounts.developerWhitelistProof != null) {
+    keys.push({
+      pubkey: accounts.developerWhitelistProof,
+      isWritable: false,
+      isSigner: false,
+    });
+  }
   if (accounts.registeringProcessorPda != null) {
+    if (accounts.developerWhitelistProof == null) {
+      throw new Error(
+        "When providing 'registeringProcessorPda' then 'accounts.developerWhitelistProof' need(s) to be provided as well.",
+      );
+    }
     keys.push({
       pubkey: accounts.registeringProcessorPda,
       isWritable: false,
@@ -102,9 +116,9 @@ export function createInitializeAppInstruction(
     });
   }
   if (accounts.connectingProcessorPda != null) {
-    if (accounts.registeringProcessorPda == null) {
+    if (accounts.developerWhitelistProof == null || accounts.registeringProcessorPda == null) {
       throw new Error(
-        "When providing 'connectingProcessorPda' then 'accounts.registeringProcessorPda' need(s) to be provided as well.",
+        "When providing 'connectingProcessorPda' then 'accounts.developerWhitelistProof', 'accounts.registeringProcessorPda' need(s) to be provided as well.",
       );
     }
     keys.push({
@@ -114,9 +128,13 @@ export function createInitializeAppInstruction(
     });
   }
   if (accounts.publishingProcessorPda != null) {
-    if (accounts.registeringProcessorPda == null || accounts.connectingProcessorPda == null) {
+    if (
+      accounts.developerWhitelistProof == null ||
+      accounts.registeringProcessorPda == null ||
+      accounts.connectingProcessorPda == null
+    ) {
       throw new Error(
-        "When providing 'publishingProcessorPda' then 'accounts.registeringProcessorPda', 'accounts.connectingProcessorPda' need(s) to be provided as well.",
+        "When providing 'publishingProcessorPda' then 'accounts.developerWhitelistProof', 'accounts.registeringProcessorPda', 'accounts.connectingProcessorPda' need(s) to be provided as well.",
       );
     }
     keys.push({
@@ -127,12 +145,13 @@ export function createInitializeAppInstruction(
   }
   if (accounts.collectingProcessorPda != null) {
     if (
+      accounts.developerWhitelistProof == null ||
       accounts.registeringProcessorPda == null ||
       accounts.connectingProcessorPda == null ||
       accounts.publishingProcessorPda == null
     ) {
       throw new Error(
-        "When providing 'collectingProcessorPda' then 'accounts.registeringProcessorPda', 'accounts.connectingProcessorPda', 'accounts.publishingProcessorPda' need(s) to be provided as well.",
+        "When providing 'collectingProcessorPda' then 'accounts.developerWhitelistProof', 'accounts.registeringProcessorPda', 'accounts.connectingProcessorPda', 'accounts.publishingProcessorPda' need(s) to be provided as well.",
       );
     }
     keys.push({
@@ -143,13 +162,14 @@ export function createInitializeAppInstruction(
   }
   if (accounts.referencingProcessorPda != null) {
     if (
+      accounts.developerWhitelistProof == null ||
       accounts.registeringProcessorPda == null ||
       accounts.connectingProcessorPda == null ||
       accounts.publishingProcessorPda == null ||
       accounts.collectingProcessorPda == null
     ) {
       throw new Error(
-        "When providing 'referencingProcessorPda' then 'accounts.registeringProcessorPda', 'accounts.connectingProcessorPda', 'accounts.publishingProcessorPda', 'accounts.collectingProcessorPda' need(s) to be provided as well.",
+        "When providing 'referencingProcessorPda' then 'accounts.developerWhitelistProof', 'accounts.registeringProcessorPda', 'accounts.connectingProcessorPda', 'accounts.publishingProcessorPda', 'accounts.collectingProcessorPda' need(s) to be provided as well.",
       );
     }
     keys.push({

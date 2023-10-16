@@ -6,16 +6,19 @@
  */
 
 import * as beet from '@metaplex-foundation/beet';
+import { Gender, genderBeet } from './Gender';
 import { LocationCoordinates, locationCoordinatesBeet } from './LocationCoordinates';
 export type ProfileData = {
   alias: beet.COption<string>;
   metadataUri: beet.COption<string>;
-  statusText: beet.COption<string>;
-  firstName: beet.COption<string>;
-  lastName: beet.COption<string>;
-  birthDate: beet.COption<beet.bignum>;
-  countryCode: beet.COption<number>;
-  cityCode: beet.COption<number>;
+  statusText: string;
+  gender: beet.COption<Gender>;
+  firstName: string;
+  lastName: string;
+  birthDate: beet.bignum;
+  countryCode: number;
+  regionCode: number;
+  cityCode: number;
   currentLocation: beet.COption<LocationCoordinates>;
 };
 
@@ -27,12 +30,14 @@ export const profileDataBeet = new beet.FixableBeetArgsStruct<ProfileData>(
   [
     ['alias', beet.coption(beet.utf8String)],
     ['metadataUri', beet.coption(beet.utf8String)],
-    ['statusText', beet.coption(beet.utf8String)],
-    ['firstName', beet.coption(beet.utf8String)],
-    ['lastName', beet.coption(beet.utf8String)],
-    ['birthDate', beet.coption(beet.i64)],
-    ['countryCode', beet.coption(beet.i16)],
-    ['cityCode', beet.coption(beet.u16)],
+    ['statusText', beet.utf8String],
+    ['gender', beet.coption(genderBeet)],
+    ['firstName', beet.utf8String],
+    ['lastName', beet.utf8String],
+    ['birthDate', beet.i64],
+    ['countryCode', beet.u16],
+    ['regionCode', beet.u16],
+    ['cityCode', beet.u16],
     ['currentLocation', beet.coption(locationCoordinatesBeet)],
   ],
   'ProfileData',

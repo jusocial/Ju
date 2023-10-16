@@ -24,6 +24,8 @@ export type ReactionArgs = {
   initializer: web3.PublicKey;
   reactionType: ReactionType;
   createdAt: beet.bignum;
+  searchable3Day: beet.bignum;
+  searchableDay: beet.bignum;
 };
 
 export const reactionDiscriminator = [226, 61, 100, 191, 223, 221, 142, 139];
@@ -43,6 +45,8 @@ export class Reaction implements ReactionArgs {
     readonly initializer: web3.PublicKey,
     readonly reactionType: ReactionType,
     readonly createdAt: beet.bignum,
+    readonly searchable3Day: beet.bignum,
+    readonly searchableDay: beet.bignum,
   ) {}
 
   /**
@@ -57,6 +61,8 @@ export class Reaction implements ReactionArgs {
       args.initializer,
       args.reactionType,
       args.createdAt,
+      args.searchable3Day,
+      args.searchableDay,
     );
   }
 
@@ -169,6 +175,28 @@ export class Reaction implements ReactionArgs {
         }
         return x;
       })(),
+      searchable3Day: (() => {
+        const x = <{ toNumber: () => number }>this.searchable3Day;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      searchableDay: (() => {
+        const x = <{ toNumber: () => number }>this.searchableDay;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
     };
   }
 }
@@ -192,6 +220,8 @@ export const reactionBeet = new beet.BeetStruct<
     ['initializer', beetSolana.publicKey],
     ['reactionType', reactionTypeBeet],
     ['createdAt', beet.i64],
+    ['searchable3Day', beet.i64],
+    ['searchableDay', beet.i64],
   ],
   Reaction.fromArgs,
   'Reaction',

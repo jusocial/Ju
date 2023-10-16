@@ -8,6 +8,10 @@
 import * as web3 from '@solana/web3.js';
 import * as beet from '@metaplex-foundation/beet';
 import * as beetSolana from '@metaplex-foundation/beet-solana';
+import {
+  SubspacePublishingPermissionLevel,
+  subspacePublishingPermissionLevelBeet,
+} from '../types/SubspacePublishingPermissionLevel';
 
 /**
  * Arguments used to create {@link Subspace}
@@ -17,15 +21,20 @@ import * as beetSolana from '@metaplex-foundation/beet-solana';
 export type SubspaceArgs = {
   app: web3.PublicKey;
   authority: web3.PublicKey;
+  exchangeKey: web3.PublicKey;
   creator: web3.PublicKey;
+  publishingPermission: SubspacePublishingPermissionLevel;
+  name: number[] /* size: 32 */;
   alias: beet.COption<string>;
-  name: beet.COption<string>;
   uuid: string;
   metadataUri: beet.COption<string>;
   publishingProcessor: beet.COption<web3.PublicKey>;
   connectingProcessor: beet.COption<web3.PublicKey>;
   collectingProcessor: beet.COption<web3.PublicKey>;
   referencingProcessor: beet.COption<web3.PublicKey>;
+  createdAt: beet.bignum;
+  reserved1: number[] /* size: 32 */;
+  reserved2: number[] /* size: 32 */;
 };
 
 export const subspaceDiscriminator = [105, 6, 104, 112, 174, 108, 161, 167];
@@ -40,15 +49,20 @@ export class Subspace implements SubspaceArgs {
   private constructor(
     readonly app: web3.PublicKey,
     readonly authority: web3.PublicKey,
+    readonly exchangeKey: web3.PublicKey,
     readonly creator: web3.PublicKey,
+    readonly publishingPermission: SubspacePublishingPermissionLevel,
+    readonly name: number[] /* size: 32 */,
     readonly alias: beet.COption<string>,
-    readonly name: beet.COption<string>,
     readonly uuid: string,
     readonly metadataUri: beet.COption<string>,
     readonly publishingProcessor: beet.COption<web3.PublicKey>,
     readonly connectingProcessor: beet.COption<web3.PublicKey>,
     readonly collectingProcessor: beet.COption<web3.PublicKey>,
     readonly referencingProcessor: beet.COption<web3.PublicKey>,
+    readonly createdAt: beet.bignum,
+    readonly reserved1: number[] /* size: 32 */,
+    readonly reserved2: number[] /* size: 32 */,
   ) {}
 
   /**
@@ -58,15 +72,20 @@ export class Subspace implements SubspaceArgs {
     return new Subspace(
       args.app,
       args.authority,
+      args.exchangeKey,
       args.creator,
-      args.alias,
+      args.publishingPermission,
       args.name,
+      args.alias,
       args.uuid,
       args.metadataUri,
       args.publishingProcessor,
       args.connectingProcessor,
       args.collectingProcessor,
       args.referencingProcessor,
+      args.createdAt,
+      args.reserved1,
+      args.reserved2,
     );
   }
 
@@ -166,15 +185,32 @@ export class Subspace implements SubspaceArgs {
     return {
       app: this.app.toBase58(),
       authority: this.authority.toBase58(),
+      exchangeKey: this.exchangeKey.toBase58(),
       creator: this.creator.toBase58(),
-      alias: this.alias,
+      publishingPermission:
+        'SubspacePublishingPermissionLevel.' +
+        SubspacePublishingPermissionLevel[this.publishingPermission],
       name: this.name,
+      alias: this.alias,
       uuid: this.uuid,
       metadataUri: this.metadataUri,
       publishingProcessor: this.publishingProcessor,
       connectingProcessor: this.connectingProcessor,
       collectingProcessor: this.collectingProcessor,
       referencingProcessor: this.referencingProcessor,
+      createdAt: (() => {
+        const x = <{ toNumber: () => number }>this.createdAt;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      reserved1: this.reserved1,
+      reserved2: this.reserved2,
     };
   }
 }
@@ -193,15 +229,20 @@ export const subspaceBeet = new beet.FixableBeetStruct<
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['app', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
+    ['exchangeKey', beetSolana.publicKey],
     ['creator', beetSolana.publicKey],
+    ['publishingPermission', subspacePublishingPermissionLevelBeet],
+    ['name', beet.uniformFixedSizeArray(beet.u8, 32)],
     ['alias', beet.coption(beet.utf8String)],
-    ['name', beet.coption(beet.utf8String)],
     ['uuid', beet.utf8String],
     ['metadataUri', beet.coption(beet.utf8String)],
     ['publishingProcessor', beet.coption(beetSolana.publicKey)],
     ['connectingProcessor', beet.coption(beetSolana.publicKey)],
     ['collectingProcessor', beet.coption(beetSolana.publicKey)],
     ['referencingProcessor', beet.coption(beetSolana.publicKey)],
+    ['createdAt', beet.i64],
+    ['reserved1', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['reserved2', beet.uniformFixedSizeArray(beet.u8, 32)],
   ],
   Subspace.fromArgs,
   'Subspace',

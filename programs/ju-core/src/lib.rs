@@ -84,7 +84,6 @@ pub mod ju_core {
         program_address: Pubkey,
         developer_wallet: Option<Pubkey>,
     ) -> Result<()> {
-
         // Validate permission
         if (*ctx.accounts.authority.to_account_info().key != PROTOCOL_AUTHORITY)
             && ctx.accounts.developer_whitelist_proof.is_none()
@@ -143,7 +142,6 @@ pub mod ju_core {
         app_name: String,
         data: AppData,
     ) -> Result<()> {
-        
         // Validate permission
         if (*ctx.accounts.authority.to_account_info().key != PROTOCOL_AUTHORITY)
             && ctx.accounts.developer_whitelist_proof.is_none()
@@ -166,15 +164,7 @@ pub mod ju_core {
         app.metadata_uri = data.metadata_uri;
 
         // Application Settings and Requirements
-        app.profile_gender_required = data.profile_gender_required;
-        app.profile_first_name_required = data.profile_first_name_required;
-        app.profile_last_name_required = data.profile_last_name_required;
-        app.profile_birthdate_required = data.profile_birthdate_required;
-        app.profile_country_required = data.profile_country_required;
-        app.profile_region_required = data.profile_region_required;
-        app.profile_city_required = data.profile_city_required;
         app.profile_metadata_required = data.profile_metadata_required;
-
         app.subspace_metadata_required = data.subspace_metadata_required;
 
         app.profile_delete_allowed = data.profile_delete_allowed;
@@ -272,15 +262,7 @@ pub mod ju_core {
         app.metadata_uri = data.metadata_uri;
 
         // Application Settings and Requirements
-        app.profile_gender_required = data.profile_gender_required;
-        app.profile_first_name_required = data.profile_first_name_required;
-        app.profile_last_name_required = data.profile_last_name_required;
-        app.profile_birthdate_required = data.profile_birthdate_required;
-        app.profile_country_required = data.profile_country_required;
-        app.profile_city_required = data.profile_city_required;
-        app.profile_region_required = data.profile_region_required;
         app.profile_metadata_required = data.profile_metadata_required;
-
         app.subspace_metadata_required = data.subspace_metadata_required;
 
         app.profile_delete_allowed = data.profile_delete_allowed;
@@ -427,35 +409,11 @@ pub mod ju_core {
         profile.alias = data.alias;
 
         // Check Application level required fields
-        if ctx.accounts.app.profile_gender_required && data.gender.is_none() {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
-        if ctx.accounts.app.profile_first_name_required && data.first_name.is_empty() {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
-        if ctx.accounts.app.profile_last_name_required && data.last_name.is_empty() {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
-
-        if ctx.accounts.app.profile_birthdate_required {
-            validate_birth_date(&data.birth_date)?;
-        }
-
-        if ctx.accounts.app.profile_country_required && data.country_code == 0 {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
-        if ctx.accounts.app.profile_region_required && data.region_code == 0 {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
-        if ctx.accounts.app.profile_city_required && data.city_code == 0 {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
-
         if ctx.accounts.app.profile_metadata_required && data.metadata_uri.is_none() {
             return Err(error!(CustomError::MissingRequiredField));
         }
 
-        // Validate and assign firt name
+        // Validate and assign first name
         profile.first_name = profile.validate_first_name(&data.first_name)?;
         // Validate and assign last name
         profile.last_name = profile.validate_last_name(&data.last_name)?;
@@ -467,8 +425,6 @@ pub mod ju_core {
         profile.metadata_uri = data.metadata_uri;
 
         profile.gender = data.gender;
-
-        profile.birth_date = data.birth_date;
 
         profile.country_code = data.country_code;
         profile.city_code = data.city_code;
@@ -495,6 +451,13 @@ pub mod ju_core {
 
         let now = Clock::get()?.unix_timestamp;
         profile.created_at = now;
+
+        validate_birth_date(&data.birth_date)?;
+        profile.searchable_10_years = (now - data.birth_date) / SECONDS_IN_10_YEARS;
+        profile.searchable_5_years = (now - data.birth_date) / SECONDS_IN_5_YEARS;
+        profile.searchable_week = (now - data.birth_date) / (SECONDS_IN_DAY * 7);
+        profile.searchable_day = (now - data.birth_date) / SECONDS_IN_DAY;
+        profile.birth_date = data.birth_date;
 
         // Emit new Event
         emit!(NewProfileEvent {
@@ -587,34 +550,11 @@ pub mod ju_core {
         }
 
         // Check Application level required fields
-        if ctx.accounts.app.profile_gender_required && data.gender.is_none() {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
-        if ctx.accounts.app.profile_first_name_required && data.first_name.is_empty() {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
-        if ctx.accounts.app.profile_last_name_required && data.last_name.is_empty() {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
-
-        if ctx.accounts.app.profile_birthdate_required {
-            validate_birth_date(&data.birth_date)?;
-        }
-
-        if ctx.accounts.app.profile_country_required && data.country_code == 0 {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
-        if ctx.accounts.app.profile_region_required && data.region_code == 0 {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
-        if ctx.accounts.app.profile_city_required && data.city_code == 0 {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
         if ctx.accounts.app.profile_metadata_required && data.metadata_uri.is_none() {
             return Err(error!(CustomError::MissingRequiredField));
         }
 
-        // Validate and assign firt name
+        // Validate and assign first name
         profile.first_name = profile.validate_first_name(&data.first_name)?;
         // Validate and assign last name
         profile.last_name = profile.validate_last_name(&data.last_name)?;
@@ -627,14 +567,20 @@ pub mod ju_core {
 
         profile.gender = data.gender;
 
-        profile.birth_date = data.birth_date;
-
         profile.country_code = data.country_code;
         profile.city_code = data.city_code;
         profile.current_location = data.current_location;
         profile.status_text = data.status_text;
 
         let now = Clock::get()?.unix_timestamp;
+
+        validate_birth_date(&data.birth_date)?;
+        profile.searchable_10_years = (now - data.birth_date) / SECONDS_IN_10_YEARS;
+        profile.searchable_5_years = (now - data.birth_date) / SECONDS_IN_5_YEARS;
+        profile.searchable_week = (now - data.birth_date) / (SECONDS_IN_DAY * 7);
+        profile.searchable_day = (now - data.birth_date) / SECONDS_IN_DAY;
+        profile.birth_date = data.birth_date;
+
         // Emit new Event
         emit!(UpdateProfileEvent {
             app: *ctx.accounts.app.to_account_info().key,
@@ -771,6 +717,8 @@ pub mod ju_core {
 
         let now = Clock::get()?.unix_timestamp;
         connection.created_at = now;
+        connection.searchable_day = now / SECONDS_IN_DAY;
+        connection.searchable_3_day = now / (SECONDS_IN_DAY * 3);
         connection.modified_at = None;
 
         // Emit new Event
@@ -1409,7 +1357,7 @@ pub mod ju_core {
             if !data.is_reply {
                 // Only on initial publishing or miroring
                 publication.subspace = *target_subspace.to_account_info().key;
-            } 
+            }
         }
 
         publication.is_mirror = data.is_mirror;
@@ -1465,6 +1413,9 @@ pub mod ju_core {
 
         let now = Clock::get()?.unix_timestamp;
         publication.created_at = now;
+
+        publication.searchable_day = now / SECONDS_IN_DAY;
+        publication.searchable_3_day = now / (SECONDS_IN_DAY * 3);
 
         // Emit an Event
         emit!(NewPublicationEvent {
@@ -1656,6 +1607,8 @@ pub mod ju_core {
         collection_item.target = *ctx.accounts.target.to_account_info().key;
 
         let now = Clock::get()?.unix_timestamp;
+        collection_item.searchable_day = now / SECONDS_IN_DAY;
+        collection_item.searchable_3_day = now / (SECONDS_IN_DAY * 3);
         collection_item.created_at = now;
 
         Ok(())
@@ -1688,6 +1641,8 @@ pub mod ju_core {
 
         let now = Clock::get()?.unix_timestamp;
         reaction.created_at = now;
+        reaction.searchable_day = now / SECONDS_IN_DAY;
+        reaction.searchable_3_day = now / (SECONDS_IN_DAY * 3);
 
         // Emit new Event
         emit!(NewReactionEvent {
@@ -1737,6 +1692,7 @@ pub mod ju_core {
         report.notification = data.notification_string;
 
         let now = Clock::get()?.unix_timestamp;
+        report.searchable_day = now / SECONDS_IN_DAY;
         report.created_at = now;
 
         // Emit new Event

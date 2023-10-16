@@ -48,17 +48,24 @@ function createAddProcessorInstruction(accounts, args, programId = new web3.Publ
             isWritable: true,
             isSigner: false,
         },
-        {
-            pubkey: accounts.authority,
-            isWritable: true,
-            isSigner: true,
-        },
-        {
-            pubkey: (_a = accounts.systemProgram) !== null && _a !== void 0 ? _a : web3.SystemProgram.programId,
+    ];
+    if (accounts.developerWhitelistProof != null) {
+        keys.push({
+            pubkey: accounts.developerWhitelistProof,
             isWritable: false,
             isSigner: false,
-        },
-    ];
+        });
+    }
+    keys.push({
+        pubkey: accounts.authority,
+        isWritable: true,
+        isSigner: true,
+    });
+    keys.push({
+        pubkey: (_a = accounts.systemProgram) !== null && _a !== void 0 ? _a : web3.SystemProgram.programId,
+        isWritable: false,
+        isSigner: false,
+    });
     const ix = new web3.TransactionInstruction({
         programId,
         keys,

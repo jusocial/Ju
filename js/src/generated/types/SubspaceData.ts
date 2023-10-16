@@ -6,9 +6,14 @@
  */
 
 import * as beet from '@metaplex-foundation/beet';
+import {
+  SubspacePublishingPermissionLevel,
+  subspacePublishingPermissionLevelBeet,
+} from './SubspacePublishingPermissionLevel';
 export type SubspaceData = {
   alias: beet.COption<string>;
-  name: beet.COption<string>;
+  name: string;
+  publishingPermission: SubspacePublishingPermissionLevel;
   metadataUri: beet.COption<string>;
 };
 
@@ -19,7 +24,8 @@ export type SubspaceData = {
 export const subspaceDataBeet = new beet.FixableBeetArgsStruct<SubspaceData>(
   [
     ['alias', beet.coption(beet.utf8String)],
-    ['name', beet.coption(beet.utf8String)],
+    ['name', beet.utf8String],
+    ['publishingPermission', subspacePublishingPermissionLevelBeet],
     ['metadataUri', beet.coption(beet.utf8String)],
   ],
   'SubspaceData',

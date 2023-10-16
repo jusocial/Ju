@@ -23,12 +23,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.managementRoleTypeBeet = exports.ManagementRoleType = void 0;
+exports.genderBeet = exports.Gender = void 0;
 const beet = __importStar(require("@metaplex-foundation/beet"));
-var ManagementRoleType;
-(function (ManagementRoleType) {
-    ManagementRoleType[ManagementRoleType["Admin"] = 0] = "Admin";
-    ManagementRoleType[ManagementRoleType["Publisher"] = 1] = "Publisher";
-})(ManagementRoleType = exports.ManagementRoleType || (exports.ManagementRoleType = {}));
-exports.managementRoleTypeBeet = beet.fixedScalarEnum(ManagementRoleType);
-//# sourceMappingURL=ManagementRoleType.js.map
+var Gender;
+(function (Gender) {
+    Gender[Gender["Male"] = 0] = "Male";
+    Gender[Gender["Female"] = 1] = "Female";
+    Gender[Gender["OtherOrPreferNotToSay"] = 2] = "OtherOrPreferNotToSay";
+})(Gender = exports.Gender || (exports.Gender = {}));
+exports.genderBeet = beet.fixedScalarEnum(Gender);
+//# sourceMappingURL=Gender.js.map

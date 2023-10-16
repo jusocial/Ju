@@ -45,6 +45,8 @@ export const createPublicationStruct = new beet.FixableBeetArgsStruct<
  * @property [_writable_] publication
  * @property [] subspace (optional)
  * @property [] targetPublication (optional)
+ * @property [] connectionProof (optional)
+ * @property [] subspaceManagerProof (optional)
  * @property [] collectingProcessorPda (optional)
  * @property [] referencingProcessorPda (optional)
  * @property [_writable_, **signer**] authority
@@ -58,6 +60,8 @@ export type CreatePublicationInstructionAccounts = {
   publication: web3.PublicKey;
   subspace?: web3.PublicKey;
   targetPublication?: web3.PublicKey;
+  connectionProof?: web3.PublicKey;
+  subspaceManagerProof?: web3.PublicKey;
   collectingProcessorPda?: web3.PublicKey;
   referencingProcessorPda?: web3.PublicKey;
   authority: web3.PublicKey;
@@ -127,10 +131,43 @@ export function createCreatePublicationInstruction(
       isSigner: false,
     });
   }
-  if (accounts.collectingProcessorPda != null) {
+  if (accounts.connectionProof != null) {
     if (accounts.subspace == null || accounts.targetPublication == null) {
       throw new Error(
-        "When providing 'collectingProcessorPda' then 'accounts.subspace', 'accounts.targetPublication' need(s) to be provided as well.",
+        "When providing 'connectionProof' then 'accounts.subspace', 'accounts.targetPublication' need(s) to be provided as well.",
+      );
+    }
+    keys.push({
+      pubkey: accounts.connectionProof,
+      isWritable: false,
+      isSigner: false,
+    });
+  }
+  if (accounts.subspaceManagerProof != null) {
+    if (
+      accounts.subspace == null ||
+      accounts.targetPublication == null ||
+      accounts.connectionProof == null
+    ) {
+      throw new Error(
+        "When providing 'subspaceManagerProof' then 'accounts.subspace', 'accounts.targetPublication', 'accounts.connectionProof' need(s) to be provided as well.",
+      );
+    }
+    keys.push({
+      pubkey: accounts.subspaceManagerProof,
+      isWritable: false,
+      isSigner: false,
+    });
+  }
+  if (accounts.collectingProcessorPda != null) {
+    if (
+      accounts.subspace == null ||
+      accounts.targetPublication == null ||
+      accounts.connectionProof == null ||
+      accounts.subspaceManagerProof == null
+    ) {
+      throw new Error(
+        "When providing 'collectingProcessorPda' then 'accounts.subspace', 'accounts.targetPublication', 'accounts.connectionProof', 'accounts.subspaceManagerProof' need(s) to be provided as well.",
       );
     }
     keys.push({
@@ -143,10 +180,12 @@ export function createCreatePublicationInstruction(
     if (
       accounts.subspace == null ||
       accounts.targetPublication == null ||
+      accounts.connectionProof == null ||
+      accounts.subspaceManagerProof == null ||
       accounts.collectingProcessorPda == null
     ) {
       throw new Error(
-        "When providing 'referencingProcessorPda' then 'accounts.subspace', 'accounts.targetPublication', 'accounts.collectingProcessorPda' need(s) to be provided as well.",
+        "When providing 'referencingProcessorPda' then 'accounts.subspace', 'accounts.targetPublication', 'accounts.connectionProof', 'accounts.subspaceManagerProof', 'accounts.collectingProcessorPda' need(s) to be provided as well.",
       );
     }
     keys.push({

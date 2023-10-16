@@ -8,6 +8,7 @@
 import * as web3 from '@solana/web3.js';
 import * as beet from '@metaplex-foundation/beet';
 import * as beetSolana from '@metaplex-foundation/beet-solana';
+import { Gender, genderBeet } from '../types/Gender';
 import { LocationCoordinates, locationCoordinatesBeet } from '../types/LocationCoordinates';
 
 /**
@@ -18,19 +19,29 @@ import { LocationCoordinates, locationCoordinatesBeet } from '../types/LocationC
 export type ProfileArgs = {
   app: web3.PublicKey;
   authority: web3.PublicKey;
+  exchangeKey: web3.PublicKey;
+  isVerified: boolean;
+  countryCode: number;
+  regionCode: number;
+  cityCode: number;
+  firstName: number[] /* size: 20 */;
+  lastName: number[] /* size: 30 */;
+  birthDate: beet.bignum;
+  searchable10Years: beet.bignum;
+  searchable5Years: beet.bignum;
+  searchableWeek: beet.bignum;
+  searchableDay: beet.bignum;
+  gender: beet.COption<Gender>;
   alias: beet.COption<string>;
+  statusText: string;
   metadataUri: beet.COption<string>;
-  statusText: beet.COption<string>;
-  verified: boolean;
-  firstName: beet.COption<string>;
-  lastName: beet.COption<string>;
-  birthDate: beet.COption<beet.bignum>;
-  countryCode: beet.COption<number>;
-  cityCode: beet.COption<number>;
   currentLocation: beet.COption<LocationCoordinates>;
   connectingProcessor: beet.COption<web3.PublicKey>;
   createdAt: beet.bignum;
   modifiedAt: beet.COption<beet.bignum>;
+  reserved1: number[] /* size: 32 */;
+  reserved2: number[] /* size: 32 */;
+  reserved3: number[] /* size: 32 */;
 };
 
 export const profileDiscriminator = [184, 101, 165, 188, 95, 63, 127, 188];
@@ -45,19 +56,29 @@ export class Profile implements ProfileArgs {
   private constructor(
     readonly app: web3.PublicKey,
     readonly authority: web3.PublicKey,
+    readonly exchangeKey: web3.PublicKey,
+    readonly isVerified: boolean,
+    readonly countryCode: number,
+    readonly regionCode: number,
+    readonly cityCode: number,
+    readonly firstName: number[] /* size: 20 */,
+    readonly lastName: number[] /* size: 30 */,
+    readonly birthDate: beet.bignum,
+    readonly searchable10Years: beet.bignum,
+    readonly searchable5Years: beet.bignum,
+    readonly searchableWeek: beet.bignum,
+    readonly searchableDay: beet.bignum,
+    readonly gender: beet.COption<Gender>,
     readonly alias: beet.COption<string>,
+    readonly statusText: string,
     readonly metadataUri: beet.COption<string>,
-    readonly statusText: beet.COption<string>,
-    readonly verified: boolean,
-    readonly firstName: beet.COption<string>,
-    readonly lastName: beet.COption<string>,
-    readonly birthDate: beet.COption<beet.bignum>,
-    readonly countryCode: beet.COption<number>,
-    readonly cityCode: beet.COption<number>,
     readonly currentLocation: beet.COption<LocationCoordinates>,
     readonly connectingProcessor: beet.COption<web3.PublicKey>,
     readonly createdAt: beet.bignum,
     readonly modifiedAt: beet.COption<beet.bignum>,
+    readonly reserved1: number[] /* size: 32 */,
+    readonly reserved2: number[] /* size: 32 */,
+    readonly reserved3: number[] /* size: 32 */,
   ) {}
 
   /**
@@ -67,19 +88,29 @@ export class Profile implements ProfileArgs {
     return new Profile(
       args.app,
       args.authority,
-      args.alias,
-      args.metadataUri,
-      args.statusText,
-      args.verified,
+      args.exchangeKey,
+      args.isVerified,
+      args.countryCode,
+      args.regionCode,
+      args.cityCode,
       args.firstName,
       args.lastName,
       args.birthDate,
-      args.countryCode,
-      args.cityCode,
+      args.searchable10Years,
+      args.searchable5Years,
+      args.searchableWeek,
+      args.searchableDay,
+      args.gender,
+      args.alias,
+      args.statusText,
+      args.metadataUri,
       args.currentLocation,
       args.connectingProcessor,
       args.createdAt,
       args.modifiedAt,
+      args.reserved1,
+      args.reserved2,
+      args.reserved3,
     );
   }
 
@@ -179,15 +210,72 @@ export class Profile implements ProfileArgs {
     return {
       app: this.app.toBase58(),
       authority: this.authority.toBase58(),
-      alias: this.alias,
-      metadataUri: this.metadataUri,
-      statusText: this.statusText,
-      verified: this.verified,
+      exchangeKey: this.exchangeKey.toBase58(),
+      isVerified: this.isVerified,
+      countryCode: this.countryCode,
+      regionCode: this.regionCode,
+      cityCode: this.cityCode,
       firstName: this.firstName,
       lastName: this.lastName,
-      birthDate: this.birthDate,
-      countryCode: this.countryCode,
-      cityCode: this.cityCode,
+      birthDate: (() => {
+        const x = <{ toNumber: () => number }>this.birthDate;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      searchable10Years: (() => {
+        const x = <{ toNumber: () => number }>this.searchable10Years;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      searchable5Years: (() => {
+        const x = <{ toNumber: () => number }>this.searchable5Years;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      searchableWeek: (() => {
+        const x = <{ toNumber: () => number }>this.searchableWeek;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      searchableDay: (() => {
+        const x = <{ toNumber: () => number }>this.searchableDay;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      gender: this.gender,
+      alias: this.alias,
+      statusText: this.statusText,
+      metadataUri: this.metadataUri,
       currentLocation: this.currentLocation,
       connectingProcessor: this.connectingProcessor,
       createdAt: (() => {
@@ -202,6 +290,9 @@ export class Profile implements ProfileArgs {
         return x;
       })(),
       modifiedAt: this.modifiedAt,
+      reserved1: this.reserved1,
+      reserved2: this.reserved2,
+      reserved3: this.reserved3,
     };
   }
 }
@@ -220,19 +311,29 @@ export const profileBeet = new beet.FixableBeetStruct<
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['app', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
+    ['exchangeKey', beetSolana.publicKey],
+    ['isVerified', beet.bool],
+    ['countryCode', beet.u16],
+    ['regionCode', beet.u16],
+    ['cityCode', beet.u16],
+    ['firstName', beet.uniformFixedSizeArray(beet.u8, 20)],
+    ['lastName', beet.uniformFixedSizeArray(beet.u8, 30)],
+    ['birthDate', beet.i64],
+    ['searchable10Years', beet.i64],
+    ['searchable5Years', beet.i64],
+    ['searchableWeek', beet.i64],
+    ['searchableDay', beet.i64],
+    ['gender', beet.coption(genderBeet)],
     ['alias', beet.coption(beet.utf8String)],
+    ['statusText', beet.utf8String],
     ['metadataUri', beet.coption(beet.utf8String)],
-    ['statusText', beet.coption(beet.utf8String)],
-    ['verified', beet.bool],
-    ['firstName', beet.coption(beet.utf8String)],
-    ['lastName', beet.coption(beet.utf8String)],
-    ['birthDate', beet.coption(beet.i64)],
-    ['countryCode', beet.coption(beet.i16)],
-    ['cityCode', beet.coption(beet.u16)],
     ['currentLocation', beet.coption(locationCoordinatesBeet)],
     ['connectingProcessor', beet.coption(beetSolana.publicKey)],
     ['createdAt', beet.i64],
     ['modifiedAt', beet.coption(beet.i64)],
+    ['reserved1', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['reserved2', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['reserved3', beet.uniformFixedSizeArray(beet.u8, 32)],
   ],
   Profile.fromArgs,
   'Profile',

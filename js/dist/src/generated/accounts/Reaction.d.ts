@@ -12,6 +12,8 @@ export type ReactionArgs = {
     initializer: web3.PublicKey;
     reactionType: ReactionType;
     createdAt: beet.bignum;
+    searchable3Day: beet.bignum;
+    searchableDay: beet.bignum;
 };
 export declare const reactionDiscriminator: number[];
 export declare class Reaction implements ReactionArgs {
@@ -22,6 +24,8 @@ export declare class Reaction implements ReactionArgs {
     readonly initializer: web3.PublicKey;
     readonly reactionType: ReactionType;
     readonly createdAt: beet.bignum;
+    readonly searchable3Day: beet.bignum;
+    readonly searchableDay: beet.bignum;
     private constructor();
     static fromArgs(args: ReactionArgs): Reaction;
     static fromAccountInfo(accountInfo: web3.AccountInfo<Buffer>, offset?: number): [Reaction, number];
@@ -33,6 +37,8 @@ export declare class Reaction implements ReactionArgs {
         initializer: any;
         target: any;
         createdAt: any;
+        searchable3Day: any;
+        searchableDay: any;
         targetType: any;
         reactionType: any;
     }>;
@@ -49,6 +55,12 @@ export declare class Reaction implements ReactionArgs {
         initializer: string;
         reactionType: string;
         createdAt: number | {
+            toNumber: () => number;
+        };
+        searchable3Day: number | {
+            toNumber: () => number;
+        };
+        searchableDay: number | {
             toNumber: () => number;
         };
     };

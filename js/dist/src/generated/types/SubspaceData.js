@@ -25,9 +25,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.subspaceDataBeet = void 0;
 const beet = __importStar(require("@metaplex-foundation/beet"));
+const SubspacePublishingPermissionLevel_1 = require("./SubspacePublishingPermissionLevel");
 exports.subspaceDataBeet = new beet.FixableBeetArgsStruct([
     ['alias', beet.coption(beet.utf8String)],
-    ['name', beet.coption(beet.utf8String)],
+    ['name', beet.utf8String],
+    ['publishingPermission', SubspacePublishingPermissionLevel_1.subspacePublishingPermissionLevelBeet],
     ['metadataUri', beet.coption(beet.utf8String)],
 ], 'SubspaceData');
 //# sourceMappingURL=SubspaceData.js.map

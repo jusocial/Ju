@@ -27,28 +27,39 @@ exports.profileBeet = exports.Profile = exports.profileDiscriminator = void 0;
 const web3 = __importStar(require("@solana/web3.js"));
 const beet = __importStar(require("@metaplex-foundation/beet"));
 const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
+const Gender_1 = require("../types/Gender");
 const LocationCoordinates_1 = require("../types/LocationCoordinates");
 exports.profileDiscriminator = [184, 101, 165, 188, 95, 63, 127, 188];
 class Profile {
-    constructor(app, authority, alias, metadataUri, statusText, verified, firstName, lastName, birthDate, countryCode, cityCode, currentLocation, connectingProcessor, createdAt, modifiedAt) {
+    constructor(app, authority, exchangeKey, isVerified, countryCode, regionCode, cityCode, firstName, lastName, birthDate, searchable10Years, searchable5Years, searchableWeek, searchableDay, gender, alias, statusText, metadataUri, currentLocation, connectingProcessor, createdAt, modifiedAt, reserved1, reserved2, reserved3) {
         this.app = app;
         this.authority = authority;
-        this.alias = alias;
-        this.metadataUri = metadataUri;
-        this.statusText = statusText;
-        this.verified = verified;
+        this.exchangeKey = exchangeKey;
+        this.isVerified = isVerified;
+        this.countryCode = countryCode;
+        this.regionCode = regionCode;
+        this.cityCode = cityCode;
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDate = birthDate;
-        this.countryCode = countryCode;
-        this.cityCode = cityCode;
+        this.searchable10Years = searchable10Years;
+        this.searchable5Years = searchable5Years;
+        this.searchableWeek = searchableWeek;
+        this.searchableDay = searchableDay;
+        this.gender = gender;
+        this.alias = alias;
+        this.statusText = statusText;
+        this.metadataUri = metadataUri;
         this.currentLocation = currentLocation;
         this.connectingProcessor = connectingProcessor;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
+        this.reserved1 = reserved1;
+        this.reserved2 = reserved2;
+        this.reserved3 = reserved3;
     }
     static fromArgs(args) {
-        return new Profile(args.app, args.authority, args.alias, args.metadataUri, args.statusText, args.verified, args.firstName, args.lastName, args.birthDate, args.countryCode, args.cityCode, args.currentLocation, args.connectingProcessor, args.createdAt, args.modifiedAt);
+        return new Profile(args.app, args.authority, args.exchangeKey, args.isVerified, args.countryCode, args.regionCode, args.cityCode, args.firstName, args.lastName, args.birthDate, args.searchable10Years, args.searchable5Years, args.searchableWeek, args.searchableDay, args.gender, args.alias, args.statusText, args.metadataUri, args.currentLocation, args.connectingProcessor, args.createdAt, args.modifiedAt, args.reserved1, args.reserved2, args.reserved3);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return Profile.deserialize(accountInfo.data, offset);
@@ -86,15 +97,77 @@ class Profile {
         return {
             app: this.app.toBase58(),
             authority: this.authority.toBase58(),
-            alias: this.alias,
-            metadataUri: this.metadataUri,
-            statusText: this.statusText,
-            verified: this.verified,
+            exchangeKey: this.exchangeKey.toBase58(),
+            isVerified: this.isVerified,
+            countryCode: this.countryCode,
+            regionCode: this.regionCode,
+            cityCode: this.cityCode,
             firstName: this.firstName,
             lastName: this.lastName,
-            birthDate: this.birthDate,
-            countryCode: this.countryCode,
-            cityCode: this.cityCode,
+            birthDate: (() => {
+                const x = this.birthDate;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            searchable10Years: (() => {
+                const x = this.searchable10Years;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            searchable5Years: (() => {
+                const x = this.searchable5Years;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            searchableWeek: (() => {
+                const x = this.searchableWeek;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            searchableDay: (() => {
+                const x = this.searchableDay;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            gender: this.gender,
+            alias: this.alias,
+            statusText: this.statusText,
+            metadataUri: this.metadataUri,
             currentLocation: this.currentLocation,
             connectingProcessor: this.connectingProcessor,
             createdAt: (() => {
@@ -110,6 +183,9 @@ class Profile {
                 return x;
             })(),
             modifiedAt: this.modifiedAt,
+            reserved1: this.reserved1,
+            reserved2: this.reserved2,
+            reserved3: this.reserved3,
         };
     }
 }
@@ -118,18 +194,28 @@ exports.profileBeet = new beet.FixableBeetStruct([
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['app', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
+    ['exchangeKey', beetSolana.publicKey],
+    ['isVerified', beet.bool],
+    ['countryCode', beet.u16],
+    ['regionCode', beet.u16],
+    ['cityCode', beet.u16],
+    ['firstName', beet.uniformFixedSizeArray(beet.u8, 20)],
+    ['lastName', beet.uniformFixedSizeArray(beet.u8, 30)],
+    ['birthDate', beet.i64],
+    ['searchable10Years', beet.i64],
+    ['searchable5Years', beet.i64],
+    ['searchableWeek', beet.i64],
+    ['searchableDay', beet.i64],
+    ['gender', beet.coption(Gender_1.genderBeet)],
     ['alias', beet.coption(beet.utf8String)],
+    ['statusText', beet.utf8String],
     ['metadataUri', beet.coption(beet.utf8String)],
-    ['statusText', beet.coption(beet.utf8String)],
-    ['verified', beet.bool],
-    ['firstName', beet.coption(beet.utf8String)],
-    ['lastName', beet.coption(beet.utf8String)],
-    ['birthDate', beet.coption(beet.i64)],
-    ['countryCode', beet.coption(beet.i16)],
-    ['cityCode', beet.coption(beet.u16)],
     ['currentLocation', beet.coption(LocationCoordinates_1.locationCoordinatesBeet)],
     ['connectingProcessor', beet.coption(beetSolana.publicKey)],
     ['createdAt', beet.i64],
     ['modifiedAt', beet.coption(beet.i64)],
+    ['reserved1', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['reserved2', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['reserved3', beet.uniformFixedSizeArray(beet.u8, 32)],
 ], Profile.fromArgs, 'Profile');
 //# sourceMappingURL=Profile.js.map

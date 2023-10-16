@@ -23,6 +23,8 @@ export type ConnectionArgs = {
   target: web3.PublicKey;
   approved: boolean;
   createdAt: beet.bignum;
+  searchable3Day: beet.bignum;
+  searchableDay: beet.bignum;
   modifiedAt: beet.COption<beet.bignum>;
 };
 
@@ -43,6 +45,8 @@ export class Connection implements ConnectionArgs {
     readonly target: web3.PublicKey,
     readonly approved: boolean,
     readonly createdAt: beet.bignum,
+    readonly searchable3Day: beet.bignum,
+    readonly searchableDay: beet.bignum,
     readonly modifiedAt: beet.COption<beet.bignum>,
   ) {}
 
@@ -58,6 +62,8 @@ export class Connection implements ConnectionArgs {
       args.target,
       args.approved,
       args.createdAt,
+      args.searchable3Day,
+      args.searchableDay,
       args.modifiedAt,
     );
   }
@@ -174,6 +180,28 @@ export class Connection implements ConnectionArgs {
         }
         return x;
       })(),
+      searchable3Day: (() => {
+        const x = <{ toNumber: () => number }>this.searchable3Day;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      searchableDay: (() => {
+        const x = <{ toNumber: () => number }>this.searchableDay;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
       modifiedAt: this.modifiedAt,
     };
   }
@@ -198,6 +226,8 @@ export const connectionBeet = new beet.FixableBeetStruct<
     ['target', beetSolana.publicKey],
     ['approved', beet.bool],
     ['createdAt', beet.i64],
+    ['searchable3Day', beet.i64],
+    ['searchableDay', beet.i64],
     ['modifiedAt', beet.coption(beet.i64)],
   ],
   Connection.fromArgs,

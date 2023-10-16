@@ -25,16 +25,19 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.profileDataBeet = void 0;
 const beet = __importStar(require("@metaplex-foundation/beet"));
+const Gender_1 = require("./Gender");
 const LocationCoordinates_1 = require("./LocationCoordinates");
 exports.profileDataBeet = new beet.FixableBeetArgsStruct([
     ['alias', beet.coption(beet.utf8String)],
     ['metadataUri', beet.coption(beet.utf8String)],
-    ['statusText', beet.coption(beet.utf8String)],
-    ['firstName', beet.coption(beet.utf8String)],
-    ['lastName', beet.coption(beet.utf8String)],
-    ['birthDate', beet.coption(beet.i64)],
-    ['countryCode', beet.coption(beet.i16)],
-    ['cityCode', beet.coption(beet.u16)],
+    ['statusText', beet.utf8String],
+    ['gender', beet.coption(Gender_1.genderBeet)],
+    ['firstName', beet.utf8String],
+    ['lastName', beet.utf8String],
+    ['birthDate', beet.i64],
+    ['countryCode', beet.u16],
+    ['regionCode', beet.u16],
+    ['cityCode', beet.u16],
     ['currentLocation', beet.coption(LocationCoordinates_1.locationCoordinatesBeet)],
 ], 'ProfileData');
 //# sourceMappingURL=ProfileData.js.map

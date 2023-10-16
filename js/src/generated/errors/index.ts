@@ -12,26 +12,46 @@ const createErrorFromCodeLookup: Map<number, () => ErrorWithCode> = new Map();
 const createErrorFromNameLookup: Map<string, () => ErrorWithCode> = new Map();
 
 /**
- * ProcessorManagementNotAthorized: 'Procesor management action not authorized'
+ * DeveloperNotAthorized: 'Developer not authorized'
  *
  * @category Errors
  * @category generated
  */
-export class ProcessorManagementNotAthorizedError extends Error {
+export class DeveloperNotAthorizedError extends Error {
   readonly code: number = 0x1770;
-  readonly name: string = 'ProcessorManagementNotAthorized';
+  readonly name: string = 'DeveloperNotAthorized';
   constructor() {
-    super('Procesor management action not authorized');
+    super('Developer not authorized');
     if (typeof Error.captureStackTrace === 'function') {
-      Error.captureStackTrace(this, ProcessorManagementNotAthorizedError);
+      Error.captureStackTrace(this, DeveloperNotAthorizedError);
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x1770, () => new ProcessorManagementNotAthorizedError());
+createErrorFromCodeLookup.set(0x1770, () => new DeveloperNotAthorizedError());
+createErrorFromNameLookup.set('DeveloperNotAthorized', () => new DeveloperNotAthorizedError());
+
+/**
+ * DeveloperActionNotAthorized: 'Developer action not authorized'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class DeveloperActionNotAthorizedError extends Error {
+  readonly code: number = 0x1771;
+  readonly name: string = 'DeveloperActionNotAthorized';
+  constructor() {
+    super('Developer action not authorized');
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, DeveloperActionNotAthorizedError);
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x1771, () => new DeveloperActionNotAthorizedError());
 createErrorFromNameLookup.set(
-  'ProcessorManagementNotAthorized',
-  () => new ProcessorManagementNotAthorizedError(),
+  'DeveloperActionNotAthorized',
+  () => new DeveloperActionNotAthorizedError(),
 );
 
 /**
@@ -41,7 +61,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class ProcessorTypeMismatchError extends Error {
-  readonly code: number = 0x1771;
+  readonly code: number = 0x1772;
   readonly name: string = 'ProcessorTypeMismatch';
   constructor() {
     super('Procesor type mismatch');
@@ -51,7 +71,7 @@ export class ProcessorTypeMismatchError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1771, () => new ProcessorTypeMismatchError());
+createErrorFromCodeLookup.set(0x1772, () => new ProcessorTypeMismatchError());
 createErrorFromNameLookup.set('ProcessorTypeMismatch', () => new ProcessorTypeMismatchError());
 
 /**
@@ -61,7 +81,7 @@ createErrorFromNameLookup.set('ProcessorTypeMismatch', () => new ProcessorTypeMi
  * @category generated
  */
 export class ProcessorNameLengthIncorrectError extends Error {
-  readonly code: number = 0x1772;
+  readonly code: number = 0x1773;
   readonly name: string = 'ProcessorNameLengthIncorrect';
   constructor() {
     super('Procesor name length is incorrect');
@@ -71,34 +91,31 @@ export class ProcessorNameLengthIncorrectError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1772, () => new ProcessorNameLengthIncorrectError());
+createErrorFromCodeLookup.set(0x1773, () => new ProcessorNameLengthIncorrectError());
 createErrorFromNameLookup.set(
   'ProcessorNameLengthIncorrect',
   () => new ProcessorNameLengthIncorrectError(),
 );
 
 /**
- * ProcessorNameMustBeAlphanumeric: 'Processor name must contain only ASCII letters and numbers'
+ * ProcessorNameInvalid: 'Processor name must contain only ASCII letters in lower case and numbers'
  *
  * @category Errors
  * @category generated
  */
-export class ProcessorNameMustBeAlphanumericError extends Error {
-  readonly code: number = 0x1773;
-  readonly name: string = 'ProcessorNameMustBeAlphanumeric';
+export class ProcessorNameInvalidError extends Error {
+  readonly code: number = 0x1774;
+  readonly name: string = 'ProcessorNameInvalid';
   constructor() {
-    super('Processor name must contain only ASCII letters and numbers');
+    super('Processor name must contain only ASCII letters in lower case and numbers');
     if (typeof Error.captureStackTrace === 'function') {
-      Error.captureStackTrace(this, ProcessorNameMustBeAlphanumericError);
+      Error.captureStackTrace(this, ProcessorNameInvalidError);
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x1773, () => new ProcessorNameMustBeAlphanumericError());
-createErrorFromNameLookup.set(
-  'ProcessorNameMustBeAlphanumeric',
-  () => new ProcessorNameMustBeAlphanumericError(),
-);
+createErrorFromCodeLookup.set(0x1774, () => new ProcessorNameInvalidError());
+createErrorFromNameLookup.set('ProcessorNameInvalid', () => new ProcessorNameInvalidError());
 
 /**
  * ProcessorNotWhitelisted: 'Procesor trying to use is not whitelisted'
@@ -107,7 +124,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class ProcessorNotWhitelistedError extends Error {
-  readonly code: number = 0x1774;
+  readonly code: number = 0x1775;
   readonly name: string = 'ProcessorNotWhitelisted';
   constructor() {
     super('Procesor trying to use is not whitelisted');
@@ -117,7 +134,7 @@ export class ProcessorNotWhitelistedError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1774, () => new ProcessorNotWhitelistedError());
+createErrorFromCodeLookup.set(0x1775, () => new ProcessorNotWhitelistedError());
 createErrorFromNameLookup.set('ProcessorNotWhitelisted', () => new ProcessorNotWhitelistedError());
 
 /**
@@ -127,7 +144,7 @@ createErrorFromNameLookup.set('ProcessorNotWhitelisted', () => new ProcessorNotW
  * @category generated
  */
 export class AppNameLengthIncorrectError extends Error {
-  readonly code: number = 0x1775;
+  readonly code: number = 0x1776;
   readonly name: string = 'AppNameLengthIncorrect';
   constructor() {
     super('Application name (ID) length is incorrect');
@@ -137,31 +154,28 @@ export class AppNameLengthIncorrectError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1775, () => new AppNameLengthIncorrectError());
+createErrorFromCodeLookup.set(0x1776, () => new AppNameLengthIncorrectError());
 createErrorFromNameLookup.set('AppNameLengthIncorrect', () => new AppNameLengthIncorrectError());
 
 /**
- * AppNameMustBeAlphanumeric: 'Application name (ID) must contain only ASCII letters and numbers'
+ * AppNameInvalid: 'Application name must contain only ASCII letters in lower case and numbers'
  *
  * @category Errors
  * @category generated
  */
-export class AppNameMustBeAlphanumericError extends Error {
-  readonly code: number = 0x1776;
-  readonly name: string = 'AppNameMustBeAlphanumeric';
+export class AppNameInvalidError extends Error {
+  readonly code: number = 0x1777;
+  readonly name: string = 'AppNameInvalid';
   constructor() {
-    super('Application name (ID) must contain only ASCII letters and numbers');
+    super('Application name must contain only ASCII letters in lower case and numbers');
     if (typeof Error.captureStackTrace === 'function') {
-      Error.captureStackTrace(this, AppNameMustBeAlphanumericError);
+      Error.captureStackTrace(this, AppNameInvalidError);
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x1776, () => new AppNameMustBeAlphanumericError());
-createErrorFromNameLookup.set(
-  'AppNameMustBeAlphanumeric',
-  () => new AppNameMustBeAlphanumericError(),
-);
+createErrorFromCodeLookup.set(0x1777, () => new AppNameInvalidError());
+createErrorFromNameLookup.set('AppNameInvalid', () => new AppNameInvalidError());
 
 /**
  * AppManagementNotAthorized: 'App management action not authorized'
@@ -170,7 +184,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class AppManagementNotAthorizedError extends Error {
-  readonly code: number = 0x1777;
+  readonly code: number = 0x1778;
   readonly name: string = 'AppManagementNotAthorized';
   constructor() {
     super('App management action not authorized');
@@ -180,7 +194,7 @@ export class AppManagementNotAthorizedError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1777, () => new AppManagementNotAthorizedError());
+createErrorFromCodeLookup.set(0x1778, () => new AppManagementNotAthorizedError());
 createErrorFromNameLookup.set(
   'AppManagementNotAthorized',
   () => new AppManagementNotAthorizedError(),
@@ -193,7 +207,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class MissingRequiredFieldError extends Error {
-  readonly code: number = 0x1778;
+  readonly code: number = 0x1779;
   readonly name: string = 'MissingRequiredField';
   constructor() {
     super('Missing field required by Application settings');
@@ -203,7 +217,7 @@ export class MissingRequiredFieldError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1778, () => new MissingRequiredFieldError());
+createErrorFromCodeLookup.set(0x1779, () => new MissingRequiredFieldError());
 createErrorFromNameLookup.set('MissingRequiredField', () => new MissingRequiredFieldError());
 
 /**
@@ -213,7 +227,7 @@ createErrorFromNameLookup.set('MissingRequiredField', () => new MissingRequiredF
  * @category generated
  */
 export class ActionProhibitedByAppSettingsError extends Error {
-  readonly code: number = 0x1779;
+  readonly code: number = 0x177a;
   readonly name: string = 'ActionProhibitedByAppSettings';
   constructor() {
     super('The action is prohibited by application settings');
@@ -223,7 +237,7 @@ export class ActionProhibitedByAppSettingsError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1779, () => new ActionProhibitedByAppSettingsError());
+createErrorFromCodeLookup.set(0x177a, () => new ActionProhibitedByAppSettingsError());
 createErrorFromNameLookup.set(
   'ActionProhibitedByAppSettings',
   () => new ActionProhibitedByAppSettingsError(),
@@ -236,7 +250,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class AliasLengthIncorrectError extends Error {
-  readonly code: number = 0x177a;
+  readonly code: number = 0x177b;
   readonly name: string = 'AliasLengthIncorrect';
   constructor() {
     super('Alias length is incorrect');
@@ -246,28 +260,28 @@ export class AliasLengthIncorrectError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x177a, () => new AliasLengthIncorrectError());
+createErrorFromCodeLookup.set(0x177b, () => new AliasLengthIncorrectError());
 createErrorFromNameLookup.set('AliasLengthIncorrect', () => new AliasLengthIncorrectError());
 
 /**
- * AliasMustBeAlphanumeric: 'Alias must contain only ASCII letters and numbers'
+ * AliasInvalid: 'Alias must contain only ASCII letters in lower case, numbers and underscores'
  *
  * @category Errors
  * @category generated
  */
-export class AliasMustBeAlphanumericError extends Error {
-  readonly code: number = 0x177b;
-  readonly name: string = 'AliasMustBeAlphanumeric';
+export class AliasInvalidError extends Error {
+  readonly code: number = 0x177c;
+  readonly name: string = 'AliasInvalid';
   constructor() {
-    super('Alias must contain only ASCII letters and numbers');
+    super('Alias must contain only ASCII letters in lower case, numbers and underscores');
     if (typeof Error.captureStackTrace === 'function') {
-      Error.captureStackTrace(this, AliasMustBeAlphanumericError);
+      Error.captureStackTrace(this, AliasInvalidError);
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x177b, () => new AliasMustBeAlphanumericError());
-createErrorFromNameLookup.set('AliasMustBeAlphanumeric', () => new AliasMustBeAlphanumericError());
+createErrorFromCodeLookup.set(0x177c, () => new AliasInvalidError());
+createErrorFromNameLookup.set('AliasInvalid', () => new AliasInvalidError());
 
 /**
  * ProfileIncorrect: 'Profile incorrect'
@@ -276,7 +290,7 @@ createErrorFromNameLookup.set('AliasMustBeAlphanumeric', () => new AliasMustBeAl
  * @category generated
  */
 export class ProfileIncorrectError extends Error {
-  readonly code: number = 0x177c;
+  readonly code: number = 0x177d;
   readonly name: string = 'ProfileIncorrect';
   constructor() {
     super('Profile incorrect');
@@ -286,7 +300,7 @@ export class ProfileIncorrectError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x177c, () => new ProfileIncorrectError());
+createErrorFromCodeLookup.set(0x177d, () => new ProfileIncorrectError());
 createErrorFromNameLookup.set('ProfileIncorrect', () => new ProfileIncorrectError());
 
 /**
@@ -296,7 +310,7 @@ createErrorFromNameLookup.set('ProfileIncorrect', () => new ProfileIncorrectErro
  * @category generated
  */
 export class ProfileAliasIncorrectError extends Error {
-  readonly code: number = 0x177d;
+  readonly code: number = 0x177e;
   readonly name: string = 'ProfileAliasIncorrect';
   constructor() {
     super('Profile alias is incorrect');
@@ -306,7 +320,7 @@ export class ProfileAliasIncorrectError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x177d, () => new ProfileAliasIncorrectError());
+createErrorFromCodeLookup.set(0x177e, () => new ProfileAliasIncorrectError());
 createErrorFromNameLookup.set('ProfileAliasIncorrect', () => new ProfileAliasIncorrectError());
 
 /**
@@ -316,7 +330,7 @@ createErrorFromNameLookup.set('ProfileAliasIncorrect', () => new ProfileAliasInc
  * @category generated
  */
 export class AliasAccountRequiredError extends Error {
-  readonly code: number = 0x177e;
+  readonly code: number = 0x177f;
   readonly name: string = 'AliasAccountRequired';
   constructor() {
     super('Alias account required to register action');
@@ -326,7 +340,7 @@ export class AliasAccountRequiredError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x177e, () => new AliasAccountRequiredError());
+createErrorFromCodeLookup.set(0x177f, () => new AliasAccountRequiredError());
 createErrorFromNameLookup.set('AliasAccountRequired', () => new AliasAccountRequiredError());
 
 /**
@@ -336,7 +350,7 @@ createErrorFromNameLookup.set('AliasAccountRequired', () => new AliasAccountRequ
  * @category generated
  */
 export class AliasAccountsMustBeNoneError extends Error {
-  readonly code: number = 0x177f;
+  readonly code: number = 0x1780;
   readonly name: string = 'AliasAccountsMustBeNone';
   constructor() {
     super('Alias accounts must not be passed');
@@ -346,7 +360,7 @@ export class AliasAccountsMustBeNoneError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x177f, () => new AliasAccountsMustBeNoneError());
+createErrorFromCodeLookup.set(0x1780, () => new AliasAccountsMustBeNoneError());
 createErrorFromNameLookup.set('AliasAccountsMustBeNone', () => new AliasAccountsMustBeNoneError());
 
 /**
@@ -356,7 +370,7 @@ createErrorFromNameLookup.set('AliasAccountsMustBeNone', () => new AliasAccounts
  * @category generated
  */
 export class BothAliasAccountRequiredError extends Error {
-  readonly code: number = 0x1780;
+  readonly code: number = 0x1781;
   readonly name: string = 'BothAliasAccountRequired';
   constructor() {
     super('Both alias account required to update');
@@ -366,7 +380,7 @@ export class BothAliasAccountRequiredError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1780, () => new BothAliasAccountRequiredError());
+createErrorFromCodeLookup.set(0x1781, () => new BothAliasAccountRequiredError());
 createErrorFromNameLookup.set(
   'BothAliasAccountRequired',
   () => new BothAliasAccountRequiredError(),
@@ -379,7 +393,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class CurrentAliasAccountRequiredError extends Error {
-  readonly code: number = 0x1781;
+  readonly code: number = 0x1782;
   readonly name: string = 'CurrentAliasAccountRequired';
   constructor() {
     super('Current alias account required to delete');
@@ -389,7 +403,7 @@ export class CurrentAliasAccountRequiredError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1781, () => new CurrentAliasAccountRequiredError());
+createErrorFromCodeLookup.set(0x1782, () => new CurrentAliasAccountRequiredError());
 createErrorFromNameLookup.set(
   'CurrentAliasAccountRequired',
   () => new CurrentAliasAccountRequiredError(),
@@ -402,7 +416,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class UpdateNotAuthorizedError extends Error {
-  readonly code: number = 0x1782;
+  readonly code: number = 0x1783;
   readonly name: string = 'UpdateNotAuthorized';
   constructor() {
     super('Profile update not authorized');
@@ -412,8 +426,28 @@ export class UpdateNotAuthorizedError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1782, () => new UpdateNotAuthorizedError());
+createErrorFromCodeLookup.set(0x1783, () => new UpdateNotAuthorizedError());
 createErrorFromNameLookup.set('UpdateNotAuthorized', () => new UpdateNotAuthorizedError());
+
+/**
+ * BirthDateIncorrect: 'Profile birth date is incorrect'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class BirthDateIncorrectError extends Error {
+  readonly code: number = 0x1784;
+  readonly name: string = 'BirthDateIncorrect';
+  constructor() {
+    super('Profile birth date is incorrect');
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, BirthDateIncorrectError);
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x1784, () => new BirthDateIncorrectError());
+createErrorFromNameLookup.set('BirthDateIncorrect', () => new BirthDateIncorrectError());
 
 /**
  * ProfileFirstNameLengthIncorrect: 'Profile first name length is incorrect'
@@ -422,7 +456,7 @@ createErrorFromNameLookup.set('UpdateNotAuthorized', () => new UpdateNotAuthoriz
  * @category generated
  */
 export class ProfileFirstNameLengthIncorrectError extends Error {
-  readonly code: number = 0x1783;
+  readonly code: number = 0x1785;
   readonly name: string = 'ProfileFirstNameLengthIncorrect';
   constructor() {
     super('Profile first name length is incorrect');
@@ -432,7 +466,7 @@ export class ProfileFirstNameLengthIncorrectError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1783, () => new ProfileFirstNameLengthIncorrectError());
+createErrorFromCodeLookup.set(0x1785, () => new ProfileFirstNameLengthIncorrectError());
 createErrorFromNameLookup.set(
   'ProfileFirstNameLengthIncorrect',
   () => new ProfileFirstNameLengthIncorrectError(),
@@ -445,7 +479,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class ProfileLastNameLengthIncorrectError extends Error {
-  readonly code: number = 0x1784;
+  readonly code: number = 0x1786;
   readonly name: string = 'ProfileLastNameLengthIncorrect';
   constructor() {
     super('Profile last name length is incorrect');
@@ -455,7 +489,7 @@ export class ProfileLastNameLengthIncorrectError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1784, () => new ProfileLastNameLengthIncorrectError());
+createErrorFromCodeLookup.set(0x1786, () => new ProfileLastNameLengthIncorrectError());
 createErrorFromNameLookup.set(
   'ProfileLastNameLengthIncorrect',
   () => new ProfileLastNameLengthIncorrectError(),
@@ -468,7 +502,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class SubspaceAliasIncorrectError extends Error {
-  readonly code: number = 0x1785;
+  readonly code: number = 0x1787;
   readonly name: string = 'SubspaceAliasIncorrect';
   constructor() {
     super('Subspace alias is incorrect');
@@ -478,7 +512,7 @@ export class SubspaceAliasIncorrectError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1785, () => new SubspaceAliasIncorrectError());
+createErrorFromCodeLookup.set(0x1787, () => new SubspaceAliasIncorrectError());
 createErrorFromNameLookup.set('SubspaceAliasIncorrect', () => new SubspaceAliasIncorrectError());
 
 /**
@@ -488,7 +522,7 @@ createErrorFromNameLookup.set('SubspaceAliasIncorrect', () => new SubspaceAliasI
  * @category generated
  */
 export class SubspaceNameIncorrectError extends Error {
-  readonly code: number = 0x1786;
+  readonly code: number = 0x1788;
   readonly name: string = 'SubspaceNameIncorrect';
   constructor() {
     super('Subspace name length is incorrect');
@@ -498,8 +532,83 @@ export class SubspaceNameIncorrectError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1786, () => new SubspaceNameIncorrectError());
+createErrorFromCodeLookup.set(0x1788, () => new SubspaceNameIncorrectError());
 createErrorFromNameLookup.set('SubspaceNameIncorrect', () => new SubspaceNameIncorrectError());
+
+/**
+ * SubspacePublishingPermissionViolation: 'Subspace publishing permission violated'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class SubspacePublishingPermissionViolationError extends Error {
+  readonly code: number = 0x1789;
+  readonly name: string = 'SubspacePublishingPermissionViolation';
+  constructor() {
+    super('Subspace publishing permission violated');
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, SubspacePublishingPermissionViolationError);
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x1789, () => new SubspacePublishingPermissionViolationError());
+createErrorFromNameLookup.set(
+  'SubspacePublishingPermissionViolation',
+  () => new SubspacePublishingPermissionViolationError(),
+);
+
+/**
+ * SubspacePublishingConnectionProofAccountRequired: 'Subspace publishing Connection-proof account required'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class SubspacePublishingConnectionProofAccountRequiredError extends Error {
+  readonly code: number = 0x178a;
+  readonly name: string = 'SubspacePublishingConnectionProofAccountRequired';
+  constructor() {
+    super('Subspace publishing Connection-proof account required');
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, SubspacePublishingConnectionProofAccountRequiredError);
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(
+  0x178a,
+  () => new SubspacePublishingConnectionProofAccountRequiredError(),
+);
+createErrorFromNameLookup.set(
+  'SubspacePublishingConnectionProofAccountRequired',
+  () => new SubspacePublishingConnectionProofAccountRequiredError(),
+);
+
+/**
+ * SubspacePublishingManagerProofAccountRequired: 'Subspace publishing Manager-proof account required'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class SubspacePublishingManagerProofAccountRequiredError extends Error {
+  readonly code: number = 0x178b;
+  readonly name: string = 'SubspacePublishingManagerProofAccountRequired';
+  constructor() {
+    super('Subspace publishing Manager-proof account required');
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, SubspacePublishingManagerProofAccountRequiredError);
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(
+  0x178b,
+  () => new SubspacePublishingManagerProofAccountRequiredError(),
+);
+createErrorFromNameLookup.set(
+  'SubspacePublishingManagerProofAccountRequired',
+  () => new SubspacePublishingManagerProofAccountRequiredError(),
+);
 
 /**
  * UriLengthIncorrect: 'URI length is incorrect'
@@ -508,7 +617,7 @@ createErrorFromNameLookup.set('SubspaceNameIncorrect', () => new SubspaceNameInc
  * @category generated
  */
 export class UriLengthIncorrectError extends Error {
-  readonly code: number = 0x1787;
+  readonly code: number = 0x178c;
   readonly name: string = 'UriLengthIncorrect';
   constructor() {
     super('URI length is incorrect');
@@ -518,7 +627,7 @@ export class UriLengthIncorrectError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1787, () => new UriLengthIncorrectError());
+createErrorFromCodeLookup.set(0x178c, () => new UriLengthIncorrectError());
 createErrorFromNameLookup.set('UriLengthIncorrect', () => new UriLengthIncorrectError());
 
 /**
@@ -528,7 +637,7 @@ createErrorFromNameLookup.set('UriLengthIncorrect', () => new UriLengthIncorrect
  * @category generated
  */
 export class TargetPublicationRequiredError extends Error {
-  readonly code: number = 0x1788;
+  readonly code: number = 0x178d;
   readonly name: string = 'TargetPublicationRequired';
   constructor() {
     super('Missed Target Publication account');
@@ -538,7 +647,7 @@ export class TargetPublicationRequiredError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1788, () => new TargetPublicationRequiredError());
+createErrorFromCodeLookup.set(0x178d, () => new TargetPublicationRequiredError());
 createErrorFromNameLookup.set(
   'TargetPublicationRequired',
   () => new TargetPublicationRequiredError(),
@@ -551,7 +660,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class BothMirrorAndReplyNotAllowedError extends Error {
-  readonly code: number = 0x1789;
+  readonly code: number = 0x178e;
   readonly name: string = 'BothMirrorAndReplyNotAllowed';
   constructor() {
     super('Both mirroring and replying not allowed in the same time');
@@ -561,7 +670,7 @@ export class BothMirrorAndReplyNotAllowedError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1789, () => new BothMirrorAndReplyNotAllowedError());
+createErrorFromCodeLookup.set(0x178e, () => new BothMirrorAndReplyNotAllowedError());
 createErrorFromNameLookup.set(
   'BothMirrorAndReplyNotAllowed',
   () => new BothMirrorAndReplyNotAllowedError(),
@@ -574,7 +683,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class SelfConnectionNotAllowedError extends Error {
-  readonly code: number = 0x178a;
+  readonly code: number = 0x178f;
   readonly name: string = 'SelfConnectionNotAllowed';
   constructor() {
     super('Self conections is not allowed');
@@ -584,7 +693,7 @@ export class SelfConnectionNotAllowedError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x178a, () => new SelfConnectionNotAllowedError());
+createErrorFromCodeLookup.set(0x178f, () => new SelfConnectionNotAllowedError());
 createErrorFromNameLookup.set(
   'SelfConnectionNotAllowed',
   () => new SelfConnectionNotAllowedError(),
@@ -597,7 +706,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class ConnectionTargetAccountMissedError extends Error {
-  readonly code: number = 0x178b;
+  readonly code: number = 0x1790;
   readonly name: string = 'ConnectionTargetAccountMissed';
   constructor() {
     super('Connection target account is missed');
@@ -607,7 +716,7 @@ export class ConnectionTargetAccountMissedError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x178b, () => new ConnectionTargetAccountMissedError());
+createErrorFromCodeLookup.set(0x1790, () => new ConnectionTargetAccountMissedError());
 createErrorFromNameLookup.set(
   'ConnectionTargetAccountMissed',
   () => new ConnectionTargetAccountMissedError(),
@@ -620,7 +729,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class ConnectionTargetAccountInvalidError extends Error {
-  readonly code: number = 0x178c;
+  readonly code: number = 0x1791;
   readonly name: string = 'ConnectionTargetAccountInvalid';
   constructor() {
     super('Connection target account is invalid');
@@ -630,7 +739,7 @@ export class ConnectionTargetAccountInvalidError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x178c, () => new ConnectionTargetAccountInvalidError());
+createErrorFromCodeLookup.set(0x1791, () => new ConnectionTargetAccountInvalidError());
 createErrorFromNameLookup.set(
   'ConnectionTargetAccountInvalid',
   () => new ConnectionTargetAccountInvalidError(),
@@ -643,7 +752,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class ConnectionTargetAuthorityMismatchError extends Error {
-  readonly code: number = 0x178d;
+  readonly code: number = 0x1792;
   readonly name: string = 'ConnectionTargetAuthorityMismatch';
   constructor() {
     super('Connection target authority mismatch');
@@ -653,7 +762,7 @@ export class ConnectionTargetAuthorityMismatchError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x178d, () => new ConnectionTargetAuthorityMismatchError());
+createErrorFromCodeLookup.set(0x1792, () => new ConnectionTargetAuthorityMismatchError());
 createErrorFromNameLookup.set(
   'ConnectionTargetAuthorityMismatch',
   () => new ConnectionTargetAuthorityMismatchError(),
@@ -666,7 +775,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class ConnectionValidationFailError extends Error {
-  readonly code: number = 0x178e;
+  readonly code: number = 0x1793;
   readonly name: string = 'ConnectionValidationFail';
   constructor() {
     super('Connection validation failed');
@@ -676,7 +785,7 @@ export class ConnectionValidationFailError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x178e, () => new ConnectionValidationFailError());
+createErrorFromCodeLookup.set(0x1793, () => new ConnectionValidationFailError());
 createErrorFromNameLookup.set(
   'ConnectionValidationFail',
   () => new ConnectionValidationFailError(),
@@ -689,7 +798,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class AliasAccountExistError extends Error {
-  readonly code: number = 0x178f;
+  readonly code: number = 0x1794;
   readonly name: string = 'AliasAccountExist';
   constructor() {
     super('Alias account already exist');
@@ -699,7 +808,7 @@ export class AliasAccountExistError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x178f, () => new AliasAccountExistError());
+createErrorFromCodeLookup.set(0x1794, () => new AliasAccountExistError());
 createErrorFromNameLookup.set('AliasAccountExist', () => new AliasAccountExistError());
 
 /**
@@ -709,7 +818,7 @@ createErrorFromNameLookup.set('AliasAccountExist', () => new AliasAccountExistEr
  * @category generated
  */
 export class SelfPublicationCollectingError extends Error {
-  readonly code: number = 0x1790;
+  readonly code: number = 0x1795;
   readonly name: string = 'SelfPublicationCollecting';
   constructor() {
     super("Forbidden to collect user's  own publication");
@@ -719,11 +828,31 @@ export class SelfPublicationCollectingError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1790, () => new SelfPublicationCollectingError());
+createErrorFromCodeLookup.set(0x1795, () => new SelfPublicationCollectingError());
 createErrorFromNameLookup.set(
   'SelfPublicationCollecting',
   () => new SelfPublicationCollectingError(),
 );
+
+/**
+ * PublicationTagIncorrect: 'Publication Tag is incorrect'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class PublicationTagIncorrectError extends Error {
+  readonly code: number = 0x1796;
+  readonly name: string = 'PublicationTagIncorrect';
+  constructor() {
+    super('Publication Tag is incorrect');
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, PublicationTagIncorrectError);
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x1796, () => new PublicationTagIncorrectError());
+createErrorFromNameLookup.set('PublicationTagIncorrect', () => new PublicationTagIncorrectError());
 
 /**
  * RegisteringProcessorAccountMissed: 'Missed registering external processor account'
@@ -732,7 +861,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class RegisteringProcessorAccountMissedError extends Error {
-  readonly code: number = 0x1791;
+  readonly code: number = 0x1797;
   readonly name: string = 'RegisteringProcessorAccountMissed';
   constructor() {
     super('Missed registering external processor account');
@@ -742,7 +871,7 @@ export class RegisteringProcessorAccountMissedError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1791, () => new RegisteringProcessorAccountMissedError());
+createErrorFromCodeLookup.set(0x1797, () => new RegisteringProcessorAccountMissedError());
 createErrorFromNameLookup.set(
   'RegisteringProcessorAccountMissed',
   () => new RegisteringProcessorAccountMissedError(),
@@ -755,7 +884,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class ConnectingProcessorAccountMissedError extends Error {
-  readonly code: number = 0x1792;
+  readonly code: number = 0x1798;
   readonly name: string = 'ConnectingProcessorAccountMissed';
   constructor() {
     super('Missed connecting external processor account');
@@ -765,7 +894,7 @@ export class ConnectingProcessorAccountMissedError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1792, () => new ConnectingProcessorAccountMissedError());
+createErrorFromCodeLookup.set(0x1798, () => new ConnectingProcessorAccountMissedError());
 createErrorFromNameLookup.set(
   'ConnectingProcessorAccountMissed',
   () => new ConnectingProcessorAccountMissedError(),
@@ -778,7 +907,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class PublishingProcessorAccountMissedError extends Error {
-  readonly code: number = 0x1793;
+  readonly code: number = 0x1799;
   readonly name: string = 'PublishingProcessorAccountMissed';
   constructor() {
     super('Missed publishing external processor account');
@@ -788,7 +917,7 @@ export class PublishingProcessorAccountMissedError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1793, () => new PublishingProcessorAccountMissedError());
+createErrorFromCodeLookup.set(0x1799, () => new PublishingProcessorAccountMissedError());
 createErrorFromNameLookup.set(
   'PublishingProcessorAccountMissed',
   () => new PublishingProcessorAccountMissedError(),
@@ -801,7 +930,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class CollectingProcessorAccountMissedError extends Error {
-  readonly code: number = 0x1794;
+  readonly code: number = 0x179a;
   readonly name: string = 'CollectingProcessorAccountMissed';
   constructor() {
     super('Missed collecting external processor account');
@@ -811,7 +940,7 @@ export class CollectingProcessorAccountMissedError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1794, () => new CollectingProcessorAccountMissedError());
+createErrorFromCodeLookup.set(0x179a, () => new CollectingProcessorAccountMissedError());
 createErrorFromNameLookup.set(
   'CollectingProcessorAccountMissed',
   () => new CollectingProcessorAccountMissedError(),
@@ -824,7 +953,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class ReferencingProcessorAccountMissedError extends Error {
-  readonly code: number = 0x1795;
+  readonly code: number = 0x179b;
   readonly name: string = 'ReferencingProcessorAccountMissed';
   constructor() {
     super('Missed referencing external processor account');
@@ -834,7 +963,7 @@ export class ReferencingProcessorAccountMissedError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1795, () => new ReferencingProcessorAccountMissedError());
+createErrorFromCodeLookup.set(0x179b, () => new ReferencingProcessorAccountMissedError());
 createErrorFromNameLookup.set(
   'ReferencingProcessorAccountMissed',
   () => new ReferencingProcessorAccountMissedError(),
@@ -847,7 +976,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class RegisteringProcessorMismatchError extends Error {
-  readonly code: number = 0x1796;
+  readonly code: number = 0x179c;
   readonly name: string = 'RegisteringProcessorMismatch';
   constructor() {
     super('Registering external processor mismatch');
@@ -857,7 +986,7 @@ export class RegisteringProcessorMismatchError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1796, () => new RegisteringProcessorMismatchError());
+createErrorFromCodeLookup.set(0x179c, () => new RegisteringProcessorMismatchError());
 createErrorFromNameLookup.set(
   'RegisteringProcessorMismatch',
   () => new RegisteringProcessorMismatchError(),
@@ -870,7 +999,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class ConnectingProcessorMismatchError extends Error {
-  readonly code: number = 0x1797;
+  readonly code: number = 0x179d;
   readonly name: string = 'ConnectingProcessorMismatch';
   constructor() {
     super('Connecting external processor mismatch');
@@ -880,7 +1009,7 @@ export class ConnectingProcessorMismatchError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1797, () => new ConnectingProcessorMismatchError());
+createErrorFromCodeLookup.set(0x179d, () => new ConnectingProcessorMismatchError());
 createErrorFromNameLookup.set(
   'ConnectingProcessorMismatch',
   () => new ConnectingProcessorMismatchError(),
@@ -893,7 +1022,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class PublishingProcessorMismatchError extends Error {
-  readonly code: number = 0x1798;
+  readonly code: number = 0x179e;
   readonly name: string = 'PublishingProcessorMismatch';
   constructor() {
     super('Publishing external processor mismatch');
@@ -903,7 +1032,7 @@ export class PublishingProcessorMismatchError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1798, () => new PublishingProcessorMismatchError());
+createErrorFromCodeLookup.set(0x179e, () => new PublishingProcessorMismatchError());
 createErrorFromNameLookup.set(
   'PublishingProcessorMismatch',
   () => new PublishingProcessorMismatchError(),
@@ -916,7 +1045,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class CollectingProcessorMismatchError extends Error {
-  readonly code: number = 0x1799;
+  readonly code: number = 0x179f;
   readonly name: string = 'CollectingProcessorMismatch';
   constructor() {
     super('Collecting external processor mismatch');
@@ -926,7 +1055,7 @@ export class CollectingProcessorMismatchError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x1799, () => new CollectingProcessorMismatchError());
+createErrorFromCodeLookup.set(0x179f, () => new CollectingProcessorMismatchError());
 createErrorFromNameLookup.set(
   'CollectingProcessorMismatch',
   () => new CollectingProcessorMismatchError(),
@@ -939,7 +1068,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class ReferencingProcessorMismatchError extends Error {
-  readonly code: number = 0x179a;
+  readonly code: number = 0x17a0;
   readonly name: string = 'ReferencingProcessorMismatch';
   constructor() {
     super('Referencing external processor mismatch');
@@ -949,7 +1078,7 @@ export class ReferencingProcessorMismatchError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x179a, () => new ReferencingProcessorMismatchError());
+createErrorFromCodeLookup.set(0x17a0, () => new ReferencingProcessorMismatchError());
 createErrorFromNameLookup.set(
   'ReferencingProcessorMismatch',
   () => new ReferencingProcessorMismatchError(),
@@ -962,7 +1091,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class ReactionTargetAccountInvalidError extends Error {
-  readonly code: number = 0x179b;
+  readonly code: number = 0x17a1;
   readonly name: string = 'ReactionTargetAccountInvalid';
   constructor() {
     super('Reaction target account is invalid');
@@ -972,7 +1101,7 @@ export class ReactionTargetAccountInvalidError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x179b, () => new ReactionTargetAccountInvalidError());
+createErrorFromCodeLookup.set(0x17a1, () => new ReactionTargetAccountInvalidError());
 createErrorFromNameLookup.set(
   'ReactionTargetAccountInvalid',
   () => new ReactionTargetAccountInvalidError(),
@@ -985,7 +1114,7 @@ createErrorFromNameLookup.set(
  * @category generated
  */
 export class ReportTargetAccountInvalidError extends Error {
-  readonly code: number = 0x179c;
+  readonly code: number = 0x17a2;
   readonly name: string = 'ReportTargetAccountInvalid';
   constructor() {
     super('Report target account is invalid');
@@ -995,7 +1124,7 @@ export class ReportTargetAccountInvalidError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x179c, () => new ReportTargetAccountInvalidError());
+createErrorFromCodeLookup.set(0x17a2, () => new ReportTargetAccountInvalidError());
 createErrorFromNameLookup.set(
   'ReportTargetAccountInvalid',
   () => new ReportTargetAccountInvalidError(),

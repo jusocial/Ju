@@ -5,6 +5,7 @@ import * as beetSolana from '@metaplex-foundation/beet-solana';
 import { ProcessorType } from '../types/ProcessorType';
 export type ExternalProcessorPDAArgs = {
     processorType: ProcessorType;
+    isApproved: boolean;
     processorName: string;
     authority: web3.PublicKey;
     developerWallet: beet.COption<web3.PublicKey>;
@@ -13,6 +14,7 @@ export type ExternalProcessorPDAArgs = {
 export declare const externalProcessorPDADiscriminator: number[];
 export declare class ExternalProcessorPDA implements ExternalProcessorPDAArgs {
     readonly processorType: ProcessorType;
+    readonly isApproved: boolean;
     readonly processorName: string;
     readonly authority: web3.PublicKey;
     readonly developerWallet: beet.COption<web3.PublicKey>;
@@ -30,6 +32,7 @@ export declare class ExternalProcessorPDA implements ExternalProcessorPDAArgs {
     static getMinimumBalanceForRentExemption(args: ExternalProcessorPDAArgs, connection: web3.Connection, commitment?: web3.Commitment): Promise<number>;
     pretty(): {
         processorType: string;
+        isApproved: boolean;
         processorName: string;
         authority: string;
         developerWallet: beet.COption<web3.PublicKey>;

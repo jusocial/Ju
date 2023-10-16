@@ -32,6 +32,6 @@ exports.publicationDataBeet = new beet.FixableBeetArgsStruct([
     ['isMirror', beet.bool],
     ['isReply', beet.bool],
     ['contentType', ContentType_1.contentTypeBeet],
-    ['tag', beet.coption(beet.utf8String)],
+    ['tag', beet.utf8String],
 ], 'PublicationData');
 //# sourceMappingURL=PublicationData.js.map

@@ -2,17 +2,21 @@
 import * as web3 from '@solana/web3.js';
 import * as beetSolana from '@metaplex-foundation/beet-solana';
 import * as beet from '@metaplex-foundation/beet';
-import { ManagementRoleType } from '../types/ManagementRoleType';
+import { SubspaceManagementRoleType } from '../types/SubspaceManagementRoleType';
 export type SubspaceManagerArgs = {
     app: web3.PublicKey;
+    subspace: web3.PublicKey;
+    profile: web3.PublicKey;
     authority: web3.PublicKey;
-    role: ManagementRoleType;
+    role: SubspaceManagementRoleType;
 };
 export declare const subspaceManagerDiscriminator: number[];
 export declare class SubspaceManager implements SubspaceManagerArgs {
     readonly app: web3.PublicKey;
+    readonly subspace: web3.PublicKey;
+    readonly profile: web3.PublicKey;
     readonly authority: web3.PublicKey;
-    readonly role: ManagementRoleType;
+    readonly role: SubspaceManagementRoleType;
     private constructor();
     static fromArgs(args: SubspaceManagerArgs): SubspaceManager;
     static fromAccountInfo(accountInfo: web3.AccountInfo<Buffer>, offset?: number): [SubspaceManager, number];
@@ -21,6 +25,8 @@ export declare class SubspaceManager implements SubspaceManagerArgs {
         app: any;
         authority: any;
         accountDiscriminator: any;
+        profile: any;
+        subspace: any;
         role: any;
     }>;
     static deserialize(buf: Buffer, offset?: number): [SubspaceManager, number];
@@ -30,6 +36,8 @@ export declare class SubspaceManager implements SubspaceManagerArgs {
     static hasCorrectByteSize(buf: Buffer, offset?: number): boolean;
     pretty(): {
         app: string;
+        subspace: string;
+        profile: string;
         authority: string;
         role: string;
     };

@@ -29,15 +29,17 @@ const beet = __importStar(require("@metaplex-foundation/beet"));
 const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
 exports.collectionItemDiscriminator = [225, 72, 84, 206, 193, 134, 215, 4];
 class CollectionItem {
-    constructor(app, initializer, target, authority, createdAt) {
+    constructor(app, initializer, target, authority, createdAt, searchable3Day, searchableDay) {
         this.app = app;
         this.initializer = initializer;
         this.target = target;
         this.authority = authority;
         this.createdAt = createdAt;
+        this.searchable3Day = searchable3Day;
+        this.searchableDay = searchableDay;
     }
     static fromArgs(args) {
-        return new CollectionItem(args.app, args.initializer, args.target, args.authority, args.createdAt);
+        return new CollectionItem(args.app, args.initializer, args.target, args.authority, args.createdAt, args.searchable3Day, args.searchableDay);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return CollectionItem.deserialize(accountInfo.data, offset);
@@ -88,6 +90,30 @@ class CollectionItem {
                 }
                 return x;
             })(),
+            searchable3Day: (() => {
+                const x = this.searchable3Day;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            searchableDay: (() => {
+                const x = this.searchableDay;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
         };
     }
 }
@@ -99,5 +125,7 @@ exports.collectionItemBeet = new beet.BeetStruct([
     ['target', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
     ['createdAt', beet.i64],
+    ['searchable3Day', beet.i64],
+    ['searchableDay', beet.i64],
 ], CollectionItem.fromArgs, 'CollectionItem');
 //# sourceMappingURL=CollectionItem.js.map

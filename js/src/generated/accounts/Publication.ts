@@ -20,12 +20,14 @@ export type PublicationArgs = {
   profile: web3.PublicKey;
   authority: web3.PublicKey;
   isEncrypted: boolean;
-  subspace: beet.COption<web3.PublicKey>;
   isMirror: boolean;
   isReply: boolean;
-  targetPublication: beet.COption<web3.PublicKey>;
   contentType: ContentType;
-  tag: beet.COption<string>;
+  tag: number[] /* size: 12 */;
+  searchable3Day: beet.bignum;
+  searchableDay: beet.bignum;
+  targetPublication: web3.PublicKey;
+  subspace: web3.PublicKey;
   uuid: string;
   metadataUri: string;
   collectingProcessor: beet.COption<web3.PublicKey>;
@@ -48,12 +50,14 @@ export class Publication implements PublicationArgs {
     readonly profile: web3.PublicKey,
     readonly authority: web3.PublicKey,
     readonly isEncrypted: boolean,
-    readonly subspace: beet.COption<web3.PublicKey>,
     readonly isMirror: boolean,
     readonly isReply: boolean,
-    readonly targetPublication: beet.COption<web3.PublicKey>,
     readonly contentType: ContentType,
-    readonly tag: beet.COption<string>,
+    readonly tag: number[] /* size: 12 */,
+    readonly searchable3Day: beet.bignum,
+    readonly searchableDay: beet.bignum,
+    readonly targetPublication: web3.PublicKey,
+    readonly subspace: web3.PublicKey,
     readonly uuid: string,
     readonly metadataUri: string,
     readonly collectingProcessor: beet.COption<web3.PublicKey>,
@@ -71,12 +75,14 @@ export class Publication implements PublicationArgs {
       args.profile,
       args.authority,
       args.isEncrypted,
-      args.subspace,
       args.isMirror,
       args.isReply,
-      args.targetPublication,
       args.contentType,
       args.tag,
+      args.searchable3Day,
+      args.searchableDay,
+      args.targetPublication,
+      args.subspace,
       args.uuid,
       args.metadataUri,
       args.collectingProcessor,
@@ -184,12 +190,34 @@ export class Publication implements PublicationArgs {
       profile: this.profile.toBase58(),
       authority: this.authority.toBase58(),
       isEncrypted: this.isEncrypted,
-      subspace: this.subspace,
       isMirror: this.isMirror,
       isReply: this.isReply,
-      targetPublication: this.targetPublication,
       contentType: 'ContentType.' + ContentType[this.contentType],
       tag: this.tag,
+      searchable3Day: (() => {
+        const x = <{ toNumber: () => number }>this.searchable3Day;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      searchableDay: (() => {
+        const x = <{ toNumber: () => number }>this.searchableDay;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      targetPublication: this.targetPublication.toBase58(),
+      subspace: this.subspace.toBase58(),
       uuid: this.uuid,
       metadataUri: this.metadataUri,
       collectingProcessor: this.collectingProcessor,
@@ -226,12 +254,14 @@ export const publicationBeet = new beet.FixableBeetStruct<
     ['profile', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
     ['isEncrypted', beet.bool],
-    ['subspace', beet.coption(beetSolana.publicKey)],
     ['isMirror', beet.bool],
     ['isReply', beet.bool],
-    ['targetPublication', beet.coption(beetSolana.publicKey)],
     ['contentType', contentTypeBeet],
-    ['tag', beet.coption(beet.utf8String)],
+    ['tag', beet.uniformFixedSizeArray(beet.u8, 12)],
+    ['searchable3Day', beet.i64],
+    ['searchableDay', beet.i64],
+    ['targetPublication', beetSolana.publicKey],
+    ['subspace', beetSolana.publicKey],
     ['uuid', beet.utf8String],
     ['metadataUri', beet.utf8String],
     ['collectingProcessor', beet.coption(beetSolana.publicKey)],

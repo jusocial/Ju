@@ -13,7 +13,7 @@ export type PublicationData = {
   isMirror: boolean;
   isReply: boolean;
   contentType: ContentType;
-  tag: beet.COption<string>;
+  tag: string;
 };
 
 /**
@@ -27,7 +27,7 @@ export const publicationDataBeet = new beet.FixableBeetArgsStruct<PublicationDat
     ['isMirror', beet.bool],
     ['isReply', beet.bool],
     ['contentType', contentTypeBeet],
-    ['tag', beet.coption(beet.utf8String)],
+    ['tag', beet.utf8String],
   ],
   'PublicationData',
 );

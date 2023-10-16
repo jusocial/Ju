@@ -31,18 +31,19 @@ const ReportTargetType_1 = require("../types/ReportTargetType");
 const ReportType_1 = require("../types/ReportType");
 exports.reportDiscriminator = [232, 246, 229, 227, 242, 105, 190, 2];
 class Report {
-    constructor(app, authority, targetType, target, initializer, reportType, notification, createdAt) {
+    constructor(app, authority, targetType, target, initializer, reportType, searchableDay, notification, createdAt) {
         this.app = app;
         this.authority = authority;
         this.targetType = targetType;
         this.target = target;
         this.initializer = initializer;
         this.reportType = reportType;
+        this.searchableDay = searchableDay;
         this.notification = notification;
         this.createdAt = createdAt;
     }
     static fromArgs(args) {
-        return new Report(args.app, args.authority, args.targetType, args.target, args.initializer, args.reportType, args.notification, args.createdAt);
+        return new Report(args.app, args.authority, args.targetType, args.target, args.initializer, args.reportType, args.searchableDay, args.notification, args.createdAt);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return Report.deserialize(accountInfo.data, offset);
@@ -84,6 +85,18 @@ class Report {
             target: this.target.toBase58(),
             initializer: this.initializer.toBase58(),
             reportType: 'ReportType.' + ReportType_1.ReportType[this.reportType],
+            searchableDay: (() => {
+                const x = this.searchableDay;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
             notification: this.notification,
             createdAt: (() => {
                 const x = this.createdAt;
@@ -109,6 +122,7 @@ exports.reportBeet = new beet.FixableBeetStruct([
     ['target', beetSolana.publicKey],
     ['initializer', beetSolana.publicKey],
     ['reportType', ReportType_1.reportTypeBeet],
+    ['searchableDay', beet.i64],
     ['notification', beet.coption(beet.utf8String)],
     ['createdAt', beet.i64],
 ], Report.fromArgs, 'Report');

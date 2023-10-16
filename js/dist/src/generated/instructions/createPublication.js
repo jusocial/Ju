@@ -74,9 +74,34 @@ function createCreatePublicationInstruction(accounts, args, programId = new web3
             isSigner: false,
         });
     }
-    if (accounts.collectingProcessorPda != null) {
+    if (accounts.connectionProof != null) {
         if (accounts.subspace == null || accounts.targetPublication == null) {
-            throw new Error("When providing 'collectingProcessorPda' then 'accounts.subspace', 'accounts.targetPublication' need(s) to be provided as well.");
+            throw new Error("When providing 'connectionProof' then 'accounts.subspace', 'accounts.targetPublication' need(s) to be provided as well.");
+        }
+        keys.push({
+            pubkey: accounts.connectionProof,
+            isWritable: false,
+            isSigner: false,
+        });
+    }
+    if (accounts.subspaceManagerProof != null) {
+        if (accounts.subspace == null ||
+            accounts.targetPublication == null ||
+            accounts.connectionProof == null) {
+            throw new Error("When providing 'subspaceManagerProof' then 'accounts.subspace', 'accounts.targetPublication', 'accounts.connectionProof' need(s) to be provided as well.");
+        }
+        keys.push({
+            pubkey: accounts.subspaceManagerProof,
+            isWritable: false,
+            isSigner: false,
+        });
+    }
+    if (accounts.collectingProcessorPda != null) {
+        if (accounts.subspace == null ||
+            accounts.targetPublication == null ||
+            accounts.connectionProof == null ||
+            accounts.subspaceManagerProof == null) {
+            throw new Error("When providing 'collectingProcessorPda' then 'accounts.subspace', 'accounts.targetPublication', 'accounts.connectionProof', 'accounts.subspaceManagerProof' need(s) to be provided as well.");
         }
         keys.push({
             pubkey: accounts.collectingProcessorPda,
@@ -87,8 +112,10 @@ function createCreatePublicationInstruction(accounts, args, programId = new web3
     if (accounts.referencingProcessorPda != null) {
         if (accounts.subspace == null ||
             accounts.targetPublication == null ||
+            accounts.connectionProof == null ||
+            accounts.subspaceManagerProof == null ||
             accounts.collectingProcessorPda == null) {
-            throw new Error("When providing 'referencingProcessorPda' then 'accounts.subspace', 'accounts.targetPublication', 'accounts.collectingProcessorPda' need(s) to be provided as well.");
+            throw new Error("When providing 'referencingProcessorPda' then 'accounts.subspace', 'accounts.targetPublication', 'accounts.connectionProof', 'accounts.subspaceManagerProof', 'accounts.collectingProcessorPda' need(s) to be provided as well.");
         }
         keys.push({
             pubkey: accounts.referencingProcessorPda,

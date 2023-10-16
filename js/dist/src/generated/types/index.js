@@ -18,8 +18,8 @@ __exportStar(require("./AliasType"), exports);
 __exportStar(require("./AppData"), exports);
 __exportStar(require("./ConnectionTargetType"), exports);
 __exportStar(require("./ContentType"), exports);
+__exportStar(require("./Gender"), exports);
 __exportStar(require("./LocationCoordinates"), exports);
-__exportStar(require("./ManagementRoleType"), exports);
 __exportStar(require("./ProcessorType"), exports);
 __exportStar(require("./ProfileData"), exports);
 __exportStar(require("./PublicationData"), exports);
@@ -29,4 +29,6 @@ __exportStar(require("./ReportData"), exports);
 __exportStar(require("./ReportTargetType"), exports);
 __exportStar(require("./ReportType"), exports);
 __exportStar(require("./SubspaceData"), exports);
+__exportStar(require("./SubspaceManagementRoleType"), exports);
+__exportStar(require("./SubspacePublishingPermissionLevel"), exports);
 //# sourceMappingURL=index.js.map

@@ -23,6 +23,7 @@ export type ReportArgs = {
   target: web3.PublicKey;
   initializer: web3.PublicKey;
   reportType: ReportType;
+  searchableDay: beet.bignum;
   notification: beet.COption<string>;
   createdAt: beet.bignum;
 };
@@ -43,6 +44,7 @@ export class Report implements ReportArgs {
     readonly target: web3.PublicKey,
     readonly initializer: web3.PublicKey,
     readonly reportType: ReportType,
+    readonly searchableDay: beet.bignum,
     readonly notification: beet.COption<string>,
     readonly createdAt: beet.bignum,
   ) {}
@@ -58,6 +60,7 @@ export class Report implements ReportArgs {
       args.target,
       args.initializer,
       args.reportType,
+      args.searchableDay,
       args.notification,
       args.createdAt,
     );
@@ -163,6 +166,17 @@ export class Report implements ReportArgs {
       target: this.target.toBase58(),
       initializer: this.initializer.toBase58(),
       reportType: 'ReportType.' + ReportType[this.reportType],
+      searchableDay: (() => {
+        const x = <{ toNumber: () => number }>this.searchableDay;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
       notification: this.notification,
       createdAt: (() => {
         const x = <{ toNumber: () => number }>this.createdAt;
@@ -197,6 +211,7 @@ export const reportBeet = new beet.FixableBeetStruct<
     ['target', beetSolana.publicKey],
     ['initializer', beetSolana.publicKey],
     ['reportType', reportTypeBeet],
+    ['searchableDay', beet.i64],
     ['notification', beet.coption(beet.utf8String)],
     ['createdAt', beet.i64],
   ],
