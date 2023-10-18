@@ -33,10 +33,10 @@ impl DeveloperWhitelistProof {
 ///
 /// 1. Processor type 
 /// 2. Proccessor Approve status
-/// 3. Processor name (ASCII alphanumeric)
-/// 4. Processor PDA authority address
+/// 3. Processor PDA authority address
+/// 4. Processorr program address
 /// 5. Processor developer walet
-/// 6. Processorr program address
+/// 6. Processor name (ASCII alphanumeric)
 ///
 #[account]
 pub struct ExternalProcessorPDA {
@@ -44,14 +44,14 @@ pub struct ExternalProcessorPDA {
     pub processor_type: ProcessorType,
     /// Approve status
     pub is_approved: bool,
-    /// Processor name (STRING_LENGTH_PREFIX + MAX_PROCESSORNAME_LENGTH).
-    pub processor_name: String,
     /// Processor PDA authority (32).
     pub authority: Pubkey,
-    /// Processor program author wallet
-    pub developer_wallet: Option<Pubkey>,
     /// External Processor executable program address
     pub program_address: Pubkey,
+    /// Processor program author wallet
+    pub developer_wallet: Option<Pubkey>,
+    /// Processor name (STRING_LENGTH_PREFIX + MAX_PROCESSORNAME_LENGTH).
+    pub processor_name: String,
 }
 
 impl ExternalProcessorPDA {
@@ -60,10 +60,10 @@ impl ExternalProcessorPDA {
     pub const LEN: usize = DISCRIMINATOR_LENGTH                 // Anchor internal discrimitator
         + 1                                                     // Enum (`processor_type`)
         + 1                                                     // bool (`is_approved`)
-        + (STRING_LENGTH_PREFIX + MAX_PROCESSORNAME_LENGTH)     // String (`processor_name`)    
         + 32                                                    // Pubkey (`authority`)
+        + 32                                                    // Pubkey (`program_address`)
         + 33                                                    // Option<Pubkey> (`developer_wallet`)
-        + 32;                                                   // Pubkey (`program_address`)
+        + (STRING_LENGTH_PREFIX + MAX_PROCESSORNAME_LENGTH);    // String (`processor_name`)
 
     /// Method for validating Processor Name
     ///
