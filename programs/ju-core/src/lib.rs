@@ -91,6 +91,15 @@ pub mod ju_core {
             return Err(error!(CustomError::DeveloperActionNotAthorized));
         }
 
+        // Check if proof is valid
+        if ctx.accounts.developer_whitelist_proof.is_some() {
+            require_keys_eq!(
+                ctx.accounts.developer_whitelist_proof.as_ref().unwrap().developer,
+                *ctx.accounts.authority.to_account_info().key,
+                CustomError::DeveloperNotAthorized
+            );
+        }
+
         let processor_pda = &mut ctx.accounts.processor_pda;
         // Validate Processor name
         processor_pda.validate_name(&processor_name)?;
@@ -146,8 +155,18 @@ pub mod ju_core {
         if (*ctx.accounts.authority.to_account_info().key != PROTOCOL_AUTHORITY)
             && ctx.accounts.developer_whitelist_proof.is_none()
         {
-            // return Err(error!(CustomError::DeveloperActionNotAthorized));
+            return Err(error!(CustomError::DeveloperActionNotAthorized));
         }
+
+        // Check if proof is valid
+        if ctx.accounts.developer_whitelist_proof.is_some() {
+            require_keys_eq!(
+                ctx.accounts.developer_whitelist_proof.as_ref().unwrap().developer,
+                *ctx.accounts.authority.to_account_info().key,
+                CustomError::DeveloperNotAthorized
+            );
+        }
+
 
         let app = &mut ctx.accounts.app;
 
@@ -170,6 +189,11 @@ pub mod ju_core {
         app.profile_delete_allowed = data.profile_delete_allowed;
         app.subspace_delete_allowed = data.subspace_delete_allowed;
         app.publication_delete_allowed = data.publication_delete_allowed;
+
+        app.profile_individual_processors_allowed = data.profile_individual_processors_allowed;
+        app.subspace_individual_processors_allowed = data.subspace_individual_processors_allowed;
+        app.publication_individual_processors_allowed =
+            data.publication_individual_processors_allowed;
 
         // Assign external Processors to Application
         match &ctx.accounts.registering_processor_pda {
@@ -268,6 +292,11 @@ pub mod ju_core {
         app.profile_delete_allowed = data.profile_delete_allowed;
         app.subspace_delete_allowed = data.subspace_delete_allowed;
         app.publication_delete_allowed = data.publication_delete_allowed;
+
+        app.profile_individual_processors_allowed = data.profile_individual_processors_allowed;
+        app.subspace_individual_processors_allowed = data.subspace_individual_processors_allowed;
+        app.publication_individual_processors_allowed =
+            data.publication_individual_processors_allowed;
 
         // Assign external Processors to Application
         match &ctx.accounts.registering_processor_pda {
