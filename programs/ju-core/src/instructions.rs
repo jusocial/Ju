@@ -81,10 +81,9 @@ pub struct AddProcessor<'info> {
     pub processor_pda: Account<'info, ExternalProcessorPDA>,
 
     #[account(
-        has_one = authority,
         seeds = [
             DeveloperWhitelistProof::PREFIX.as_bytes(),
-            developer_whitelist_proof.authority.key().as_ref()
+            developer_whitelist_proof.developer.key().as_ref()
         ],
         bump
     )]
@@ -157,10 +156,9 @@ pub struct InitializeApp<'info> {
     pub app: Account<'info, App>,
 
     #[account(
-        has_one = authority,
         seeds = [
             DeveloperWhitelistProof::PREFIX.as_bytes(),
-            developer_whitelist_proof.authority.key().as_ref()
+            developer_whitelist_proof.developer.key().as_ref()
         ],
         bump
     )]
@@ -168,6 +166,7 @@ pub struct InitializeApp<'info> {
     pub developer_whitelist_proof: Option<Box<Account<'info, DeveloperWhitelistProof>>>,
 
     #[account(
+        has_one = authority,
         seeds = [
             ExternalProcessorPDA::PREFIX.as_bytes(),
             registering_processor_pda.program_address.as_ref(),
@@ -179,6 +178,7 @@ pub struct InitializeApp<'info> {
     pub registering_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
+        has_one = authority,
         seeds = [
             ExternalProcessorPDA::PREFIX.as_bytes(),
             connecting_processor_pda.program_address.as_ref(),
@@ -190,6 +190,7 @@ pub struct InitializeApp<'info> {
     pub connecting_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
+        has_one = authority,
         seeds = [
             ExternalProcessorPDA::PREFIX.as_bytes(),
             publishing_processor_pda.program_address.as_ref(),
@@ -201,6 +202,7 @@ pub struct InitializeApp<'info> {
     pub publishing_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
+        has_one = authority,
         seeds = [
             ExternalProcessorPDA::PREFIX.as_bytes(),
             collecting_processor_pda.program_address.as_ref(),
@@ -212,6 +214,7 @@ pub struct InitializeApp<'info> {
     pub collecting_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
+        has_one = authority,
         seeds = [
             ExternalProcessorPDA::PREFIX.as_bytes(),
             referencing_processor_pda.program_address.as_ref(),
@@ -256,6 +259,7 @@ pub struct UpdateApp<'info> {
     pub app: Account<'info, App>,
 
     #[account(
+        has_one = authority,
         seeds = [
             ExternalProcessorPDA::PREFIX.as_bytes(),
             registering_processor_pda.program_address.as_ref(),
@@ -267,6 +271,7 @@ pub struct UpdateApp<'info> {
     pub registering_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
+        has_one = authority,
         seeds = [
             ExternalProcessorPDA::PREFIX.as_bytes(),
             connecting_processor_pda.program_address.as_ref(),
@@ -278,6 +283,7 @@ pub struct UpdateApp<'info> {
     pub connecting_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
+        has_one = authority,
         seeds = [
             ExternalProcessorPDA::PREFIX.as_bytes(),
             publishing_processor_pda.program_address.as_ref(),
@@ -289,6 +295,7 @@ pub struct UpdateApp<'info> {
     pub publishing_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
+        has_one = authority,
         seeds = [
             ExternalProcessorPDA::PREFIX.as_bytes(),
             collecting_processor_pda.program_address.as_ref(),
@@ -300,6 +307,7 @@ pub struct UpdateApp<'info> {
     pub collecting_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
     #[account(
+        has_one = authority,
         seeds = [
             ExternalProcessorPDA::PREFIX.as_bytes(),
             referencing_processor_pda.program_address.as_ref(),
