@@ -331,9 +331,10 @@ pub struct UpdateApp<'info> {
 /// 0. `[]` PDA of the current Application
 /// 1. `[]` PDA of the Profile being created
 /// 2. `[]` PDA of the Alias to be registered (optional)
-/// 3. `[]` External Connecting Processor PDA that proof Processor passed to assign is whitelisted (optional)
-/// 4. `[signer]` Profile Authority
-/// 5. `[]` System program
+/// 3. `[]` Individual Connecting JXP PDA to assign (optional)
+/// 4. `[]` Registering JXP (optional)
+/// 5. `[signer]` Profile Authority
+/// 6. `[]` System program
 ///
 #[derive(Accounts)]
 #[instruction(data: ProfileData)]
@@ -385,10 +386,30 @@ pub struct CreateProfile<'info> {
     /// Must be passed if user wants to assign Profile specified Processor for additional Connecting processing
     pub connecting_processor_pda: Option<Account<'info, ExternalProcessorPDA>>,
 
+    /// Profile Registering JXP
+    /// Must be passed App has assigned Registeering JXP
+    /// CHECK: Compared inside instruction handler
+    pub registering_processor: Option<AccountInfo<'info>>,
+
     #[account(mut)]
     pub authority: Signer<'info>,
 
     pub system_program: Program<'info, System>,
+}
+
+impl<'info> CreateProfile<'info> {
+    pub fn process_registering_ctx(
+        &self,
+        cpi_program: &AccountInfo<'info>,
+    ) -> CpiContext<'_, '_, '_, 'info, ProcessRegistering<'info>> {
+        let cpi_accounts = ProcessRegistering {
+            app: self.app.to_account_info(),
+            profile: self.profile.to_account_info(),
+            authority: self.authority.to_account_info(),
+            system_program: self.system_program.to_account_info(),
+        };
+        CpiContext::new(cpi_program.clone(), cpi_accounts)
+    }
 }
 
 /// Context to update application user profile
@@ -534,8 +555,10 @@ pub struct DeleteProfile<'info> {
 /// 1. `[writable]` PDA of the Connection, it stores all Connection data
 /// 2. `[]` PDA of the initializer Profile
 /// 3. `[]` PDA of the Target (another Profile or Subspace)
-/// 4. `[signer]` Connection Authority
-/// 5. `[]` System program
+/// 4. `[]` App assigned Connecting JXP (optional)
+/// 5. `[]` Target individual Connecting JXP (optional)
+/// 6. `[signer]` Connection Authority
+/// 7. `[]` System program
 ///
 #[derive(Accounts)]
 pub struct InitializeConnection<'info> {
@@ -579,10 +602,34 @@ pub struct InitializeConnection<'info> {
     /// CHECK: This account is checked in the instruction
     pub target: AccountInfo<'info>,
 
+    /// App assigned Connecting JXP
+    /// CHECK: Compared in instruction handler
+    pub connecting_processor: Option<AccountInfo<'info>>,
+
+    /// Target individual Connecting JXP
+    /// CHECK: Compared in instruction handler
+    pub connecting_processor_individual: Option<AccountInfo<'info>>,
+
     #[account(mut)]
     pub authority: Signer<'info>,
 
     pub system_program: Program<'info, System>,
+}
+
+impl<'info> InitializeConnection<'info> {
+    pub fn process_connecting_ctx(
+        &self,
+        cpi_program: &AccountInfo<'info>,
+    ) -> CpiContext<'_, '_, '_, 'info, ProcessConnecting<'info>> {
+        let cpi_accounts = ProcessConnecting {
+            app: self.app.to_account_info(),
+            initializer: self.initializer.to_account_info(),
+            target: self.target.to_account_info(),
+            authority: self.authority.to_account_info(),
+            system_program: self.system_program.to_account_info(),
+        };
+        CpiContext::new(cpi_program.clone(), cpi_accounts)
+    }
 }
 
 /// Context to update existing connection - e.g. change approve status
@@ -1206,10 +1253,13 @@ pub struct DeleteSubspaceManager<'info> {
 /// 2. `[writable]` Publication PDA, it stores all Publication data
 /// 3. `[]` Target Subspace (PDA) in which Publication being publishing (optional)
 /// 4. `[]` Target Publication which has to be replyed or referenced (optional)
-/// 5. `[]` External Collecting Processor PDA that proof Processor passed to assign is whitelisted (optional)
-/// 6. `[]` External Referencing Processor PDA that proof Processor passed to assign is whitelisted (optional)
-/// 7. `[signer]` Publication Autority
-/// 8. `[]` System program
+/// 5. `[]` Individual Collecting JXP PDA to assign (optional)
+/// 6. `[]` Individual Referencing JXP PDA to assign (optional)
+/// 7. `[]` App assigned Publishing JXP that makes Publication additional procesing (optional)
+/// 8. `[]` App assigned Referencing JXP that makes Publication additional procesing (optional)
+/// 0. `[]` Publication individual JXP that makes Publication additional procesing (optional)
+/// 10. `[signer]` Publication Autority
+/// 11. `[]` System program
 ///
 #[derive(Accounts)]
 #[instruction(uuid: String, data: PublicationData)]
@@ -1321,10 +1371,56 @@ pub struct CreatePublication<'info> {
     /// Must be passed if user want to assign Publication specified Processor for additional Referencing processing
     pub referencing_processor_pda: Option<Box<Account<'info, ExternalProcessorPDA>>>,
 
+    /// App assigned JXP that makes Publication Creation additional procesing
+    /// Must be passed if App has assigned Publication JXP
+    /// Check: Compared inside instruction handler
+    pub publishing_processor: Option<AccountInfo<'info>>,
+
+    /// App assigned JXP that makes Publication Referencing additional procesing
+    /// Must be passed if App has assigned Referencing JXP
+    /// Check: Compared inside instruction handler
+    pub referencing_processor: Option<AccountInfo<'info>>,
+
+    /// Publication individual JXP that makes Publication Referencing additional processing
+    /// Must be passed if Publication has assigned individual Referencing JXP
+    /// Check: Compared inside instruction handler
+    pub referencing_processor_individual: Option<AccountInfo<'info>>,
+
     #[account(mut)]
     pub authority: Signer<'info>,
 
     pub system_program: Program<'info, System>,
+}
+
+impl<'info> CreatePublication<'info> {
+    pub fn process_publishing_ctx(
+        &self,
+        cpi_program: &AccountInfo<'info>,
+    ) -> CpiContext<'_, '_, '_, 'info, ProcessPublishing<'info>> {
+        let cpi_accounts = ProcessPublishing {
+            app: self.app.to_account_info(),
+            profile: self.profile.to_account_info(),
+            subspace: self.subspace.as_ref().unwrap().to_account_info(),                     // TODO: avoid panic
+            authority: self.authority.to_account_info(),
+            system_program: self.system_program.to_account_info(),
+        };
+        CpiContext::new(cpi_program.clone(), cpi_accounts)
+    }
+
+    pub fn process_referencing_ctx(
+        &self,
+        cpi_program: &AccountInfo<'info>,
+    ) -> CpiContext<'_, '_, '_, 'info, ProcessReferencing<'info>> {
+        let cpi_accounts = ProcessReferencing {
+            app: self.app.to_account_info(),
+            initializer: self.profile.to_account_info(),
+            subspace: self.subspace.as_ref().unwrap().to_account_info(),                     // TODO: avoid panic
+            target_publication: self.target_publication.as_ref().unwrap().to_account_info(), // TODO: avoid panic
+            authority: self.authority.to_account_info(),
+            system_program: self.system_program.to_account_info(),
+        };
+        CpiContext::new(cpi_program.clone(), cpi_accounts)
+    }
 }
 
 /// Context to update existing Publication
@@ -1450,8 +1546,10 @@ pub struct UpdatePublication<'info> {
 /// 1. `[]` Collect initializer Profile (PDA)
 /// 2. `[]` Target Publication account (PDA)
 /// 3. `[writable]` Collection item account (PDA) being created, it will store Collection data
-/// 4. `[signer]` Collection item Autority
-/// 5. `[]` System program
+/// 4. `[]` App assigned Collecting JXP (optional)
+/// 5. `[]` Publication individual Collecting JXP (optional)
+/// 6. `[signer]` Collection item Autority
+/// 7. `[]` System program
 ///
 #[derive(Accounts)]
 pub struct CollectPublication<'info> {
@@ -1498,10 +1596,36 @@ pub struct CollectPublication<'info> {
     )]
     pub collection_item: Account<'info, CollectionItem>,
 
+    /// App assigned JXP that makes Publication Collecting additional procesing
+    /// Must be passed if App has assigned Collecting JXP
+    /// Check: Compared inside instruction handler
+    pub collecting_processor: Option<AccountInfo<'info>>,
+
+    /// Publication individual JXP that makes Publication Collecting additional processing
+    /// Must be passed if Publication has assigned individual Collecting JXP
+    /// Check: Compared inside instruction handler
+    pub collecting_processor_individual: Option<AccountInfo<'info>>,
+
     #[account(mut)]
     pub authority: Signer<'info>,
 
     pub system_program: Program<'info, System>,
+}
+
+impl<'info> CollectPublication<'info> {
+    pub fn process_collecting_ctx(
+        &self,
+        cpi_program: &AccountInfo<'info>,
+    ) -> CpiContext<'_, '_, '_, 'info, ProcessCollecting<'info>> {
+        let cpi_accounts = ProcessCollecting {
+            app: self.app.to_account_info(),
+            initializer: self.initializer.to_account_info(),
+            target: self.target.to_account_info(),
+            authority: self.authority.to_account_info(),
+            system_program: self.system_program.to_account_info(),
+        };
+        CpiContext::new(cpi_program.clone(), cpi_accounts)
+    }
 }
 
 /// Context to delete existing Publication
