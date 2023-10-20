@@ -628,6 +628,32 @@ pub mod ju_core {
         profile.current_location = data.current_location;
         profile.status_text = data.status_text;
 
+        // Assign Profile specified Connecting external Processor
+        if ctx.accounts.app.profile_individual_processors_allowed {
+            match &ctx.accounts.connecting_processor_pda {
+                Some(connecting_processor_pda) => {
+                    // Check JXP authority
+                    require_keys_eq!(
+                        connecting_processor_pda.authority,
+                        ctx.accounts.app.authority,
+                        CustomError::ProcessorAuthorityMismatch
+                    );
+                    
+                    // Check JXP type
+                    require!(
+                        connecting_processor_pda
+                            .processor_type
+                            .eq(&ProcessorType::Connecting),
+                        CustomError::ProcessorTypeMismatch
+                    );
+                    profile.connecting_processor = Some(connecting_processor_pda.program_address);
+                }
+                None => {
+                    profile.connecting_processor = None;
+                }
+            }
+        }
+
         let now = Clock::get()?.unix_timestamp;
 
         validate_birth_date(&data.birth_date)?;
