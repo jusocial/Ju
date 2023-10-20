@@ -1400,7 +1400,7 @@ impl<'info> CreatePublication<'info> {
         let cpi_accounts = ProcessPublishing {
             app: self.app.to_account_info(),
             profile: self.profile.to_account_info(),
-            subspace: self.subspace.as_ref().unwrap().to_account_info(),                     // TODO: avoid panic
+            // subspace: self.subspace.as_ref().unwra().to_account_info(),                     // TODO: avoid panic
             authority: self.authority.to_account_info(),
             system_program: self.system_program.to_account_info(),
         };
@@ -1414,8 +1414,8 @@ impl<'info> CreatePublication<'info> {
         let cpi_accounts = ProcessReferencing {
             app: self.app.to_account_info(),
             initializer: self.profile.to_account_info(),
-            subspace: self.subspace.as_ref().unwrap().to_account_info(),                     // TODO: avoid panic
-            target_publication: self.target_publication.as_ref().unwrap().to_account_info(), // TODO: avoid panic
+            // subspace: self.subspace.as_ref().unwrap().to_account_info(),                     // TODO: avoid panic
+            // target_publication: self.target_publication.as_ref().unwrap().to_account_info(), // TODO: avoid panic
             authority: self.authority.to_account_info(),
             system_program: self.system_program.to_account_info(),
         };
