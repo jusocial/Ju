@@ -20,7 +20,7 @@ describe("ju-core", () => {
 
   /* Processors Setup */
   // const testProcessor1 = anchor.web3.Keypair.generate();
-  const testProcessor1 = new anchor.web3.PublicKey('Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS')
+  const testProcessor1 = new anchor.web3.PublicKey('DYMYbpkfNK99TajeWCJU8K8iwbn24GCEu9YPN5qHCXnq')
   const [testProcessorPDA1, testProcessorPDA1Bump] = anchor.web3.PublicKey.findProgramAddressSync(
     [
       Buffer.from("processor"),
@@ -278,7 +278,7 @@ describe("ju-core", () => {
       try {
         /* Call the addProcessor function via RPC */
         const tx = await program.methods.addProcessor(
-          { referencing: {} },
+          { registering: {} },
           "proc1",
           testProcessor1,
           // testProcessor1.publicKey,
@@ -300,7 +300,7 @@ describe("ju-core", () => {
       }
       /* Fetch the Processor PDA account and check the value  */
       const data = await program.account.externalProcessorPda.fetch(testProcessorPDA1);
-      // console.log('Processor PDA account: ', data);
+      console.log('Processor PDA account: ', data);
 
       expect(data.authority.toString()).to.equal(user.toString());
     });
@@ -337,12 +337,11 @@ describe("ju-core", () => {
           .accounts({
             app: appAccount,
             developerWhitelistProof: null,
-            registeringProcessorPda: null,
+            registeringProcessorPda: testProcessorPDA1,
             connectingProcessorPda: null,
             publishingProcessorPda: null,
             collectingProcessorPda: null,
-            referencingProcessorPda: testProcessorPDA1,
-            // referencingProcessorPda: null,
+            referencingProcessorPda: null,
             // developer: developer1,
             authority: user,
             systemProgram: SystemProgram.programId,
@@ -355,9 +354,10 @@ describe("ju-core", () => {
       }
       /* Fetch the App PDA and check the value  */
       const data = await program.account.app.fetch(appAccount);
-      // console.log('App account: ', data);
+      console.log('App account: ', data);
 
       expect(data.authority.toString()).to.equal(user.toString());
+      expect(data.registeringProcessor.toString()).to.equal(testProcessor1.toString());
     });
 
     it("Update existing App", async () => {

@@ -19,6 +19,9 @@ export type CreatePublicationInstructionAccounts = {
     subspaceManagerProof?: web3.PublicKey;
     collectingProcessorPda?: web3.PublicKey;
     referencingProcessorPda?: web3.PublicKey;
+    publishingProcessor?: web3.PublicKey;
+    referencingProcessor?: web3.PublicKey;
+    referencingProcessorIndividual?: web3.PublicKey;
     authority: web3.PublicKey;
     systemProgram?: web3.PublicKey;
 };

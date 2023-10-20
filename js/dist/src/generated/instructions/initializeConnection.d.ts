@@ -11,6 +11,8 @@ export type InitializeConnectionInstructionAccounts = {
     connection: web3.PublicKey;
     initializer: web3.PublicKey;
     target: web3.PublicKey;
+    connectingProcessor?: web3.PublicKey;
+    connectingProcessorIndividual?: web3.PublicKey;
     authority: web3.PublicKey;
     systemProgram?: web3.PublicKey;
 };

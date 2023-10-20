@@ -123,6 +123,54 @@ function createCreatePublicationInstruction(accounts, args, programId = new web3
             isSigner: false,
         });
     }
+    if (accounts.publishingProcessor != null) {
+        if (accounts.subspace == null ||
+            accounts.targetPublication == null ||
+            accounts.connectionProof == null ||
+            accounts.subspaceManagerProof == null ||
+            accounts.collectingProcessorPda == null ||
+            accounts.referencingProcessorPda == null) {
+            throw new Error("When providing 'publishingProcessor' then 'accounts.subspace', 'accounts.targetPublication', 'accounts.connectionProof', 'accounts.subspaceManagerProof', 'accounts.collectingProcessorPda', 'accounts.referencingProcessorPda' need(s) to be provided as well.");
+        }
+        keys.push({
+            pubkey: accounts.publishingProcessor,
+            isWritable: false,
+            isSigner: false,
+        });
+    }
+    if (accounts.referencingProcessor != null) {
+        if (accounts.subspace == null ||
+            accounts.targetPublication == null ||
+            accounts.connectionProof == null ||
+            accounts.subspaceManagerProof == null ||
+            accounts.collectingProcessorPda == null ||
+            accounts.referencingProcessorPda == null ||
+            accounts.publishingProcessor == null) {
+            throw new Error("When providing 'referencingProcessor' then 'accounts.subspace', 'accounts.targetPublication', 'accounts.connectionProof', 'accounts.subspaceManagerProof', 'accounts.collectingProcessorPda', 'accounts.referencingProcessorPda', 'accounts.publishingProcessor' need(s) to be provided as well.");
+        }
+        keys.push({
+            pubkey: accounts.referencingProcessor,
+            isWritable: false,
+            isSigner: false,
+        });
+    }
+    if (accounts.referencingProcessorIndividual != null) {
+        if (accounts.subspace == null ||
+            accounts.targetPublication == null ||
+            accounts.connectionProof == null ||
+            accounts.subspaceManagerProof == null ||
+            accounts.collectingProcessorPda == null ||
+            accounts.referencingProcessorPda == null ||
+            accounts.publishingProcessor == null ||
+            accounts.referencingProcessor == null) {
+            throw new Error("When providing 'referencingProcessorIndividual' then 'accounts.subspace', 'accounts.targetPublication', 'accounts.connectionProof', 'accounts.subspaceManagerProof', 'accounts.collectingProcessorPda', 'accounts.referencingProcessorPda', 'accounts.publishingProcessor', 'accounts.referencingProcessor' need(s) to be provided as well.");
+        }
+        keys.push({
+            pubkey: accounts.referencingProcessorIndividual,
+            isWritable: false,
+            isSigner: false,
+        });
+    }
     keys.push({
         pubkey: accounts.authority,
         isWritable: true,

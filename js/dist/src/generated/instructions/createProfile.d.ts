@@ -13,6 +13,7 @@ export type CreateProfileInstructionAccounts = {
     profile: web3.PublicKey;
     aliasPda?: web3.PublicKey;
     connectingProcessorPda?: web3.PublicKey;
+    registeringProcessor?: web3.PublicKey;
     authority: web3.PublicKey;
     systemProgram?: web3.PublicKey;
 };

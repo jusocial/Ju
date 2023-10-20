@@ -42,6 +42,7 @@ export const createProfileStruct = new beet.FixableBeetArgsStruct<
  * @property [_writable_] profile
  * @property [_writable_] aliasPda (optional)
  * @property [] connectingProcessorPda (optional)
+ * @property [] registeringProcessor (optional)
  * @property [_writable_, **signer**] authority
  * @category Instructions
  * @category CreateProfile
@@ -52,6 +53,7 @@ export type CreateProfileInstructionAccounts = {
   profile: web3.PublicKey;
   aliasPda?: web3.PublicKey;
   connectingProcessorPda?: web3.PublicKey;
+  registeringProcessor?: web3.PublicKey;
   authority: web3.PublicKey;
   systemProgram?: web3.PublicKey;
 };
@@ -110,6 +112,18 @@ export function createCreateProfileInstruction(
     }
     keys.push({
       pubkey: accounts.connectingProcessorPda,
+      isWritable: false,
+      isSigner: false,
+    });
+  }
+  if (accounts.registeringProcessor != null) {
+    if (accounts.aliasPda == null || accounts.connectingProcessorPda == null) {
+      throw new Error(
+        "When providing 'registeringProcessor' then 'accounts.aliasPda', 'accounts.connectingProcessorPda' need(s) to be provided as well.",
+      );
+    }
+    keys.push({
+      pubkey: accounts.registeringProcessor,
       isWritable: false,
       isSigner: false,
     });

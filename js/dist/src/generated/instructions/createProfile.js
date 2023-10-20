@@ -68,6 +68,16 @@ function createCreateProfileInstruction(accounts, args, programId = new web3.Pub
             isSigner: false,
         });
     }
+    if (accounts.registeringProcessor != null) {
+        if (accounts.aliasPda == null || accounts.connectingProcessorPda == null) {
+            throw new Error("When providing 'registeringProcessor' then 'accounts.aliasPda', 'accounts.connectingProcessorPda' need(s) to be provided as well.");
+        }
+        keys.push({
+            pubkey: accounts.registeringProcessor,
+            isWritable: false,
+            isSigner: false,
+        });
+    }
     keys.push({
         pubkey: accounts.authority,
         isWritable: true,

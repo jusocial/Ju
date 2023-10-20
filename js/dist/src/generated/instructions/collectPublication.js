@@ -58,17 +58,34 @@ function createCollectPublicationInstruction(accounts, args, programId = new web
             isWritable: true,
             isSigner: false,
         },
-        {
-            pubkey: accounts.authority,
-            isWritable: true,
-            isSigner: true,
-        },
-        {
-            pubkey: (_a = accounts.systemProgram) !== null && _a !== void 0 ? _a : web3.SystemProgram.programId,
+    ];
+    if (accounts.collectingProcessor != null) {
+        keys.push({
+            pubkey: accounts.collectingProcessor,
             isWritable: false,
             isSigner: false,
-        },
-    ];
+        });
+    }
+    if (accounts.collectingProcessorIndividual != null) {
+        if (accounts.collectingProcessor == null) {
+            throw new Error("When providing 'collectingProcessorIndividual' then 'accounts.collectingProcessor' need(s) to be provided as well.");
+        }
+        keys.push({
+            pubkey: accounts.collectingProcessorIndividual,
+            isWritable: false,
+            isSigner: false,
+        });
+    }
+    keys.push({
+        pubkey: accounts.authority,
+        isWritable: true,
+        isSigner: true,
+    });
+    keys.push({
+        pubkey: (_a = accounts.systemProgram) !== null && _a !== void 0 ? _a : web3.SystemProgram.programId,
+        isWritable: false,
+        isSigner: false,
+    });
     const ix = new web3.TransactionInstruction({
         programId,
         keys,

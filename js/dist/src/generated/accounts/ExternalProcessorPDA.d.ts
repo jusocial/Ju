@@ -6,19 +6,19 @@ import { ProcessorType } from '../types/ProcessorType';
 export type ExternalProcessorPDAArgs = {
     processorType: ProcessorType;
     isApproved: boolean;
-    processorName: string;
     authority: web3.PublicKey;
-    developerWallet: beet.COption<web3.PublicKey>;
     programAddress: web3.PublicKey;
+    developerWallet: beet.COption<web3.PublicKey>;
+    processorName: string;
 };
 export declare const externalProcessorPDADiscriminator: number[];
 export declare class ExternalProcessorPDA implements ExternalProcessorPDAArgs {
     readonly processorType: ProcessorType;
     readonly isApproved: boolean;
-    readonly processorName: string;
     readonly authority: web3.PublicKey;
-    readonly developerWallet: beet.COption<web3.PublicKey>;
     readonly programAddress: web3.PublicKey;
+    readonly developerWallet: beet.COption<web3.PublicKey>;
+    readonly processorName: string;
     private constructor();
     static fromArgs(args: ExternalProcessorPDAArgs): ExternalProcessorPDA;
     static fromAccountInfo(accountInfo: web3.AccountInfo<Buffer>, offset?: number): [ExternalProcessorPDA, number];
@@ -33,10 +33,10 @@ export declare class ExternalProcessorPDA implements ExternalProcessorPDAArgs {
     pretty(): {
         processorType: string;
         isApproved: boolean;
-        processorName: string;
         authority: string;
-        developerWallet: beet.COption<web3.PublicKey>;
         programAddress: string;
+        developerWallet: beet.COption<web3.PublicKey>;
+        processorName: string;
     };
 }
 export declare const externalProcessorPDABeet: beet.FixableBeetStruct<ExternalProcessorPDA, ExternalProcessorPDAArgs & {

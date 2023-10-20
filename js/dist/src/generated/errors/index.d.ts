@@ -12,6 +12,11 @@ export declare class DeveloperActionNotAthorizedError extends Error {
     readonly name: string;
     constructor();
 }
+export declare class ProcessorAuthorityMismatchError extends Error {
+    readonly code: number;
+    readonly name: string;
+    constructor();
+}
 export declare class ProcessorTypeMismatchError extends Error {
     readonly code: number;
     readonly name: string;

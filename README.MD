@@ -13,6 +13,13 @@ Decentralized Social Graph on Solana Blockchain
 
 [NMP Package](https://www.npmjs.com/package/@ju-protocol/sdk)
 
+## Ju Devboard
+
+[Developer Board](https://dev.ju.social)
+
+## Ecosystem
+
+[Awesome Ju repo](https://github.com/jusocial/awesome-ju)
 
 ## Authors
 

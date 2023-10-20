@@ -18,10 +18,10 @@ import { ProcessorType, processorTypeBeet } from '../types/ProcessorType';
 export type ExternalProcessorPDAArgs = {
   processorType: ProcessorType;
   isApproved: boolean;
-  processorName: string;
   authority: web3.PublicKey;
-  developerWallet: beet.COption<web3.PublicKey>;
   programAddress: web3.PublicKey;
+  developerWallet: beet.COption<web3.PublicKey>;
+  processorName: string;
 };
 
 export const externalProcessorPDADiscriminator = [204, 224, 184, 182, 78, 32, 108, 104];
@@ -36,10 +36,10 @@ export class ExternalProcessorPDA implements ExternalProcessorPDAArgs {
   private constructor(
     readonly processorType: ProcessorType,
     readonly isApproved: boolean,
-    readonly processorName: string,
     readonly authority: web3.PublicKey,
-    readonly developerWallet: beet.COption<web3.PublicKey>,
     readonly programAddress: web3.PublicKey,
+    readonly developerWallet: beet.COption<web3.PublicKey>,
+    readonly processorName: string,
   ) {}
 
   /**
@@ -49,10 +49,10 @@ export class ExternalProcessorPDA implements ExternalProcessorPDAArgs {
     return new ExternalProcessorPDA(
       args.processorType,
       args.isApproved,
-      args.processorName,
       args.authority,
-      args.developerWallet,
       args.programAddress,
+      args.developerWallet,
+      args.processorName,
     );
   }
 
@@ -158,10 +158,10 @@ export class ExternalProcessorPDA implements ExternalProcessorPDAArgs {
     return {
       processorType: 'ProcessorType.' + ProcessorType[this.processorType],
       isApproved: this.isApproved,
-      processorName: this.processorName,
       authority: this.authority.toBase58(),
-      developerWallet: this.developerWallet,
       programAddress: this.programAddress.toBase58(),
+      developerWallet: this.developerWallet,
+      processorName: this.processorName,
     };
   }
 }
@@ -180,10 +180,10 @@ export const externalProcessorPDABeet = new beet.FixableBeetStruct<
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['processorType', processorTypeBeet],
     ['isApproved', beet.bool],
-    ['processorName', beet.utf8String],
     ['authority', beetSolana.publicKey],
-    ['developerWallet', beet.coption(beetSolana.publicKey)],
     ['programAddress', beetSolana.publicKey],
+    ['developerWallet', beet.coption(beetSolana.publicKey)],
+    ['processorName', beet.utf8String],
   ],
   ExternalProcessorPDA.fromArgs,
   'ExternalProcessorPDA',

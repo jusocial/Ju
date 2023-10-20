@@ -515,6 +515,16 @@
           ]
         },
         {
+          "name": "registeringProcessor",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "Profile Registering JXP",
+            "Must be passed App has assigned Registeering JXP"
+          ]
+        },
+        {
           "name": "authority",
           "isMut": true,
           "isSigner": true
@@ -693,6 +703,24 @@
           "name": "target",
           "isMut": false,
           "isSigner": false
+        },
+        {
+          "name": "connectingProcessor",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "App assigned Connecting JXP"
+          ]
+        },
+        {
+          "name": "connectingProcessorIndividual",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "Target individual Connecting JXP"
+          ]
         },
         {
           "name": "authority",
@@ -1296,6 +1324,39 @@
           ]
         },
         {
+          "name": "publishingProcessor",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "App assigned JXP that makes Publication Creation additional procesing",
+            "Must be passed if App has assigned Publication JXP",
+            "Check: Compared inside instruction handler"
+          ]
+        },
+        {
+          "name": "referencingProcessor",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "App assigned JXP that makes Publication Referencing additional procesing",
+            "Must be passed if App has assigned Referencing JXP",
+            "Check: Compared inside instruction handler"
+          ]
+        },
+        {
+          "name": "referencingProcessorIndividual",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "Publication individual JXP that makes Publication Referencing additional processing",
+            "Must be passed if Publication has assigned individual Referencing JXP",
+            "Check: Compared inside instruction handler"
+          ]
+        },
+        {
           "name": "authority",
           "isMut": true,
           "isSigner": true
@@ -1482,6 +1543,28 @@
           "name": "collectionItem",
           "isMut": true,
           "isSigner": false
+        },
+        {
+          "name": "collectingProcessor",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "App assigned JXP that makes Publication Collecting additional procesing",
+            "Must be passed if App has assigned Collecting JXP",
+            "Check: Compared inside instruction handler"
+          ]
+        },
+        {
+          "name": "collectingProcessorIndividual",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "Publication individual JXP that makes Publication Collecting additional processing",
+            "Must be passed if Publication has assigned individual Collecting JXP",
+            "Check: Compared inside instruction handler"
+          ]
         },
         {
           "name": "authority",
@@ -1695,10 +1778,10 @@
         "",
         "1. Processor type",
         "2. Proccessor Approve status",
-        "3. Processor name (ASCII alphanumeric)",
-        "4. Processor PDA authority address",
+        "3. Processor PDA authority address",
+        "4. Processorr program address",
         "5. Processor developer walet",
-        "6. Processorr program address",
+        "6. Processor name (ASCII alphanumeric)",
         ""
       ],
       "type": {
@@ -1721,16 +1804,16 @@
             "type": "bool"
           },
           {
-            "name": "processorName",
-            "docs": [
-              "Processor name (STRING_LENGTH_PREFIX + MAX_PROCESSORNAME_LENGTH)."
-            ],
-            "type": "string"
-          },
-          {
             "name": "authority",
             "docs": [
               "Processor PDA authority (32)."
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "programAddress",
+            "docs": [
+              "External Processor executable program address"
             ],
             "type": "publicKey"
           },
@@ -1744,11 +1827,11 @@
             }
           },
           {
-            "name": "programAddress",
+            "name": "processorName",
             "docs": [
-              "External Processor executable program address"
+              "Processor name (STRING_LENGTH_PREFIX + MAX_PROCESSORNAME_LENGTH)."
             ],
-            "type": "publicKey"
+            "type": "string"
           }
         ]
       }
@@ -4025,246 +4108,251 @@
     },
     {
       "code": 6002,
+      "name": "ProcessorAuthorityMismatch",
+      "msg": "Procesor authority mismatch"
+    },
+    {
+      "code": 6003,
       "name": "ProcessorTypeMismatch",
       "msg": "Procesor type mismatch"
     },
     {
-      "code": 6003,
+      "code": 6004,
       "name": "ProcessorNameLengthIncorrect",
       "msg": "Procesor name length is incorrect"
     },
     {
-      "code": 6004,
+      "code": 6005,
       "name": "ProcessorNameInvalid",
       "msg": "Processor name must contain only ASCII letters in lower case and numbers"
     },
     {
-      "code": 6005,
+      "code": 6006,
       "name": "ProcessorNotWhitelisted",
       "msg": "Procesor trying to use is not whitelisted"
     },
     {
-      "code": 6006,
+      "code": 6007,
       "name": "AppNameLengthIncorrect",
       "msg": "Application name (ID) length is incorrect"
     },
     {
-      "code": 6007,
+      "code": 6008,
       "name": "AppNameInvalid",
       "msg": "Application name must contain only ASCII letters in lower case and numbers"
     },
     {
-      "code": 6008,
+      "code": 6009,
       "name": "AppManagementNotAthorized",
       "msg": "App management action not authorized"
     },
     {
-      "code": 6009,
+      "code": 6010,
       "name": "MissingRequiredField",
       "msg": "Missing field required by Application settings"
     },
     {
-      "code": 6010,
+      "code": 6011,
       "name": "ActionProhibitedByAppSettings",
       "msg": "The action is prohibited by application settings"
     },
     {
-      "code": 6011,
+      "code": 6012,
       "name": "AliasLengthIncorrect",
       "msg": "Alias length is incorrect"
     },
     {
-      "code": 6012,
+      "code": 6013,
       "name": "AliasInvalid",
       "msg": "Alias must contain only ASCII letters in lower case, numbers and underscores"
     },
     {
-      "code": 6013,
+      "code": 6014,
       "name": "ProfileIncorrect",
       "msg": "Profile incorrect"
     },
     {
-      "code": 6014,
+      "code": 6015,
       "name": "ProfileAliasIncorrect",
       "msg": "Profile alias is incorrect"
     },
     {
-      "code": 6015,
+      "code": 6016,
       "name": "AliasAccountRequired",
       "msg": "Alias account required to register action"
     },
     {
-      "code": 6016,
+      "code": 6017,
       "name": "AliasAccountsMustBeNone",
       "msg": "Alias accounts must not be passed"
     },
     {
-      "code": 6017,
+      "code": 6018,
       "name": "BothAliasAccountRequired",
       "msg": "Both alias account required to update"
     },
     {
-      "code": 6018,
+      "code": 6019,
       "name": "CurrentAliasAccountRequired",
       "msg": "Current alias account required to delete"
     },
     {
-      "code": 6019,
+      "code": 6020,
       "name": "UpdateNotAuthorized",
       "msg": "Profile update not authorized"
     },
     {
-      "code": 6020,
+      "code": 6021,
       "name": "BirthDateIncorrect",
       "msg": "Profile birth date is incorrect"
     },
     {
-      "code": 6021,
+      "code": 6022,
       "name": "ProfileFirstNameLengthIncorrect",
       "msg": "Profile first name length is incorrect"
     },
     {
-      "code": 6022,
+      "code": 6023,
       "name": "ProfileLastNameLengthIncorrect",
       "msg": "Profile last name length is incorrect"
     },
     {
-      "code": 6023,
+      "code": 6024,
       "name": "SubspaceAliasIncorrect",
       "msg": "Subspace alias is incorrect"
     },
     {
-      "code": 6024,
+      "code": 6025,
       "name": "SubspaceNameIncorrect",
       "msg": "Subspace name length is incorrect"
     },
     {
-      "code": 6025,
+      "code": 6026,
       "name": "SubspacePublishingPermissionViolation",
       "msg": "Subspace publishing permission violated"
     },
     {
-      "code": 6026,
+      "code": 6027,
       "name": "SubspacePublishingConnectionProofAccountRequired",
       "msg": "Subspace publishing Connection-proof account required"
     },
     {
-      "code": 6027,
+      "code": 6028,
       "name": "SubspacePublishingManagerProofAccountRequired",
       "msg": "Subspace publishing Manager-proof account required"
     },
     {
-      "code": 6028,
+      "code": 6029,
       "name": "UriLengthIncorrect",
       "msg": "URI length is incorrect"
     },
     {
-      "code": 6029,
+      "code": 6030,
       "name": "TargetPublicationRequired",
       "msg": "Missed Target Publication account"
     },
     {
-      "code": 6030,
+      "code": 6031,
       "name": "BothMirrorAndReplyNotAllowed",
       "msg": "Both mirroring and replying not allowed in the same time"
     },
     {
-      "code": 6031,
+      "code": 6032,
       "name": "SelfConnectionNotAllowed",
       "msg": "Self conections is not allowed"
     },
     {
-      "code": 6032,
+      "code": 6033,
       "name": "ConnectionTargetAccountMissed",
       "msg": "Connection target account is missed"
     },
     {
-      "code": 6033,
+      "code": 6034,
       "name": "ConnectionTargetAccountInvalid",
       "msg": "Connection target account is invalid"
     },
     {
-      "code": 6034,
+      "code": 6035,
       "name": "ConnectionTargetAuthorityMismatch",
       "msg": "Connection target authority mismatch"
     },
     {
-      "code": 6035,
+      "code": 6036,
       "name": "ConnectionValidationFail",
       "msg": "Connection validation failed"
     },
     {
-      "code": 6036,
+      "code": 6037,
       "name": "AliasAccountExist",
       "msg": "Alias account already exist"
     },
     {
-      "code": 6037,
+      "code": 6038,
       "name": "SelfPublicationCollecting",
       "msg": "Forbidden to collect user's  own publication"
     },
     {
-      "code": 6038,
+      "code": 6039,
       "name": "PublicationTagIncorrect",
       "msg": "Publication Tag is incorrect"
     },
     {
-      "code": 6039,
+      "code": 6040,
       "name": "RegisteringProcessorAccountMissed",
       "msg": "Missed registering external processor account"
     },
     {
-      "code": 6040,
+      "code": 6041,
       "name": "ConnectingProcessorAccountMissed",
       "msg": "Missed connecting external processor account"
     },
     {
-      "code": 6041,
+      "code": 6042,
       "name": "PublishingProcessorAccountMissed",
       "msg": "Missed publishing external processor account"
     },
     {
-      "code": 6042,
+      "code": 6043,
       "name": "CollectingProcessorAccountMissed",
       "msg": "Missed collecting external processor account"
     },
     {
-      "code": 6043,
+      "code": 6044,
       "name": "ReferencingProcessorAccountMissed",
       "msg": "Missed referencing external processor account"
     },
     {
-      "code": 6044,
+      "code": 6045,
       "name": "RegisteringProcessorMismatch",
       "msg": "Registering external processor mismatch"
     },
     {
-      "code": 6045,
+      "code": 6046,
       "name": "ConnectingProcessorMismatch",
       "msg": "Connecting external processor mismatch"
     },
     {
-      "code": 6046,
+      "code": 6047,
       "name": "PublishingProcessorMismatch",
       "msg": "Publishing external processor mismatch"
     },
     {
-      "code": 6047,
+      "code": 6048,
       "name": "CollectingProcessorMismatch",
       "msg": "Collecting external processor mismatch"
     },
     {
-      "code": 6048,
+      "code": 6049,
       "name": "ReferencingProcessorMismatch",
       "msg": "Referencing external processor mismatch"
     },
     {
-      "code": 6049,
+      "code": 6050,
       "name": "ReactionTargetAccountInvalid",
       "msg": "Reaction target account is invalid"
     },
     {
-      "code": 6050,
+      "code": 6051,
       "name": "ReportTargetAccountInvalid",
       "msg": "Report target account is invalid"
     }

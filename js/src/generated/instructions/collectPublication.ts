@@ -39,6 +39,8 @@ export const collectPublicationStruct = new beet.FixableBeetArgsStruct<
  * @property [] initializer
  * @property [] target
  * @property [_writable_] collectionItem
+ * @property [] collectingProcessor (optional)
+ * @property [] collectingProcessorIndividual (optional)
  * @property [_writable_, **signer**] authority
  * @category Instructions
  * @category CollectPublication
@@ -49,6 +51,8 @@ export type CollectPublicationInstructionAccounts = {
   initializer: web3.PublicKey;
   target: web3.PublicKey;
   collectionItem: web3.PublicKey;
+  collectingProcessor?: web3.PublicKey;
+  collectingProcessorIndividual?: web3.PublicKey;
   authority: web3.PublicKey;
   systemProgram?: web3.PublicKey;
 };
@@ -57,6 +61,11 @@ export const collectPublicationInstructionDiscriminator = [103, 55, 47, 17, 105,
 
 /**
  * Creates a _CollectPublication_ instruction.
+ *
+ * Optional accounts that are not provided will be omitted from the accounts
+ * array passed with the instruction.
+ * An optional account that is set cannot follow an optional account that is unset.
+ * Otherwise an Error is raised.
  *
  * @param accounts that will be accessed while the instruction is processed
  * @param args to provide as instruction data to the program
@@ -95,17 +104,37 @@ export function createCollectPublicationInstruction(
       isWritable: true,
       isSigner: false,
     },
-    {
-      pubkey: accounts.authority,
-      isWritable: true,
-      isSigner: true,
-    },
-    {
-      pubkey: accounts.systemProgram ?? web3.SystemProgram.programId,
+  ];
+
+  if (accounts.collectingProcessor != null) {
+    keys.push({
+      pubkey: accounts.collectingProcessor,
       isWritable: false,
       isSigner: false,
-    },
-  ];
+    });
+  }
+  if (accounts.collectingProcessorIndividual != null) {
+    if (accounts.collectingProcessor == null) {
+      throw new Error(
+        "When providing 'collectingProcessorIndividual' then 'accounts.collectingProcessor' need(s) to be provided as well.",
+      );
+    }
+    keys.push({
+      pubkey: accounts.collectingProcessorIndividual,
+      isWritable: false,
+      isSigner: false,
+    });
+  }
+  keys.push({
+    pubkey: accounts.authority,
+    isWritable: true,
+    isSigner: true,
+  });
+  keys.push({
+    pubkey: accounts.systemProgram ?? web3.SystemProgram.programId,
+    isWritable: false,
+    isSigner: false,
+  });
 
   const ix = new web3.TransactionInstruction({
     programId,

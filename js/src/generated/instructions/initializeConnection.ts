@@ -39,6 +39,8 @@ export const initializeConnectionStruct = new beet.FixableBeetArgsStruct<
  * @property [_writable_] connection
  * @property [] initializer
  * @property [] target
+ * @property [] connectingProcessor (optional)
+ * @property [] connectingProcessorIndividual (optional)
  * @property [_writable_, **signer**] authority
  * @category Instructions
  * @category InitializeConnection
@@ -49,6 +51,8 @@ export type InitializeConnectionInstructionAccounts = {
   connection: web3.PublicKey;
   initializer: web3.PublicKey;
   target: web3.PublicKey;
+  connectingProcessor?: web3.PublicKey;
+  connectingProcessorIndividual?: web3.PublicKey;
   authority: web3.PublicKey;
   systemProgram?: web3.PublicKey;
 };
@@ -57,6 +61,11 @@ export const initializeConnectionInstructionDiscriminator = [119, 77, 251, 72, 8
 
 /**
  * Creates a _InitializeConnection_ instruction.
+ *
+ * Optional accounts that are not provided will be omitted from the accounts
+ * array passed with the instruction.
+ * An optional account that is set cannot follow an optional account that is unset.
+ * Otherwise an Error is raised.
  *
  * @param accounts that will be accessed while the instruction is processed
  * @param args to provide as instruction data to the program
@@ -95,17 +104,37 @@ export function createInitializeConnectionInstruction(
       isWritable: false,
       isSigner: false,
     },
-    {
-      pubkey: accounts.authority,
-      isWritable: true,
-      isSigner: true,
-    },
-    {
-      pubkey: accounts.systemProgram ?? web3.SystemProgram.programId,
+  ];
+
+  if (accounts.connectingProcessor != null) {
+    keys.push({
+      pubkey: accounts.connectingProcessor,
       isWritable: false,
       isSigner: false,
-    },
-  ];
+    });
+  }
+  if (accounts.connectingProcessorIndividual != null) {
+    if (accounts.connectingProcessor == null) {
+      throw new Error(
+        "When providing 'connectingProcessorIndividual' then 'accounts.connectingProcessor' need(s) to be provided as well.",
+      );
+    }
+    keys.push({
+      pubkey: accounts.connectingProcessorIndividual,
+      isWritable: false,
+      isSigner: false,
+    });
+  }
+  keys.push({
+    pubkey: accounts.authority,
+    isWritable: true,
+    isSigner: true,
+  });
+  keys.push({
+    pubkey: accounts.systemProgram ?? web3.SystemProgram.programId,
+    isWritable: false,
+    isSigner: false,
+  });
 
   const ix = new web3.TransactionInstruction({
     programId,
