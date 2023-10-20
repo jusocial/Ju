@@ -1,4 +1,4 @@
-use solana_program::{instruction::AccountMeta, instruction::Instruction, program::invoke};
+use solana_program::{instruction::AccountMeta};
 
 use anchor_lang::prelude::*;
 
@@ -15,6 +15,21 @@ use events::*;
 use instructions::*;
 use state::*;
 use utils::*;
+
+/// Registering External Processor
+use registering_processor::cpi::accounts::ProcessRegistering;
+
+/// Connecting External Processor
+use connecting_processor::cpi::accounts::ProcessConnecting;
+
+/// Publishing External Processor
+use publishing_processor::cpi::accounts::ProcessPublishing;
+
+/// Collecting External Processor
+use collecting_processor::cpi::accounts::ProcessCollecting;
+
+/// Referencing External Processor
+use referencing_processor::cpi::accounts::ProcessReferencing;
 
 declare_id!("964vWgVEK9X8ZwZB2HyshFVmHUWbcYpRTnVYz2o3F2Xq");
 
@@ -94,7 +109,11 @@ pub mod ju_core {
         // Check if proof is valid
         if ctx.accounts.developer_whitelist_proof.is_some() {
             require_keys_eq!(
-                ctx.accounts.developer_whitelist_proof.as_ref().unwrap().developer,
+                ctx.accounts
+                    .developer_whitelist_proof
+                    .as_ref()
+                    .unwrap()
+                    .developer,
                 *ctx.accounts.authority.to_account_info().key,
                 CustomError::DeveloperNotAthorized
             );
@@ -161,12 +180,15 @@ pub mod ju_core {
         // Check if proof is valid
         if ctx.accounts.developer_whitelist_proof.is_some() {
             require_keys_eq!(
-                ctx.accounts.developer_whitelist_proof.as_ref().unwrap().developer,
+                ctx.accounts
+                    .developer_whitelist_proof
+                    .as_ref()
+                    .unwrap()
+                    .developer,
                 *ctx.accounts.authority.to_account_info().key,
                 CustomError::DeveloperNotAthorized
             );
         }
-
 
         let app = &mut ctx.accounts.app;
 
@@ -387,30 +409,27 @@ pub mod ju_core {
     ) -> Result<()> {
         // Making additional Profile Registering processing using external Processor
         // Check if Application has assigned Registering Processor
-        if let Some(registering_processor) = ctx.accounts.app.registering_processor {
-            invoke(
-                &Instruction {
-                    program_id: registering_processor,
+        if let Some(assigned_registering_processor) = ctx.accounts.app.registering_processor {
+            // Check if Connecting JXP is passed
+            if ctx.accounts.registering_processor.is_none() {
+                return Err(error!(CustomError::ConnectingProcessorAccountMissed));
+            }
 
-                    accounts: vec![
-                        AccountMeta::new_readonly(*ctx.accounts.app.to_account_info().key, true),
-                        AccountMeta::new_readonly(
-                            *ctx.accounts.profile.to_account_info().key,
-                            false,
-                        ),
-                        AccountMeta::new_readonly(
-                            *ctx.accounts.authority.to_account_info().key,
-                            false,
-                        ),
-                    ],
+            let registering_processor_account =
+                ctx.accounts.registering_processor.as_ref().unwrap();
 
-                    data: external_processing_data.unwrap_or_default().into_bytes(),
-                },
-                &[
-                    ctx.accounts.app.to_account_info(),
-                    ctx.accounts.profile.to_account_info(),
-                    ctx.accounts.authority.to_account_info(),
-                ],
+            // Processor Pubkeys assert
+            require_keys_eq!(
+                assigned_registering_processor.key(),
+                registering_processor_account.key(),
+                CustomError::RegisteringProcessorMismatch
+            );
+
+            // Making CPI call to JXP
+            registering_processor::cpi::process(
+                ctx.accounts
+                    .process_registering_ctx(registering_processor_account),
+                external_processing_data,
             )?;
         }
 
@@ -464,6 +483,7 @@ pub mod ju_core {
         if ctx.accounts.app.profile_individual_processors_allowed {
             match &ctx.accounts.connecting_processor_pda {
                 Some(connecting_processor_pda) => {
+                    
                     require!(
                         connecting_processor_pda
                             .processor_type
@@ -660,38 +680,26 @@ pub mod ju_core {
 
         // Making Connection additional processing using external Processor
         // First check if Application has assigned Connecting Processor
-        if let Some(connecting_processor) = ctx.accounts.app.connecting_processor {
-            invoke(
-                &Instruction {
-                    program_id: connecting_processor,
+        if let Some(assigned_connecting_processor) = ctx.accounts.app.connecting_processor {
+            // Check if Connecting JXP is passed
+            if ctx.accounts.connecting_processor.is_none() {
+                return Err(error!(CustomError::ConnectingProcessorAccountMissed));
+            }
 
-                    accounts: vec![
-                        AccountMeta::new_readonly(*ctx.accounts.app.to_account_info().key, true),
-                        AccountMeta::new_readonly(
-                            *ctx.accounts.initializer.to_account_info().key,
-                            false,
-                        ),
-                        AccountMeta::new_readonly(
-                            *ctx.accounts.target.to_account_info().key,
-                            false,
-                        ),
-                        AccountMeta::new_readonly(
-                            *ctx.accounts.authority.to_account_info().key,
-                            false,
-                        ),
-                    ],
+            let connection_processor_account = ctx.accounts.connecting_processor.as_ref().unwrap();
 
-                    data: external_processing_data
-                        .clone()
-                        .unwrap_or_default()
-                        .into_bytes(),
-                },
-                &[
-                    ctx.accounts.app.to_account_info(),
-                    ctx.accounts.initializer.to_account_info(),
-                    ctx.accounts.target.to_account_info(),
-                    ctx.accounts.authority.to_account_info(),
-                ],
+            // Processor Pubkeys assert
+            require_keys_eq!(
+                assigned_connecting_processor.key(),
+                ctx.accounts.connecting_processor.as_ref().unwrap().key(),
+                CustomError::ConnectingProcessorMismatch
+            );
+
+            // Making CPI call to JXP
+            connecting_processor::cpi::process(
+                ctx.accounts
+                    .process_connecting_ctx(connection_processor_account),
+                external_processing_data.clone(),
             )?;
         }
 
@@ -700,38 +708,30 @@ pub mod ju_core {
             get_connecting_processor_from_target(&ctx.accounts.target)?;
 
         if ctx.accounts.app.profile_individual_processors_allowed {
-            if let Some(connecting_processor) = target_connecting_processor {
-                invoke(
-                    &Instruction {
-                        program_id: connecting_processor,
+            if let Some(assigned_connecting_processor_individual) = target_connecting_processor {
+                // Check if Connecting JXP is passed
+                if ctx.accounts.connecting_processor_individual.is_none() {
+                    return Err(error!(CustomError::ConnectingProcessorAccountMissed));
+                }
 
-                        accounts: vec![
-                            AccountMeta::new_readonly(
-                                *ctx.accounts.app.to_account_info().key,
-                                true,
-                            ),
-                            AccountMeta::new_readonly(
-                                *ctx.accounts.initializer.to_account_info().key,
-                                false,
-                            ),
-                            AccountMeta::new_readonly(
-                                *ctx.accounts.target.to_account_info().key,
-                                false,
-                            ),
-                            AccountMeta::new_readonly(
-                                *ctx.accounts.authority.to_account_info().key,
-                                false,
-                            ),
-                        ],
+                let connection_processor_individual_account = ctx
+                    .accounts
+                    .connecting_processor_individual
+                    .as_ref()
+                    .unwrap();
 
-                        data: external_processing_data.unwrap_or_default().into_bytes(),
-                    },
-                    &[
-                        ctx.accounts.app.to_account_info(),
-                        ctx.accounts.initializer.to_account_info(),
-                        ctx.accounts.target.to_account_info(),
-                        ctx.accounts.authority.to_account_info(),
-                    ],
+                // JXP Pubkeys assert
+                require_keys_eq!(
+                    assigned_connecting_processor_individual.key(),
+                    connection_processor_individual_account.key(),
+                    CustomError::ConnectingProcessorMismatch
+                );
+
+                // Making CPI call to JXP
+                connecting_processor::cpi::process(
+                    ctx.accounts
+                        .process_connecting_ctx(connection_processor_individual_account),
+                    external_processing_data,
                 )?;
             }
         }
@@ -1221,38 +1221,27 @@ pub mod ju_core {
             // Making additianal Publication processing using external Processor
 
             // First check if Application has assigned Publishing external Processor
-            if let Some(publishing_processor) = ctx.accounts.app.publishing_processor {
-                invoke(
-                    &Instruction {
-                        program_id: publishing_processor,
+            if let Some(assigned_publishing_processor) = ctx.accounts.app.publishing_processor {
+                // Check if JXP is passed
+                if ctx.accounts.publishing_processor.is_none() {
+                    return Err(error!(CustomError::PublishingProcessorAccountMissed));
+                }
 
-                        accounts: vec![
-                            AccountMeta::new_readonly(
-                                *ctx.accounts.app.to_account_info().key,
-                                true,
-                            ),
-                            AccountMeta::new_readonly(
-                                *ctx.accounts.profile.to_account_info().key,
-                                false,
-                            ),
-                            AccountMeta::new_readonly(
-                                *ctx.accounts.publication.to_account_info().key,
-                                false,
-                            ),
-                            AccountMeta::new_readonly(
-                                *ctx.accounts.authority.to_account_info().key,
-                                false,
-                            ),
-                        ],
+                let publishing_processor_account =
+                    ctx.accounts.publishing_processor.as_ref().unwrap();
 
-                        data: external_processing_data.unwrap_or_default().into_bytes(),
-                    },
-                    &[
-                        ctx.accounts.app.to_account_info(),
-                        ctx.accounts.profile.to_account_info(),
-                        ctx.accounts.publication.to_account_info(),
-                        ctx.accounts.authority.to_account_info(),
-                    ],
+                // JXPs Pubkeys assert
+                require_keys_eq!(
+                    assigned_publishing_processor.key(),
+                    publishing_processor_account.key(),
+                    CustomError::PublishingProcessorMismatch
+                );
+
+                // Making CPI call to JXP
+                publishing_processor::cpi::process(
+                    ctx.accounts
+                        .process_publishing_ctx(publishing_processor_account),
+                    external_processing_data.clone(),
                 )?;
             }
         } else {
@@ -1260,41 +1249,27 @@ pub mod ju_core {
             // Making additianal Publication Reference processing using external Processor
 
             // First check if Application has assigned Referencing external Processor
-            if let Some(referencing_processor) = ctx.accounts.app.referencing_processor {
-                invoke(
-                    &Instruction {
-                        program_id: referencing_processor,
+            if let Some(assigned_referencing_processor) = ctx.accounts.app.referencing_processor {
+                // Check if JXP is passed
+                if ctx.accounts.referencing_processor.is_none() {
+                    return Err(error!(CustomError::ReferencingProcessorAccountMissed));
+                }
 
-                        accounts: vec![
-                            AccountMeta::new_readonly(
-                                *ctx.accounts.app.to_account_info().key,
-                                true,
-                            ),
-                            AccountMeta::new_readonly(
-                                *ctx.accounts.profile.to_account_info().key,
-                                false,
-                            ),
-                            AccountMeta::new_readonly(
-                                *ctx.accounts.publication.to_account_info().key,
-                                false,
-                            ),
-                            AccountMeta::new_readonly(
-                                *ctx.accounts.authority.to_account_info().key,
-                                false,
-                            ),
-                        ],
+                let referencing_processor_account =
+                    ctx.accounts.referencing_processor.as_ref().unwrap();
 
-                        data: external_processing_data
-                            .clone()
-                            .unwrap_or_default()
-                            .into_bytes(),
-                    },
-                    &[
-                        ctx.accounts.app.to_account_info(),
-                        ctx.accounts.profile.to_account_info(),
-                        ctx.accounts.publication.to_account_info(),
-                        ctx.accounts.authority.to_account_info(),
-                    ],
+                // JXPs Pubkeys assert
+                require_keys_eq!(
+                    assigned_referencing_processor.key(),
+                    referencing_processor_account.key(),
+                    CustomError::ReferencingProcessorMismatch
+                );
+
+                // Making CPI call to JXP
+                referencing_processor::cpi::process(
+                    ctx.accounts
+                        .process_referencing_ctx(referencing_processor_account),
+                    external_processing_data.clone(),
                 )?;
             }
 
@@ -1302,44 +1277,36 @@ pub mod ju_core {
             if ctx.accounts.app.publication_individual_processors_allowed
                 && ctx.accounts.target_publication.is_some()
             {
-                if let Some(referencing_processor) = ctx
+                if let Some(assigned_referencing_processor_individual) = ctx
                     .accounts
                     .target_publication
                     .as_ref()
                     .unwrap()
                     .referencing_processor
                 {
-                    invoke(
-                        &Instruction {
-                            program_id: referencing_processor,
+                    // Check if JXP is passed
+                    if ctx.accounts.referencing_processor_individual.is_none() {
+                        return Err(error!(CustomError::ReferencingProcessorAccountMissed));
+                    }
 
-                            accounts: vec![
-                                AccountMeta::new_readonly(
-                                    *ctx.accounts.app.to_account_info().key,
-                                    true,
-                                ),
-                                AccountMeta::new_readonly(
-                                    *ctx.accounts.profile.to_account_info().key,
-                                    false,
-                                ),
-                                AccountMeta::new_readonly(
-                                    *ctx.accounts.publication.to_account_info().key,
-                                    false,
-                                ),
-                                AccountMeta::new_readonly(
-                                    *ctx.accounts.authority.to_account_info().key,
-                                    false,
-                                ),
-                            ],
+                    let referencing_processor_account_individual = ctx
+                        .accounts
+                        .referencing_processor_individual
+                        .as_ref()
+                        .unwrap();
 
-                            data: external_processing_data.unwrap_or_default().into_bytes(),
-                        },
-                        &[
-                            ctx.accounts.app.to_account_info(),
-                            ctx.accounts.profile.to_account_info(),
-                            ctx.accounts.publication.to_account_info(),
-                            ctx.accounts.authority.to_account_info(),
-                        ],
+                    // JXPs Pubkeys assert
+                    require_keys_eq!(
+                        assigned_referencing_processor_individual.key(),
+                        referencing_processor_account_individual.key(),
+                        CustomError::ReferencingProcessorMismatch
+                    );
+
+                    // Making CPI call to JXP
+                    referencing_processor::cpi::process(
+                        ctx.accounts
+                            .process_referencing_ctx(referencing_processor_account_individual),
+                        external_processing_data,
                     )?;
                 }
             }
@@ -1558,75 +1525,54 @@ pub mod ju_core {
         // Making additianal Collection processing using external Processor
 
         // First check if Application has assigned Collecting external Processor
-        if let Some(collecting_processor) = ctx.accounts.app.collecting_processor {
-            invoke(
-                &Instruction {
-                    program_id: collecting_processor,
+        if let Some(assigned_collecting_processor) = ctx.accounts.app.collecting_processor {
+            // Check if JXP is passed
+            if ctx.accounts.collecting_processor.is_none() {
+                return Err(error!(CustomError::CollectingProcessorAccountMissed));
+            }
 
-                    accounts: vec![
-                        AccountMeta::new_readonly(*ctx.accounts.app.to_account_info().key, true),
-                        AccountMeta::new_readonly(
-                            *ctx.accounts.initializer.to_account_info().key,
-                            false,
-                        ),
-                        AccountMeta::new_readonly(
-                            *ctx.accounts.target.to_account_info().key,
-                            false,
-                        ),
-                        AccountMeta::new_readonly(
-                            *ctx.accounts.authority.to_account_info().key,
-                            false,
-                        ),
-                    ],
+            let collecting_processor_account = ctx.accounts.collecting_processor.as_ref().unwrap();
 
-                    data: external_processing_data
-                        .clone()
-                        .unwrap_or_default()
-                        .into_bytes(),
-                },
-                &[
-                    ctx.accounts.app.to_account_info(),
-                    ctx.accounts.initializer.to_account_info(),
-                    ctx.accounts.target.to_account_info(),
-                    ctx.accounts.authority.to_account_info(),
-                ],
+            // JXPs Pubkeys assert
+            require_keys_eq!(
+                assigned_collecting_processor.key(),
+                collecting_processor_account.key(),
+                CustomError::CollectingProcessorMismatch
+            );
+
+            // Making CPI call to JXP
+            collecting_processor::cpi::process(
+                ctx.accounts
+                    .process_collecting_ctx(collecting_processor_account),
+                external_processing_data.clone(),
             )?;
         }
 
         // Second check if Target Publication has individual assigned Collectiong external Processor
         if ctx.accounts.app.publication_individual_processors_allowed {
-            if let Some(collecting_processor) = ctx.accounts.target.collecting_processor {
-                invoke(
-                    &Instruction {
-                        program_id: collecting_processor,
+            if let Some(assigned_collecting_processor_individual) =
+                ctx.accounts.target.collecting_processor
+            {
+                // Check if JXP is passed
+                if ctx.accounts.collecting_processor_individual.is_none() {
+                    return Err(error!(CustomError::CollectingProcessorAccountMissed));
+                }
 
-                        accounts: vec![
-                            AccountMeta::new_readonly(
-                                *ctx.accounts.app.to_account_info().key,
-                                true,
-                            ),
-                            AccountMeta::new_readonly(
-                                *ctx.accounts.initializer.to_account_info().key,
-                                false,
-                            ),
-                            AccountMeta::new_readonly(
-                                *ctx.accounts.target.to_account_info().key,
-                                false,
-                            ),
-                            AccountMeta::new_readonly(
-                                *ctx.accounts.authority.to_account_info().key,
-                                false,
-                            ),
-                        ],
+                let collecting_processor_individual_account =
+                    ctx.accounts.collecting_processor.as_ref().unwrap();
 
-                        data: external_processing_data.unwrap_or_default().into_bytes(),
-                    },
-                    &[
-                        ctx.accounts.app.to_account_info(),
-                        ctx.accounts.initializer.to_account_info(),
-                        ctx.accounts.target.to_account_info(),
-                        ctx.accounts.authority.to_account_info(),
-                    ],
+                // JXPs Pubkeys assert
+                require_keys_eq!(
+                    assigned_collecting_processor_individual.key(),
+                    collecting_processor_individual_account.key(),
+                    CustomError::CollectingProcessorMismatch
+                );
+
+                // Making CPI call to JXP
+                collecting_processor::cpi::process(
+                    ctx.accounts
+                        .process_collecting_ctx(collecting_processor_individual_account),
+                    external_processing_data,
                 )?;
             }
         }
