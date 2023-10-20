@@ -264,9 +264,9 @@ pub struct Profile {
     pub searchable_10_years: i64,
     // Seachable 5 years period
     pub searchable_5_years: i64,
-    // Seachable 5 years period
+    // Seachable week
     pub searchable_week: i64,
-    // Seachable 5 years period
+    // Seachable day
     pub searchable_day: i64,
 
     /// Profile's user gender
