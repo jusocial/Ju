@@ -483,7 +483,14 @@ pub mod ju_core {
         if ctx.accounts.app.profile_individual_processors_allowed {
             match &ctx.accounts.connecting_processor_pda {
                 Some(connecting_processor_pda) => {
+                    // Check JXP authority
+                    require_keys_eq!(
+                        connecting_processor_pda.authority,
+                        ctx.accounts.app.authority,
+                        CustomError::ProcessorAuthorityMismatch
+                    );
                     
+                    // Check JXP type
                     require!(
                         connecting_processor_pda
                             .processor_type
@@ -870,6 +877,14 @@ pub mod ju_core {
         if ctx.accounts.app.subspace_individual_processors_allowed {
             match &ctx.accounts.connecting_processor_pda {
                 Some(connecting_processor_pda) => {
+                    // Check JXP authority
+                    require_keys_eq!(
+                        connecting_processor_pda.authority,
+                        ctx.accounts.app.authority,
+                        CustomError::ProcessorAuthorityMismatch
+                    );
+                    
+                    // Check JXP type
                     require!(
                         connecting_processor_pda
                             .processor_type
@@ -884,6 +899,14 @@ pub mod ju_core {
             }
             match &ctx.accounts.publishing_processor_pda {
                 Some(publishing_processor_pda) => {
+                    // Check JXP authority
+                    require_keys_eq!(
+                        publishing_processor_pda.authority,
+                        ctx.accounts.app.authority,
+                        CustomError::ProcessorAuthorityMismatch
+                    );
+                    
+                    // Check JXP type
                     require!(
                         publishing_processor_pda
                             .processor_type
@@ -898,6 +921,14 @@ pub mod ju_core {
             }
             match &ctx.accounts.collecting_processor_pda {
                 Some(collecting_processor_pda) => {
+                    // Check JXP authority
+                    require_keys_eq!(
+                        collecting_processor_pda.authority,
+                        ctx.accounts.app.authority,
+                        CustomError::ProcessorAuthorityMismatch
+                    );
+                    
+                    // Check JXP type
                     require!(
                         collecting_processor_pda
                             .processor_type
@@ -912,6 +943,14 @@ pub mod ju_core {
             }
             match &ctx.accounts.referencing_processor_pda {
                 Some(referencing_processor_pda) => {
+                    // Check JXP authority
+                    require_keys_eq!(
+                        referencing_processor_pda.authority,
+                        ctx.accounts.app.authority,
+                        CustomError::ProcessorAuthorityMismatch
+                    );
+                    
+                    // Check JXP type
                     require!(
                         referencing_processor_pda
                             .processor_type
@@ -1037,6 +1076,14 @@ pub mod ju_core {
         if ctx.accounts.app.subspace_individual_processors_allowed {
             match &ctx.accounts.connecting_processor_pda {
                 Some(connecting_processor_pda) => {
+                    // Check JXP authority
+                    require_keys_eq!(
+                        connecting_processor_pda.authority,
+                        ctx.accounts.app.authority,
+                        CustomError::ProcessorAuthorityMismatch
+                    );
+                    
+                    // Check JXP type
                     require!(
                         connecting_processor_pda
                             .processor_type
@@ -1051,6 +1098,14 @@ pub mod ju_core {
             }
             match &ctx.accounts.publishing_processor_pda {
                 Some(publishing_processor_pda) => {
+                    // Check JXP authority
+                    require_keys_eq!(
+                        publishing_processor_pda.authority,
+                        ctx.accounts.app.authority,
+                        CustomError::ProcessorAuthorityMismatch
+                    );
+                    
+                    // Check JXP type
                     require!(
                         publishing_processor_pda
                             .processor_type
@@ -1065,6 +1120,14 @@ pub mod ju_core {
             }
             match &ctx.accounts.collecting_processor_pda {
                 Some(collecting_processor_pda) => {
+                    // Check JXP authority
+                    require_keys_eq!(
+                        collecting_processor_pda.authority,
+                        ctx.accounts.app.authority,
+                        CustomError::ProcessorAuthorityMismatch
+                    );
+                    
+                    // Check JXP type
                     require!(
                         collecting_processor_pda
                             .processor_type
@@ -1079,6 +1142,14 @@ pub mod ju_core {
             }
             match &ctx.accounts.referencing_processor_pda {
                 Some(referencing_processor_pda) => {
+                    // Check JXP authority
+                    require_keys_eq!(
+                        referencing_processor_pda.authority,
+                        ctx.accounts.app.authority,
+                        CustomError::ProcessorAuthorityMismatch
+                    );
+                    
+                    // Check JXP type
                     require!(
                         referencing_processor_pda
                             .processor_type
@@ -1377,6 +1448,14 @@ pub mod ju_core {
         if ctx.accounts.app.publication_individual_processors_allowed {
             match &ctx.accounts.collecting_processor_pda {
                 Some(collecting_processor_pda) => {
+                    // Check JXP authority
+                    require_keys_eq!(
+                        collecting_processor_pda.authority,
+                        ctx.accounts.app.authority,
+                        CustomError::ProcessorAuthorityMismatch
+                    );
+                    
+                    // Check JXP type
                     require!(
                         collecting_processor_pda
                             .processor_type
@@ -1392,6 +1471,14 @@ pub mod ju_core {
             }
             match &ctx.accounts.referencing_processor_pda {
                 Some(referencing_processor_pda) => {
+                    // Check JXP authority
+                    require_keys_eq!(
+                        referencing_processor_pda.authority,
+                        ctx.accounts.app.authority,
+                        CustomError::ProcessorAuthorityMismatch
+                    );
+                    
+                    // Check JXP type
                     require!(
                         referencing_processor_pda
                             .processor_type
@@ -1450,6 +1537,14 @@ pub mod ju_core {
         if ctx.accounts.app.publication_individual_processors_allowed {
             match &ctx.accounts.collecting_processor_pda {
                 Some(collecting_processor_pda) => {
+                    // Check JXP authority
+                    require_keys_eq!(
+                        collecting_processor_pda.authority,
+                        ctx.accounts.app.authority,
+                        CustomError::ProcessorAuthorityMismatch
+                    );
+                    
+                    // Check JXP type
                     require!(
                         collecting_processor_pda
                             .processor_type
@@ -1465,6 +1560,14 @@ pub mod ju_core {
             }
             match &ctx.accounts.referencing_processor_pda {
                 Some(referencing_processor_pda) => {
+                    // Check JXP authority
+                    require_keys_eq!(
+                        referencing_processor_pda.authority,
+                        ctx.accounts.app.authority,
+                        CustomError::ProcessorAuthorityMismatch
+                    );
+                    
+                    // Check JXP type
                     require!(
                         referencing_processor_pda
                             .processor_type
