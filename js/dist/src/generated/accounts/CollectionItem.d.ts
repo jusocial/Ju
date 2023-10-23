@@ -8,8 +8,9 @@ export type CollectionItemArgs = {
     target: web3.PublicKey;
     authority: web3.PublicKey;
     createdAt: beet.bignum;
-    searchable3Day: beet.bignum;
-    searchableDay: beet.bignum;
+    creationWeek: beet.bignum;
+    creation3Day: beet.bignum;
+    creationDay: beet.bignum;
 };
 export declare const collectionItemDiscriminator: number[];
 export declare class CollectionItem implements CollectionItemArgs {
@@ -18,8 +19,9 @@ export declare class CollectionItem implements CollectionItemArgs {
     readonly target: web3.PublicKey;
     readonly authority: web3.PublicKey;
     readonly createdAt: beet.bignum;
-    readonly searchable3Day: beet.bignum;
-    readonly searchableDay: beet.bignum;
+    readonly creationWeek: beet.bignum;
+    readonly creation3Day: beet.bignum;
+    readonly creationDay: beet.bignum;
     private constructor();
     static fromArgs(args: CollectionItemArgs): CollectionItem;
     static fromAccountInfo(accountInfo: web3.AccountInfo<Buffer>, offset?: number): [CollectionItem, number];
@@ -28,11 +30,12 @@ export declare class CollectionItem implements CollectionItemArgs {
         app: any;
         authority: any;
         accountDiscriminator: any;
+        createdAt: any;
         initializer: any;
         target: any;
-        createdAt: any;
-        searchable3Day: any;
-        searchableDay: any;
+        creationWeek: any;
+        creation3Day: any;
+        creationDay: any;
     }>;
     static deserialize(buf: Buffer, offset?: number): [CollectionItem, number];
     serialize(): [Buffer, number];
@@ -47,10 +50,13 @@ export declare class CollectionItem implements CollectionItemArgs {
         createdAt: number | {
             toNumber: () => number;
         };
-        searchable3Day: number | {
+        creationWeek: number | {
             toNumber: () => number;
         };
-        searchableDay: number | {
+        creation3Day: number | {
+            toNumber: () => number;
+        };
+        creationDay: number | {
             toNumber: () => number;
         };
     };

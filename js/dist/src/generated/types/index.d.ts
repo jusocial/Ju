@@ -3,7 +3,6 @@ export * from './AppData';
 export * from './ConnectionTargetType';
 export * from './ContentType';
 export * from './Gender';
-export * from './LocationCoordinates';
 export * from './ProcessorType';
 export * from './ProfileData';
 export * from './PublicationData';

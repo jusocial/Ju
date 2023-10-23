@@ -15,7 +15,7 @@ import { AppData, appDataBeet } from '../types/AppData';
  * @category generated
  */
 export type InitializeAppInstructionArgs = {
-  appName: string;
+  appDomainName: string;
   data: AppData;
 };
 /**
@@ -30,7 +30,7 @@ export const initializeAppStruct = new beet.FixableBeetArgsStruct<
 >(
   [
     ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
-    ['appName', beet.utf8String],
+    ['appDomainName', beet.utf8String],
     ['data', appDataBeet],
   ],
   'InitializeAppInstructionArgs',

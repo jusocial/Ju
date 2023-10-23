@@ -37,12 +37,12 @@ export declare class ProcessorNotWhitelistedError extends Error {
     readonly name: string;
     constructor();
 }
-export declare class AppNameLengthIncorrectError extends Error {
+export declare class AppDomainNameLengthIncorrectError extends Error {
     readonly code: number;
     readonly name: string;
     constructor();
 }
-export declare class AppNameInvalidError extends Error {
+export declare class AppDomainNameInvalidError extends Error {
     readonly code: number;
     readonly name: string;
     constructor();
@@ -253,6 +253,11 @@ export declare class ReferencingProcessorMismatchError extends Error {
     constructor();
 }
 export declare class ReactionTargetAccountInvalidError extends Error {
+    readonly code: number;
+    readonly name: string;
+    constructor();
+}
+export declare class ReactionCustomCodeMissedError extends Error {
     readonly code: number;
     readonly name: string;
     constructor();

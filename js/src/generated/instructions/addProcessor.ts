@@ -20,6 +20,7 @@ export type AddProcessorInstructionArgs = {
   processorName: string;
   programAddress: web3.PublicKey;
   developerWallet: beet.COption<web3.PublicKey>;
+  metadataUri: beet.COption<string>;
 };
 /**
  * @category Instructions
@@ -37,6 +38,7 @@ export const addProcessorStruct = new beet.FixableBeetArgsStruct<
     ['processorName', beet.utf8String],
     ['programAddress', beetSolana.publicKey],
     ['developerWallet', beet.coption(beetSolana.publicKey)],
+    ['metadataUri', beet.coption(beet.utf8String)],
   ],
   'AddProcessorInstructionArgs',
 );

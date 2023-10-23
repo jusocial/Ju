@@ -161,44 +161,47 @@ createErrorFromCodeLookup.set(0x1776, () => new ProcessorNotWhitelistedError());
 createErrorFromNameLookup.set('ProcessorNotWhitelisted', () => new ProcessorNotWhitelistedError());
 
 /**
- * AppNameLengthIncorrect: 'Application name (ID) length is incorrect'
+ * AppDomainNameLengthIncorrect: 'Application domain name (ID) length is incorrect'
  *
  * @category Errors
  * @category generated
  */
-export class AppNameLengthIncorrectError extends Error {
+export class AppDomainNameLengthIncorrectError extends Error {
   readonly code: number = 0x1777;
-  readonly name: string = 'AppNameLengthIncorrect';
+  readonly name: string = 'AppDomainNameLengthIncorrect';
   constructor() {
-    super('Application name (ID) length is incorrect');
+    super('Application domain name (ID) length is incorrect');
     if (typeof Error.captureStackTrace === 'function') {
-      Error.captureStackTrace(this, AppNameLengthIncorrectError);
+      Error.captureStackTrace(this, AppDomainNameLengthIncorrectError);
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x1777, () => new AppNameLengthIncorrectError());
-createErrorFromNameLookup.set('AppNameLengthIncorrect', () => new AppNameLengthIncorrectError());
+createErrorFromCodeLookup.set(0x1777, () => new AppDomainNameLengthIncorrectError());
+createErrorFromNameLookup.set(
+  'AppDomainNameLengthIncorrect',
+  () => new AppDomainNameLengthIncorrectError(),
+);
 
 /**
- * AppNameInvalid: 'Application name must contain only ASCII letters in lower case and numbers'
+ * AppDomainNameInvalid: 'Application domain name must contain only ASCII letters in lower case and numbers'
  *
  * @category Errors
  * @category generated
  */
-export class AppNameInvalidError extends Error {
+export class AppDomainNameInvalidError extends Error {
   readonly code: number = 0x1778;
-  readonly name: string = 'AppNameInvalid';
+  readonly name: string = 'AppDomainNameInvalid';
   constructor() {
-    super('Application name must contain only ASCII letters in lower case and numbers');
+    super('Application domain name must contain only ASCII letters in lower case and numbers');
     if (typeof Error.captureStackTrace === 'function') {
-      Error.captureStackTrace(this, AppNameInvalidError);
+      Error.captureStackTrace(this, AppDomainNameInvalidError);
     }
   }
 }
 
-createErrorFromCodeLookup.set(0x1778, () => new AppNameInvalidError());
-createErrorFromNameLookup.set('AppNameInvalid', () => new AppNameInvalidError());
+createErrorFromCodeLookup.set(0x1778, () => new AppDomainNameInvalidError());
+createErrorFromNameLookup.set('AppDomainNameInvalid', () => new AppDomainNameInvalidError());
 
 /**
  * AppManagementNotAthorized: 'App management action not authorized'
@@ -1131,13 +1134,36 @@ createErrorFromNameLookup.set(
 );
 
 /**
+ * ReactionCustomCodeMissed: 'Report custom code missed'
+ *
+ * @category Errors
+ * @category generated
+ */
+export class ReactionCustomCodeMissedError extends Error {
+  readonly code: number = 0x17a3;
+  readonly name: string = 'ReactionCustomCodeMissed';
+  constructor() {
+    super('Report custom code missed');
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, ReactionCustomCodeMissedError);
+    }
+  }
+}
+
+createErrorFromCodeLookup.set(0x17a3, () => new ReactionCustomCodeMissedError());
+createErrorFromNameLookup.set(
+  'ReactionCustomCodeMissed',
+  () => new ReactionCustomCodeMissedError(),
+);
+
+/**
  * ReportTargetAccountInvalid: 'Report target account is invalid'
  *
  * @category Errors
  * @category generated
  */
 export class ReportTargetAccountInvalidError extends Error {
-  readonly code: number = 0x17a3;
+  readonly code: number = 0x17a4;
   readonly name: string = 'ReportTargetAccountInvalid';
   constructor() {
     super('Report target account is invalid');
@@ -1147,7 +1173,7 @@ export class ReportTargetAccountInvalidError extends Error {
   }
 }
 
-createErrorFromCodeLookup.set(0x17a3, () => new ReportTargetAccountInvalidError());
+createErrorFromCodeLookup.set(0x17a4, () => new ReportTargetAccountInvalidError());
 createErrorFromNameLookup.set(
   'ReportTargetAccountInvalid',
   () => new ReportTargetAccountInvalidError(),

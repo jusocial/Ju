@@ -29,29 +29,33 @@ const beet = __importStar(require("@metaplex-foundation/beet"));
 const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
 exports.appDiscriminator = [67, 135, 84, 79, 153, 49, 239, 169];
 class App {
-    constructor(authority, profileMetadataRequired, subspaceMetadataRequired, profileDeleteAllowed, subspaceDeleteAllowed, publicationDeleteAllowed, profileIndividualProcessorsAllowed, subspaceIndividualProcessorsAllowed, publicationIndividualProcessorsAllowed, appName, metadataUri, registeringProcessor, connectingProcessor, publishingProcessor, collectingProcessor, referencingProcessor, reserved1, reserved2, reserved3) {
+    constructor(authority, isProfileDeleteAllowed, isSubspaceDeleteAllowed, isPublicationDeleteAllowed, isProfileIndividualProcessorsAllowed, isSubspaceIndividualProcessorsAllowed, isPublicationIndividualProcessorsAllowed, reserved1, reserved2, reserved3, reserved4, reserved5, reserved6, creationYear, creationMonth, appDomainName, metadataUri, registeringProcessor, connectingProcessor, publishingProcessor, collectingProcessor, referencingProcessor, createdAt) {
         this.authority = authority;
-        this.profileMetadataRequired = profileMetadataRequired;
-        this.subspaceMetadataRequired = subspaceMetadataRequired;
-        this.profileDeleteAllowed = profileDeleteAllowed;
-        this.subspaceDeleteAllowed = subspaceDeleteAllowed;
-        this.publicationDeleteAllowed = publicationDeleteAllowed;
-        this.profileIndividualProcessorsAllowed = profileIndividualProcessorsAllowed;
-        this.subspaceIndividualProcessorsAllowed = subspaceIndividualProcessorsAllowed;
-        this.publicationIndividualProcessorsAllowed = publicationIndividualProcessorsAllowed;
-        this.appName = appName;
+        this.isProfileDeleteAllowed = isProfileDeleteAllowed;
+        this.isSubspaceDeleteAllowed = isSubspaceDeleteAllowed;
+        this.isPublicationDeleteAllowed = isPublicationDeleteAllowed;
+        this.isProfileIndividualProcessorsAllowed = isProfileIndividualProcessorsAllowed;
+        this.isSubspaceIndividualProcessorsAllowed = isSubspaceIndividualProcessorsAllowed;
+        this.isPublicationIndividualProcessorsAllowed = isPublicationIndividualProcessorsAllowed;
+        this.reserved1 = reserved1;
+        this.reserved2 = reserved2;
+        this.reserved3 = reserved3;
+        this.reserved4 = reserved4;
+        this.reserved5 = reserved5;
+        this.reserved6 = reserved6;
+        this.creationYear = creationYear;
+        this.creationMonth = creationMonth;
+        this.appDomainName = appDomainName;
         this.metadataUri = metadataUri;
         this.registeringProcessor = registeringProcessor;
         this.connectingProcessor = connectingProcessor;
         this.publishingProcessor = publishingProcessor;
         this.collectingProcessor = collectingProcessor;
         this.referencingProcessor = referencingProcessor;
-        this.reserved1 = reserved1;
-        this.reserved2 = reserved2;
-        this.reserved3 = reserved3;
+        this.createdAt = createdAt;
     }
     static fromArgs(args) {
-        return new App(args.authority, args.profileMetadataRequired, args.subspaceMetadataRequired, args.profileDeleteAllowed, args.subspaceDeleteAllowed, args.publicationDeleteAllowed, args.profileIndividualProcessorsAllowed, args.subspaceIndividualProcessorsAllowed, args.publicationIndividualProcessorsAllowed, args.appName, args.metadataUri, args.registeringProcessor, args.connectingProcessor, args.publishingProcessor, args.collectingProcessor, args.referencingProcessor, args.reserved1, args.reserved2, args.reserved3);
+        return new App(args.authority, args.isProfileDeleteAllowed, args.isSubspaceDeleteAllowed, args.isPublicationDeleteAllowed, args.isProfileIndividualProcessorsAllowed, args.isSubspaceIndividualProcessorsAllowed, args.isPublicationIndividualProcessorsAllowed, args.reserved1, args.reserved2, args.reserved3, args.reserved4, args.reserved5, args.reserved6, args.creationYear, args.creationMonth, args.appDomainName, args.metadataUri, args.registeringProcessor, args.connectingProcessor, args.publishingProcessor, args.collectingProcessor, args.referencingProcessor, args.createdAt);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return App.deserialize(accountInfo.data, offset);
@@ -88,24 +92,61 @@ class App {
     pretty() {
         return {
             authority: this.authority.toBase58(),
-            profileMetadataRequired: this.profileMetadataRequired,
-            subspaceMetadataRequired: this.subspaceMetadataRequired,
-            profileDeleteAllowed: this.profileDeleteAllowed,
-            subspaceDeleteAllowed: this.subspaceDeleteAllowed,
-            publicationDeleteAllowed: this.publicationDeleteAllowed,
-            profileIndividualProcessorsAllowed: this.profileIndividualProcessorsAllowed,
-            subspaceIndividualProcessorsAllowed: this.subspaceIndividualProcessorsAllowed,
-            publicationIndividualProcessorsAllowed: this.publicationIndividualProcessorsAllowed,
-            appName: this.appName,
+            isProfileDeleteAllowed: this.isProfileDeleteAllowed,
+            isSubspaceDeleteAllowed: this.isSubspaceDeleteAllowed,
+            isPublicationDeleteAllowed: this.isPublicationDeleteAllowed,
+            isProfileIndividualProcessorsAllowed: this.isProfileIndividualProcessorsAllowed,
+            isSubspaceIndividualProcessorsAllowed: this.isSubspaceIndividualProcessorsAllowed,
+            isPublicationIndividualProcessorsAllowed: this.isPublicationIndividualProcessorsAllowed,
+            reserved1: this.reserved1,
+            reserved2: this.reserved2,
+            reserved3: this.reserved3,
+            reserved4: this.reserved4,
+            reserved5: this.reserved5.toBase58(),
+            reserved6: this.reserved6.toBase58(),
+            creationYear: (() => {
+                const x = this.creationYear;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            creationMonth: (() => {
+                const x = this.creationMonth;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            appDomainName: this.appDomainName,
             metadataUri: this.metadataUri,
             registeringProcessor: this.registeringProcessor,
             connectingProcessor: this.connectingProcessor,
             publishingProcessor: this.publishingProcessor,
             collectingProcessor: this.collectingProcessor,
             referencingProcessor: this.referencingProcessor,
-            reserved1: this.reserved1,
-            reserved2: this.reserved2,
-            reserved3: this.reserved3,
+            createdAt: (() => {
+                const x = this.createdAt;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
         };
     }
 }
@@ -113,23 +154,27 @@ exports.App = App;
 exports.appBeet = new beet.FixableBeetStruct([
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['authority', beetSolana.publicKey],
-    ['profileMetadataRequired', beet.bool],
-    ['subspaceMetadataRequired', beet.bool],
-    ['profileDeleteAllowed', beet.bool],
-    ['subspaceDeleteAllowed', beet.bool],
-    ['publicationDeleteAllowed', beet.bool],
-    ['profileIndividualProcessorsAllowed', beet.bool],
-    ['subspaceIndividualProcessorsAllowed', beet.bool],
-    ['publicationIndividualProcessorsAllowed', beet.bool],
-    ['appName', beet.utf8String],
+    ['isProfileDeleteAllowed', beet.bool],
+    ['isSubspaceDeleteAllowed', beet.bool],
+    ['isPublicationDeleteAllowed', beet.bool],
+    ['isProfileIndividualProcessorsAllowed', beet.bool],
+    ['isSubspaceIndividualProcessorsAllowed', beet.bool],
+    ['isPublicationIndividualProcessorsAllowed', beet.bool],
+    ['reserved1', beet.u8],
+    ['reserved2', beet.u8],
+    ['reserved3', beet.u8],
+    ['reserved4', beet.u8],
+    ['reserved5', beetSolana.publicKey],
+    ['reserved6', beetSolana.publicKey],
+    ['creationYear', beet.i64],
+    ['creationMonth', beet.i64],
+    ['appDomainName', beet.utf8String],
     ['metadataUri', beet.coption(beet.utf8String)],
     ['registeringProcessor', beet.coption(beetSolana.publicKey)],
     ['connectingProcessor', beet.coption(beetSolana.publicKey)],
     ['publishingProcessor', beet.coption(beetSolana.publicKey)],
     ['collectingProcessor', beet.coption(beetSolana.publicKey)],
     ['referencingProcessor', beet.coption(beetSolana.publicKey)],
-    ['reserved1', beet.uniformFixedSizeArray(beet.u8, 32)],
-    ['reserved2', beet.uniformFixedSizeArray(beet.u8, 32)],
-    ['reserved3', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['createdAt', beet.i64],
 ], App.fromArgs, 'App');
 //# sourceMappingURL=App.js.map

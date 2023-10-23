@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ReferencingProcessorMismatchError = exports.CollectingProcessorMismatchError = exports.PublishingProcessorMismatchError = exports.ConnectingProcessorMismatchError = exports.RegisteringProcessorMismatchError = exports.ReferencingProcessorAccountMissedError = exports.CollectingProcessorAccountMissedError = exports.PublishingProcessorAccountMissedError = exports.ConnectingProcessorAccountMissedError = exports.RegisteringProcessorAccountMissedError = exports.PublicationTagIncorrectError = exports.SelfPublicationCollectingError = exports.AliasAccountExistError = exports.ConnectionValidationFailError = exports.ConnectionTargetAuthorityMismatchError = exports.ConnectionTargetAccountInvalidError = exports.ConnectionTargetAccountMissedError = exports.SelfConnectionNotAllowedError = exports.BothMirrorAndReplyNotAllowedError = exports.TargetPublicationRequiredError = exports.UriLengthIncorrectError = exports.SubspacePublishingManagerProofAccountRequiredError = exports.SubspacePublishingConnectionProofAccountRequiredError = exports.SubspacePublishingPermissionViolationError = exports.SubspaceNameIncorrectError = exports.SubspaceAliasIncorrectError = exports.ProfileLastNameLengthIncorrectError = exports.ProfileFirstNameLengthIncorrectError = exports.BirthDateIncorrectError = exports.UpdateNotAuthorizedError = exports.CurrentAliasAccountRequiredError = exports.BothAliasAccountRequiredError = exports.AliasAccountsMustBeNoneError = exports.AliasAccountRequiredError = exports.ProfileAliasIncorrectError = exports.ProfileIncorrectError = exports.AliasInvalidError = exports.AliasLengthIncorrectError = exports.ActionProhibitedByAppSettingsError = exports.MissingRequiredFieldError = exports.AppManagementNotAthorizedError = exports.AppNameInvalidError = exports.AppNameLengthIncorrectError = exports.ProcessorNotWhitelistedError = exports.ProcessorNameInvalidError = exports.ProcessorNameLengthIncorrectError = exports.ProcessorTypeMismatchError = exports.ProcessorAuthorityMismatchError = exports.DeveloperActionNotAthorizedError = exports.DeveloperNotAthorizedError = void 0;
-exports.errorFromName = exports.errorFromCode = exports.ReportTargetAccountInvalidError = exports.ReactionTargetAccountInvalidError = void 0;
+exports.ReferencingProcessorMismatchError = exports.CollectingProcessorMismatchError = exports.PublishingProcessorMismatchError = exports.ConnectingProcessorMismatchError = exports.RegisteringProcessorMismatchError = exports.ReferencingProcessorAccountMissedError = exports.CollectingProcessorAccountMissedError = exports.PublishingProcessorAccountMissedError = exports.ConnectingProcessorAccountMissedError = exports.RegisteringProcessorAccountMissedError = exports.PublicationTagIncorrectError = exports.SelfPublicationCollectingError = exports.AliasAccountExistError = exports.ConnectionValidationFailError = exports.ConnectionTargetAuthorityMismatchError = exports.ConnectionTargetAccountInvalidError = exports.ConnectionTargetAccountMissedError = exports.SelfConnectionNotAllowedError = exports.BothMirrorAndReplyNotAllowedError = exports.TargetPublicationRequiredError = exports.UriLengthIncorrectError = exports.SubspacePublishingManagerProofAccountRequiredError = exports.SubspacePublishingConnectionProofAccountRequiredError = exports.SubspacePublishingPermissionViolationError = exports.SubspaceNameIncorrectError = exports.SubspaceAliasIncorrectError = exports.ProfileLastNameLengthIncorrectError = exports.ProfileFirstNameLengthIncorrectError = exports.BirthDateIncorrectError = exports.UpdateNotAuthorizedError = exports.CurrentAliasAccountRequiredError = exports.BothAliasAccountRequiredError = exports.AliasAccountsMustBeNoneError = exports.AliasAccountRequiredError = exports.ProfileAliasIncorrectError = exports.ProfileIncorrectError = exports.AliasInvalidError = exports.AliasLengthIncorrectError = exports.ActionProhibitedByAppSettingsError = exports.MissingRequiredFieldError = exports.AppManagementNotAthorizedError = exports.AppDomainNameInvalidError = exports.AppDomainNameLengthIncorrectError = exports.ProcessorNotWhitelistedError = exports.ProcessorNameInvalidError = exports.ProcessorNameLengthIncorrectError = exports.ProcessorTypeMismatchError = exports.ProcessorAuthorityMismatchError = exports.DeveloperActionNotAthorizedError = exports.DeveloperNotAthorizedError = void 0;
+exports.errorFromName = exports.errorFromCode = exports.ReportTargetAccountInvalidError = exports.ReactionCustomCodeMissedError = exports.ReactionTargetAccountInvalidError = void 0;
 const createErrorFromCodeLookup = new Map();
 const createErrorFromNameLookup = new Map();
 class DeveloperNotAthorizedError extends Error {
@@ -95,32 +95,32 @@ class ProcessorNotWhitelistedError extends Error {
 exports.ProcessorNotWhitelistedError = ProcessorNotWhitelistedError;
 createErrorFromCodeLookup.set(0x1776, () => new ProcessorNotWhitelistedError());
 createErrorFromNameLookup.set('ProcessorNotWhitelisted', () => new ProcessorNotWhitelistedError());
-class AppNameLengthIncorrectError extends Error {
+class AppDomainNameLengthIncorrectError extends Error {
     constructor() {
-        super('Application name (ID) length is incorrect');
+        super('Application domain name (ID) length is incorrect');
         this.code = 0x1777;
-        this.name = 'AppNameLengthIncorrect';
+        this.name = 'AppDomainNameLengthIncorrect';
         if (typeof Error.captureStackTrace === 'function') {
-            Error.captureStackTrace(this, AppNameLengthIncorrectError);
+            Error.captureStackTrace(this, AppDomainNameLengthIncorrectError);
         }
     }
 }
-exports.AppNameLengthIncorrectError = AppNameLengthIncorrectError;
-createErrorFromCodeLookup.set(0x1777, () => new AppNameLengthIncorrectError());
-createErrorFromNameLookup.set('AppNameLengthIncorrect', () => new AppNameLengthIncorrectError());
-class AppNameInvalidError extends Error {
+exports.AppDomainNameLengthIncorrectError = AppDomainNameLengthIncorrectError;
+createErrorFromCodeLookup.set(0x1777, () => new AppDomainNameLengthIncorrectError());
+createErrorFromNameLookup.set('AppDomainNameLengthIncorrect', () => new AppDomainNameLengthIncorrectError());
+class AppDomainNameInvalidError extends Error {
     constructor() {
-        super('Application name must contain only ASCII letters in lower case and numbers');
+        super('Application domain name must contain only ASCII letters in lower case and numbers');
         this.code = 0x1778;
-        this.name = 'AppNameInvalid';
+        this.name = 'AppDomainNameInvalid';
         if (typeof Error.captureStackTrace === 'function') {
-            Error.captureStackTrace(this, AppNameInvalidError);
+            Error.captureStackTrace(this, AppDomainNameInvalidError);
         }
     }
 }
-exports.AppNameInvalidError = AppNameInvalidError;
-createErrorFromCodeLookup.set(0x1778, () => new AppNameInvalidError());
-createErrorFromNameLookup.set('AppNameInvalid', () => new AppNameInvalidError());
+exports.AppDomainNameInvalidError = AppDomainNameInvalidError;
+createErrorFromCodeLookup.set(0x1778, () => new AppDomainNameInvalidError());
+createErrorFromNameLookup.set('AppDomainNameInvalid', () => new AppDomainNameInvalidError());
 class AppManagementNotAthorizedError extends Error {
     constructor() {
         super('App management action not authorized');
@@ -667,10 +667,23 @@ class ReactionTargetAccountInvalidError extends Error {
 exports.ReactionTargetAccountInvalidError = ReactionTargetAccountInvalidError;
 createErrorFromCodeLookup.set(0x17a2, () => new ReactionTargetAccountInvalidError());
 createErrorFromNameLookup.set('ReactionTargetAccountInvalid', () => new ReactionTargetAccountInvalidError());
+class ReactionCustomCodeMissedError extends Error {
+    constructor() {
+        super('Report custom code missed');
+        this.code = 0x17a3;
+        this.name = 'ReactionCustomCodeMissed';
+        if (typeof Error.captureStackTrace === 'function') {
+            Error.captureStackTrace(this, ReactionCustomCodeMissedError);
+        }
+    }
+}
+exports.ReactionCustomCodeMissedError = ReactionCustomCodeMissedError;
+createErrorFromCodeLookup.set(0x17a3, () => new ReactionCustomCodeMissedError());
+createErrorFromNameLookup.set('ReactionCustomCodeMissed', () => new ReactionCustomCodeMissedError());
 class ReportTargetAccountInvalidError extends Error {
     constructor() {
         super('Report target account is invalid');
-        this.code = 0x17a3;
+        this.code = 0x17a4;
         this.name = 'ReportTargetAccountInvalid';
         if (typeof Error.captureStackTrace === 'function') {
             Error.captureStackTrace(this, ReportTargetAccountInvalidError);
@@ -678,7 +691,7 @@ class ReportTargetAccountInvalidError extends Error {
     }
 }
 exports.ReportTargetAccountInvalidError = ReportTargetAccountInvalidError;
-createErrorFromCodeLookup.set(0x17a3, () => new ReportTargetAccountInvalidError());
+createErrorFromCodeLookup.set(0x17a4, () => new ReportTargetAccountInvalidError());
 createErrorFromNameLookup.set('ReportTargetAccountInvalid', () => new ReportTargetAccountInvalidError());
 function errorFromCode(code) {
     const createError = createErrorFromCodeLookup.get(code);

@@ -19,7 +19,6 @@ __exportStar(require("./AppData"), exports);
 __exportStar(require("./ConnectionTargetType"), exports);
 __exportStar(require("./ContentType"), exports);
 __exportStar(require("./Gender"), exports);
-__exportStar(require("./LocationCoordinates"), exports);
 __exportStar(require("./ProcessorType"), exports);
 __exportStar(require("./ProfileData"), exports);
 __exportStar(require("./PublicationData"), exports);

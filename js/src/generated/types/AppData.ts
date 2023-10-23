@@ -8,14 +8,12 @@
 import * as beet from '@metaplex-foundation/beet';
 export type AppData = {
   metadataUri: beet.COption<string>;
-  profileMetadataRequired: boolean;
-  subspaceMetadataRequired: boolean;
-  profileDeleteAllowed: boolean;
-  subspaceDeleteAllowed: boolean;
-  publicationDeleteAllowed: boolean;
-  profileIndividualProcessorsAllowed: boolean;
-  subspaceIndividualProcessorsAllowed: boolean;
-  publicationIndividualProcessorsAllowed: boolean;
+  isProfileDeleteAllowed: boolean;
+  isSubspaceDeleteAllowed: boolean;
+  isPublicationDeleteAllowed: boolean;
+  isProfileIndividualProcessorsAllowed: boolean;
+  isSubspaceIndividualProcessorsAllowed: boolean;
+  isPublicationIndividualProcessorsAllowed: boolean;
 };
 
 /**
@@ -25,14 +23,12 @@ export type AppData = {
 export const appDataBeet = new beet.FixableBeetArgsStruct<AppData>(
   [
     ['metadataUri', beet.coption(beet.utf8String)],
-    ['profileMetadataRequired', beet.bool],
-    ['subspaceMetadataRequired', beet.bool],
-    ['profileDeleteAllowed', beet.bool],
-    ['subspaceDeleteAllowed', beet.bool],
-    ['publicationDeleteAllowed', beet.bool],
-    ['profileIndividualProcessorsAllowed', beet.bool],
-    ['subspaceIndividualProcessorsAllowed', beet.bool],
-    ['publicationIndividualProcessorsAllowed', beet.bool],
+    ['isProfileDeleteAllowed', beet.bool],
+    ['isSubspaceDeleteAllowed', beet.bool],
+    ['isPublicationDeleteAllowed', beet.bool],
+    ['isProfileIndividualProcessorsAllowed', beet.bool],
+    ['isSubspaceIndividualProcessorsAllowed', beet.bool],
+    ['isPublicationIndividualProcessorsAllowed', beet.bool],
   ],
   'AppData',
 );

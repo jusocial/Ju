@@ -30,13 +30,23 @@ const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
 const SubspacePublishingPermissionLevel_1 = require("../types/SubspacePublishingPermissionLevel");
 exports.subspaceDiscriminator = [105, 6, 104, 112, 174, 108, 161, 167];
 class Subspace {
-    constructor(app, authority, exchangeKey, creator, publishingPermission, name, alias, uuid, metadataUri, publishingProcessor, connectingProcessor, collectingProcessor, referencingProcessor, createdAt, reserved1, reserved2) {
+    constructor(app, authority, exchangeKey, creator, publishingPermission, name, reserved1, reserved2, reserved3, reserved4, reserved5, reserved6, creationYear, creationMonth, creationWeek, creationDay, alias, uuid, metadataUri, publishingProcessor, connectingProcessor, collectingProcessor, referencingProcessor, createdAt) {
         this.app = app;
         this.authority = authority;
         this.exchangeKey = exchangeKey;
         this.creator = creator;
         this.publishingPermission = publishingPermission;
         this.name = name;
+        this.reserved1 = reserved1;
+        this.reserved2 = reserved2;
+        this.reserved3 = reserved3;
+        this.reserved4 = reserved4;
+        this.reserved5 = reserved5;
+        this.reserved6 = reserved6;
+        this.creationYear = creationYear;
+        this.creationMonth = creationMonth;
+        this.creationWeek = creationWeek;
+        this.creationDay = creationDay;
         this.alias = alias;
         this.uuid = uuid;
         this.metadataUri = metadataUri;
@@ -45,11 +55,9 @@ class Subspace {
         this.collectingProcessor = collectingProcessor;
         this.referencingProcessor = referencingProcessor;
         this.createdAt = createdAt;
-        this.reserved1 = reserved1;
-        this.reserved2 = reserved2;
     }
     static fromArgs(args) {
-        return new Subspace(args.app, args.authority, args.exchangeKey, args.creator, args.publishingPermission, args.name, args.alias, args.uuid, args.metadataUri, args.publishingProcessor, args.connectingProcessor, args.collectingProcessor, args.referencingProcessor, args.createdAt, args.reserved1, args.reserved2);
+        return new Subspace(args.app, args.authority, args.exchangeKey, args.creator, args.publishingPermission, args.name, args.reserved1, args.reserved2, args.reserved3, args.reserved4, args.reserved5, args.reserved6, args.creationYear, args.creationMonth, args.creationWeek, args.creationDay, args.alias, args.uuid, args.metadataUri, args.publishingProcessor, args.connectingProcessor, args.collectingProcessor, args.referencingProcessor, args.createdAt);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return Subspace.deserialize(accountInfo.data, offset);
@@ -92,6 +100,60 @@ class Subspace {
             publishingPermission: 'SubspacePublishingPermissionLevel.' +
                 SubspacePublishingPermissionLevel_1.SubspacePublishingPermissionLevel[this.publishingPermission],
             name: this.name,
+            reserved1: this.reserved1,
+            reserved2: this.reserved2,
+            reserved3: this.reserved3,
+            reserved4: this.reserved4,
+            reserved5: this.reserved5,
+            reserved6: this.reserved6,
+            creationYear: (() => {
+                const x = this.creationYear;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            creationMonth: (() => {
+                const x = this.creationMonth;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            creationWeek: (() => {
+                const x = this.creationWeek;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            creationDay: (() => {
+                const x = this.creationDay;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
             alias: this.alias,
             uuid: this.uuid,
             metadataUri: this.metadataUri,
@@ -111,8 +173,6 @@ class Subspace {
                 }
                 return x;
             })(),
-            reserved1: this.reserved1,
-            reserved2: this.reserved2,
         };
     }
 }
@@ -125,6 +185,16 @@ exports.subspaceBeet = new beet.FixableBeetStruct([
     ['creator', beetSolana.publicKey],
     ['publishingPermission', SubspacePublishingPermissionLevel_1.subspacePublishingPermissionLevelBeet],
     ['name', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['reserved1', beet.u8],
+    ['reserved2', beet.u8],
+    ['reserved3', beet.u8],
+    ['reserved4', beet.u8],
+    ['reserved5', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['reserved6', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['creationYear', beet.i64],
+    ['creationMonth', beet.i64],
+    ['creationWeek', beet.i64],
+    ['creationDay', beet.i64],
     ['alias', beet.coption(beet.utf8String)],
     ['uuid', beet.utf8String],
     ['metadataUri', beet.coption(beet.utf8String)],
@@ -133,7 +203,5 @@ exports.subspaceBeet = new beet.FixableBeetStruct([
     ['collectingProcessor', beet.coption(beetSolana.publicKey)],
     ['referencingProcessor', beet.coption(beetSolana.publicKey)],
     ['createdAt', beet.i64],
-    ['reserved1', beet.uniformFixedSizeArray(beet.u8, 32)],
-    ['reserved2', beet.uniformFixedSizeArray(beet.u8, 32)],
 ], Subspace.fromArgs, 'Subspace');
 //# sourceMappingURL=Subspace.js.map

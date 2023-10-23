@@ -27,13 +27,11 @@ exports.appDataBeet = void 0;
 const beet = __importStar(require("@metaplex-foundation/beet"));
 exports.appDataBeet = new beet.FixableBeetArgsStruct([
     ['metadataUri', beet.coption(beet.utf8String)],
-    ['profileMetadataRequired', beet.bool],
-    ['subspaceMetadataRequired', beet.bool],
-    ['profileDeleteAllowed', beet.bool],
-    ['subspaceDeleteAllowed', beet.bool],
-    ['publicationDeleteAllowed', beet.bool],
-    ['profileIndividualProcessorsAllowed', beet.bool],
-    ['subspaceIndividualProcessorsAllowed', beet.bool],
-    ['publicationIndividualProcessorsAllowed', beet.bool],
+    ['isProfileDeleteAllowed', beet.bool],
+    ['isSubspaceDeleteAllowed', beet.bool],
+    ['isPublicationDeleteAllowed', beet.bool],
+    ['isProfileIndividualProcessorsAllowed', beet.bool],
+    ['isSubspaceIndividualProcessorsAllowed', beet.bool],
+    ['isPublicationIndividualProcessorsAllowed', beet.bool],
 ], 'AppData');
 //# sourceMappingURL=AppData.js.map

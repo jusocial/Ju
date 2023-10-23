@@ -7,20 +7,55 @@
 
 import * as beet from '@metaplex-foundation/beet';
 /**
+ * This type is used to derive the {@link ReactionType} type as well as the de/serializer.
+ * However don't refer to it in your code but use the {@link ReactionType} type instead.
+ *
+ * @category userTypes
+ * @category enums
+ * @category generated
+ * @private
+ */
+export type ReactionTypeRecord = {
+  UpVote: void /* scalar variant */;
+  DownVote: void /* scalar variant */;
+  CustomVote: { code: number };
+};
+
+/**
+ * Union type respresenting the ReactionType data enum defined in Rust.
+ *
+ * NOTE: that it includes a `__kind` property which allows to narrow types in
+ * switch/if statements.
+ * Additionally `isReactionType*` type guards are exposed below to narrow to a specific variant.
+ *
+ * @category userTypes
  * @category enums
  * @category generated
  */
-export enum ReactionType {
-  UpVote,
-  DownVote,
-  CustomVote,
-}
+export type ReactionType = beet.DataEnumKeyAsKind<ReactionTypeRecord>;
+
+export const isReactionTypeUpVote = (x: ReactionType): x is ReactionType & { __kind: 'UpVote' } =>
+  x.__kind === 'UpVote';
+export const isReactionTypeDownVote = (
+  x: ReactionType,
+): x is ReactionType & { __kind: 'DownVote' } => x.__kind === 'DownVote';
+export const isReactionTypeCustomVote = (
+  x: ReactionType,
+): x is ReactionType & { __kind: 'CustomVote' } => x.__kind === 'CustomVote';
 
 /**
  * @category userTypes
  * @category generated
  */
-export const reactionTypeBeet = beet.fixedScalarEnum(ReactionType) as beet.FixedSizeBeet<
-  ReactionType,
-  ReactionType
->;
+export const reactionTypeBeet = beet.dataEnum<ReactionTypeRecord>([
+  ['UpVote', beet.unit],
+  ['DownVote', beet.unit],
+
+  [
+    'CustomVote',
+    new beet.BeetArgsStruct<ReactionTypeRecord['CustomVote']>(
+      [['code', beet.u32]],
+      'ReactionTypeRecord["CustomVote"]',
+    ),
+  ],
+]) as beet.FixableBeet<ReactionType, ReactionType>;

@@ -22,7 +22,7 @@ export type CreateReactionInstructionArgs = {
  * @category CreateReaction
  * @category generated
  */
-export const createReactionStruct = new beet.BeetArgsStruct<
+export const createReactionStruct = new beet.FixableBeetArgsStruct<
   CreateReactionInstructionArgs & {
     instructionDiscriminator: number[] /* size: 8 */;
   }

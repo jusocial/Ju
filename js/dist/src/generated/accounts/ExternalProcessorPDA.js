@@ -30,16 +30,18 @@ const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
 const ProcessorType_1 = require("../types/ProcessorType");
 exports.externalProcessorPDADiscriminator = [204, 224, 184, 182, 78, 32, 108, 104];
 class ExternalProcessorPDA {
-    constructor(processorType, isApproved, authority, programAddress, developerWallet, processorName) {
+    constructor(processorType, isApproved, authority, programAddress, developerWallet, processorName, metadataUri, createdAt) {
         this.processorType = processorType;
         this.isApproved = isApproved;
         this.authority = authority;
         this.programAddress = programAddress;
         this.developerWallet = developerWallet;
         this.processorName = processorName;
+        this.metadataUri = metadataUri;
+        this.createdAt = createdAt;
     }
     static fromArgs(args) {
-        return new ExternalProcessorPDA(args.processorType, args.isApproved, args.authority, args.programAddress, args.developerWallet, args.processorName);
+        return new ExternalProcessorPDA(args.processorType, args.isApproved, args.authority, args.programAddress, args.developerWallet, args.processorName, args.metadataUri, args.createdAt);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return ExternalProcessorPDA.deserialize(accountInfo.data, offset);
@@ -81,6 +83,19 @@ class ExternalProcessorPDA {
             programAddress: this.programAddress.toBase58(),
             developerWallet: this.developerWallet,
             processorName: this.processorName,
+            metadataUri: this.metadataUri,
+            createdAt: (() => {
+                const x = this.createdAt;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
         };
     }
 }
@@ -93,5 +108,7 @@ exports.externalProcessorPDABeet = new beet.FixableBeetStruct([
     ['programAddress', beetSolana.publicKey],
     ['developerWallet', beet.coption(beetSolana.publicKey)],
     ['processorName', beet.utf8String],
+    ['metadataUri', beet.coption(beet.utf8String)],
+    ['createdAt', beet.i64],
 ], ExternalProcessorPDA.fromArgs, 'ExternalProcessorPDA');
 //# sourceMappingURL=ExternalProcessorPDA.js.map

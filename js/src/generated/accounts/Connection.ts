@@ -21,10 +21,11 @@ export type ConnectionArgs = {
   connectionTargetType: ConnectionTargetType;
   initializer: web3.PublicKey;
   target: web3.PublicKey;
-  approved: boolean;
+  isApproved: boolean;
   createdAt: beet.bignum;
-  searchable3Day: beet.bignum;
-  searchableDay: beet.bignum;
+  creationWeek: beet.bignum;
+  creation3Day: beet.bignum;
+  creationDay: beet.bignum;
   modifiedAt: beet.COption<beet.bignum>;
 };
 
@@ -43,10 +44,11 @@ export class Connection implements ConnectionArgs {
     readonly connectionTargetType: ConnectionTargetType,
     readonly initializer: web3.PublicKey,
     readonly target: web3.PublicKey,
-    readonly approved: boolean,
+    readonly isApproved: boolean,
     readonly createdAt: beet.bignum,
-    readonly searchable3Day: beet.bignum,
-    readonly searchableDay: beet.bignum,
+    readonly creationWeek: beet.bignum,
+    readonly creation3Day: beet.bignum,
+    readonly creationDay: beet.bignum,
     readonly modifiedAt: beet.COption<beet.bignum>,
   ) {}
 
@@ -60,10 +62,11 @@ export class Connection implements ConnectionArgs {
       args.connectionTargetType,
       args.initializer,
       args.target,
-      args.approved,
+      args.isApproved,
       args.createdAt,
-      args.searchable3Day,
-      args.searchableDay,
+      args.creationWeek,
+      args.creation3Day,
+      args.creationDay,
       args.modifiedAt,
     );
   }
@@ -168,7 +171,7 @@ export class Connection implements ConnectionArgs {
         'ConnectionTargetType.' + ConnectionTargetType[this.connectionTargetType],
       initializer: this.initializer.toBase58(),
       target: this.target.toBase58(),
-      approved: this.approved,
+      isApproved: this.isApproved,
       createdAt: (() => {
         const x = <{ toNumber: () => number }>this.createdAt;
         if (typeof x.toNumber === 'function') {
@@ -180,8 +183,8 @@ export class Connection implements ConnectionArgs {
         }
         return x;
       })(),
-      searchable3Day: (() => {
-        const x = <{ toNumber: () => number }>this.searchable3Day;
+      creationWeek: (() => {
+        const x = <{ toNumber: () => number }>this.creationWeek;
         if (typeof x.toNumber === 'function') {
           try {
             return x.toNumber();
@@ -191,8 +194,19 @@ export class Connection implements ConnectionArgs {
         }
         return x;
       })(),
-      searchableDay: (() => {
-        const x = <{ toNumber: () => number }>this.searchableDay;
+      creation3Day: (() => {
+        const x = <{ toNumber: () => number }>this.creation3Day;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      creationDay: (() => {
+        const x = <{ toNumber: () => number }>this.creationDay;
         if (typeof x.toNumber === 'function') {
           try {
             return x.toNumber();
@@ -224,10 +238,11 @@ export const connectionBeet = new beet.FixableBeetStruct<
     ['connectionTargetType', connectionTargetTypeBeet],
     ['initializer', beetSolana.publicKey],
     ['target', beetSolana.publicKey],
-    ['approved', beet.bool],
+    ['isApproved', beet.bool],
     ['createdAt', beet.i64],
-    ['searchable3Day', beet.i64],
-    ['searchableDay', beet.i64],
+    ['creationWeek', beet.i64],
+    ['creation3Day', beet.i64],
+    ['creationDay', beet.i64],
     ['modifiedAt', beet.coption(beet.i64)],
   ],
   Connection.fromArgs,

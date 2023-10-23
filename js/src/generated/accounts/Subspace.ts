@@ -25,6 +25,16 @@ export type SubspaceArgs = {
   creator: web3.PublicKey;
   publishingPermission: SubspacePublishingPermissionLevel;
   name: number[] /* size: 32 */;
+  reserved1: number;
+  reserved2: number;
+  reserved3: number;
+  reserved4: number;
+  reserved5: number[] /* size: 32 */;
+  reserved6: number[] /* size: 32 */;
+  creationYear: beet.bignum;
+  creationMonth: beet.bignum;
+  creationWeek: beet.bignum;
+  creationDay: beet.bignum;
   alias: beet.COption<string>;
   uuid: string;
   metadataUri: beet.COption<string>;
@@ -33,8 +43,6 @@ export type SubspaceArgs = {
   collectingProcessor: beet.COption<web3.PublicKey>;
   referencingProcessor: beet.COption<web3.PublicKey>;
   createdAt: beet.bignum;
-  reserved1: number[] /* size: 32 */;
-  reserved2: number[] /* size: 32 */;
 };
 
 export const subspaceDiscriminator = [105, 6, 104, 112, 174, 108, 161, 167];
@@ -53,6 +61,16 @@ export class Subspace implements SubspaceArgs {
     readonly creator: web3.PublicKey,
     readonly publishingPermission: SubspacePublishingPermissionLevel,
     readonly name: number[] /* size: 32 */,
+    readonly reserved1: number,
+    readonly reserved2: number,
+    readonly reserved3: number,
+    readonly reserved4: number,
+    readonly reserved5: number[] /* size: 32 */,
+    readonly reserved6: number[] /* size: 32 */,
+    readonly creationYear: beet.bignum,
+    readonly creationMonth: beet.bignum,
+    readonly creationWeek: beet.bignum,
+    readonly creationDay: beet.bignum,
     readonly alias: beet.COption<string>,
     readonly uuid: string,
     readonly metadataUri: beet.COption<string>,
@@ -61,8 +79,6 @@ export class Subspace implements SubspaceArgs {
     readonly collectingProcessor: beet.COption<web3.PublicKey>,
     readonly referencingProcessor: beet.COption<web3.PublicKey>,
     readonly createdAt: beet.bignum,
-    readonly reserved1: number[] /* size: 32 */,
-    readonly reserved2: number[] /* size: 32 */,
   ) {}
 
   /**
@@ -76,6 +92,16 @@ export class Subspace implements SubspaceArgs {
       args.creator,
       args.publishingPermission,
       args.name,
+      args.reserved1,
+      args.reserved2,
+      args.reserved3,
+      args.reserved4,
+      args.reserved5,
+      args.reserved6,
+      args.creationYear,
+      args.creationMonth,
+      args.creationWeek,
+      args.creationDay,
       args.alias,
       args.uuid,
       args.metadataUri,
@@ -84,8 +110,6 @@ export class Subspace implements SubspaceArgs {
       args.collectingProcessor,
       args.referencingProcessor,
       args.createdAt,
-      args.reserved1,
-      args.reserved2,
     );
   }
 
@@ -191,6 +215,56 @@ export class Subspace implements SubspaceArgs {
         'SubspacePublishingPermissionLevel.' +
         SubspacePublishingPermissionLevel[this.publishingPermission],
       name: this.name,
+      reserved1: this.reserved1,
+      reserved2: this.reserved2,
+      reserved3: this.reserved3,
+      reserved4: this.reserved4,
+      reserved5: this.reserved5,
+      reserved6: this.reserved6,
+      creationYear: (() => {
+        const x = <{ toNumber: () => number }>this.creationYear;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      creationMonth: (() => {
+        const x = <{ toNumber: () => number }>this.creationMonth;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      creationWeek: (() => {
+        const x = <{ toNumber: () => number }>this.creationWeek;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      creationDay: (() => {
+        const x = <{ toNumber: () => number }>this.creationDay;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
       alias: this.alias,
       uuid: this.uuid,
       metadataUri: this.metadataUri,
@@ -209,8 +283,6 @@ export class Subspace implements SubspaceArgs {
         }
         return x;
       })(),
-      reserved1: this.reserved1,
-      reserved2: this.reserved2,
     };
   }
 }
@@ -233,6 +305,16 @@ export const subspaceBeet = new beet.FixableBeetStruct<
     ['creator', beetSolana.publicKey],
     ['publishingPermission', subspacePublishingPermissionLevelBeet],
     ['name', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['reserved1', beet.u8],
+    ['reserved2', beet.u8],
+    ['reserved3', beet.u8],
+    ['reserved4', beet.u8],
+    ['reserved5', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['reserved6', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['creationYear', beet.i64],
+    ['creationMonth', beet.i64],
+    ['creationWeek', beet.i64],
+    ['creationDay', beet.i64],
     ['alias', beet.coption(beet.utf8String)],
     ['uuid', beet.utf8String],
     ['metadataUri', beet.coption(beet.utf8String)],
@@ -241,8 +323,6 @@ export const subspaceBeet = new beet.FixableBeetStruct<
     ['collectingProcessor', beet.coption(beetSolana.publicKey)],
     ['referencingProcessor', beet.coption(beetSolana.publicKey)],
     ['createdAt', beet.i64],
-    ['reserved1', beet.uniformFixedSizeArray(beet.u8, 32)],
-    ['reserved2', beet.uniformFixedSizeArray(beet.u8, 32)],
   ],
   Subspace.fromArgs,
   'Subspace',

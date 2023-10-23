@@ -282,6 +282,7 @@ describe("ju-core", () => {
           "proc1",
           testProcessor1,
           // testProcessor1.publicKey,
+          null,
           null
         )
           .accounts(
@@ -316,17 +317,12 @@ describe("ju-core", () => {
       /* Call the initializeApp function via RPC */
       let appData: anchor.IdlTypes<JuCore>["AppData"] = {
         metadataUri: appMetadataUri,
-
-        profileMetadataRequired: true,
-        subspaceMetadataRequired: true,
-
-        profileIndividualProcessorsAllowed: false,
-        subspaceIndividualProcessorsAllowed: false,
-        publicationIndividualProcessorsAllowed: false,
-
-        profileDeleteAllowed: false,
-        subspaceDeleteAllowed: false,
-        publicationDeleteAllowed: false,
+        isProfileIndividualProcessorsAllowed: false,
+        isSubspaceIndividualProcessorsAllowed: false,
+        isPublicationIndividualProcessorsAllowed: false,
+        isProfileDeleteAllowed: false,
+        isSubspaceDeleteAllowed: false,
+        isPublicationDeleteAllowed: false,
       };
 
       // console.log('appAccount: ', appAccount)
@@ -366,16 +362,13 @@ describe("ju-core", () => {
       let appData2: anchor.IdlTypes<JuCore>["AppData"] = {
         metadataUri: newUri,
 
-        profileMetadataRequired: true,
-        subspaceMetadataRequired: true,
+        isProfileIndividualProcessorsAllowed: false,
+        isSubspaceIndividualProcessorsAllowed: false,
+        isPublicationIndividualProcessorsAllowed: false,
 
-        profileIndividualProcessorsAllowed: false,
-        subspaceIndividualProcessorsAllowed: false,
-        publicationIndividualProcessorsAllowed: false,
-
-        profileDeleteAllowed: true,
-        subspaceDeleteAllowed: true,
-        publicationDeleteAllowed: true,
+        isProfileDeleteAllowed: true,
+        isSubspaceDeleteAllowed: true,
+        isPublicationDeleteAllowed: true,
       };
 
       try {
@@ -442,15 +435,21 @@ describe("ju-core", () => {
         let profileInstructionData1: anchor.IdlTypes<JuCore>["ProfileData"] = {
           alias: profileAlias1,
           metadataUri: uri,
-          statusText: profile1StatusText,
           gender: genderMale,
           firstName: profile1Name,
           lastName: profile1Surname,
           birthDate: birthDate(1972, 0, 24),
-          countryCode: 0,
-          regionCode: 0,
-          cityCode: 0,
-          currentLocation: null
+          countryCode: null,
+          regionCode: null,
+          cityCode: null,
+          personalData1: null,
+          personalData2: null,
+          personalData3: null,
+          personalData4: null,
+          personalData5: null,
+          personalData6: null,
+          personalData7: null,
+          personalData8: null,
         };
         const tx = await program.methods.createProfile(profileInstructionData1, null)
           .accounts(
@@ -459,6 +458,7 @@ describe("ju-core", () => {
               profile: profileAccount1,
               aliasPda: profileAliasAccount1,
               connectingProcessorPda: null,
+              registeringProcessor: testProcessor1,
               authority: user,
               systemProgram: SystemProgram.programId,
             }
@@ -478,17 +478,16 @@ describe("ju-core", () => {
       const aliasPda = await program.account.alias.fetch(profileAliasAccount1);
       // console.log('Alias acoount: ', aliasPda);
 
-      expect(data.metadataUri.toString()).to.equal(uri);
-      expect(data.gender.toString()).to.equal(genderMale.toString());
-      expect(toText(data.firstName)).to.equal(profile1Name);
-      expect(toText(data.lastName)).to.equal(profile1Surname);
-      expect(data.birthDate.toString()).to.equal(birthDate(1972, 0, 24).toString());
+      expect(data.metadataUri.toString()).to.equal(uri, '0');
+      expect(data.gender.toString()).to.equal(genderMale.toString(), '2');
+      expect(toText(data.firstName)).to.equal(profile1Name, '3');
+      expect(toText(data.lastName)).to.equal(profile1Surname, '4');
+      expect(data.birthDate.toString()).to.equal(birthDate(1972, 0, 24).toString(), '5');
 
-      expect(data.alias.toString()).to.equal(profileAlias1);
-      expect(data.statusText.toString()).to.equal(profile1StatusText);
+      expect(data.alias.toString()).to.equal(profileAlias1, '6');
 
-      expect(aliasPda.owner.toString()).to.equal(profileAccount1.toString());
-      expect(aliasPda.value.toString()).to.equal(profileAlias1.toString());
+      expect(aliasPda.owner.toString()).to.equal(profileAccount1.toString(), '7');
+      expect(aliasPda.value.toString()).to.equal(profileAlias1.toString(), '8');
     });
 
     // Update Profile
@@ -501,15 +500,21 @@ describe("ju-core", () => {
         let profileInstructionData1: anchor.IdlTypes<JuCore>["ProfileData"] = {
           alias: profileAlias1,
           metadataUri: updatedUri,
-          statusText: updatedProfile1StatusText,
           gender: genderMale,
           firstName: profile1Name,
           lastName: profile1Surname,
-          birthDate: profile1Birthdate,
+          birthDate: null,
           countryCode: 0,
           regionCode: 0,
           cityCode: 0,
-          currentLocation: null
+          personalData1: null,
+          personalData2: null,
+          personalData3: null,
+          personalData4: null,
+          personalData5: null,
+          personalData6: null,
+          personalData7: null,
+          personalData8: null,
         };
         const tx = await program.methods.updateProfile(profileInstructionData1)
           .accounts(
@@ -543,9 +548,8 @@ describe("ju-core", () => {
       expect(data.gender.toString()).to.equal(genderMale.toString());
       expect(toText(data.firstName)).to.equal(profile1Name);
       expect(toText(data.lastName)).to.equal(profile1Surname);
-      expect(data.birthDate.toString()).to.equal(profile1Birthdate.toString());
+      expect(data.birthDate.toString()).to.equal(birthDate(1900, 0, 1).toString());
 
-      expect(data.statusText.toString()).to.equal(updatedProfile1StatusText);
       expect(data.alias).to.equal(profileAlias1);
       expect(data.authority.toString()).to.equal(user.toString());
 
@@ -573,14 +577,20 @@ describe("ju-core", () => {
           alias: updatedProfileAlias1,
           metadataUri: updatedUri,
           gender: genderOtherOrPreferNotToSay,
-          statusText: '',
           firstName: updatedProfile1Name,
           lastName: updatedProfile1Surname,
           birthDate: updatedProfile1Birthdate,
           countryCode: 7,
           regionCode: 333,
           cityCode: 31,
-          currentLocation: null
+          personalData1: null,
+          personalData2: null,
+          personalData3: null,
+          personalData4: null,
+          personalData5: null,
+          personalData6: null,
+          personalData7: null,
+          personalData8: null,
         };
         const tx = await program.methods.updateProfile(profileInstructionData1)
           .accounts(
@@ -647,7 +657,6 @@ describe("ju-core", () => {
         let profileInstructionData1: anchor.IdlTypes<JuCore>["ProfileData"] = {
           alias: null,
           metadataUri: uri,
-          statusText: '',
           gender: genderMale,
           firstName: 'Konrad',
           lastName: 'Mikhelson',
@@ -655,7 +664,14 @@ describe("ju-core", () => {
           countryCode: 7,
           regionCode: 321,
           cityCode: 31,
-          currentLocation: null
+          personalData1: null,
+          personalData2: null,
+          personalData3: null,
+          personalData4: null,
+          personalData5: null,
+          personalData6: null,
+          personalData7: null,
+          personalData8: null,
         };
         const tx = await program.methods.updateProfile(profileInstructionData1)
           .accounts(
@@ -708,7 +724,6 @@ describe("ju-core", () => {
         /* Call the create function via RPC */
         let profileInstructionData2: anchor.IdlTypes<JuCore>["ProfileData"] = {
           alias: profileAlias2,
-          statusText: profile2StatusText,
           metadataUri: profile2MetadataUri,
           gender: genderFemale,
           firstName: profile2Name,
@@ -717,7 +732,14 @@ describe("ju-core", () => {
           countryCode: 0,
           regionCode: 0,
           cityCode: 0,
-          currentLocation: null
+          personalData1: null,
+          personalData2: null,
+          personalData3: null,
+          personalData4: null,
+          personalData5: null,
+          personalData6: null,
+          personalData7: null,
+          personalData8: null,
         };
         const tx = await program.methods.createProfile(profileInstructionData2, null)
           .accounts({
@@ -725,6 +747,7 @@ describe("ju-core", () => {
             profile: profileAccount2,
             aliasPda: profileAliasAccount2,
             connectingProcessorPda: null,
+            registeringProcessor: testProcessor1,
             authority: user2.publicKey,
             systemProgram: SystemProgram.programId,
           })
@@ -748,7 +771,6 @@ describe("ju-core", () => {
       expect(toText(data.lastName)).to.equal(profile2Surname);
       expect(data.birthDate.toString()).to.equal(profile2Birthdate.toString());
 
-      expect(data.statusText.toString()).to.equal(profile2StatusText);
       expect(data.alias).to.equal(profileAlias2);
       expect(data.authority.toString()).to.equal(user2.publicKey.toString());
     });
@@ -865,6 +887,8 @@ describe("ju-core", () => {
               connection: connectionAccount_2_1,
               initializer: profileAccount2,
               target: profileAccount1,
+              connectingProcessor: null,
+              connectingProcessorIndividual: null,
               authority: user2.publicKey,
               systemProgram: SystemProgram.programId,
             }
@@ -885,7 +909,7 @@ describe("ju-core", () => {
       expect(data.initializer.toString()).to.equal(profileAccount2.toString());
       expect(data.target.toString()).to.equal(profileAccount1.toString());
       expect(JSON.stringify(data.connectionTargetType)).to.equal(JSON.stringify({ profile: {} }));
-      expect(data.approved).to.equal(false);
+      expect(data.isApproved).to.equal(false);
       expect(data.authority.toString()).to.equal(user2.publicKey.toString());
     });
 
@@ -901,6 +925,8 @@ describe("ju-core", () => {
               connection: connectionAccount_1_2,
               initializer: profileAccount1,
               target: profileAccount2,
+              connectingProcessor: null,
+              connectingProcessorIndividual: null,
               authority: user,
               systemProgram: SystemProgram.programId,
             }
@@ -920,7 +946,7 @@ describe("ju-core", () => {
       expect(data.initializer.toString()).to.equal(profileAccount1.toString());
       expect(data.target.toString()).to.equal(profileAccount2.toString());
       expect(JSON.stringify(data.connectionTargetType)).to.equal(JSON.stringify({ profile: {} }));
-      expect(data.approved).to.equal(false);
+      expect(data.isApproved).to.equal(false);
       expect(data.authority.toString()).to.equal(user.toString());
     });
 
@@ -954,7 +980,7 @@ describe("ju-core", () => {
       expect(data.app.toString()).to.equal(appAccount.toString());
       expect(data.initializer.toString()).to.equal(profileAccount2.toString());
       expect(data.target.toString()).to.equal(profileAccount1.toString());
-      expect(data.approved).to.equal(true);
+      expect(data.isApproved).to.equal(true);
       expect(data.authority.toString()).to.equal(user2.publicKey.toString());
     });
 
@@ -970,6 +996,8 @@ describe("ju-core", () => {
               connection: connectionAccount_1_sub,
               initializer: profileAccount1,
               target: subspaceAccount,
+              connectingProcessor: null,
+              connectingProcessorIndividual: null,
               authority: user,
               systemProgram: SystemProgram.programId,
             }
@@ -989,7 +1017,7 @@ describe("ju-core", () => {
       expect(JSON.stringify(data.connectionTargetType)).to.equal(JSON.stringify({ subspace: {} }));
       expect(data.initializer.toString()).to.equal(profileAccount1.toString());
       expect(data.target.toString()).to.equal(subspaceAccount.toString());
-      expect(data.approved).to.equal(false);
+      expect(data.isApproved).to.equal(false);
       expect(data.authority.toString()).to.equal(user.toString());
     });
 
@@ -1006,6 +1034,8 @@ describe("ju-core", () => {
               connection: connectionAccount_2_sub,
               initializer: profileAccount2,
               target: subspaceAccount,
+              connectingProcessor: null,
+              connectingProcessorIndividual: null,
               authority: user2.publicKey,
               systemProgram: SystemProgram.programId,
             }
@@ -1026,7 +1056,7 @@ describe("ju-core", () => {
       expect(JSON.stringify(data.connectionTargetType)).to.equal(JSON.stringify({ subspace: {} }));
       expect(data.initializer.toString()).to.equal(profileAccount2.toString());
       expect(data.target.toString()).to.equal(subspaceAccount.toString());
-      expect(data.approved).to.equal(false);
+      expect(data.isApproved).to.equal(false);
       expect(data.authority.toString()).to.equal(user2.publicKey.toString());
     });
 
@@ -1130,6 +1160,9 @@ describe("ju-core", () => {
             subspaceManagerProof: null,
             collectingProcessorPda: null,
             referencingProcessorPda: null,
+            publishingProcessor: null,
+            referencingProcessor: null,
+            referencingProcessorIndividual: null,
             authority: user,
             systemProgram: SystemProgram.programId,
           })
@@ -1238,6 +1271,9 @@ describe("ju-core", () => {
             subspaceManagerProof: null,
             collectingProcessorPda: null,
             referencingProcessorPda: null,
+            publishingProcessor: null,
+            referencingProcessor: null,
+            referencingProcessorIndividual: null,
             authority: user,
             systemProgram: SystemProgram.programId,
           })
@@ -1294,6 +1330,9 @@ describe("ju-core", () => {
             subspaceManagerProof: null,
             collectingProcessorPda: null,
             referencingProcessorPda: null,
+            publishingProcessor: null,
+            referencingProcessor: null,
+            referencingProcessorIndividual: null,
             authority: user2.publicKey,
             systemProgram: SystemProgram.programId,
           })
@@ -1351,6 +1390,9 @@ describe("ju-core", () => {
             subspaceManagerProof: null,
             collectingProcessorPda: null,
             referencingProcessorPda: null,
+            publishingProcessor: null,
+            referencingProcessor: null,
+            referencingProcessorIndividual: null,
             authority: user,
             systemProgram: SystemProgram.programId,
           })
@@ -1402,6 +1444,9 @@ describe("ju-core", () => {
             subspaceManagerProof: subspaceManager2, // Management proof here
             collectingProcessorPda: null,
             referencingProcessorPda: null,
+            publishingProcessor: null,
+            referencingProcessor: null,
+            referencingProcessorIndividual: null,
             authority: user2.publicKey,
             systemProgram: SystemProgram.programId,
           })
@@ -1593,7 +1638,7 @@ describe("ju-core", () => {
     it("Create Reaction to Profile", async () => {
 
       const reactionTargetType: anchor.IdlTypes<JuCore>["ReactionTargetType"] = { profile: {} }
-      let reactionType: anchor.IdlTypes<JuCore>["ReactionType"] = { upVote: {} }
+      let reactionType: anchor.IdlTypes<JuCore>["ReactionType"] = { customVote: { code: 0x1F600} }
 
       try {
         const tx = await program.methods.createReaction(reactionType)
@@ -1618,7 +1663,7 @@ describe("ju-core", () => {
       expect(data.initializer.toString()).to.equal(profileAccount1.toString(), '2');
       expect(data.targetType.toString()).to.equal(reactionTargetType.toString(), '3');
       expect(data.target.toString()).to.equal(profileAccount2.toString(), '4');
-      expect(data.reactionType.toString()).to.equal(reactionType.toString(), '5');
+      expect(String.fromCodePoint(data.reactionType.customVote.code)).to.equal(String.fromCodePoint(0x1F600), '5');
       expect(data.authority.toString()).to.equal(user.toString(), '6');
     });
 

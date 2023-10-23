@@ -24,11 +24,11 @@ pub enum CustomError {
     #[msg("Procesor trying to use is not whitelisted")]
     ProcessorNotWhitelisted,
 
-    #[msg("Application name (ID) length is incorrect")]
-    AppNameLengthIncorrect,
+    #[msg("Application domain name (ID) length is incorrect")]
+    AppDomainNameLengthIncorrect,
 
-    #[msg("Application name must contain only ASCII letters in lower case and numbers")]
-    AppNameInvalid,
+    #[msg("Application domain name must contain only ASCII letters in lower case and numbers")]
+    AppDomainNameInvalid,
 
     #[msg("App management action not authorized")]
     AppManagementNotAthorized,
@@ -155,6 +155,9 @@ pub enum CustomError {
 
     #[msg("Reaction target account is invalid")]
     ReactionTargetAccountInvalid,
+
+    #[msg("Report custom code missed")]
+    ReactionCustomCodeMissed,
 
     #[msg("Report target account is invalid")]
     ReportTargetAccountInvalid,

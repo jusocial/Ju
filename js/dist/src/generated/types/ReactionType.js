@@ -23,13 +23,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.reactionTypeBeet = exports.ReactionType = void 0;
+exports.reactionTypeBeet = exports.isReactionTypeCustomVote = exports.isReactionTypeDownVote = exports.isReactionTypeUpVote = void 0;
 const beet = __importStar(require("@metaplex-foundation/beet"));
-var ReactionType;
-(function (ReactionType) {
-    ReactionType[ReactionType["UpVote"] = 0] = "UpVote";
-    ReactionType[ReactionType["DownVote"] = 1] = "DownVote";
-    ReactionType[ReactionType["CustomVote"] = 2] = "CustomVote";
-})(ReactionType = exports.ReactionType || (exports.ReactionType = {}));
-exports.reactionTypeBeet = beet.fixedScalarEnum(ReactionType);
+const isReactionTypeUpVote = (x) => x.__kind === 'UpVote';
+exports.isReactionTypeUpVote = isReactionTypeUpVote;
+const isReactionTypeDownVote = (x) => x.__kind === 'DownVote';
+exports.isReactionTypeDownVote = isReactionTypeDownVote;
+const isReactionTypeCustomVote = (x) => x.__kind === 'CustomVote';
+exports.isReactionTypeCustomVote = isReactionTypeCustomVote;
+exports.reactionTypeBeet = beet.dataEnum([
+    ['UpVote', beet.unit],
+    ['DownVote', beet.unit],
+    [
+        'CustomVote',
+        new beet.BeetArgsStruct([['code', beet.u32]], 'ReactionTypeRecord["CustomVote"]'),
+    ],
+]);
 //# sourceMappingURL=ReactionType.js.map

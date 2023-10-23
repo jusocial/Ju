@@ -2,7 +2,7 @@ import * as beet from '@metaplex-foundation/beet';
 import * as web3 from '@solana/web3.js';
 import { AppData } from '../types/AppData';
 export type InitializeAppInstructionArgs = {
-    appName: string;
+    appDomainName: string;
     data: AppData;
 };
 export declare const initializeAppStruct: beet.FixableBeetArgsStruct<InitializeAppInstructionArgs & {

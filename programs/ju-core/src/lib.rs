@@ -98,6 +98,7 @@ pub mod ju_core {
         processor_name: String,
         program_address: Pubkey,
         developer_wallet: Option<Pubkey>,
+        metadata_uri: Option<String>,
     ) -> Result<()> {
         // Validate permission
         if (*ctx.accounts.authority.to_account_info().key != PROTOCOL_AUTHORITY)
@@ -122,18 +123,27 @@ pub mod ju_core {
         let processor_pda = &mut ctx.accounts.processor_pda;
         // Validate Processor name
         processor_pda.validate_name(&processor_name)?;
+        processor_pda.processor_name = processor_name;
+
+        // Validate metadata URI
+        if metadata_uri.is_some() {
+            validate_metadata_uri(metadata_uri.as_ref().unwrap())?;
+        }
+        processor_pda.metadata_uri = metadata_uri;
 
         processor_pda.processor_type = processor_type;
-        processor_pda.processor_name = processor_name;
         processor_pda.program_address = program_address;
         processor_pda.developer_wallet = developer_wallet;
         processor_pda.authority = *ctx.accounts.authority.to_account_info().key;
 
         let now = Clock::get()?.unix_timestamp;
 
+        processor_pda.created_at = now;
+
         // Emit new Event
         emit!(NewExternalProcessorEvent {
             program_address: program_address,
+            authority: *ctx.accounts.authority.to_account_info().key,
             created_at: now,
         });
 
@@ -146,12 +156,13 @@ pub mod ju_core {
     ///
     /// * `program_address` - Processor program aggress
     ///
-    pub fn delete_processor(_ctx: Context<DeleteProcessor>, program_address: Pubkey) -> Result<()> {
+    pub fn delete_processor(ctx: Context<DeleteProcessor>, program_address: Pubkey) -> Result<()> {
         let now = Clock::get()?.unix_timestamp;
 
         // Emit new Event
         emit!(DeleteExternalProcessorEvent {
             program_address: program_address,
+            authority: *ctx.accounts.authority.to_account_info().key,
             deleted_at: now,
         });
 
@@ -162,12 +173,12 @@ pub mod ju_core {
     ///
     /// # Arguments
     ///
-    /// * `app_name` - Protocol unique Application name
+    /// * `app_domain_name` - Protocol unique Application domain name
     /// * `data` - A struct that holds Application data
     ///
     pub fn initialize_app(
         ctx: Context<InitializeApp>,
-        app_name: String,
+        app_domain_name: String,
         data: AppData,
     ) -> Result<()> {
         // Validate permission
@@ -192,9 +203,9 @@ pub mod ju_core {
 
         let app = &mut ctx.accounts.app;
 
-        // Validate App name
-        app.validate_name(&app_name)?;
-        app.app_name = app_name;
+        // Validate App domain name
+        app.validate_domain_name(&app_domain_name)?;
+        app.app_domain_name = app_domain_name;
 
         app.authority = *ctx.accounts.authority.to_account_info().key;
 
@@ -204,18 +215,14 @@ pub mod ju_core {
         }
         app.metadata_uri = data.metadata_uri;
 
-        // Application Settings and Requirements
-        app.profile_metadata_required = data.profile_metadata_required;
-        app.subspace_metadata_required = data.subspace_metadata_required;
-
-        app.profile_delete_allowed = data.profile_delete_allowed;
-        app.subspace_delete_allowed = data.subspace_delete_allowed;
-        app.publication_delete_allowed = data.publication_delete_allowed;
-
-        app.profile_individual_processors_allowed = data.profile_individual_processors_allowed;
-        app.subspace_individual_processors_allowed = data.subspace_individual_processors_allowed;
-        app.publication_individual_processors_allowed =
-            data.publication_individual_processors_allowed;
+        // Application Settings
+        app.is_profile_delete_allowed = data.is_profile_delete_allowed;
+        app.is_subspace_delete_allowed = data.is_subspace_delete_allowed;
+        app.is_publication_delete_allowed = data.is_publication_delete_allowed;
+        app.is_profile_individual_processors_allowed = data.is_profile_individual_processors_allowed;
+        app.is_subspace_individual_processors_allowed = data.is_subspace_individual_processors_allowed;
+        app.is_publication_individual_processors_allowed =
+            data.is_publication_individual_processors_allowed;
 
         // Assign external Processors to Application
         match &ctx.accounts.registering_processor_pda {
@@ -289,6 +296,19 @@ pub mod ju_core {
             }
         }
 
+        let now = Clock::get()?.unix_timestamp;
+
+        app.created_at = now;
+        app.creation_year = now / SECONDS_IN_YEAR;
+        app.creation_month = now / SECONDS_IN_MONTH;
+
+        // Emit new Event
+        emit!(NewAppEvent {
+            app: *ctx.accounts.app.to_account_info().key,
+            authority: *ctx.accounts.authority.to_account_info().key,
+            created_at: now,
+        });
+
         Ok(())
     }
 
@@ -307,18 +327,14 @@ pub mod ju_core {
         }
         app.metadata_uri = data.metadata_uri;
 
-        // Application Settings and Requirements
-        app.profile_metadata_required = data.profile_metadata_required;
-        app.subspace_metadata_required = data.subspace_metadata_required;
-
-        app.profile_delete_allowed = data.profile_delete_allowed;
-        app.subspace_delete_allowed = data.subspace_delete_allowed;
-        app.publication_delete_allowed = data.publication_delete_allowed;
-
-        app.profile_individual_processors_allowed = data.profile_individual_processors_allowed;
-        app.subspace_individual_processors_allowed = data.subspace_individual_processors_allowed;
-        app.publication_individual_processors_allowed =
-            data.publication_individual_processors_allowed;
+        // Application Settings
+        app.is_profile_delete_allowed = data.is_profile_delete_allowed;
+        app.is_subspace_delete_allowed = data.is_subspace_delete_allowed;
+        app.is_publication_delete_allowed = data.is_publication_delete_allowed;
+        app.is_profile_individual_processors_allowed = data.is_profile_individual_processors_allowed;
+        app.is_subspace_individual_processors_allowed = data.is_subspace_individual_processors_allowed;
+        app.is_publication_individual_processors_allowed =
+            data.is_publication_individual_processors_allowed;
 
         // Assign external Processors to Application
         match &ctx.accounts.registering_processor_pda {
@@ -450,21 +466,15 @@ pub mod ju_core {
             alias_pda.authority = *ctx.accounts.authority.to_account_info().key;
             alias_pda.value = data.alias.as_ref().unwrap().clone();
         }
+        profile.alias = data.alias;
 
         profile.app = *ctx.accounts.app.to_account_info().key;
         profile.authority = *ctx.accounts.authority.to_account_info().key;
 
-        profile.alias = data.alias;
-
-        // Check Application level required fields
-        if ctx.accounts.app.profile_metadata_required && data.metadata_uri.is_none() {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
-
         // Validate and assign first name
-        profile.first_name = profile.validate_first_name(&data.first_name)?;
+        profile.first_name = profile.validate_first_name(&data.first_name.unwrap_or_default())?;
         // Validate and assign last name
-        profile.last_name = profile.validate_last_name(&data.last_name)?;
+        profile.last_name = profile.validate_last_name(&data.last_name.unwrap_or_default())?;
 
         // Validate metadata URI
         if data.metadata_uri.is_some() {
@@ -472,15 +482,22 @@ pub mod ju_core {
         }
         profile.metadata_uri = data.metadata_uri;
 
-        profile.gender = data.gender;
+        profile.gender = data.gender.unwrap_or_default();
+        profile.personal_data_1 = data.personal_data_1.unwrap_or_default();
+        profile.personal_data_2 = data.personal_data_2.unwrap_or_default();
+        profile.personal_data_3 = data.personal_data_3.unwrap_or_default();
+        profile.personal_data_4 = data.personal_data_4.unwrap_or_default();
+        profile.personal_data_5 = data.personal_data_5.unwrap_or_default();
+        profile.personal_data_6 = data.personal_data_6.unwrap_or_default();
+        profile.personal_data_7 = data.personal_data_7.unwrap_or_default();
+        profile.personal_data_8 = data.personal_data_8.unwrap_or_default();
 
-        profile.country_code = data.country_code;
-        profile.city_code = data.city_code;
-        profile.current_location = data.current_location;
-        profile.status_text = data.status_text;
+        profile.country_code = data.country_code.unwrap_or_default();
+        profile.region_code = data.region_code.unwrap_or_default();
+        profile.city_code = data.city_code.unwrap_or_default();
 
         // Assign Profile specified Connecting external Processor
-        if ctx.accounts.app.profile_individual_processors_allowed {
+        if ctx.accounts.app.is_profile_individual_processors_allowed {
             match &ctx.accounts.connecting_processor_pda {
                 Some(connecting_processor_pda) => {
                     // Check JXP authority
@@ -506,14 +523,18 @@ pub mod ju_core {
         }
 
         let now = Clock::get()?.unix_timestamp;
-        profile.created_at = now;
 
-        validate_birth_date(&data.birth_date)?;
-        profile.searchable_10_years = (now - data.birth_date) / SECONDS_IN_10_YEARS;
-        profile.searchable_5_years = (now - data.birth_date) / SECONDS_IN_5_YEARS;
-        profile.searchable_week = (now - data.birth_date) / (SECONDS_IN_DAY * 7);
-        profile.searchable_day = (now - data.birth_date) / SECONDS_IN_DAY;
-        profile.birth_date = data.birth_date;
+        let birth_date = get_birth_date(data.birth_date)?;
+        profile.birth_date = birth_date;
+        profile.birth_date_10_years = (now - birth_date) / SECONDS_IN_10_YEARS;
+        profile.birth_date_5_years = (now - birth_date) / SECONDS_IN_5_YEARS;
+        profile.birth_date_year = (now - birth_date) / SECONDS_IN_YEAR;
+
+        profile.created_at = now;
+        profile.creation_year = now / SECONDS_IN_YEAR;
+        profile.creation_month = now / SECONDS_IN_MONTH;
+        profile.creation_week = now / SECONDS_IN_WEEK;
+        profile.creation_day = now / SECONDS_IN_DAY;
 
         // Emit new Event
         emit!(NewProfileEvent {
@@ -605,15 +626,10 @@ pub mod ju_core {
             }
         }
 
-        // Check Application level required fields
-        if ctx.accounts.app.profile_metadata_required && data.metadata_uri.is_none() {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
-
         // Validate and assign first name
-        profile.first_name = profile.validate_first_name(&data.first_name)?;
+        profile.first_name = profile.validate_first_name(&data.first_name.unwrap_or_default())?;
         // Validate and assign last name
-        profile.last_name = profile.validate_last_name(&data.last_name)?;
+        profile.last_name = profile.validate_last_name(&data.last_name.unwrap_or_default())?;
 
         // Validate metadata URI
         if data.metadata_uri.is_some() {
@@ -621,15 +637,23 @@ pub mod ju_core {
         }
         profile.metadata_uri = data.metadata_uri;
 
-        profile.gender = data.gender;
+        profile.gender = data.gender.unwrap_or_default();
 
-        profile.country_code = data.country_code;
-        profile.city_code = data.city_code;
-        profile.current_location = data.current_location;
-        profile.status_text = data.status_text;
+        profile.personal_data_1 = data.personal_data_1.unwrap_or_default();
+        profile.personal_data_2 = data.personal_data_2.unwrap_or_default();
+        profile.personal_data_3 = data.personal_data_3.unwrap_or_default();
+        profile.personal_data_4 = data.personal_data_4.unwrap_or_default();
+        profile.personal_data_5 = data.personal_data_5.unwrap_or_default();
+        profile.personal_data_6 = data.personal_data_6.unwrap_or_default();
+        profile.personal_data_7 = data.personal_data_7.unwrap_or_default();
+        profile.personal_data_8 = data.personal_data_8.unwrap_or_default();
+
+        profile.country_code = data.country_code.unwrap_or_default();
+        profile.region_code = data.region_code.unwrap_or_default();
+        profile.city_code = data.city_code.unwrap_or_default();
 
         // Assign Profile specified Connecting external Processor
-        if ctx.accounts.app.profile_individual_processors_allowed {
+        if ctx.accounts.app.is_profile_individual_processors_allowed {
             match &ctx.accounts.connecting_processor_pda {
                 Some(connecting_processor_pda) => {
                     // Check JXP authority
@@ -656,12 +680,13 @@ pub mod ju_core {
 
         let now = Clock::get()?.unix_timestamp;
 
-        validate_birth_date(&data.birth_date)?;
-        profile.searchable_10_years = (now - data.birth_date) / SECONDS_IN_10_YEARS;
-        profile.searchable_5_years = (now - data.birth_date) / SECONDS_IN_5_YEARS;
-        profile.searchable_week = (now - data.birth_date) / (SECONDS_IN_DAY * 7);
-        profile.searchable_day = (now - data.birth_date) / SECONDS_IN_DAY;
-        profile.birth_date = data.birth_date;
+        let birth_date = get_birth_date(data.birth_date)?;
+        profile.birth_date = birth_date;
+        profile.birth_date_10_years = (now - birth_date) / SECONDS_IN_10_YEARS;
+        profile.birth_date_5_years = (now - birth_date) / SECONDS_IN_5_YEARS;
+        profile.birth_date_year = (now - birth_date) / SECONDS_IN_YEAR;
+
+        profile.created_at = now;
 
         // Emit new Event
         emit!(UpdateProfileEvent {
@@ -676,7 +701,7 @@ pub mod ju_core {
     // Delete existing Profile
     pub fn delete_profile(ctx: Context<DeleteProfile>) -> Result<()> {
         // Check Application level Delete permisson
-        if !ctx.accounts.app.profile_delete_allowed {
+        if !ctx.accounts.app.is_profile_delete_allowed {
             return Err(error!(CustomError::ActionProhibitedByAppSettings));
         }
 
@@ -740,7 +765,7 @@ pub mod ju_core {
         let target_connecting_processor =
             get_connecting_processor_from_target(&ctx.accounts.target)?;
 
-        if ctx.accounts.app.profile_individual_processors_allowed {
+        if ctx.accounts.app.is_profile_individual_processors_allowed {
             if let Some(assigned_connecting_processor_individual) = target_connecting_processor {
                 // Check if Connecting JXP is passed
                 if ctx.accounts.connecting_processor_individual.is_none() {
@@ -779,8 +804,10 @@ pub mod ju_core {
 
         let now = Clock::get()?.unix_timestamp;
         connection.created_at = now;
-        connection.searchable_day = now / SECONDS_IN_DAY;
-        connection.searchable_3_day = now / (SECONDS_IN_DAY * 3);
+        connection.creation_week = now / SECONDS_IN_WEEK;
+        connection.creation_3_day = now / (SECONDS_IN_DAY * 3);
+        connection.creation_day = now / SECONDS_IN_DAY;
+        
         connection.modified_at = None;
 
         // Emit new Event
@@ -809,7 +836,7 @@ pub mod ju_core {
 
         let connection = &mut ctx.accounts.connection;
 
-        connection.approved = approve_status;
+        connection.is_approved = approve_status;
 
         let now = Clock::get()?.unix_timestamp;
         connection.modified_at = Some(now);
@@ -890,9 +917,6 @@ pub mod ju_core {
 
         subspace.publishing_permission = data.publishing_permission;
 
-        if ctx.accounts.app.subspace_metadata_required && data.metadata_uri.is_none() {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
         // Validate metadata URI
         if data.metadata_uri.is_some() {
             validate_metadata_uri(data.metadata_uri.as_ref().unwrap())?;
@@ -900,7 +924,7 @@ pub mod ju_core {
         subspace.metadata_uri = data.metadata_uri;
 
         // Assign Subspace specified external Processors
-        if ctx.accounts.app.subspace_individual_processors_allowed {
+        if ctx.accounts.app.is_subspace_individual_processors_allowed {
             match &ctx.accounts.connecting_processor_pda {
                 Some(connecting_processor_pda) => {
                     // Check JXP authority
@@ -993,6 +1017,12 @@ pub mod ju_core {
         }
 
         let now = Clock::get()?.unix_timestamp;
+
+        subspace.creation_year = now / (SECONDS_IN_YEAR);
+        subspace.creation_month = now / (SECONDS_IN_MONTH);
+        subspace.creation_week = now / SECONDS_IN_WEEK;
+        subspace.creation_day = now / SECONDS_IN_DAY;
+
         // Emit new Event
         emit!(NewSubspaceEvent {
             app: *ctx.accounts.app.to_account_info().key,
@@ -1088,10 +1118,6 @@ pub mod ju_core {
 
         subspace.publishing_permission = data.publishing_permission;
 
-        if ctx.accounts.app.subspace_metadata_required && data.metadata_uri.is_none() {
-            return Err(error!(CustomError::MissingRequiredField));
-        }
-
         // Validate metadata URI
         if data.metadata_uri.is_some() {
             validate_metadata_uri(data.metadata_uri.as_ref().unwrap())?;
@@ -1099,7 +1125,7 @@ pub mod ju_core {
         subspace.metadata_uri = data.metadata_uri;
 
         // Assign Subspace specified external Processors
-        if ctx.accounts.app.subspace_individual_processors_allowed {
+        if ctx.accounts.app.is_subspace_individual_processors_allowed {
             match &ctx.accounts.connecting_processor_pda {
                 Some(connecting_processor_pda) => {
                     // Check JXP authority
@@ -1205,7 +1231,7 @@ pub mod ju_core {
     // Delete existing Subspace
     pub fn delete_subspace(ctx: Context<DeleteSubpace>) -> Result<()> {
         // Check Application level Delete permisson
-        if !ctx.accounts.app.subspace_delete_allowed {
+        if !ctx.accounts.app.is_subspace_delete_allowed {
             return Err(error!(CustomError::ActionProhibitedByAppSettings));
         }
 
@@ -1371,7 +1397,7 @@ pub mod ju_core {
             }
 
             // Second check if Target Publication has individual assigned Referencing external Processor
-            if ctx.accounts.app.publication_individual_processors_allowed
+            if ctx.accounts.app.is_publication_individual_processors_allowed
                 && ctx.accounts.target_publication.is_some()
             {
                 if let Some(assigned_referencing_processor_individual) = ctx
@@ -1471,7 +1497,7 @@ pub mod ju_core {
         publication.metadata_uri = data.metadata_uri;
 
         // Assign Publication specified external Processors
-        if ctx.accounts.app.publication_individual_processors_allowed {
+        if ctx.accounts.app.is_publication_individual_processors_allowed {
             match &ctx.accounts.collecting_processor_pda {
                 Some(collecting_processor_pda) => {
                     // Check JXP authority
@@ -1523,8 +1549,9 @@ pub mod ju_core {
         let now = Clock::get()?.unix_timestamp;
         publication.created_at = now;
 
-        publication.searchable_day = now / SECONDS_IN_DAY;
-        publication.searchable_3_day = now / (SECONDS_IN_DAY * 3);
+        publication.creation_week = now / SECONDS_IN_WEEK;
+        publication.creation_3_day = now / (SECONDS_IN_DAY * 3);
+        publication.creation_day = now / SECONDS_IN_DAY;
 
         // Emit an Event
         emit!(NewPublicationEvent {
@@ -1560,7 +1587,7 @@ pub mod ju_core {
         publication.metadata_uri = data.metadata_uri;
 
         // Assign Publication specified external Processors
-        if ctx.accounts.app.publication_individual_processors_allowed {
+        if ctx.accounts.app.is_publication_individual_processors_allowed {
             match &ctx.accounts.collecting_processor_pda {
                 Some(collecting_processor_pda) => {
                     // Check JXP authority
@@ -1626,7 +1653,7 @@ pub mod ju_core {
     // Delete existing publication
     pub fn delete_publication(ctx: Context<DeletePublication>) -> Result<()> {
         // Check Application level Delete permisson
-        if !ctx.accounts.app.publication_delete_allowed {
+        if !ctx.accounts.app.is_publication_delete_allowed {
             return Err(error!(CustomError::ActionProhibitedByAppSettings));
         }
 
@@ -1678,7 +1705,7 @@ pub mod ju_core {
         }
 
         // Second check if Target Publication has individual assigned Collectiong external Processor
-        if ctx.accounts.app.publication_individual_processors_allowed {
+        if ctx.accounts.app.is_publication_individual_processors_allowed {
             if let Some(assigned_collecting_processor_individual) =
                 ctx.accounts.target.collecting_processor
             {
@@ -1711,9 +1738,18 @@ pub mod ju_core {
         collection_item.target = *ctx.accounts.target.to_account_info().key;
 
         let now = Clock::get()?.unix_timestamp;
-        collection_item.searchable_day = now / SECONDS_IN_DAY;
-        collection_item.searchable_3_day = now / (SECONDS_IN_DAY * 3);
+
+        collection_item.creation_3_day = now / (SECONDS_IN_DAY * 3);
+        collection_item.creation_day = now / SECONDS_IN_DAY;
         collection_item.created_at = now;
+
+        // Emit an Event
+        emit!(NewCollectionItemEvent {
+            app: *ctx.accounts.app.to_account_info().key,
+            publication: *ctx.accounts.target.to_account_info().key,
+            initializer: *ctx.accounts.initializer.to_account_info().key,
+            created_at: now
+        });
 
         Ok(())
     }
@@ -1722,7 +1758,7 @@ pub mod ju_core {
     ///
     /// # Arguments
     ///
-    /// * `data` - A struct that holds Reaction data
+    /// * `reaction_type` - Reaction type
     ///
     pub fn create_reaction(
         ctx: Context<CreateReaction>,
@@ -1745,8 +1781,9 @@ pub mod ju_core {
 
         let now = Clock::get()?.unix_timestamp;
         reaction.created_at = now;
-        reaction.searchable_day = now / SECONDS_IN_DAY;
-        reaction.searchable_3_day = now / (SECONDS_IN_DAY * 3);
+        reaction.creation_week = now / SECONDS_IN_WEEK;
+        reaction.creation_3_day = now / (SECONDS_IN_DAY * 3);
+        reaction.creation_day = now / SECONDS_IN_DAY;
 
         // Emit new Event
         emit!(NewReactionEvent {
@@ -1796,8 +1833,11 @@ pub mod ju_core {
         report.notification = data.notification_string;
 
         let now = Clock::get()?.unix_timestamp;
-        report.searchable_day = now / SECONDS_IN_DAY;
+
         report.created_at = now;
+        report.creation_week = now / SECONDS_IN_WEEK;
+        report.creation_3_day = now / (SECONDS_IN_DAY * 3);
+        report.creation_day = now / SECONDS_IN_DAY;
 
         // Emit new Event
         emit!(NewReportEvent {

@@ -12,10 +12,13 @@ export type PublicationArgs = {
     isReply: boolean;
     contentType: ContentType;
     tag: number[];
-    searchable3Day: beet.bignum;
-    searchableDay: beet.bignum;
     targetPublication: web3.PublicKey;
     subspace: web3.PublicKey;
+    reserved1: number;
+    reserved2: number;
+    creationWeek: beet.bignum;
+    creation3Day: beet.bignum;
+    creationDay: beet.bignum;
     uuid: string;
     metadataUri: string;
     collectingProcessor: beet.COption<web3.PublicKey>;
@@ -33,10 +36,13 @@ export declare class Publication implements PublicationArgs {
     readonly isReply: boolean;
     readonly contentType: ContentType;
     readonly tag: number[];
-    readonly searchable3Day: beet.bignum;
-    readonly searchableDay: beet.bignum;
     readonly targetPublication: web3.PublicKey;
     readonly subspace: web3.PublicKey;
+    readonly reserved1: number;
+    readonly reserved2: number;
+    readonly creationWeek: beet.bignum;
+    readonly creation3Day: beet.bignum;
+    readonly creationDay: beet.bignum;
     readonly uuid: string;
     readonly metadataUri: string;
     readonly collectingProcessor: beet.COption<web3.PublicKey>;
@@ -63,14 +69,19 @@ export declare class Publication implements PublicationArgs {
         isReply: boolean;
         contentType: string;
         tag: number[];
-        searchable3Day: number | {
-            toNumber: () => number;
-        };
-        searchableDay: number | {
-            toNumber: () => number;
-        };
         targetPublication: string;
         subspace: string;
+        reserved1: number;
+        reserved2: number;
+        creationWeek: number | {
+            toNumber: () => number;
+        };
+        creation3Day: number | {
+            toNumber: () => number;
+        };
+        creationDay: number | {
+            toNumber: () => number;
+        };
         uuid: string;
         metadataUri: string;
         collectingProcessor: beet.COption<web3.PublicKey>;

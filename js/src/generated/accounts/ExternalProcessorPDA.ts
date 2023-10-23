@@ -22,6 +22,8 @@ export type ExternalProcessorPDAArgs = {
   programAddress: web3.PublicKey;
   developerWallet: beet.COption<web3.PublicKey>;
   processorName: string;
+  metadataUri: beet.COption<string>;
+  createdAt: beet.bignum;
 };
 
 export const externalProcessorPDADiscriminator = [204, 224, 184, 182, 78, 32, 108, 104];
@@ -40,6 +42,8 @@ export class ExternalProcessorPDA implements ExternalProcessorPDAArgs {
     readonly programAddress: web3.PublicKey,
     readonly developerWallet: beet.COption<web3.PublicKey>,
     readonly processorName: string,
+    readonly metadataUri: beet.COption<string>,
+    readonly createdAt: beet.bignum,
   ) {}
 
   /**
@@ -53,6 +57,8 @@ export class ExternalProcessorPDA implements ExternalProcessorPDAArgs {
       args.programAddress,
       args.developerWallet,
       args.processorName,
+      args.metadataUri,
+      args.createdAt,
     );
   }
 
@@ -162,6 +168,18 @@ export class ExternalProcessorPDA implements ExternalProcessorPDAArgs {
       programAddress: this.programAddress.toBase58(),
       developerWallet: this.developerWallet,
       processorName: this.processorName,
+      metadataUri: this.metadataUri,
+      createdAt: (() => {
+        const x = <{ toNumber: () => number }>this.createdAt;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
     };
   }
 }
@@ -184,6 +202,8 @@ export const externalProcessorPDABeet = new beet.FixableBeetStruct<
     ['programAddress', beetSolana.publicKey],
     ['developerWallet', beet.coption(beetSolana.publicKey)],
     ['processorName', beet.utf8String],
+    ['metadataUri', beet.coption(beet.utf8String)],
+    ['createdAt', beet.i64],
   ],
   ExternalProcessorPDA.fromArgs,
   'ExternalProcessorPDA',

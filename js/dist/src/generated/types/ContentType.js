@@ -27,13 +27,16 @@ exports.contentTypeBeet = exports.ContentType = void 0;
 const beet = __importStar(require("@metaplex-foundation/beet"));
 var ContentType;
 (function (ContentType) {
-    ContentType[ContentType["Article"] = 0] = "Article";
-    ContentType[ContentType["Image"] = 1] = "Image";
-    ContentType[ContentType["Video"] = 2] = "Video";
-    ContentType[ContentType["ShortVideo"] = 3] = "ShortVideo";
-    ContentType[ContentType["Audio"] = 4] = "Audio";
-    ContentType[ContentType["Text"] = 5] = "Text";
-    ContentType[ContentType["Link"] = 6] = "Link";
+    ContentType[ContentType["NotSpecified"] = 0] = "NotSpecified";
+    ContentType[ContentType["Article"] = 1] = "Article";
+    ContentType[ContentType["Image"] = 2] = "Image";
+    ContentType[ContentType["Video"] = 3] = "Video";
+    ContentType[ContentType["ShortVideo"] = 4] = "ShortVideo";
+    ContentType[ContentType["Audio"] = 5] = "Audio";
+    ContentType[ContentType["Text"] = 6] = "Text";
+    ContentType[ContentType["Document"] = 7] = "Document";
+    ContentType[ContentType["Link"] = 8] = "Link";
+    ContentType[ContentType["Poll"] = 9] = "Poll";
 })(ContentType = exports.ContentType || (exports.ContentType = {}));
 exports.contentTypeBeet = beet.fixedScalarEnum(ContentType);
 //# sourceMappingURL=ContentType.js.map

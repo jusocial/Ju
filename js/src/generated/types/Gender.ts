@@ -11,6 +11,7 @@ import * as beet from '@metaplex-foundation/beet';
  * @category generated
  */
 export enum Gender {
+  NotSpecified,
   Male,
   Female,
   OtherOrPreferNotToSay,

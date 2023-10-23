@@ -20,8 +20,9 @@ export type CollectionItemArgs = {
   target: web3.PublicKey;
   authority: web3.PublicKey;
   createdAt: beet.bignum;
-  searchable3Day: beet.bignum;
-  searchableDay: beet.bignum;
+  creationWeek: beet.bignum;
+  creation3Day: beet.bignum;
+  creationDay: beet.bignum;
 };
 
 export const collectionItemDiscriminator = [225, 72, 84, 206, 193, 134, 215, 4];
@@ -39,8 +40,9 @@ export class CollectionItem implements CollectionItemArgs {
     readonly target: web3.PublicKey,
     readonly authority: web3.PublicKey,
     readonly createdAt: beet.bignum,
-    readonly searchable3Day: beet.bignum,
-    readonly searchableDay: beet.bignum,
+    readonly creationWeek: beet.bignum,
+    readonly creation3Day: beet.bignum,
+    readonly creationDay: beet.bignum,
   ) {}
 
   /**
@@ -53,8 +55,9 @@ export class CollectionItem implements CollectionItemArgs {
       args.target,
       args.authority,
       args.createdAt,
-      args.searchable3Day,
-      args.searchableDay,
+      args.creationWeek,
+      args.creation3Day,
+      args.creationDay,
     );
   }
 
@@ -168,8 +171,8 @@ export class CollectionItem implements CollectionItemArgs {
         }
         return x;
       })(),
-      searchable3Day: (() => {
-        const x = <{ toNumber: () => number }>this.searchable3Day;
+      creationWeek: (() => {
+        const x = <{ toNumber: () => number }>this.creationWeek;
         if (typeof x.toNumber === 'function') {
           try {
             return x.toNumber();
@@ -179,8 +182,19 @@ export class CollectionItem implements CollectionItemArgs {
         }
         return x;
       })(),
-      searchableDay: (() => {
-        const x = <{ toNumber: () => number }>this.searchableDay;
+      creation3Day: (() => {
+        const x = <{ toNumber: () => number }>this.creation3Day;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      creationDay: (() => {
+        const x = <{ toNumber: () => number }>this.creationDay;
         if (typeof x.toNumber === 'function') {
           try {
             return x.toNumber();
@@ -211,8 +225,9 @@ export const collectionItemBeet = new beet.BeetStruct<
     ['target', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
     ['createdAt', beet.i64],
-    ['searchable3Day', beet.i64],
-    ['searchableDay', beet.i64],
+    ['creationWeek', beet.i64],
+    ['creation3Day', beet.i64],
+    ['creationDay', beet.i64],
   ],
   CollectionItem.fromArgs,
   'CollectionItem',

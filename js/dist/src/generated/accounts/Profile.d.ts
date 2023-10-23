@@ -3,33 +3,46 @@ import * as web3 from '@solana/web3.js';
 import * as beet from '@metaplex-foundation/beet';
 import * as beetSolana from '@metaplex-foundation/beet-solana';
 import { Gender } from '../types/Gender';
-import { LocationCoordinates } from '../types/LocationCoordinates';
 export type ProfileArgs = {
     app: web3.PublicKey;
     authority: web3.PublicKey;
     exchangeKey: web3.PublicKey;
     isVerified: boolean;
-    countryCode: number;
-    regionCode: number;
-    cityCode: number;
+    gender: Gender;
+    personalData1: number;
+    personalData2: number;
+    personalData3: number;
+    personalData4: number;
+    personalData5: number;
+    personalData6: number;
+    personalData7: number;
+    personalData8: number;
+    reserved1: number;
+    reserved2: number;
+    reserved3: number;
+    reserved4: number;
+    reserved5: beet.bignum;
+    reserved6: beet.bignum;
+    reserved7: number[];
+    reserved8: number[];
     firstName: number[];
     lastName: number[];
     birthDate: beet.bignum;
-    searchable10Years: beet.bignum;
-    searchable5Years: beet.bignum;
-    searchableWeek: beet.bignum;
-    searchableDay: beet.bignum;
-    gender: beet.COption<Gender>;
+    birthDate10Years: beet.bignum;
+    birthDate5Years: beet.bignum;
+    birthDateYear: beet.bignum;
+    countryCode: number;
+    regionCode: number;
+    cityCode: number;
+    creationYear: beet.bignum;
+    creationMonth: beet.bignum;
+    creationWeek: beet.bignum;
+    creationDay: beet.bignum;
     alias: beet.COption<string>;
-    statusText: string;
     metadataUri: beet.COption<string>;
-    currentLocation: beet.COption<LocationCoordinates>;
     connectingProcessor: beet.COption<web3.PublicKey>;
     createdAt: beet.bignum;
     modifiedAt: beet.COption<beet.bignum>;
-    reserved1: number[];
-    reserved2: number[];
-    reserved3: number[];
 };
 export declare const profileDiscriminator: number[];
 export declare class Profile implements ProfileArgs {
@@ -37,27 +50,41 @@ export declare class Profile implements ProfileArgs {
     readonly authority: web3.PublicKey;
     readonly exchangeKey: web3.PublicKey;
     readonly isVerified: boolean;
-    readonly countryCode: number;
-    readonly regionCode: number;
-    readonly cityCode: number;
+    readonly gender: Gender;
+    readonly personalData1: number;
+    readonly personalData2: number;
+    readonly personalData3: number;
+    readonly personalData4: number;
+    readonly personalData5: number;
+    readonly personalData6: number;
+    readonly personalData7: number;
+    readonly personalData8: number;
+    readonly reserved1: number;
+    readonly reserved2: number;
+    readonly reserved3: number;
+    readonly reserved4: number;
+    readonly reserved5: beet.bignum;
+    readonly reserved6: beet.bignum;
+    readonly reserved7: number[];
+    readonly reserved8: number[];
     readonly firstName: number[];
     readonly lastName: number[];
     readonly birthDate: beet.bignum;
-    readonly searchable10Years: beet.bignum;
-    readonly searchable5Years: beet.bignum;
-    readonly searchableWeek: beet.bignum;
-    readonly searchableDay: beet.bignum;
-    readonly gender: beet.COption<Gender>;
+    readonly birthDate10Years: beet.bignum;
+    readonly birthDate5Years: beet.bignum;
+    readonly birthDateYear: beet.bignum;
+    readonly countryCode: number;
+    readonly regionCode: number;
+    readonly cityCode: number;
+    readonly creationYear: beet.bignum;
+    readonly creationMonth: beet.bignum;
+    readonly creationWeek: beet.bignum;
+    readonly creationDay: beet.bignum;
     readonly alias: beet.COption<string>;
-    readonly statusText: string;
     readonly metadataUri: beet.COption<string>;
-    readonly currentLocation: beet.COption<LocationCoordinates>;
     readonly connectingProcessor: beet.COption<web3.PublicKey>;
     readonly createdAt: beet.bignum;
     readonly modifiedAt: beet.COption<beet.bignum>;
-    readonly reserved1: number[];
-    readonly reserved2: number[];
-    readonly reserved3: number[];
     private constructor();
     static fromArgs(args: ProfileArgs): Profile;
     static fromAccountInfo(accountInfo: web3.AccountInfo<Buffer>, offset?: number): [Profile, number];
@@ -74,39 +101,63 @@ export declare class Profile implements ProfileArgs {
         authority: string;
         exchangeKey: string;
         isVerified: boolean;
-        countryCode: number;
-        regionCode: number;
-        cityCode: number;
+        gender: string;
+        personalData1: number;
+        personalData2: number;
+        personalData3: number;
+        personalData4: number;
+        personalData5: number;
+        personalData6: number;
+        personalData7: number;
+        personalData8: number;
+        reserved1: number;
+        reserved2: number;
+        reserved3: number;
+        reserved4: number;
+        reserved5: number | {
+            toNumber: () => number;
+        };
+        reserved6: number | {
+            toNumber: () => number;
+        };
+        reserved7: number[];
+        reserved8: number[];
         firstName: number[];
         lastName: number[];
         birthDate: number | {
             toNumber: () => number;
         };
-        searchable10Years: number | {
+        birthDate10Years: number | {
             toNumber: () => number;
         };
-        searchable5Years: number | {
+        birthDate5Years: number | {
             toNumber: () => number;
         };
-        searchableWeek: number | {
+        birthDateYear: number | {
             toNumber: () => number;
         };
-        searchableDay: number | {
+        countryCode: number;
+        regionCode: number;
+        cityCode: number;
+        creationYear: number | {
             toNumber: () => number;
         };
-        gender: beet.COption<Gender>;
+        creationMonth: number | {
+            toNumber: () => number;
+        };
+        creationWeek: number | {
+            toNumber: () => number;
+        };
+        creationDay: number | {
+            toNumber: () => number;
+        };
         alias: beet.COption<string>;
-        statusText: string;
         metadataUri: beet.COption<string>;
-        currentLocation: beet.COption<LocationCoordinates>;
         connectingProcessor: beet.COption<web3.PublicKey>;
         createdAt: number | {
             toNumber: () => number;
         };
         modifiedAt: beet.COption<beet.bignum>;
-        reserved1: number[];
-        reserved2: number[];
-        reserved3: number[];
     };
 }
 export declare const profileBeet: beet.FixableBeetStruct<Profile, ProfileArgs & {

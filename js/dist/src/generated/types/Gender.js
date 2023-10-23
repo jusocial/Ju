@@ -27,9 +27,10 @@ exports.genderBeet = exports.Gender = void 0;
 const beet = __importStar(require("@metaplex-foundation/beet"));
 var Gender;
 (function (Gender) {
-    Gender[Gender["Male"] = 0] = "Male";
-    Gender[Gender["Female"] = 1] = "Female";
-    Gender[Gender["OtherOrPreferNotToSay"] = 2] = "OtherOrPreferNotToSay";
+    Gender[Gender["NotSpecified"] = 0] = "NotSpecified";
+    Gender[Gender["Male"] = 1] = "Male";
+    Gender[Gender["Female"] = 2] = "Female";
+    Gender[Gender["OtherOrPreferNotToSay"] = 3] = "OtherOrPreferNotToSay";
 })(Gender = exports.Gender || (exports.Gender = {}));
 exports.genderBeet = beet.fixedScalarEnum(Gender);
 //# sourceMappingURL=Gender.js.map

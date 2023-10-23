@@ -4,7 +4,7 @@ import { ReactionType } from '../types/ReactionType';
 export type CreateReactionInstructionArgs = {
     reactionType: ReactionType;
 };
-export declare const createReactionStruct: beet.BeetArgsStruct<CreateReactionInstructionArgs & {
+export declare const createReactionStruct: beet.FixableBeetArgsStruct<CreateReactionInstructionArgs & {
     instructionDiscriminator: number[];
 }>;
 export type CreateReactionInstructionAccounts = {

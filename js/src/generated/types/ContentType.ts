@@ -11,13 +11,16 @@ import * as beet from '@metaplex-foundation/beet';
  * @category generated
  */
 export enum ContentType {
+  NotSpecified,
   Article,
   Image,
   Video,
   ShortVideo,
   Audio,
   Text,
+  Document,
   Link,
+  Poll,
 }
 
 /**

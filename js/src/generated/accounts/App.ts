@@ -16,24 +16,28 @@ import * as beetSolana from '@metaplex-foundation/beet-solana';
  */
 export type AppArgs = {
   authority: web3.PublicKey;
-  profileMetadataRequired: boolean;
-  subspaceMetadataRequired: boolean;
-  profileDeleteAllowed: boolean;
-  subspaceDeleteAllowed: boolean;
-  publicationDeleteAllowed: boolean;
-  profileIndividualProcessorsAllowed: boolean;
-  subspaceIndividualProcessorsAllowed: boolean;
-  publicationIndividualProcessorsAllowed: boolean;
-  appName: string;
+  isProfileDeleteAllowed: boolean;
+  isSubspaceDeleteAllowed: boolean;
+  isPublicationDeleteAllowed: boolean;
+  isProfileIndividualProcessorsAllowed: boolean;
+  isSubspaceIndividualProcessorsAllowed: boolean;
+  isPublicationIndividualProcessorsAllowed: boolean;
+  reserved1: number;
+  reserved2: number;
+  reserved3: number;
+  reserved4: number;
+  reserved5: web3.PublicKey;
+  reserved6: web3.PublicKey;
+  creationYear: beet.bignum;
+  creationMonth: beet.bignum;
+  appDomainName: string;
   metadataUri: beet.COption<string>;
   registeringProcessor: beet.COption<web3.PublicKey>;
   connectingProcessor: beet.COption<web3.PublicKey>;
   publishingProcessor: beet.COption<web3.PublicKey>;
   collectingProcessor: beet.COption<web3.PublicKey>;
   referencingProcessor: beet.COption<web3.PublicKey>;
-  reserved1: number[] /* size: 32 */;
-  reserved2: number[] /* size: 32 */;
-  reserved3: number[] /* size: 32 */;
+  createdAt: beet.bignum;
 };
 
 export const appDiscriminator = [67, 135, 84, 79, 153, 49, 239, 169];
@@ -47,24 +51,28 @@ export const appDiscriminator = [67, 135, 84, 79, 153, 49, 239, 169];
 export class App implements AppArgs {
   private constructor(
     readonly authority: web3.PublicKey,
-    readonly profileMetadataRequired: boolean,
-    readonly subspaceMetadataRequired: boolean,
-    readonly profileDeleteAllowed: boolean,
-    readonly subspaceDeleteAllowed: boolean,
-    readonly publicationDeleteAllowed: boolean,
-    readonly profileIndividualProcessorsAllowed: boolean,
-    readonly subspaceIndividualProcessorsAllowed: boolean,
-    readonly publicationIndividualProcessorsAllowed: boolean,
-    readonly appName: string,
+    readonly isProfileDeleteAllowed: boolean,
+    readonly isSubspaceDeleteAllowed: boolean,
+    readonly isPublicationDeleteAllowed: boolean,
+    readonly isProfileIndividualProcessorsAllowed: boolean,
+    readonly isSubspaceIndividualProcessorsAllowed: boolean,
+    readonly isPublicationIndividualProcessorsAllowed: boolean,
+    readonly reserved1: number,
+    readonly reserved2: number,
+    readonly reserved3: number,
+    readonly reserved4: number,
+    readonly reserved5: web3.PublicKey,
+    readonly reserved6: web3.PublicKey,
+    readonly creationYear: beet.bignum,
+    readonly creationMonth: beet.bignum,
+    readonly appDomainName: string,
     readonly metadataUri: beet.COption<string>,
     readonly registeringProcessor: beet.COption<web3.PublicKey>,
     readonly connectingProcessor: beet.COption<web3.PublicKey>,
     readonly publishingProcessor: beet.COption<web3.PublicKey>,
     readonly collectingProcessor: beet.COption<web3.PublicKey>,
     readonly referencingProcessor: beet.COption<web3.PublicKey>,
-    readonly reserved1: number[] /* size: 32 */,
-    readonly reserved2: number[] /* size: 32 */,
-    readonly reserved3: number[] /* size: 32 */,
+    readonly createdAt: beet.bignum,
   ) {}
 
   /**
@@ -73,24 +81,28 @@ export class App implements AppArgs {
   static fromArgs(args: AppArgs) {
     return new App(
       args.authority,
-      args.profileMetadataRequired,
-      args.subspaceMetadataRequired,
-      args.profileDeleteAllowed,
-      args.subspaceDeleteAllowed,
-      args.publicationDeleteAllowed,
-      args.profileIndividualProcessorsAllowed,
-      args.subspaceIndividualProcessorsAllowed,
-      args.publicationIndividualProcessorsAllowed,
-      args.appName,
+      args.isProfileDeleteAllowed,
+      args.isSubspaceDeleteAllowed,
+      args.isPublicationDeleteAllowed,
+      args.isProfileIndividualProcessorsAllowed,
+      args.isSubspaceIndividualProcessorsAllowed,
+      args.isPublicationIndividualProcessorsAllowed,
+      args.reserved1,
+      args.reserved2,
+      args.reserved3,
+      args.reserved4,
+      args.reserved5,
+      args.reserved6,
+      args.creationYear,
+      args.creationMonth,
+      args.appDomainName,
       args.metadataUri,
       args.registeringProcessor,
       args.connectingProcessor,
       args.publishingProcessor,
       args.collectingProcessor,
       args.referencingProcessor,
-      args.reserved1,
-      args.reserved2,
-      args.reserved3,
+      args.createdAt,
     );
   }
 
@@ -189,24 +201,58 @@ export class App implements AppArgs {
   pretty() {
     return {
       authority: this.authority.toBase58(),
-      profileMetadataRequired: this.profileMetadataRequired,
-      subspaceMetadataRequired: this.subspaceMetadataRequired,
-      profileDeleteAllowed: this.profileDeleteAllowed,
-      subspaceDeleteAllowed: this.subspaceDeleteAllowed,
-      publicationDeleteAllowed: this.publicationDeleteAllowed,
-      profileIndividualProcessorsAllowed: this.profileIndividualProcessorsAllowed,
-      subspaceIndividualProcessorsAllowed: this.subspaceIndividualProcessorsAllowed,
-      publicationIndividualProcessorsAllowed: this.publicationIndividualProcessorsAllowed,
-      appName: this.appName,
+      isProfileDeleteAllowed: this.isProfileDeleteAllowed,
+      isSubspaceDeleteAllowed: this.isSubspaceDeleteAllowed,
+      isPublicationDeleteAllowed: this.isPublicationDeleteAllowed,
+      isProfileIndividualProcessorsAllowed: this.isProfileIndividualProcessorsAllowed,
+      isSubspaceIndividualProcessorsAllowed: this.isSubspaceIndividualProcessorsAllowed,
+      isPublicationIndividualProcessorsAllowed: this.isPublicationIndividualProcessorsAllowed,
+      reserved1: this.reserved1,
+      reserved2: this.reserved2,
+      reserved3: this.reserved3,
+      reserved4: this.reserved4,
+      reserved5: this.reserved5.toBase58(),
+      reserved6: this.reserved6.toBase58(),
+      creationYear: (() => {
+        const x = <{ toNumber: () => number }>this.creationYear;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      creationMonth: (() => {
+        const x = <{ toNumber: () => number }>this.creationMonth;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      appDomainName: this.appDomainName,
       metadataUri: this.metadataUri,
       registeringProcessor: this.registeringProcessor,
       connectingProcessor: this.connectingProcessor,
       publishingProcessor: this.publishingProcessor,
       collectingProcessor: this.collectingProcessor,
       referencingProcessor: this.referencingProcessor,
-      reserved1: this.reserved1,
-      reserved2: this.reserved2,
-      reserved3: this.reserved3,
+      createdAt: (() => {
+        const x = <{ toNumber: () => number }>this.createdAt;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
     };
   }
 }
@@ -224,24 +270,28 @@ export const appBeet = new beet.FixableBeetStruct<
   [
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['authority', beetSolana.publicKey],
-    ['profileMetadataRequired', beet.bool],
-    ['subspaceMetadataRequired', beet.bool],
-    ['profileDeleteAllowed', beet.bool],
-    ['subspaceDeleteAllowed', beet.bool],
-    ['publicationDeleteAllowed', beet.bool],
-    ['profileIndividualProcessorsAllowed', beet.bool],
-    ['subspaceIndividualProcessorsAllowed', beet.bool],
-    ['publicationIndividualProcessorsAllowed', beet.bool],
-    ['appName', beet.utf8String],
+    ['isProfileDeleteAllowed', beet.bool],
+    ['isSubspaceDeleteAllowed', beet.bool],
+    ['isPublicationDeleteAllowed', beet.bool],
+    ['isProfileIndividualProcessorsAllowed', beet.bool],
+    ['isSubspaceIndividualProcessorsAllowed', beet.bool],
+    ['isPublicationIndividualProcessorsAllowed', beet.bool],
+    ['reserved1', beet.u8],
+    ['reserved2', beet.u8],
+    ['reserved3', beet.u8],
+    ['reserved4', beet.u8],
+    ['reserved5', beetSolana.publicKey],
+    ['reserved6', beetSolana.publicKey],
+    ['creationYear', beet.i64],
+    ['creationMonth', beet.i64],
+    ['appDomainName', beet.utf8String],
     ['metadataUri', beet.coption(beet.utf8String)],
     ['registeringProcessor', beet.coption(beetSolana.publicKey)],
     ['connectingProcessor', beet.coption(beetSolana.publicKey)],
     ['publishingProcessor', beet.coption(beetSolana.publicKey)],
     ['collectingProcessor', beet.coption(beetSolana.publicKey)],
     ['referencingProcessor', beet.coption(beetSolana.publicKey)],
-    ['reserved1', beet.uniformFixedSizeArray(beet.u8, 32)],
-    ['reserved2', beet.uniformFixedSizeArray(beet.u8, 32)],
-    ['reserved3', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['createdAt', beet.i64],
   ],
   App.fromArgs,
   'App',

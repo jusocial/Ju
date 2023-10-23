@@ -30,7 +30,7 @@ const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
 const ContentType_1 = require("../types/ContentType");
 exports.publicationDiscriminator = [213, 137, 189, 150, 94, 132, 251, 247];
 class Publication {
-    constructor(app, profile, authority, isEncrypted, isMirror, isReply, contentType, tag, searchable3Day, searchableDay, targetPublication, subspace, uuid, metadataUri, collectingProcessor, referencingProcessor, createdAt, modifiedAt) {
+    constructor(app, profile, authority, isEncrypted, isMirror, isReply, contentType, tag, targetPublication, subspace, reserved1, reserved2, creationWeek, creation3Day, creationDay, uuid, metadataUri, collectingProcessor, referencingProcessor, createdAt, modifiedAt) {
         this.app = app;
         this.profile = profile;
         this.authority = authority;
@@ -39,10 +39,13 @@ class Publication {
         this.isReply = isReply;
         this.contentType = contentType;
         this.tag = tag;
-        this.searchable3Day = searchable3Day;
-        this.searchableDay = searchableDay;
         this.targetPublication = targetPublication;
         this.subspace = subspace;
+        this.reserved1 = reserved1;
+        this.reserved2 = reserved2;
+        this.creationWeek = creationWeek;
+        this.creation3Day = creation3Day;
+        this.creationDay = creationDay;
         this.uuid = uuid;
         this.metadataUri = metadataUri;
         this.collectingProcessor = collectingProcessor;
@@ -51,7 +54,7 @@ class Publication {
         this.modifiedAt = modifiedAt;
     }
     static fromArgs(args) {
-        return new Publication(args.app, args.profile, args.authority, args.isEncrypted, args.isMirror, args.isReply, args.contentType, args.tag, args.searchable3Day, args.searchableDay, args.targetPublication, args.subspace, args.uuid, args.metadataUri, args.collectingProcessor, args.referencingProcessor, args.createdAt, args.modifiedAt);
+        return new Publication(args.app, args.profile, args.authority, args.isEncrypted, args.isMirror, args.isReply, args.contentType, args.tag, args.targetPublication, args.subspace, args.reserved1, args.reserved2, args.creationWeek, args.creation3Day, args.creationDay, args.uuid, args.metadataUri, args.collectingProcessor, args.referencingProcessor, args.createdAt, args.modifiedAt);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return Publication.deserialize(accountInfo.data, offset);
@@ -95,32 +98,46 @@ class Publication {
             isReply: this.isReply,
             contentType: 'ContentType.' + ContentType_1.ContentType[this.contentType],
             tag: this.tag,
-            searchable3Day: (() => {
-                const x = this.searchable3Day;
-                if (typeof x.toNumber === 'function') {
-                    try {
-                        return x.toNumber();
-                    }
-                    catch (_) {
-                        return x;
-                    }
-                }
-                return x;
-            })(),
-            searchableDay: (() => {
-                const x = this.searchableDay;
-                if (typeof x.toNumber === 'function') {
-                    try {
-                        return x.toNumber();
-                    }
-                    catch (_) {
-                        return x;
-                    }
-                }
-                return x;
-            })(),
             targetPublication: this.targetPublication.toBase58(),
             subspace: this.subspace.toBase58(),
+            reserved1: this.reserved1,
+            reserved2: this.reserved2,
+            creationWeek: (() => {
+                const x = this.creationWeek;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            creation3Day: (() => {
+                const x = this.creation3Day;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            creationDay: (() => {
+                const x = this.creationDay;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
             uuid: this.uuid,
             metadataUri: this.metadataUri,
             collectingProcessor: this.collectingProcessor,
@@ -152,10 +169,13 @@ exports.publicationBeet = new beet.FixableBeetStruct([
     ['isReply', beet.bool],
     ['contentType', ContentType_1.contentTypeBeet],
     ['tag', beet.uniformFixedSizeArray(beet.u8, 12)],
-    ['searchable3Day', beet.i64],
-    ['searchableDay', beet.i64],
     ['targetPublication', beetSolana.publicKey],
     ['subspace', beetSolana.publicKey],
+    ['reserved1', beet.u8],
+    ['reserved2', beet.u8],
+    ['creationWeek', beet.i64],
+    ['creation3Day', beet.i64],
+    ['creationDay', beet.i64],
     ['uuid', beet.utf8String],
     ['metadataUri', beet.utf8String],
     ['collectingProcessor', beet.coption(beetSolana.publicKey)],

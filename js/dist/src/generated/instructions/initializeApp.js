@@ -29,7 +29,7 @@ const web3 = __importStar(require("@solana/web3.js"));
 const AppData_1 = require("../types/AppData");
 exports.initializeAppStruct = new beet.FixableBeetArgsStruct([
     ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
-    ['appName', beet.utf8String],
+    ['appDomainName', beet.utf8String],
     ['data', AppData_1.appDataBeet],
 ], 'InitializeAppInstructionArgs');
 exports.initializeAppInstructionDiscriminator = [75, 120, 190, 52, 218, 180, 222, 75];

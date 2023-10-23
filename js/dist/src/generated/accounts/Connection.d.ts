@@ -9,10 +9,11 @@ export type ConnectionArgs = {
     connectionTargetType: ConnectionTargetType;
     initializer: web3.PublicKey;
     target: web3.PublicKey;
-    approved: boolean;
+    isApproved: boolean;
     createdAt: beet.bignum;
-    searchable3Day: beet.bignum;
-    searchableDay: beet.bignum;
+    creationWeek: beet.bignum;
+    creation3Day: beet.bignum;
+    creationDay: beet.bignum;
     modifiedAt: beet.COption<beet.bignum>;
 };
 export declare const connectionDiscriminator: number[];
@@ -22,10 +23,11 @@ export declare class Connection implements ConnectionArgs {
     readonly connectionTargetType: ConnectionTargetType;
     readonly initializer: web3.PublicKey;
     readonly target: web3.PublicKey;
-    readonly approved: boolean;
+    readonly isApproved: boolean;
     readonly createdAt: beet.bignum;
-    readonly searchable3Day: beet.bignum;
-    readonly searchableDay: beet.bignum;
+    readonly creationWeek: beet.bignum;
+    readonly creation3Day: beet.bignum;
+    readonly creationDay: beet.bignum;
     readonly modifiedAt: beet.COption<beet.bignum>;
     private constructor();
     static fromArgs(args: ConnectionArgs): Connection;
@@ -44,14 +46,17 @@ export declare class Connection implements ConnectionArgs {
         connectionTargetType: string;
         initializer: string;
         target: string;
-        approved: boolean;
+        isApproved: boolean;
         createdAt: number | {
             toNumber: () => number;
         };
-        searchable3Day: number | {
+        creationWeek: number | {
             toNumber: () => number;
         };
-        searchableDay: number | {
+        creation3Day: number | {
+            toNumber: () => number;
+        };
+        creationDay: number | {
             toNumber: () => number;
         };
         modifiedAt: beet.COption<beet.bignum>;

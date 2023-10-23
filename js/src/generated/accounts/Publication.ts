@@ -24,10 +24,13 @@ export type PublicationArgs = {
   isReply: boolean;
   contentType: ContentType;
   tag: number[] /* size: 12 */;
-  searchable3Day: beet.bignum;
-  searchableDay: beet.bignum;
   targetPublication: web3.PublicKey;
   subspace: web3.PublicKey;
+  reserved1: number;
+  reserved2: number;
+  creationWeek: beet.bignum;
+  creation3Day: beet.bignum;
+  creationDay: beet.bignum;
   uuid: string;
   metadataUri: string;
   collectingProcessor: beet.COption<web3.PublicKey>;
@@ -54,10 +57,13 @@ export class Publication implements PublicationArgs {
     readonly isReply: boolean,
     readonly contentType: ContentType,
     readonly tag: number[] /* size: 12 */,
-    readonly searchable3Day: beet.bignum,
-    readonly searchableDay: beet.bignum,
     readonly targetPublication: web3.PublicKey,
     readonly subspace: web3.PublicKey,
+    readonly reserved1: number,
+    readonly reserved2: number,
+    readonly creationWeek: beet.bignum,
+    readonly creation3Day: beet.bignum,
+    readonly creationDay: beet.bignum,
     readonly uuid: string,
     readonly metadataUri: string,
     readonly collectingProcessor: beet.COption<web3.PublicKey>,
@@ -79,10 +85,13 @@ export class Publication implements PublicationArgs {
       args.isReply,
       args.contentType,
       args.tag,
-      args.searchable3Day,
-      args.searchableDay,
       args.targetPublication,
       args.subspace,
+      args.reserved1,
+      args.reserved2,
+      args.creationWeek,
+      args.creation3Day,
+      args.creationDay,
       args.uuid,
       args.metadataUri,
       args.collectingProcessor,
@@ -194,30 +203,43 @@ export class Publication implements PublicationArgs {
       isReply: this.isReply,
       contentType: 'ContentType.' + ContentType[this.contentType],
       tag: this.tag,
-      searchable3Day: (() => {
-        const x = <{ toNumber: () => number }>this.searchable3Day;
-        if (typeof x.toNumber === 'function') {
-          try {
-            return x.toNumber();
-          } catch (_) {
-            return x;
-          }
-        }
-        return x;
-      })(),
-      searchableDay: (() => {
-        const x = <{ toNumber: () => number }>this.searchableDay;
-        if (typeof x.toNumber === 'function') {
-          try {
-            return x.toNumber();
-          } catch (_) {
-            return x;
-          }
-        }
-        return x;
-      })(),
       targetPublication: this.targetPublication.toBase58(),
       subspace: this.subspace.toBase58(),
+      reserved1: this.reserved1,
+      reserved2: this.reserved2,
+      creationWeek: (() => {
+        const x = <{ toNumber: () => number }>this.creationWeek;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      creation3Day: (() => {
+        const x = <{ toNumber: () => number }>this.creation3Day;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      creationDay: (() => {
+        const x = <{ toNumber: () => number }>this.creationDay;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
       uuid: this.uuid,
       metadataUri: this.metadataUri,
       collectingProcessor: this.collectingProcessor,
@@ -258,10 +280,13 @@ export const publicationBeet = new beet.FixableBeetStruct<
     ['isReply', beet.bool],
     ['contentType', contentTypeBeet],
     ['tag', beet.uniformFixedSizeArray(beet.u8, 12)],
-    ['searchable3Day', beet.i64],
-    ['searchableDay', beet.i64],
     ['targetPublication', beetSolana.publicKey],
     ['subspace', beetSolana.publicKey],
+    ['reserved1', beet.u8],
+    ['reserved2', beet.u8],
+    ['creationWeek', beet.i64],
+    ['creation3Day', beet.i64],
+    ['creationDay', beet.i64],
     ['uuid', beet.utf8String],
     ['metadataUri', beet.utf8String],
     ['collectingProcessor', beet.coption(beetSolana.publicKey)],

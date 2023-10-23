@@ -28,38 +28,51 @@ const web3 = __importStar(require("@solana/web3.js"));
 const beet = __importStar(require("@metaplex-foundation/beet"));
 const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
 const Gender_1 = require("../types/Gender");
-const LocationCoordinates_1 = require("../types/LocationCoordinates");
 exports.profileDiscriminator = [184, 101, 165, 188, 95, 63, 127, 188];
 class Profile {
-    constructor(app, authority, exchangeKey, isVerified, countryCode, regionCode, cityCode, firstName, lastName, birthDate, searchable10Years, searchable5Years, searchableWeek, searchableDay, gender, alias, statusText, metadataUri, currentLocation, connectingProcessor, createdAt, modifiedAt, reserved1, reserved2, reserved3) {
+    constructor(app, authority, exchangeKey, isVerified, gender, personalData1, personalData2, personalData3, personalData4, personalData5, personalData6, personalData7, personalData8, reserved1, reserved2, reserved3, reserved4, reserved5, reserved6, reserved7, reserved8, firstName, lastName, birthDate, birthDate10Years, birthDate5Years, birthDateYear, countryCode, regionCode, cityCode, creationYear, creationMonth, creationWeek, creationDay, alias, metadataUri, connectingProcessor, createdAt, modifiedAt) {
         this.app = app;
         this.authority = authority;
         this.exchangeKey = exchangeKey;
         this.isVerified = isVerified;
-        this.countryCode = countryCode;
-        this.regionCode = regionCode;
-        this.cityCode = cityCode;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthDate = birthDate;
-        this.searchable10Years = searchable10Years;
-        this.searchable5Years = searchable5Years;
-        this.searchableWeek = searchableWeek;
-        this.searchableDay = searchableDay;
         this.gender = gender;
-        this.alias = alias;
-        this.statusText = statusText;
-        this.metadataUri = metadataUri;
-        this.currentLocation = currentLocation;
-        this.connectingProcessor = connectingProcessor;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
+        this.personalData1 = personalData1;
+        this.personalData2 = personalData2;
+        this.personalData3 = personalData3;
+        this.personalData4 = personalData4;
+        this.personalData5 = personalData5;
+        this.personalData6 = personalData6;
+        this.personalData7 = personalData7;
+        this.personalData8 = personalData8;
         this.reserved1 = reserved1;
         this.reserved2 = reserved2;
         this.reserved3 = reserved3;
+        this.reserved4 = reserved4;
+        this.reserved5 = reserved5;
+        this.reserved6 = reserved6;
+        this.reserved7 = reserved7;
+        this.reserved8 = reserved8;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+        this.birthDate10Years = birthDate10Years;
+        this.birthDate5Years = birthDate5Years;
+        this.birthDateYear = birthDateYear;
+        this.countryCode = countryCode;
+        this.regionCode = regionCode;
+        this.cityCode = cityCode;
+        this.creationYear = creationYear;
+        this.creationMonth = creationMonth;
+        this.creationWeek = creationWeek;
+        this.creationDay = creationDay;
+        this.alias = alias;
+        this.metadataUri = metadataUri;
+        this.connectingProcessor = connectingProcessor;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
     }
     static fromArgs(args) {
-        return new Profile(args.app, args.authority, args.exchangeKey, args.isVerified, args.countryCode, args.regionCode, args.cityCode, args.firstName, args.lastName, args.birthDate, args.searchable10Years, args.searchable5Years, args.searchableWeek, args.searchableDay, args.gender, args.alias, args.statusText, args.metadataUri, args.currentLocation, args.connectingProcessor, args.createdAt, args.modifiedAt, args.reserved1, args.reserved2, args.reserved3);
+        return new Profile(args.app, args.authority, args.exchangeKey, args.isVerified, args.gender, args.personalData1, args.personalData2, args.personalData3, args.personalData4, args.personalData5, args.personalData6, args.personalData7, args.personalData8, args.reserved1, args.reserved2, args.reserved3, args.reserved4, args.reserved5, args.reserved6, args.reserved7, args.reserved8, args.firstName, args.lastName, args.birthDate, args.birthDate10Years, args.birthDate5Years, args.birthDateYear, args.countryCode, args.regionCode, args.cityCode, args.creationYear, args.creationMonth, args.creationWeek, args.creationDay, args.alias, args.metadataUri, args.connectingProcessor, args.createdAt, args.modifiedAt);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return Profile.deserialize(accountInfo.data, offset);
@@ -99,9 +112,45 @@ class Profile {
             authority: this.authority.toBase58(),
             exchangeKey: this.exchangeKey.toBase58(),
             isVerified: this.isVerified,
-            countryCode: this.countryCode,
-            regionCode: this.regionCode,
-            cityCode: this.cityCode,
+            gender: 'Gender.' + Gender_1.Gender[this.gender],
+            personalData1: this.personalData1,
+            personalData2: this.personalData2,
+            personalData3: this.personalData3,
+            personalData4: this.personalData4,
+            personalData5: this.personalData5,
+            personalData6: this.personalData6,
+            personalData7: this.personalData7,
+            personalData8: this.personalData8,
+            reserved1: this.reserved1,
+            reserved2: this.reserved2,
+            reserved3: this.reserved3,
+            reserved4: this.reserved4,
+            reserved5: (() => {
+                const x = this.reserved5;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            reserved6: (() => {
+                const x = this.reserved6;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            reserved7: this.reserved7,
+            reserved8: this.reserved8,
             firstName: this.firstName,
             lastName: this.lastName,
             birthDate: (() => {
@@ -116,8 +165,8 @@ class Profile {
                 }
                 return x;
             })(),
-            searchable10Years: (() => {
-                const x = this.searchable10Years;
+            birthDate10Years: (() => {
+                const x = this.birthDate10Years;
                 if (typeof x.toNumber === 'function') {
                     try {
                         return x.toNumber();
@@ -128,8 +177,8 @@ class Profile {
                 }
                 return x;
             })(),
-            searchable5Years: (() => {
-                const x = this.searchable5Years;
+            birthDate5Years: (() => {
+                const x = this.birthDate5Years;
                 if (typeof x.toNumber === 'function') {
                     try {
                         return x.toNumber();
@@ -140,8 +189,8 @@ class Profile {
                 }
                 return x;
             })(),
-            searchableWeek: (() => {
-                const x = this.searchableWeek;
+            birthDateYear: (() => {
+                const x = this.birthDateYear;
                 if (typeof x.toNumber === 'function') {
                     try {
                         return x.toNumber();
@@ -152,8 +201,11 @@ class Profile {
                 }
                 return x;
             })(),
-            searchableDay: (() => {
-                const x = this.searchableDay;
+            countryCode: this.countryCode,
+            regionCode: this.regionCode,
+            cityCode: this.cityCode,
+            creationYear: (() => {
+                const x = this.creationYear;
                 if (typeof x.toNumber === 'function') {
                     try {
                         return x.toNumber();
@@ -164,11 +216,44 @@ class Profile {
                 }
                 return x;
             })(),
-            gender: this.gender,
+            creationMonth: (() => {
+                const x = this.creationMonth;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            creationWeek: (() => {
+                const x = this.creationWeek;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            creationDay: (() => {
+                const x = this.creationDay;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
             alias: this.alias,
-            statusText: this.statusText,
             metadataUri: this.metadataUri,
-            currentLocation: this.currentLocation,
             connectingProcessor: this.connectingProcessor,
             createdAt: (() => {
                 const x = this.createdAt;
@@ -183,9 +268,6 @@ class Profile {
                 return x;
             })(),
             modifiedAt: this.modifiedAt,
-            reserved1: this.reserved1,
-            reserved2: this.reserved2,
-            reserved3: this.reserved3,
         };
     }
 }
@@ -196,26 +278,40 @@ exports.profileBeet = new beet.FixableBeetStruct([
     ['authority', beetSolana.publicKey],
     ['exchangeKey', beetSolana.publicKey],
     ['isVerified', beet.bool],
+    ['gender', Gender_1.genderBeet],
+    ['personalData1', beet.u8],
+    ['personalData2', beet.u8],
+    ['personalData3', beet.u8],
+    ['personalData4', beet.u8],
+    ['personalData5', beet.u8],
+    ['personalData6', beet.u8],
+    ['personalData7', beet.u8],
+    ['personalData8', beet.u8],
+    ['reserved1', beet.i16],
+    ['reserved2', beet.i16],
+    ['reserved3', beet.i32],
+    ['reserved4', beet.i32],
+    ['reserved5', beet.i64],
+    ['reserved6', beet.i64],
+    ['reserved7', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['reserved8', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['firstName', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['lastName', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['birthDate', beet.i64],
+    ['birthDate10Years', beet.i64],
+    ['birthDate5Years', beet.i64],
+    ['birthDateYear', beet.i64],
     ['countryCode', beet.u16],
     ['regionCode', beet.u16],
     ['cityCode', beet.u16],
-    ['firstName', beet.uniformFixedSizeArray(beet.u8, 20)],
-    ['lastName', beet.uniformFixedSizeArray(beet.u8, 30)],
-    ['birthDate', beet.i64],
-    ['searchable10Years', beet.i64],
-    ['searchable5Years', beet.i64],
-    ['searchableWeek', beet.i64],
-    ['searchableDay', beet.i64],
-    ['gender', beet.coption(Gender_1.genderBeet)],
+    ['creationYear', beet.i64],
+    ['creationMonth', beet.i64],
+    ['creationWeek', beet.i64],
+    ['creationDay', beet.i64],
     ['alias', beet.coption(beet.utf8String)],
-    ['statusText', beet.utf8String],
     ['metadataUri', beet.coption(beet.utf8String)],
-    ['currentLocation', beet.coption(LocationCoordinates_1.locationCoordinatesBeet)],
     ['connectingProcessor', beet.coption(beetSolana.publicKey)],
     ['createdAt', beet.i64],
     ['modifiedAt', beet.coption(beet.i64)],
-    ['reserved1', beet.uniformFixedSizeArray(beet.u8, 32)],
-    ['reserved2', beet.uniformFixedSizeArray(beet.u8, 32)],
-    ['reserved3', beet.uniformFixedSizeArray(beet.u8, 32)],
 ], Profile.fromArgs, 'Profile');
 //# sourceMappingURL=Profile.js.map

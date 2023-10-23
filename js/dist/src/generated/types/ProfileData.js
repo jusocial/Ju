@@ -26,18 +26,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.profileDataBeet = void 0;
 const beet = __importStar(require("@metaplex-foundation/beet"));
 const Gender_1 = require("./Gender");
-const LocationCoordinates_1 = require("./LocationCoordinates");
 exports.profileDataBeet = new beet.FixableBeetArgsStruct([
     ['alias', beet.coption(beet.utf8String)],
     ['metadataUri', beet.coption(beet.utf8String)],
-    ['statusText', beet.utf8String],
     ['gender', beet.coption(Gender_1.genderBeet)],
-    ['firstName', beet.utf8String],
-    ['lastName', beet.utf8String],
-    ['birthDate', beet.i64],
-    ['countryCode', beet.u16],
-    ['regionCode', beet.u16],
-    ['cityCode', beet.u16],
-    ['currentLocation', beet.coption(LocationCoordinates_1.locationCoordinatesBeet)],
+    ['firstName', beet.coption(beet.utf8String)],
+    ['lastName', beet.coption(beet.utf8String)],
+    ['birthDate', beet.coption(beet.i64)],
+    ['countryCode', beet.coption(beet.u16)],
+    ['regionCode', beet.coption(beet.u16)],
+    ['cityCode', beet.coption(beet.u16)],
+    ['personalData1', beet.coption(beet.u8)],
+    ['personalData2', beet.coption(beet.u8)],
+    ['personalData3', beet.coption(beet.u8)],
+    ['personalData4', beet.coption(beet.u8)],
+    ['personalData5', beet.coption(beet.u8)],
+    ['personalData6', beet.coption(beet.u8)],
+    ['personalData7', beet.coption(beet.u8)],
+    ['personalData8', beet.coption(beet.u8)],
 ], 'ProfileData');
 //# sourceMappingURL=ProfileData.js.map

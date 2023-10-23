@@ -30,20 +30,21 @@ const beetSolana = __importStar(require("@metaplex-foundation/beet-solana"));
 const ConnectionTargetType_1 = require("../types/ConnectionTargetType");
 exports.connectionDiscriminator = [209, 186, 115, 58, 36, 236, 179, 10];
 class Connection {
-    constructor(app, authority, connectionTargetType, initializer, target, approved, createdAt, searchable3Day, searchableDay, modifiedAt) {
+    constructor(app, authority, connectionTargetType, initializer, target, isApproved, createdAt, creationWeek, creation3Day, creationDay, modifiedAt) {
         this.app = app;
         this.authority = authority;
         this.connectionTargetType = connectionTargetType;
         this.initializer = initializer;
         this.target = target;
-        this.approved = approved;
+        this.isApproved = isApproved;
         this.createdAt = createdAt;
-        this.searchable3Day = searchable3Day;
-        this.searchableDay = searchableDay;
+        this.creationWeek = creationWeek;
+        this.creation3Day = creation3Day;
+        this.creationDay = creationDay;
         this.modifiedAt = modifiedAt;
     }
     static fromArgs(args) {
-        return new Connection(args.app, args.authority, args.connectionTargetType, args.initializer, args.target, args.approved, args.createdAt, args.searchable3Day, args.searchableDay, args.modifiedAt);
+        return new Connection(args.app, args.authority, args.connectionTargetType, args.initializer, args.target, args.isApproved, args.createdAt, args.creationWeek, args.creation3Day, args.creationDay, args.modifiedAt);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return Connection.deserialize(accountInfo.data, offset);
@@ -84,7 +85,7 @@ class Connection {
             connectionTargetType: 'ConnectionTargetType.' + ConnectionTargetType_1.ConnectionTargetType[this.connectionTargetType],
             initializer: this.initializer.toBase58(),
             target: this.target.toBase58(),
-            approved: this.approved,
+            isApproved: this.isApproved,
             createdAt: (() => {
                 const x = this.createdAt;
                 if (typeof x.toNumber === 'function') {
@@ -97,8 +98,8 @@ class Connection {
                 }
                 return x;
             })(),
-            searchable3Day: (() => {
-                const x = this.searchable3Day;
+            creationWeek: (() => {
+                const x = this.creationWeek;
                 if (typeof x.toNumber === 'function') {
                     try {
                         return x.toNumber();
@@ -109,8 +110,20 @@ class Connection {
                 }
                 return x;
             })(),
-            searchableDay: (() => {
-                const x = this.searchableDay;
+            creation3Day: (() => {
+                const x = this.creation3Day;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            creationDay: (() => {
+                const x = this.creationDay;
                 if (typeof x.toNumber === 'function') {
                     try {
                         return x.toNumber();
@@ -133,10 +146,11 @@ exports.connectionBeet = new beet.FixableBeetStruct([
     ['connectionTargetType', ConnectionTargetType_1.connectionTargetTypeBeet],
     ['initializer', beetSolana.publicKey],
     ['target', beetSolana.publicKey],
-    ['approved', beet.bool],
+    ['isApproved', beet.bool],
     ['createdAt', beet.i64],
-    ['searchable3Day', beet.i64],
-    ['searchableDay', beet.i64],
+    ['creationWeek', beet.i64],
+    ['creation3Day', beet.i64],
+    ['creationDay', beet.i64],
     ['modifiedAt', beet.coption(beet.i64)],
 ], Connection.fromArgs, 'Connection');
 //# sourceMappingURL=Connection.js.map

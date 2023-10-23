@@ -31,19 +31,21 @@ const ReportTargetType_1 = require("../types/ReportTargetType");
 const ReportType_1 = require("../types/ReportType");
 exports.reportDiscriminator = [232, 246, 229, 227, 242, 105, 190, 2];
 class Report {
-    constructor(app, authority, targetType, target, initializer, reportType, searchableDay, notification, createdAt) {
+    constructor(app, authority, targetType, target, initializer, reportType, createdAt, creationWeek, creation3Day, creationDay, notification) {
         this.app = app;
         this.authority = authority;
         this.targetType = targetType;
         this.target = target;
         this.initializer = initializer;
         this.reportType = reportType;
-        this.searchableDay = searchableDay;
-        this.notification = notification;
         this.createdAt = createdAt;
+        this.creationWeek = creationWeek;
+        this.creation3Day = creation3Day;
+        this.creationDay = creationDay;
+        this.notification = notification;
     }
     static fromArgs(args) {
-        return new Report(args.app, args.authority, args.targetType, args.target, args.initializer, args.reportType, args.searchableDay, args.notification, args.createdAt);
+        return new Report(args.app, args.authority, args.targetType, args.target, args.initializer, args.reportType, args.createdAt, args.creationWeek, args.creation3Day, args.creationDay, args.notification);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return Report.deserialize(accountInfo.data, offset);
@@ -85,19 +87,6 @@ class Report {
             target: this.target.toBase58(),
             initializer: this.initializer.toBase58(),
             reportType: 'ReportType.' + ReportType_1.ReportType[this.reportType],
-            searchableDay: (() => {
-                const x = this.searchableDay;
-                if (typeof x.toNumber === 'function') {
-                    try {
-                        return x.toNumber();
-                    }
-                    catch (_) {
-                        return x;
-                    }
-                }
-                return x;
-            })(),
-            notification: this.notification,
             createdAt: (() => {
                 const x = this.createdAt;
                 if (typeof x.toNumber === 'function') {
@@ -110,6 +99,43 @@ class Report {
                 }
                 return x;
             })(),
+            creationWeek: (() => {
+                const x = this.creationWeek;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            creation3Day: (() => {
+                const x = this.creation3Day;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            creationDay: (() => {
+                const x = this.creationDay;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            notification: this.notification,
         };
     }
 }
@@ -122,8 +148,10 @@ exports.reportBeet = new beet.FixableBeetStruct([
     ['target', beetSolana.publicKey],
     ['initializer', beetSolana.publicKey],
     ['reportType', ReportType_1.reportTypeBeet],
-    ['searchableDay', beet.i64],
-    ['notification', beet.coption(beet.utf8String)],
     ['createdAt', beet.i64],
+    ['creationWeek', beet.i64],
+    ['creation3Day', beet.i64],
+    ['creationDay', beet.i64],
+    ['notification', beet.coption(beet.utf8String)],
 ], Report.fromArgs, 'Report');
 //# sourceMappingURL=Report.js.map

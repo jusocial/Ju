@@ -140,13 +140,13 @@ pub struct DeleteProcessor<'info> {
 /// 8. `[]` System program
 ///
 #[derive(Accounts)]
-#[instruction(app_name: String)]
+#[instruction(app_domain_name: String)]
 pub struct InitializeApp<'info> {
     #[account(
         init,
         seeds = [
             App::PREFIX.as_bytes(),
-            app_name.as_bytes().as_ref(),
+            app_domain_name.as_bytes().as_ref(),
         ],
         bump,
         payer = authority,
@@ -251,7 +251,7 @@ pub struct UpdateApp<'info> {
         has_one = authority @CustomError::UpdateNotAuthorized,
         seeds = [
             App::PREFIX.as_bytes(),
-            app.app_name.as_bytes().as_ref(),
+            app.app_domain_name.as_bytes().as_ref(),
         ],
         bump,
     )]
@@ -342,7 +342,7 @@ pub struct CreateProfile<'info> {
     #[account(
         seeds = [
             App::PREFIX.as_bytes(),
-            app.app_name.as_bytes().as_ref(),
+            app.app_domain_name.as_bytes().as_ref(),
         ],
         bump
     )]
@@ -430,7 +430,7 @@ pub struct UpdateProfile<'info> {
     #[account(
         seeds = [
             App::PREFIX.as_bytes(),
-            app.app_name.as_bytes().as_ref(),
+            app.app_domain_name.as_bytes().as_ref(),
         ],
         bump
     )]
@@ -507,7 +507,7 @@ pub struct DeleteProfile<'info> {
     #[account(
         seeds = [
             App::PREFIX.as_bytes(),
-            app.app_name.as_bytes().as_ref(),
+            app.app_domain_name.as_bytes().as_ref(),
         ],
         bump
     )]
@@ -565,7 +565,7 @@ pub struct InitializeConnection<'info> {
     #[account(
         seeds = [
             App::PREFIX.as_bytes(),
-            app.app_name.as_bytes().as_ref(),
+            app.app_domain_name.as_bytes().as_ref(),
         ],
         bump
     )]
@@ -648,7 +648,7 @@ pub struct UpdateConnection<'info> {
     #[account(
         seeds = [
             App::PREFIX.as_bytes(),
-            app.app_name.as_bytes().as_ref(),
+            app.app_domain_name.as_bytes().as_ref(),
         ],
         bump
     )]
@@ -750,7 +750,7 @@ pub struct CreateSubspace<'info> {
     #[account(
         seeds = [
             App::PREFIX.as_bytes(),
-            app.app_name.as_bytes().as_ref(),
+            app.app_domain_name.as_bytes().as_ref(),
         ],
         bump
     )]
@@ -867,7 +867,7 @@ pub struct UpdateSubspace<'info> {
     #[account(
         seeds = [
             App::PREFIX.as_bytes(),
-            app.app_name.as_bytes().as_ref(),
+            app.app_domain_name.as_bytes().as_ref(),
         ],
         bump
     )]
@@ -908,7 +908,7 @@ pub struct UpdateSubspace<'info> {
         bump,
         close = authority
     )]
-    pub current_alias_pda: Option<Account<'info, Alias>>,
+    pub current_alias_pda: Option<Box<Account<'info, Alias>>>,
 
     #[account(
         init,
@@ -921,7 +921,7 @@ pub struct UpdateSubspace<'info> {
         payer = authority,
         space = Alias::LEN
     )]
-    pub new_alias_pda: Option<Account<'info, Alias>>,
+    pub new_alias_pda: Option<Box<Account<'info, Alias>>>,
 
     #[account(
         seeds = [
@@ -989,7 +989,7 @@ pub struct DeleteSubpace<'info> {
     #[account(
         seeds = [
             App::PREFIX.as_bytes(),
-            app.app_name.as_bytes().as_ref(),
+            app.app_domain_name.as_bytes().as_ref(),
         ],
         bump
     )]
@@ -1046,7 +1046,7 @@ pub struct AddSubspaceManager<'info> {
     #[account(
         seeds = [
             App::PREFIX.as_bytes(),
-            app.app_name.as_bytes().as_ref(),
+            app.app_domain_name.as_bytes().as_ref(),
         ],
         bump
     )]
@@ -1122,7 +1122,7 @@ pub struct UpdateSubspaceManager<'info> {
     #[account(
         seeds = [
             App::PREFIX.as_bytes(),
-            app.app_name.as_bytes().as_ref(),
+            app.app_domain_name.as_bytes().as_ref(),
         ],
         bump
     )]
@@ -1197,7 +1197,7 @@ pub struct DeleteSubspaceManager<'info> {
     #[account(
         seeds = [
             App::PREFIX.as_bytes(),
-            app.app_name.as_bytes().as_ref(),
+            app.app_domain_name.as_bytes().as_ref(),
         ],
         bump
     )]
@@ -1267,7 +1267,7 @@ pub struct CreatePublication<'info> {
     #[account(
         seeds = [
             App::PREFIX.as_bytes(),
-            app.app_name.as_bytes().as_ref(),
+            app.app_domain_name.as_bytes().as_ref(),
         ],
         bump
     )]
@@ -1441,7 +1441,7 @@ pub struct UpdatePublication<'info> {
     #[account(
         seeds = [
             App::PREFIX.as_bytes(),
-            app.app_name.as_bytes().as_ref(),
+            app.app_domain_name.as_bytes().as_ref(),
         ],
         bump
     )]
@@ -1556,7 +1556,7 @@ pub struct CollectPublication<'info> {
     #[account(
         seeds = [
             App::PREFIX.as_bytes(),
-            app.app_name.as_bytes().as_ref(),
+            app.app_domain_name.as_bytes().as_ref(),
         ],
         bump
     )]
@@ -1643,7 +1643,7 @@ pub struct DeletePublication<'info> {
     #[account(
         seeds = [
             App::PREFIX.as_bytes(),
-            app.app_name.as_bytes().as_ref(),
+            app.app_domain_name.as_bytes().as_ref(),
         ],
         bump
     )]
@@ -1695,7 +1695,7 @@ pub struct CreateReaction<'info> {
     #[account(
         seeds = [
             App::PREFIX.as_bytes(),
-            app.app_name.as_bytes().as_ref(),
+            app.app_domain_name.as_bytes().as_ref(),
         ],
         bump
     )]
@@ -1752,7 +1752,7 @@ pub struct DeleteReaction<'info> {
     #[account(
         seeds = [
             App::PREFIX.as_bytes(),
-            app.app_name.as_bytes().as_ref(),
+            app.app_domain_name.as_bytes().as_ref(),
         ],
         bump
     )]
@@ -1809,7 +1809,7 @@ pub struct InitializeReport<'info> {
     #[account(
         seeds = [
             App::PREFIX.as_bytes(),
-            app.app_name.as_bytes().as_ref(),
+            app.app_domain_name.as_bytes().as_ref(),
         ],
         bump
     )]

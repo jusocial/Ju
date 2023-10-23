@@ -27,7 +27,7 @@ exports.createCreateReactionInstruction = exports.createReactionInstructionDiscr
 const beet = __importStar(require("@metaplex-foundation/beet"));
 const web3 = __importStar(require("@solana/web3.js"));
 const ReactionType_1 = require("../types/ReactionType");
-exports.createReactionStruct = new beet.BeetArgsStruct([
+exports.createReactionStruct = new beet.FixableBeetArgsStruct([
     ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['reactionType', ReactionType_1.reactionTypeBeet],
 ], 'CreateReactionInstructionArgs');

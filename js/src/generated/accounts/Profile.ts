@@ -9,7 +9,6 @@ import * as web3 from '@solana/web3.js';
 import * as beet from '@metaplex-foundation/beet';
 import * as beetSolana from '@metaplex-foundation/beet-solana';
 import { Gender, genderBeet } from '../types/Gender';
-import { LocationCoordinates, locationCoordinatesBeet } from '../types/LocationCoordinates';
 
 /**
  * Arguments used to create {@link Profile}
@@ -21,27 +20,41 @@ export type ProfileArgs = {
   authority: web3.PublicKey;
   exchangeKey: web3.PublicKey;
   isVerified: boolean;
+  gender: Gender;
+  personalData1: number;
+  personalData2: number;
+  personalData3: number;
+  personalData4: number;
+  personalData5: number;
+  personalData6: number;
+  personalData7: number;
+  personalData8: number;
+  reserved1: number;
+  reserved2: number;
+  reserved3: number;
+  reserved4: number;
+  reserved5: beet.bignum;
+  reserved6: beet.bignum;
+  reserved7: number[] /* size: 32 */;
+  reserved8: number[] /* size: 32 */;
+  firstName: number[] /* size: 32 */;
+  lastName: number[] /* size: 32 */;
+  birthDate: beet.bignum;
+  birthDate10Years: beet.bignum;
+  birthDate5Years: beet.bignum;
+  birthDateYear: beet.bignum;
   countryCode: number;
   regionCode: number;
   cityCode: number;
-  firstName: number[] /* size: 20 */;
-  lastName: number[] /* size: 30 */;
-  birthDate: beet.bignum;
-  searchable10Years: beet.bignum;
-  searchable5Years: beet.bignum;
-  searchableWeek: beet.bignum;
-  searchableDay: beet.bignum;
-  gender: beet.COption<Gender>;
+  creationYear: beet.bignum;
+  creationMonth: beet.bignum;
+  creationWeek: beet.bignum;
+  creationDay: beet.bignum;
   alias: beet.COption<string>;
-  statusText: string;
   metadataUri: beet.COption<string>;
-  currentLocation: beet.COption<LocationCoordinates>;
   connectingProcessor: beet.COption<web3.PublicKey>;
   createdAt: beet.bignum;
   modifiedAt: beet.COption<beet.bignum>;
-  reserved1: number[] /* size: 32 */;
-  reserved2: number[] /* size: 32 */;
-  reserved3: number[] /* size: 32 */;
 };
 
 export const profileDiscriminator = [184, 101, 165, 188, 95, 63, 127, 188];
@@ -58,27 +71,41 @@ export class Profile implements ProfileArgs {
     readonly authority: web3.PublicKey,
     readonly exchangeKey: web3.PublicKey,
     readonly isVerified: boolean,
+    readonly gender: Gender,
+    readonly personalData1: number,
+    readonly personalData2: number,
+    readonly personalData3: number,
+    readonly personalData4: number,
+    readonly personalData5: number,
+    readonly personalData6: number,
+    readonly personalData7: number,
+    readonly personalData8: number,
+    readonly reserved1: number,
+    readonly reserved2: number,
+    readonly reserved3: number,
+    readonly reserved4: number,
+    readonly reserved5: beet.bignum,
+    readonly reserved6: beet.bignum,
+    readonly reserved7: number[] /* size: 32 */,
+    readonly reserved8: number[] /* size: 32 */,
+    readonly firstName: number[] /* size: 32 */,
+    readonly lastName: number[] /* size: 32 */,
+    readonly birthDate: beet.bignum,
+    readonly birthDate10Years: beet.bignum,
+    readonly birthDate5Years: beet.bignum,
+    readonly birthDateYear: beet.bignum,
     readonly countryCode: number,
     readonly regionCode: number,
     readonly cityCode: number,
-    readonly firstName: number[] /* size: 20 */,
-    readonly lastName: number[] /* size: 30 */,
-    readonly birthDate: beet.bignum,
-    readonly searchable10Years: beet.bignum,
-    readonly searchable5Years: beet.bignum,
-    readonly searchableWeek: beet.bignum,
-    readonly searchableDay: beet.bignum,
-    readonly gender: beet.COption<Gender>,
+    readonly creationYear: beet.bignum,
+    readonly creationMonth: beet.bignum,
+    readonly creationWeek: beet.bignum,
+    readonly creationDay: beet.bignum,
     readonly alias: beet.COption<string>,
-    readonly statusText: string,
     readonly metadataUri: beet.COption<string>,
-    readonly currentLocation: beet.COption<LocationCoordinates>,
     readonly connectingProcessor: beet.COption<web3.PublicKey>,
     readonly createdAt: beet.bignum,
     readonly modifiedAt: beet.COption<beet.bignum>,
-    readonly reserved1: number[] /* size: 32 */,
-    readonly reserved2: number[] /* size: 32 */,
-    readonly reserved3: number[] /* size: 32 */,
   ) {}
 
   /**
@@ -90,27 +117,41 @@ export class Profile implements ProfileArgs {
       args.authority,
       args.exchangeKey,
       args.isVerified,
-      args.countryCode,
-      args.regionCode,
-      args.cityCode,
-      args.firstName,
-      args.lastName,
-      args.birthDate,
-      args.searchable10Years,
-      args.searchable5Years,
-      args.searchableWeek,
-      args.searchableDay,
       args.gender,
-      args.alias,
-      args.statusText,
-      args.metadataUri,
-      args.currentLocation,
-      args.connectingProcessor,
-      args.createdAt,
-      args.modifiedAt,
+      args.personalData1,
+      args.personalData2,
+      args.personalData3,
+      args.personalData4,
+      args.personalData5,
+      args.personalData6,
+      args.personalData7,
+      args.personalData8,
       args.reserved1,
       args.reserved2,
       args.reserved3,
+      args.reserved4,
+      args.reserved5,
+      args.reserved6,
+      args.reserved7,
+      args.reserved8,
+      args.firstName,
+      args.lastName,
+      args.birthDate,
+      args.birthDate10Years,
+      args.birthDate5Years,
+      args.birthDateYear,
+      args.countryCode,
+      args.regionCode,
+      args.cityCode,
+      args.creationYear,
+      args.creationMonth,
+      args.creationWeek,
+      args.creationDay,
+      args.alias,
+      args.metadataUri,
+      args.connectingProcessor,
+      args.createdAt,
+      args.modifiedAt,
     );
   }
 
@@ -212,9 +253,43 @@ export class Profile implements ProfileArgs {
       authority: this.authority.toBase58(),
       exchangeKey: this.exchangeKey.toBase58(),
       isVerified: this.isVerified,
-      countryCode: this.countryCode,
-      regionCode: this.regionCode,
-      cityCode: this.cityCode,
+      gender: 'Gender.' + Gender[this.gender],
+      personalData1: this.personalData1,
+      personalData2: this.personalData2,
+      personalData3: this.personalData3,
+      personalData4: this.personalData4,
+      personalData5: this.personalData5,
+      personalData6: this.personalData6,
+      personalData7: this.personalData7,
+      personalData8: this.personalData8,
+      reserved1: this.reserved1,
+      reserved2: this.reserved2,
+      reserved3: this.reserved3,
+      reserved4: this.reserved4,
+      reserved5: (() => {
+        const x = <{ toNumber: () => number }>this.reserved5;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      reserved6: (() => {
+        const x = <{ toNumber: () => number }>this.reserved6;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      reserved7: this.reserved7,
+      reserved8: this.reserved8,
       firstName: this.firstName,
       lastName: this.lastName,
       birthDate: (() => {
@@ -228,8 +303,8 @@ export class Profile implements ProfileArgs {
         }
         return x;
       })(),
-      searchable10Years: (() => {
-        const x = <{ toNumber: () => number }>this.searchable10Years;
+      birthDate10Years: (() => {
+        const x = <{ toNumber: () => number }>this.birthDate10Years;
         if (typeof x.toNumber === 'function') {
           try {
             return x.toNumber();
@@ -239,8 +314,8 @@ export class Profile implements ProfileArgs {
         }
         return x;
       })(),
-      searchable5Years: (() => {
-        const x = <{ toNumber: () => number }>this.searchable5Years;
+      birthDate5Years: (() => {
+        const x = <{ toNumber: () => number }>this.birthDate5Years;
         if (typeof x.toNumber === 'function') {
           try {
             return x.toNumber();
@@ -250,8 +325,8 @@ export class Profile implements ProfileArgs {
         }
         return x;
       })(),
-      searchableWeek: (() => {
-        const x = <{ toNumber: () => number }>this.searchableWeek;
+      birthDateYear: (() => {
+        const x = <{ toNumber: () => number }>this.birthDateYear;
         if (typeof x.toNumber === 'function') {
           try {
             return x.toNumber();
@@ -261,8 +336,11 @@ export class Profile implements ProfileArgs {
         }
         return x;
       })(),
-      searchableDay: (() => {
-        const x = <{ toNumber: () => number }>this.searchableDay;
+      countryCode: this.countryCode,
+      regionCode: this.regionCode,
+      cityCode: this.cityCode,
+      creationYear: (() => {
+        const x = <{ toNumber: () => number }>this.creationYear;
         if (typeof x.toNumber === 'function') {
           try {
             return x.toNumber();
@@ -272,11 +350,41 @@ export class Profile implements ProfileArgs {
         }
         return x;
       })(),
-      gender: this.gender,
+      creationMonth: (() => {
+        const x = <{ toNumber: () => number }>this.creationMonth;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      creationWeek: (() => {
+        const x = <{ toNumber: () => number }>this.creationWeek;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      creationDay: (() => {
+        const x = <{ toNumber: () => number }>this.creationDay;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
       alias: this.alias,
-      statusText: this.statusText,
       metadataUri: this.metadataUri,
-      currentLocation: this.currentLocation,
       connectingProcessor: this.connectingProcessor,
       createdAt: (() => {
         const x = <{ toNumber: () => number }>this.createdAt;
@@ -290,9 +398,6 @@ export class Profile implements ProfileArgs {
         return x;
       })(),
       modifiedAt: this.modifiedAt,
-      reserved1: this.reserved1,
-      reserved2: this.reserved2,
-      reserved3: this.reserved3,
     };
   }
 }
@@ -313,27 +418,41 @@ export const profileBeet = new beet.FixableBeetStruct<
     ['authority', beetSolana.publicKey],
     ['exchangeKey', beetSolana.publicKey],
     ['isVerified', beet.bool],
+    ['gender', genderBeet],
+    ['personalData1', beet.u8],
+    ['personalData2', beet.u8],
+    ['personalData3', beet.u8],
+    ['personalData4', beet.u8],
+    ['personalData5', beet.u8],
+    ['personalData6', beet.u8],
+    ['personalData7', beet.u8],
+    ['personalData8', beet.u8],
+    ['reserved1', beet.i16],
+    ['reserved2', beet.i16],
+    ['reserved3', beet.i32],
+    ['reserved4', beet.i32],
+    ['reserved5', beet.i64],
+    ['reserved6', beet.i64],
+    ['reserved7', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['reserved8', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['firstName', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['lastName', beet.uniformFixedSizeArray(beet.u8, 32)],
+    ['birthDate', beet.i64],
+    ['birthDate10Years', beet.i64],
+    ['birthDate5Years', beet.i64],
+    ['birthDateYear', beet.i64],
     ['countryCode', beet.u16],
     ['regionCode', beet.u16],
     ['cityCode', beet.u16],
-    ['firstName', beet.uniformFixedSizeArray(beet.u8, 20)],
-    ['lastName', beet.uniformFixedSizeArray(beet.u8, 30)],
-    ['birthDate', beet.i64],
-    ['searchable10Years', beet.i64],
-    ['searchable5Years', beet.i64],
-    ['searchableWeek', beet.i64],
-    ['searchableDay', beet.i64],
-    ['gender', beet.coption(genderBeet)],
+    ['creationYear', beet.i64],
+    ['creationMonth', beet.i64],
+    ['creationWeek', beet.i64],
+    ['creationDay', beet.i64],
     ['alias', beet.coption(beet.utf8String)],
-    ['statusText', beet.utf8String],
     ['metadataUri', beet.coption(beet.utf8String)],
-    ['currentLocation', beet.coption(locationCoordinatesBeet)],
     ['connectingProcessor', beet.coption(beetSolana.publicKey)],
     ['createdAt', beet.i64],
     ['modifiedAt', beet.coption(beet.i64)],
-    ['reserved1', beet.uniformFixedSizeArray(beet.u8, 32)],
-    ['reserved2', beet.uniformFixedSizeArray(beet.u8, 32)],
-    ['reserved3', beet.uniformFixedSizeArray(beet.u8, 32)],
   ],
   Profile.fromArgs,
   'Profile',

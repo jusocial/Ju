@@ -1,40 +1,45 @@
 use crate::*;
 
-/// Validates a birth date to ensure it falls within an acceptable range.
-///
-/// This function calculates the maximum allowed birth date based on the current time
-/// and the minimum allowed age, and the minimum allowed birth date based on the current time
-/// and the maximum allowed age. It then compares the provided `birth_date` with these
-/// calculated minimum and maximum birth dates. If the birth date is outside the acceptable range,
-/// an error of type `CustomError::BirthDateIncorrect` is returned.
+/// Get a validated birth date rounded to the nearest day or assign an unspecified timestamp if the input appears unrealistic, invalid, or is missing.
 ///
 /// # Arguments
 ///
-/// * `birth_date` - The birth date as a Unix timestamp in seconds.
+/// * `birth_date_timestamp` - The input birth date as an optional Unix timestamp in seconds.
 ///
 /// # Returns
 ///
-/// * `Ok(())` - If the birth date is within the acceptable age range.
-/// * `Err(CustomError::BirthDateIncorrect)` - If the birth date is outside the
-///   acceptable age range.
+/// * If `birth_date_timestamp` is within a realistic range and provided, it returns the input timestamp rounded to the nearest day.
+/// * If `birth_date_timestamp` is missing, it assigns the `UNSPECIFIED_TIMESTAMP`.
+/// * If `birth_date_timestamp` appears unrealistic or invalid, it returns a custom error.
 ///
-pub fn validate_birth_date(birth_date: &i64) -> Result<()> {
-    // Calculate the current Unix timestamp in seconds
-    let current_timestamp = Clock::get()?.unix_timestamp;
+/// # Errors
+///
+/// * If there is an error when getting the current Unix timestamp, it returns a custom error.
+///
+pub fn get_birth_date(birth_date_timestamp: Option<i64>) -> Result<i64> {
+    match birth_date_timestamp {
+        Some(birth_date_timestamp) => {
+            // Try to get the current Unix timestamp in seconds.
+            let current_timestamp = Clock::get()?.unix_timestamp;
 
-    // Calculate the maximum allowed birth date and the minimum allowed birth date in seconds
-    let max_birth_date = current_timestamp - (MIN_AGE_IN_YEARS * SECONDS_IN_YEAR);
-    let min_birth_date = current_timestamp - (MAX_AGE_IN_YEARS * SECONDS_IN_YEAR);
+            // Calculate the maximum allowed birth date and the minimum allowed birth date in seconds
+            let max_birth_date_timestamp = current_timestamp - (MIN_AGE_IN_YEARS * SECONDS_IN_YEAR);
+            let min_birth_date_timestamp = current_timestamp - (MAX_AGE_IN_YEARS * SECONDS_IN_YEAR);
 
-    if *birth_date > max_birth_date || *birth_date < min_birth_date {
-        return Err(error!(CustomError::BirthDateIncorrect));
+            if birth_date_timestamp > max_birth_date_timestamp
+                || birth_date_timestamp < min_birth_date_timestamp
+            {
+                return Err(error!(CustomError::BirthDateIncorrect));
+            }
+
+            // Round the birth_date_timestamp to the nearest day by ignoring minutes and seconds
+            let birth_day = (birth_date_timestamp / SECONDS_IN_DAY) * SECONDS_IN_DAY;
+            Ok(birth_day)
+        }
+
+        None => return Ok(UNSPECIFIED_TIMESTAMP),
     }
-
-    // Additional validation logic can be added here, if needed.
-
-    Ok(())
 }
-
 
 /// Validates the length of a metadata URI.
 ///
@@ -290,7 +295,7 @@ pub fn is_publishing_allowed(
             if let Some(connection_proof) = connection_proof {
                 if connection_proof.initializer == *profile_key
                     && connection_proof.target == *subspace.to_account_info().key
-                    && connection_proof.approved
+                    && connection_proof.is_approved
                 {
                     return true;
                 }

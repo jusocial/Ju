@@ -1,34 +1,34 @@
 {
-  "version": "0.1.0",
+  "version": "1.4.0",
   "name": "ju_core",
   "constants": [
     {
-      "name": "MIN_PROCESSORNAME_LENGTH",
+      "name": "MIN_PROCESSOR_NAME_LENGTH",
       "type": {
         "defined": "usize"
       },
       "value": "5"
     },
     {
-      "name": "MAX_PROCESSORNAME_LENGTH",
+      "name": "MAX_PROCESSOR_NAME_LENGTH",
       "type": {
         "defined": "usize"
       },
-      "value": "200"
+      "value": "100"
     },
     {
-      "name": "MIN_APPNAME_LENGTH",
+      "name": "MIN_APP_DOMAIN_NAME_LENGTH",
       "type": {
         "defined": "usize"
       },
-      "value": "3"
+      "value": "4"
     },
     {
-      "name": "MAX_APPNAME_LENGTH",
+      "name": "MAX_APP_DOMAIN_NAME_LENGTH",
       "type": {
         "defined": "usize"
       },
-      "value": "30"
+      "value": "32"
     },
     {
       "name": "MIN_URI_LENGTH",
@@ -42,7 +42,7 @@
       "type": {
         "defined": "usize"
       },
-      "value": "200"
+      "value": "150"
     },
     {
       "name": "MIN_ALIAS_LENGTH",
@@ -59,13 +59,6 @@
       "value": "20"
     },
     {
-      "name": "MAX_STATUS_LENGTH",
-      "type": {
-        "defined": "usize"
-      },
-      "value": "64"
-    },
-    {
       "name": "UUID_LENGTH",
       "type": {
         "defined": "usize"
@@ -73,7 +66,7 @@
       "value": "32"
     },
     {
-      "name": "MAX_NOTIFICATION_LENGTH",
+      "name": "MAX_REPORT_NOTIFICATION_LENGTH",
       "type": {
         "defined": "usize"
       },
@@ -84,14 +77,14 @@
       "type": {
         "defined": "usize"
       },
-      "value": "20"
+      "value": "32"
     },
     {
       "name": "MAX_PROFILE_LAST_NAME_LENGTH",
       "type": {
         "defined": "usize"
       },
-      "value": "30"
+      "value": "32"
     },
     {
       "name": "MIN_SUBSPACE_NAME_LENGTH",
@@ -122,7 +115,7 @@
     {
       "name": "MIN_AGE_IN_YEARS",
       "type": "i64",
-      "value": "6"
+      "value": "14"
     }
   ],
   "instructions": [
@@ -244,6 +237,12 @@
           "type": {
             "option": "publicKey"
           }
+        },
+        {
+          "name": "metadataUri",
+          "type": {
+            "option": "string"
+          }
         }
       ]
     },
@@ -288,7 +287,7 @@
         "",
         "# Arguments",
         "",
-        "* `app_name` - Protocol unique Application name",
+        "* `app_domain_name` - Protocol unique Application domain name",
         "* `data` - A struct that holds Application data",
         ""
       ],
@@ -373,7 +372,7 @@
       ],
       "args": [
         {
-          "name": "appName",
+          "name": "appDomainName",
           "type": "string"
         },
         {
@@ -1593,7 +1592,7 @@
         "",
         "# Arguments",
         "",
-        "* `data` - A struct that holds Reaction data",
+        "* `reaction_type` - Reaction type",
         ""
       ],
       "accounts": [
@@ -1782,6 +1781,7 @@
         "4. Processorr program address",
         "5. Processor developer walet",
         "6. Processor name (ASCII alphanumeric)",
+        "7. Processor external metadata uri",
         ""
       ],
       "type": {
@@ -1829,9 +1829,25 @@
           {
             "name": "processorName",
             "docs": [
-              "Processor name (STRING_LENGTH_PREFIX + MAX_PROCESSORNAME_LENGTH)."
+              "Processor name (STRING_LENGTH_PREFIX + MAX_PROCESSOR_NAME_LENGTH)."
             ],
             "type": "string"
+          },
+          {
+            "name": "metadataUri",
+            "docs": [
+              "URI of the metadata (1 + STRING_LENGTH_PREFIX + MAX_URI_LENGTH)."
+            ],
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "createdAt",
+            "docs": [
+              "Creation Unix timestamp (8)"
+            ],
+            "type": "i64"
           }
         ]
       }
@@ -1843,25 +1859,29 @@
         "",
         "## App account stores:",
         "",
-        "1. `authority`: Application authority address",
-        "2. `profile_metadata_required`: Specifies whether the Profile metadata required",
-        "3. `subspace_metadata_required`: Specifies whether the Subspace metadata required",
-        "4. `profile_delete_allowed`: Specifies the permission to delete a Profile",
-        "5. `subspace_delete_allowed`: Specifies the permission to delete a Subspace",
-        "6. `publication_delete_allowed`: Specifies the permission to delete a Publication",
-        "7. `profile_individual_processors_allowed`: Specifies the permission to assign Profile's individual external processors.",
-        "8. `subspace_individual_processors_allowed`: Specifies the permission to assign Subspace's individual external processors.",
-        "9. `publication_individual_processors_allowed`: Specifies the permission to assign Publication's individual external processors.",
-        "10. `app_name`: Unique Application name (ID) as string (ASCII alphanumeric)",
-        "11. `metadata_uri`: Application metadata URI (settings)",
-        "12. `registering_processor`: An address of an external processor for additional processing during Profile creation",
-        "13. `connecting_processor`: An address of an external processor for additional processing during Profile connection",
-        "14. `publishing_processor`: An address of an external processor for additional processing during Publication creation",
-        "15. `collecting_processor`: An address of an external processor for additional processing during Publication collection",
-        "16. `referencing_processor`: An address of an external processor for additional processing during Publication referencing",
-        "17.  ***** `reserved_1`: Reserved field 1",
-        "18.  ***** `reserved_1`: Reserved field 2",
-        "19.  ***** `reserved_1`: Reserved field 3",
+        "1.  `authority`: Application authority address",
+        "2.  `is_profile_delete_allowed`: Specifies the permission to delete a Profile",
+        "3.  `is_subspace_delete_allowed`: Specifies the permission to delete a Subspace",
+        "4.  `is_publication_delete_allowed`: Specifies the permission to delete a Publication",
+        "5.  `is_profile_individual_processors_allowed`: Specifies the permission to assign Profile's individual external processors.",
+        "6.  `is_subspace_individual_processors_allowed`: Specifies the permission to assign Subspace's individual external processors.",
+        "7.  `is_publication_individual_processors_allowed`: Specifies the permission to assign Publication's individual external processors.",
+        "8.  `reserved_1`: Reserved field 1",
+        "9.  `reserved_2`: Reserved field 2",
+        "10. `reserved_3`: Reserved field 3",
+        "11. `reserved_4`: Reserved field 4",
+        "12. `reserved_5`: Reserved field 5",
+        "13. `reserved_6`: Reserved field 6",
+        "14. `creation_year`: App creation seachable number of year",
+        "15. `creation_month`: App creation seachable number of month",
+        "16. `app_domain_name`: Unique Application domain name (ID) as string (ASCII alphanumeric)",
+        "17. `metadata_uri`: Application metadata URI (settings)",
+        "18. `registering_processor`: An address of an external processor for additional processing during Profile creation",
+        "19. `connecting_processor`: An address of an external processor for additional processing during Profile connection",
+        "20. `publishing_processor`: An address of an external processor for additional processing during Publication creation",
+        "21. `collecting_processor`: An address of an external processor for additional processing during Publication collection",
+        "22. `referencing_processor`: An address of an external processor for additional processing during Publication referencing",
+        "23. `created_at` App creation unix timestamp",
         ""
       ],
       "type": {
@@ -1875,65 +1895,107 @@
             "type": "publicKey"
           },
           {
-            "name": "profileMetadataRequired",
-            "docs": [
-              "Specifies whether the Profile metadata required."
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "subspaceMetadataRequired",
-            "docs": [
-              "Specifies whether the Subspace metadata required."
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "profileDeleteAllowed",
+            "name": "isProfileDeleteAllowed",
             "docs": [
               "Specifies the permission to delete a Profile."
             ],
             "type": "bool"
           },
           {
-            "name": "subspaceDeleteAllowed",
+            "name": "isSubspaceDeleteAllowed",
             "docs": [
               "Specifies the permission to delete a Subspace."
             ],
             "type": "bool"
           },
           {
-            "name": "publicationDeleteAllowed",
+            "name": "isPublicationDeleteAllowed",
             "docs": [
               "Specifies the permission to delete a Publication."
             ],
             "type": "bool"
           },
           {
-            "name": "profileIndividualProcessorsAllowed",
+            "name": "isProfileIndividualProcessorsAllowed",
             "docs": [
               "Specifies the permission to assign Profile's individual external processors."
             ],
             "type": "bool"
           },
           {
-            "name": "subspaceIndividualProcessorsAllowed",
+            "name": "isSubspaceIndividualProcessorsAllowed",
             "docs": [
               "Specifies the permission to assign Subspace's individual external processors."
             ],
             "type": "bool"
           },
           {
-            "name": "publicationIndividualProcessorsAllowed",
+            "name": "isPublicationIndividualProcessorsAllowed",
             "docs": [
               "Specifies the permission to assign Publication's individual external processors."
             ],
             "type": "bool"
           },
           {
-            "name": "appName",
+            "name": "reserved1",
             "docs": [
-              "App name/ID (STRING_LENGTH_PREFIX + MAX_APPID_LENGTH)."
+              "Reserved field 1"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "reserved2",
+            "docs": [
+              "Reserved field 2"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "reserved3",
+            "docs": [
+              "Reserved field 3"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "reserved4",
+            "docs": [
+              "Reserved field 4"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "reserved5",
+            "docs": [
+              "Reserved field 5"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "reserved6",
+            "docs": [
+              "Reserved field 6"
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "creationYear",
+            "docs": [
+              "Creation Seachable year"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "creationMonth",
+            "docs": [
+              "Creation Seachable month"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "appDomainName",
+            "docs": [
+              "App damain name (ID)  (STRING_LENGTH_PREFIX + MAX_APPID_LENGTH)."
             ],
             "type": "string"
           },
@@ -1992,31 +2054,11 @@
             }
           },
           {
-            "name": "reserved1",
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
-          },
-          {
-            "name": "reserved2",
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
-          },
-          {
-            "name": "reserved3",
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
+            "name": "createdAt",
+            "docs": [
+              "App creation Unix timestamp (8)"
+            ],
+            "type": "i64"
           }
         ]
       }
@@ -2028,31 +2070,45 @@
         "",
         "# Profile account stores:",
         "",
-        "1. Application account (PDA)",
-        "2. Profile authority address",
-        "3. Exchange key",
-        "4. Verification status",
-        "5. Profile country code",
-        "6. Profile region code",
-        "7. Profile city code",
-        "8. Profile first name",
-        "9. Profile last name",
-        "10. Profile birth date as unix timestamp",
-        "11. Profile birth seachable number of 10-years-period (decade)",
-        "12. Profile birth seachable number of 5-years-period",
-        "13. Profile birth seachable number of week-period",
-        "14. Profile birth seachable number of day",
-        "15. Profile gender",
-        "16. Unique Application's user Profile Alias as string (ASCII alphanumeric)",
-        "17. Profile status text",
-        "18. Profile metadata URI",
-        "19. Profile location coordinates",
-        "20. External connection processor (optional)",
-        "21. Profile creation unix timestamp",
-        "22. Profile modification unix timestamp",
-        "23. ***** Reserved field 1",
-        "24. ***** Reserved field 2",
-        "25. ***** Reserved field 3",
+        "1.  Application account (PDA)",
+        "2.  Profile authority address",
+        "3.  Exchange key",
+        "4.  Verification status",
+        "5.  Profile gender",
+        "6.  Universal 1 byte personal data field 1",
+        "7.  Universal 1 byte personal data field 2",
+        "8.  Universal 1 byte personal data field 3",
+        "9.  Universal 1 byte personal data field 4",
+        "10. Universal 1 byte personal data field 5",
+        "11. Universal 1 byte personal data field 6",
+        "12. Universal 1 byte personal data field 7",
+        "13. Universal 1 byte personal data field 8",
+        "14. Reserved field 1",
+        "15. Reserved field 2",
+        "16. Reserved field 3",
+        "17. Reserved field 4",
+        "18. Reserved field 5",
+        "19. Reserved field 6",
+        "20. Reserved field 7",
+        "21. Reserved field 8",
+        "22. Profile first name",
+        "23. Profile last name",
+        "24. Profile birth date as unix timestamp (rounded to date)",
+        "25. Profile birth seachable number of 10-years-period (decade)",
+        "26. Profile birth seachable number of 5-years-period",
+        "27. Profile birth seachable number of year",
+        "28. Country code",
+        "29. Region code",
+        "30. City code",
+        "31. Profile creation seachable number of year",
+        "32. Profile creation seachable number of month",
+        "33. Profile creation seachable number of week",
+        "34. Profile creation seachable number of day",
+        "35. Unique Application's user Profile Alias as string (ASCII alphanumeric)",
+        "36. Profile metadata URI",
+        "37. External connection processor (optional)",
+        "38. Profile creation unix timestamp",
+        "39. Profile modification unix timestamp",
         ""
       ],
       "type": {
@@ -2084,65 +2140,236 @@
             "type": "bool"
           },
           {
-            "name": "countryCode",
-            "type": "u16"
+            "name": "gender",
+            "docs": [
+              "Gender type"
+            ],
+            "type": {
+              "defined": "Gender"
+            }
           },
           {
-            "name": "regionCode",
-            "type": "u16"
+            "name": "personalData1",
+            "docs": [
+              "1 byte universal field 1"
+            ],
+            "type": "u8"
           },
           {
-            "name": "cityCode",
-            "type": "u16"
+            "name": "personalData2",
+            "docs": [
+              "1 byte universal field 2"
+            ],
+            "type": "u8"
           },
           {
-            "name": "firstName",
+            "name": "personalData3",
+            "docs": [
+              "1 byte universal field 3"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "personalData4",
+            "docs": [
+              "1 byte universal field 4"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "personalData5",
+            "docs": [
+              "1 byte universal field 5"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "personalData6",
+            "docs": [
+              "1 byte universal field 6"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "personalData7",
+            "docs": [
+              "1 byte universal field 7"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "personalData8",
+            "docs": [
+              "1 byte universal field 8"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "reserved1",
+            "docs": [
+              "Reserved field 1"
+            ],
+            "type": "i16"
+          },
+          {
+            "name": "reserved2",
+            "docs": [
+              "Reserved field 2"
+            ],
+            "type": "i16"
+          },
+          {
+            "name": "reserved3",
+            "docs": [
+              "Reserved field 3"
+            ],
+            "type": "i32"
+          },
+          {
+            "name": "reserved4",
+            "docs": [
+              "Reserved field 4"
+            ],
+            "type": "i32"
+          },
+          {
+            "name": "reserved5",
+            "docs": [
+              "Reserved field 5"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "reserved6",
+            "docs": [
+              "Reserved field 6"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "reserved7",
+            "docs": [
+              "Reserved field 7"
+            ],
             "type": {
               "array": [
                 "u8",
-                20
+                32
+              ]
+            }
+          },
+          {
+            "name": "reserved8",
+            "docs": [
+              "Reserved field 8"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "firstName",
+            "docs": [
+              "First name"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
               ]
             }
           },
           {
             "name": "lastName",
+            "docs": [
+              "Last name"
+            ],
             "type": {
               "array": [
                 "u8",
-                30
+                32
               ]
             }
           },
           {
             "name": "birthDate",
-            "type": "i64"
-          },
-          {
-            "name": "searchable10Years",
-            "type": "i64"
-          },
-          {
-            "name": "searchable5Years",
-            "type": "i64"
-          },
-          {
-            "name": "searchableWeek",
-            "type": "i64"
-          },
-          {
-            "name": "searchableDay",
-            "type": "i64"
-          },
-          {
-            "name": "gender",
             "docs": [
-              "Profile's user gender"
+              "Birth date unix timestamp"
             ],
-            "type": {
-              "option": {
-                "defined": "Gender"
-              }
-            }
+            "type": "i64"
+          },
+          {
+            "name": "birthDate10Years",
+            "docs": [
+              "Birth Seachable 10 years period"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "birthDate5Years",
+            "docs": [
+              "Birth Seachable 5 years period"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "birthDateYear",
+            "docs": [
+              "Birth Seachable year"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "countryCode",
+            "docs": [
+              "Country code"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "regionCode",
+            "docs": [
+              "Region code"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "cityCode",
+            "docs": [
+              "City code"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "creationYear",
+            "docs": [
+              "Creation Seachable year"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "creationMonth",
+            "docs": [
+              "Creation Seachable month"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "creationWeek",
+            "docs": [
+              "Creation Seachable week"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "creationDay",
+            "docs": [
+              "Creation Seachable day"
+            ],
+            "type": "i64"
           },
           {
             "name": "alias",
@@ -2154,27 +2381,12 @@
             }
           },
           {
-            "name": "statusText",
-            "docs": [
-              "Profile Status text (STRING_LENGTH_PREFIX + MAX_STATUS_LENGTH)"
-            ],
-            "type": "string"
-          },
-          {
             "name": "metadataUri",
             "docs": [
               "Profile metadata URI (STRING_LENGTH_PREFIX + MAX_URI_LENGTH)."
             ],
             "type": {
               "option": "string"
-            }
-          },
-          {
-            "name": "currentLocation",
-            "type": {
-              "option": {
-                "defined": "LocationCoordinates"
-              }
             }
           },
           {
@@ -2201,33 +2413,6 @@
             "type": {
               "option": "i64"
             }
-          },
-          {
-            "name": "reserved1",
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
-          },
-          {
-            "name": "reserved2",
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
-          },
-          {
-            "name": "reserved3",
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
           }
         ]
       }
@@ -2239,22 +2424,30 @@
         "",
         "# Subspace account stores:",
         "",
-        "1. Application address",
-        "2. Profile authority address",
-        "3. Subspace owner Profile Pubkey",
-        "4. Exchange key",
-        "5. Subspace name",
-        "6. Subspace publishing permission level",
-        "7. Unique application's user profile alias as string (optional, ASCII alphanumeric) (optional)",
-        "8. Subspace UUID",
-        "9. Subspace metadata URI (optional)",
-        "10. External Publishing processor (optional)",
-        "11. External Connecting processor (optional)",
-        "12. External Collecting processor (optional)",
-        "13. External Referencing processor (optional)",
-        "14. Profile creation unix timestamp",
-        "15. ***** Reserved field 1",
-        "16. ***** Reserved field 2",
+        "1.  Application address",
+        "2.  Profile authority address",
+        "3.  Exchange key",
+        "4.  Subspace creator Profile Pubkey",
+        "5.  Subspace publishing permission level",
+        "5.  Subspace name",
+        "6.  Reserved field 1",
+        "7.  Reserved field 2",
+        "8.  Reserved field 3",
+        "9.  Reserved field 4",
+        "10. Reserved field 5",
+        "11. Reserved field 6",
+        "12. Subspace creation seachable number of year",
+        "13. Subspace creation seachable number of month",
+        "14. Subspace creation seachable number of week",
+        "15. Subspace creation seachable number of day",
+        "16. Unique application's user profile alias as string (optional, ASCII alphanumeric) (optional)",
+        "17. Subspace UUID",
+        "18. Subspace metadata URI (optional)",
+        "19. External Publishing processor (optional)",
+        "20. External Connecting processor (optional)",
+        "21. External Collecting processor (optional)",
+        "22. External Referencing processor (optional)",
+        "23. Profile creation unix timestamp",
         ""
       ],
       "type": {
@@ -2305,6 +2498,86 @@
                 32
               ]
             }
+          },
+          {
+            "name": "reserved1",
+            "docs": [
+              "Reserved field 1"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "reserved2",
+            "docs": [
+              "Reserved field 2"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "reserved3",
+            "docs": [
+              "Reserved field 3"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "reserved4",
+            "docs": [
+              "Reserved field 4"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "reserved5",
+            "docs": [
+              "Reserved field 1"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "reserved6",
+            "docs": [
+              "Reserved field 2"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "creationYear",
+            "docs": [
+              "Creation year"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "creationMonth",
+            "docs": [
+              "Creation month"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "creationWeek",
+            "docs": [
+              "Creation week"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "creationDay",
+            "docs": [
+              "Creation day"
+            ],
+            "type": "i64"
           },
           {
             "name": "alias",
@@ -2373,24 +2646,6 @@
               "Subspace creation Unix timestamp (8)"
             ],
             "type": "i64"
-          },
-          {
-            "name": "reserved1",
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
-          },
-          {
-            "name": "reserved2",
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
           }
         ]
       }
@@ -2459,24 +2714,27 @@
         "",
         "# Publication account stores:",
         "",
-        "1. Existing Protocol Application in which Publication was created",
-        "2. References to Publication's author Profile",
-        "3. Publication authority address",
-        "4. Whether or not the publication has encrypted content",
-        "5. Whether or not the Publication is mirroring other existing Publication (e.g. re-post)",
-        "6. Whether or not the Publication is replying to other existing Publication (e.g. comment)",
-        "7. Publication main content type",
-        "8. Publication tag",
-        "9. Searchable number of 3-day-perid",
-        "10. Searchable number of day",
-        "11. References to existing Publication if there is a mirror or reply",
-        "12. Subspace in which Publication being published",
-        "13. Publication UUID as string",
-        "14. Publication metadata URI",
-        "15. External Collecting processor (optional)",
-        "16. External Referencing processor (optional)",
-        "17. Publication create unix timestamp",
-        "18. Publication update unix timestamp (optional)",
+        "1.  Existing Protocol Application in which Publication was created",
+        "2.  References to Publication's author Profile",
+        "3.  Publication authority address",
+        "4.  Whether or not the publication has encrypted content",
+        "5.  Whether or not the Publication is mirroring other existing Publication (e.g. re-post)",
+        "6.  Whether or not the Publication is replying to other existing Publication (e.g. comment)",
+        "7.  Publication main content type",
+        "8.  Publication tag",
+        "9.  References to existing Publication if there is a mirror or reply",
+        "10. Subspace in which Publication being published",
+        "11. Reserved field 1",
+        "12. Reserved field 2",
+        "13. Publication creation searchable number of week",
+        "14. Publication creation searchable number of 3-day-perid",
+        "15. Publication creation searchable number of day",
+        "16. Publication UUID as string",
+        "17. Publication metadata URI",
+        "18. External Collecting processor (optional)",
+        "19. External Referencing processor (optional)",
+        "20. Publication create unix timestamp",
+        "21. Publication update unix timestamp (optional)",
         ""
       ],
       "type": {
@@ -2546,14 +2804,6 @@
             }
           },
           {
-            "name": "searchable3Day",
-            "type": "i64"
-          },
-          {
-            "name": "searchableDay",
-            "type": "i64"
-          },
-          {
             "name": "targetPublication",
             "docs": [
               "Pubkey that specify target in case Publication is a mirror or reply (32), default value if not mirror or reply"
@@ -2566,6 +2816,41 @@
               "Subspace to publish, default value if publishing in profile space"
             ],
             "type": "publicKey"
+          },
+          {
+            "name": "reserved1",
+            "docs": [
+              "Reserved field 1"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "reserved2",
+            "docs": [
+              "Reserved field 2"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "creationWeek",
+            "docs": [
+              "Searchable creation week period"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "creation3Day",
+            "docs": [
+              "Searchable creation 3 day period"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "creationDay",
+            "docs": [
+              "Searchable creation day"
+            ],
+            "type": "i64"
           },
           {
             "name": "uuid",
@@ -2632,8 +2917,9 @@
         "5. Target Application's Profile/Subspace address (e.g. which initializer followed)",
         "6. Whether or not Connection is approved by target (e.g. accept friend request)",
         "7. Connection initialize unix timestamp",
-        "8. Searchable number of 3-day-period",
-        "8. Searchable number of day",
+        "8. Connection creation searchable number of 3week",
+        "8. Connection creation searchable number of 3-day-period",
+        "8. Connection creation searchable number of day",
         "9. Connection modify unix timestamp",
         ""
       ],
@@ -2678,7 +2964,7 @@
             "type": "publicKey"
           },
           {
-            "name": "approved",
+            "name": "isApproved",
             "docs": [
               "Flag to determine whether Connection is approved by target entitty (e.g. accept friend request or private group acceptance) (1)"
             ],
@@ -2692,11 +2978,24 @@
             "type": "i64"
           },
           {
-            "name": "searchable3Day",
+            "name": "creationWeek",
+            "docs": [
+              "Searchable creation week"
+            ],
             "type": "i64"
           },
           {
-            "name": "searchableDay",
+            "name": "creation3Day",
+            "docs": [
+              "Searchable creation 3 day period"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "creationDay",
+            "docs": [
+              "Searchable day"
+            ],
             "type": "i64"
           },
           {
@@ -2723,8 +3022,9 @@
         "3. CollectionItem target entity (e.g. Publication) address",
         "4. CollectionItem authority address",
         "5. CollectionItem creation unix timestamp",
-        "6. Searchable number of 3-day-period",
-        "7. Searchable number of day",
+        "6. CollectionItem creation searchable number of 3week",
+        "7. CollectionItem creation searchable number of 3-day-period",
+        "8. CollectionItem creation searchable number of day",
         ""
       ],
       "type": {
@@ -2766,11 +3066,24 @@
             "type": "i64"
           },
           {
-            "name": "searchable3Day",
+            "name": "creationWeek",
+            "docs": [
+              "Searchable creation week"
+            ],
             "type": "i64"
           },
           {
-            "name": "searchableDay",
+            "name": "creation3Day",
+            "docs": [
+              "Searchable creation 3-day period"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "creationDay",
+            "docs": [
+              "Searchable creation day"
+            ],
             "type": "i64"
           }
         ]
@@ -2839,15 +3152,16 @@
         "",
         "# The Reaction account stores:",
         "",
-        "1. Application address",
-        "2. Reaction authority address",
-        "3. Reaction Traget type",
-        "4. Target Publication address",
-        "5. Reaction initializer Profile",
-        "6. Reaction type variant",
-        "7. Reaction create unix timestamp",
-        "8. Searchable number of 3-day-period",
-        "9. Searchable number of day",
+        "1.  Application address",
+        "2.  Reaction authority address",
+        "3.  Reaction Traget type",
+        "4.  Target Publication address",
+        "5.  Reaction initializer Profile",
+        "6.  Reaction type variant",
+        "7.  Reaction create unix timestamp",
+        "8.  Reaction creation searchable number of 3week",
+        "9.  Reaction creation searchable number of 3-day-period",
+        "10. Reaction creation searchable number of day",
         ""
       ],
       "type": {
@@ -2891,15 +3205,6 @@
             "type": "publicKey"
           },
           {
-            "name": "reactionType",
-            "docs": [
-              "Reaction value (1)"
-            ],
-            "type": {
-              "defined": "ReactionType"
-            }
-          },
-          {
             "name": "createdAt",
             "docs": [
               "Unix timestamp of the Reaction creation (8)"
@@ -2907,12 +3212,34 @@
             "type": "i64"
           },
           {
-            "name": "searchable3Day",
+            "name": "creationWeek",
+            "docs": [
+              "Searchable creation week"
+            ],
             "type": "i64"
           },
           {
-            "name": "searchableDay",
+            "name": "creation3Day",
+            "docs": [
+              "Searchable creation 3-day period"
+            ],
             "type": "i64"
+          },
+          {
+            "name": "creationDay",
+            "docs": [
+              "Searchable creation day"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "reactionType",
+            "docs": [
+              "Reaction value (1 + 8)"
+            ],
+            "type": {
+              "defined": "ReactionType"
+            }
           }
         ]
       }
@@ -2924,15 +3251,17 @@
         "",
         "# Report account stores:",
         "",
-        "1. Application address",
-        "2. Report authority address",
-        "3. Report Taget type",
-        "4. Report Target address",
-        "5. Report initializer Profile",
-        "6. Report type variant",
-        "7. Searchable number of day",
-        "8. Report notification text",
-        "9. Report create unix timestamp",
+        "1.  Application address",
+        "2.  Report authority address",
+        "3.  Report Taget type",
+        "4.  Report Target address",
+        "5.  Report initializer Profile",
+        "6.  Report type variant",
+        "7.  Report create unix timestamp",
+        "8.  Report creation searchable number of 3week",
+        "9.  Report creation searchable number of 3-day-period",
+        "10. Report creation searchable number of day",
+        "11. Report notification text",
         ""
       ],
       "type": {
@@ -2985,7 +3314,31 @@
             }
           },
           {
-            "name": "searchableDay",
+            "name": "createdAt",
+            "docs": [
+              "Unix timestamp of the Report creation (8)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "creationWeek",
+            "docs": [
+              "Searchable creation week"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "creation3Day",
+            "docs": [
+              "Searchable creation 3-day period"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "creationDay",
+            "docs": [
+              "Searchable creation day"
+            ],
             "type": "i64"
           },
           {
@@ -2996,13 +3349,6 @@
             "type": {
               "option": "string"
             }
-          },
-          {
-            "name": "createdAt",
-            "docs": [
-              "Unix timestamp of the Report creation (8)"
-            ],
-            "type": "i64"
           }
         ]
       }
@@ -3019,14 +3365,12 @@
         "## Fields:",
         "",
         "- `metadata_uri`: The optional metadata URI for the app.",
-        "- `profile_metadata_required`: Specifies whether the Profile metadata required.",
-        "- `subspace_metadata_required`: Specifies whether the Subspace metadata required.",
-        "- `profile_delete_allowed`: Specifies the permission to delete a Profile.",
-        "- `subspace_delete_allowed`: Specifies the permission to delete a Subspace.",
-        "- `publication_delete_allowed`: Specifies the permission to delete a Publication.",
-        "- `profile_individual_processors_allowed`: Specifies the permission to assign Profile's individual external processors.",
-        "- `subspace_individual_processors_allowed`: Specifies the permission to assign Subspace's individual external processors.",
-        "- `publication_individual_processors_allowed`: Specifies the permission to assign Publication's individual external processors.",
+        "- `is_profile_delete_allowed`: Specifies the permission to delete a Profile.",
+        "- `is_subspace_delete_allowed`: Specifies the permission to delete a Subspace.",
+        "- `is_publication_delete_allowed`: Specifies the permission to delete a Publication.",
+        "- `is_profile_individual_processors_allowed`: Specifies the permission to assign Profile's individual external processors.",
+        "- `is_subspace_individual_processors_allowed`: Specifies the permission to assign Subspace's individual external processors.",
+        "- `is_publication_individual_processors_allowed`: Specifies the permission to assign Publication's individual external processors.",
         ""
       ],
       "type": {
@@ -3034,67 +3378,32 @@
         "fields": [
           {
             "name": "metadataUri",
-            "docs": [
-              "The optional metadata URI for the App."
-            ],
             "type": {
               "option": "string"
             }
           },
           {
-            "name": "profileMetadataRequired",
-            "docs": [
-              "Specifies whether the Profile metadata is required."
-            ],
+            "name": "isProfileDeleteAllowed",
             "type": "bool"
           },
           {
-            "name": "subspaceMetadataRequired",
-            "docs": [
-              "Specifies whether the Subspace metadata is required."
-            ],
+            "name": "isSubspaceDeleteAllowed",
             "type": "bool"
           },
           {
-            "name": "profileDeleteAllowed",
-            "docs": [
-              "Specifies the permission to delete a Profile."
-            ],
+            "name": "isPublicationDeleteAllowed",
             "type": "bool"
           },
           {
-            "name": "subspaceDeleteAllowed",
-            "docs": [
-              "Specifies the permission to delete a Subspace."
-            ],
+            "name": "isProfileIndividualProcessorsAllowed",
             "type": "bool"
           },
           {
-            "name": "publicationDeleteAllowed",
-            "docs": [
-              "Specifies the permission to delete a Publication."
-            ],
+            "name": "isSubspaceIndividualProcessorsAllowed",
             "type": "bool"
           },
           {
-            "name": "profileIndividualProcessorsAllowed",
-            "docs": [
-              "Specifies the permission to assign Profile's individual external processors."
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "subspaceIndividualProcessorsAllowed",
-            "docs": [
-              "Specifies the permission to assign Subspace's individual external processors."
-            ],
-            "type": "bool"
-          },
-          {
-            "name": "publicationIndividualProcessorsAllowed",
-            "docs": [
-              "Specifies the permission to assign Publication's individual external processors."
-            ],
+            "name": "isPublicationIndividualProcessorsAllowed",
             "type": "bool"
           }
         ]
@@ -3107,17 +3416,28 @@
         "",
         "# Struct contains:",
         "",
-        "1. `alias` - Unique Application's user Profile Alias as string (ASCII alphanumeric)",
-        "2. `metadata_uri` - Profile metadata URI",
-        "3. `status_text` - Profile status",
-        "4. `gender` - Profile gender",
-        "5. `first_name` Profile first name",
-        "6. `last_name` Profile last name",
-        "7. `birth_date` - Profile birth date",
-        "8. `country_code` Profile country",
-        "9. `region_code` Profile region (region)",
-        "10. `city_code` Profile city",
-        "11. `current_location` - Profile location coordinates",
+        "1.  `alias` - Unique Application's user Profile Alias as string (ASCII alphanumeric)",
+        "2.  `metadata_uri` - Profile metadata URI",
+        "3.  `gender` - Profile gender",
+        "4.  `relations_status` - Profile relations status",
+        "5.  `sexuality` - Profile sexuality",
+        "6.  `education` - Profile education",
+        "7.  `body_shape` - Profile body shape",
+        "8.  `height_type` - Profile body shape",
+        "9.  `first_name` Profile first name",
+        "10. `last_name` Profile last name",
+        "11. `birth_date` - Profile birth date",
+        "12. `country_code` Country code",
+        "13. `region_code` Region code",
+        "14. `city_code` City code",
+        "15. `personal_data_1` Universal 1 byte field 1",
+        "16. `personal_data_2` Universal 1 byte field 2",
+        "17. `personal_data_3` Universal 1 byte field 3",
+        "18. `personal_data_4` Universal 1 byte field 4",
+        "19. `personal_data_5` Universal 1 byte field 5",
+        "20. `personal_data_6` Universal 1 byte field 6",
+        "21. `personal_data_7` Universal 1 byte field 7",
+        "22. `personal_data_8` Universal 1 byte field 8",
         ""
       ],
       "type": {
@@ -3136,10 +3456,6 @@
             }
           },
           {
-            "name": "statusText",
-            "type": "string"
-          },
-          {
             "name": "gender",
             "type": {
               "option": {
@@ -3149,34 +3465,86 @@
           },
           {
             "name": "firstName",
-            "type": "string"
+            "type": {
+              "option": "string"
+            }
           },
           {
             "name": "lastName",
-            "type": "string"
+            "type": {
+              "option": "string"
+            }
           },
           {
             "name": "birthDate",
-            "type": "i64"
+            "type": {
+              "option": "i64"
+            }
           },
           {
             "name": "countryCode",
-            "type": "u16"
+            "type": {
+              "option": "u16"
+            }
           },
           {
             "name": "regionCode",
-            "type": "u16"
+            "type": {
+              "option": "u16"
+            }
           },
           {
             "name": "cityCode",
-            "type": "u16"
+            "type": {
+              "option": "u16"
+            }
           },
           {
-            "name": "currentLocation",
+            "name": "personalData1",
             "type": {
-              "option": {
-                "defined": "LocationCoordinates"
-              }
+              "option": "u8"
+            }
+          },
+          {
+            "name": "personalData2",
+            "type": {
+              "option": "u8"
+            }
+          },
+          {
+            "name": "personalData3",
+            "type": {
+              "option": "u8"
+            }
+          },
+          {
+            "name": "personalData4",
+            "type": {
+              "option": "u8"
+            }
+          },
+          {
+            "name": "personalData5",
+            "type": {
+              "option": "u8"
+            }
+          },
+          {
+            "name": "personalData6",
+            "type": {
+              "option": "u8"
+            }
+          },
+          {
+            "name": "personalData7",
+            "type": {
+              "option": "u8"
+            }
+          },
+          {
+            "name": "personalData8",
+            "type": {
+              "option": "u8"
             }
           }
         ]
@@ -3299,42 +3667,17 @@
       }
     },
     {
-      "name": "LocationCoordinates",
-      "docs": [
-        "Coordinates",
-        "",
-        "# Struct contains",
-        "",
-        "* latitude",
-        "* longitude",
-        ""
-      ],
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "latitude",
-            "type": "u64"
-          },
-          {
-            "name": "longitude",
-            "type": "u64"
-          }
-        ]
-      }
-    },
-    {
       "name": "ProcessorType",
       "docs": [
         "External Processor Type",
         "",
         "# Enum variants:",
         "",
-        "* Registering",
-        "* Connecting",
-        "* Publishing",
-        "* Collecting",
-        "* Referencing",
+        "0. Registering",
+        "1. Connecting",
+        "2. Publishing",
+        "3. Collecting",
+        "4. Referencing",
         ""
       ],
       "type": {
@@ -3365,8 +3708,8 @@
         "",
         "# Enum variants:",
         "",
-        "* Profile",
-        "* Subspace",
+        "0. Profile",
+        "1. Subspace",
         ""
       ],
       "type": {
@@ -3388,8 +3731,8 @@
         "",
         "# Enum variants:",
         "",
-        "* Profile",
-        "* Subspace",
+        "0. Profile",
+        "1. Subspace",
         ""
       ],
       "type": {
@@ -3411,6 +3754,7 @@
         "",
         "# Enum variants:",
         "",
+        "0. Not Specified",
         "1. Male",
         "2. Female",
         "3. Other (or Prefer not to say)",
@@ -3419,6 +3763,9 @@
       "type": {
         "kind": "enum",
         "variants": [
+          {
+            "name": "NotSpecified"
+          },
           {
             "name": "Male"
           },
@@ -3434,22 +3781,28 @@
     {
       "name": "ContentType",
       "docs": [
-        "Content type that publication focus (e.g. short video)",
+        "Content type that publication focus",
         "",
         "# Enum variants:",
         "",
+        "0. NotSpecified: Not specified or disclosed.",
         "1. Article - Article type (e.g. - mixed content / blog post)",
         "2. Image file - Image file type",
         "3. Video file - Video file type",
         "4. Short video - Shor video file type",
         "5. Audio file - Audio file type",
         "6. Text only - Text type",
-        "7. External link - Link type",
+        "7. Document",
+        "8. External link - Link type",
+        "9. Poll",
         ""
       ],
       "type": {
         "kind": "enum",
         "variants": [
+          {
+            "name": "NotSpecified"
+          },
           {
             "name": "Article"
           },
@@ -3469,7 +3822,13 @@
             "name": "Text"
           },
           {
+            "name": "Document"
+          },
+          {
             "name": "Link"
+          },
+          {
+            "name": "Poll"
           }
         ]
       }
@@ -3481,11 +3840,11 @@
         "",
         "# Enum variants:",
         "",
-        "* All",
-        "* AllMembers",
-        "* ApprovedMembers",
-        "* Admins",
-        "* Owner",
+        "0. All",
+        "1. AllMembers",
+        "2. ApprovedMembers",
+        "3. Admins",
+        "4. Owner",
         ""
       ],
       "type": {
@@ -3516,8 +3875,8 @@
         "",
         "# Enum variants:",
         "",
-        "* Profile",
-        "* Publication",
+        "0. Profile",
+        "1. Publication",
         ""
       ],
       "type": {
@@ -3539,9 +3898,9 @@
         "",
         "# Enum variants:",
         "",
-        "* UpVote - (e.g. \"Like\")",
-        "* DownVote - (e.g. \"Dislike\")",
-        "* CustomVote - custom smile/icon implementation",
+        "0. UpVote - (e.g. \"Like\")",
+        "1. DownVote - (e.g. \"Dislike\")",
+        "2. CustomVote - custom smile/icon implementation",
         ""
       ],
       "type": {
@@ -3554,7 +3913,13 @@
             "name": "DownVote"
           },
           {
-            "name": "CustomVote"
+            "name": "CustomVote",
+            "fields": [
+              {
+                "name": "code",
+                "type": "u32"
+              }
+            ]
           }
         ]
       }
@@ -3566,9 +3931,9 @@
         "",
         "# Enum variants:",
         "",
-        "* Profile",
-        "* Subspace",
-        "* Publication",
+        "0. Profile",
+        "1. Subspace",
+        "2. Publication",
         ""
       ],
       "type": {
@@ -3593,16 +3958,16 @@
         "",
         "# Enum variants:",
         "",
-        "* Scam",
-        "* Abuse",
-        "* Spam",
-        "* HateSpeech",
-        "* Harassment",
-        "* Misinformation",
-        "* Violence",
-        "* Threats",
-        "* Copyright",
-        "* Adult",
+        "0. Scam",
+        "1. Abuse",
+        "2. Spam",
+        "3. HateSpeech",
+        "4. Harassment",
+        "5. Misinformation",
+        "6. Violence",
+        "7. Threats",
+        "8. Copyright",
+        "9. Adult",
         ""
       ],
       "type": {
@@ -3651,8 +4016,8 @@
         "",
         "# Enum variants:",
         "",
-        "* Admin",
-        "* Publisher",
+        "0. Admin",
+        "1. Publisher",
         ""
       ],
       "type": {
@@ -3708,6 +4073,11 @@
           "index": false
         },
         {
+          "name": "authority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
           "name": "createdAt",
           "type": "i64",
           "index": false
@@ -3723,7 +4093,32 @@
           "index": false
         },
         {
+          "name": "authority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
           "name": "deletedAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "NewAppEvent",
+      "fields": [
+        {
+          "name": "app",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "authority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "createdAt",
           "type": "i64",
           "index": false
         }
@@ -3965,6 +4360,31 @@
       ]
     },
     {
+      "name": "NewCollectionItemEvent",
+      "fields": [
+        {
+          "name": "app",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "publication",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "initializer",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "createdAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
       "name": "NewConnectionEvent",
       "fields": [
         {
@@ -4133,13 +4553,13 @@
     },
     {
       "code": 6007,
-      "name": "AppNameLengthIncorrect",
-      "msg": "Application name (ID) length is incorrect"
+      "name": "AppDomainNameLengthIncorrect",
+      "msg": "Application domain name (ID) length is incorrect"
     },
     {
       "code": 6008,
-      "name": "AppNameInvalid",
-      "msg": "Application name must contain only ASCII letters in lower case and numbers"
+      "name": "AppDomainNameInvalid",
+      "msg": "Application domain name must contain only ASCII letters in lower case and numbers"
     },
     {
       "code": 6009,
@@ -4353,6 +4773,11 @@
     },
     {
       "code": 6051,
+      "name": "ReactionCustomCodeMissed",
+      "msg": "Report custom code missed"
+    },
+    {
+      "code": 6052,
       "name": "ReportTargetAccountInvalid",
       "msg": "Report target account is invalid"
     }

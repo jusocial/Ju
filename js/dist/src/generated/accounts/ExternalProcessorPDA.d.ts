@@ -10,6 +10,8 @@ export type ExternalProcessorPDAArgs = {
     programAddress: web3.PublicKey;
     developerWallet: beet.COption<web3.PublicKey>;
     processorName: string;
+    metadataUri: beet.COption<string>;
+    createdAt: beet.bignum;
 };
 export declare const externalProcessorPDADiscriminator: number[];
 export declare class ExternalProcessorPDA implements ExternalProcessorPDAArgs {
@@ -19,6 +21,8 @@ export declare class ExternalProcessorPDA implements ExternalProcessorPDAArgs {
     readonly programAddress: web3.PublicKey;
     readonly developerWallet: beet.COption<web3.PublicKey>;
     readonly processorName: string;
+    readonly metadataUri: beet.COption<string>;
+    readonly createdAt: beet.bignum;
     private constructor();
     static fromArgs(args: ExternalProcessorPDAArgs): ExternalProcessorPDA;
     static fromAccountInfo(accountInfo: web3.AccountInfo<Buffer>, offset?: number): [ExternalProcessorPDA, number];
@@ -37,6 +41,10 @@ export declare class ExternalProcessorPDA implements ExternalProcessorPDAArgs {
         programAddress: string;
         developerWallet: beet.COption<web3.PublicKey>;
         processorName: string;
+        metadataUri: beet.COption<string>;
+        createdAt: number | {
+            toNumber: () => number;
+        };
     };
 }
 export declare const externalProcessorPDABeet: beet.FixableBeetStruct<ExternalProcessorPDA, ExternalProcessorPDAArgs & {

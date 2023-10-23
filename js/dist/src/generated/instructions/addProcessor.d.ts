@@ -6,6 +6,7 @@ export type AddProcessorInstructionArgs = {
     processorName: string;
     programAddress: web3.PublicKey;
     developerWallet: beet.COption<web3.PublicKey>;
+    metadataUri: beet.COption<string>;
 };
 export declare const addProcessorStruct: beet.FixableBeetArgsStruct<AddProcessorInstructionArgs & {
     instructionDiscriminator: number[];

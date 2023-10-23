@@ -34,6 +34,7 @@ exports.addProcessorStruct = new beet.FixableBeetArgsStruct([
     ['processorName', beet.utf8String],
     ['programAddress', beetSolana.publicKey],
     ['developerWallet', beet.coption(beetSolana.publicKey)],
+    ['metadataUri', beet.coption(beet.utf8String)],
 ], 'AddProcessorInstructionArgs');
 exports.addProcessorInstructionDiscriminator = [46, 244, 27, 237, 198, 63, 95, 106];
 function createAddProcessorInstruction(accounts, args, programId = new web3.PublicKey('964vWgVEK9X8ZwZB2HyshFVmHUWbcYpRTnVYz2o3F2Xq')) {

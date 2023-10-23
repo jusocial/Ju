@@ -22,10 +22,11 @@ export type ReactionArgs = {
   targetType: ReactionTargetType;
   target: web3.PublicKey;
   initializer: web3.PublicKey;
-  reactionType: ReactionType;
   createdAt: beet.bignum;
-  searchable3Day: beet.bignum;
-  searchableDay: beet.bignum;
+  creationWeek: beet.bignum;
+  creation3Day: beet.bignum;
+  creationDay: beet.bignum;
+  reactionType: ReactionType;
 };
 
 export const reactionDiscriminator = [226, 61, 100, 191, 223, 221, 142, 139];
@@ -43,10 +44,11 @@ export class Reaction implements ReactionArgs {
     readonly targetType: ReactionTargetType,
     readonly target: web3.PublicKey,
     readonly initializer: web3.PublicKey,
-    readonly reactionType: ReactionType,
     readonly createdAt: beet.bignum,
-    readonly searchable3Day: beet.bignum,
-    readonly searchableDay: beet.bignum,
+    readonly creationWeek: beet.bignum,
+    readonly creation3Day: beet.bignum,
+    readonly creationDay: beet.bignum,
+    readonly reactionType: ReactionType,
   ) {}
 
   /**
@@ -59,10 +61,11 @@ export class Reaction implements ReactionArgs {
       args.targetType,
       args.target,
       args.initializer,
-      args.reactionType,
       args.createdAt,
-      args.searchable3Day,
-      args.searchableDay,
+      args.creationWeek,
+      args.creation3Day,
+      args.creationDay,
+      args.reactionType,
     );
   }
 
@@ -125,31 +128,33 @@ export class Reaction implements ReactionArgs {
 
   /**
    * Returns the byteSize of a {@link Buffer} holding the serialized data of
-   * {@link Reaction}
+   * {@link Reaction} for the provided args.
+   *
+   * @param args need to be provided since the byte size for this account
+   * depends on them
    */
-  static get byteSize() {
-    return reactionBeet.byteSize;
+  static byteSize(args: ReactionArgs) {
+    const instance = Reaction.fromArgs(args);
+    return reactionBeet.toFixedFromValue({
+      accountDiscriminator: reactionDiscriminator,
+      ...instance,
+    }).byteSize;
   }
 
   /**
    * Fetches the minimum balance needed to exempt an account holding
    * {@link Reaction} data from rent
    *
+   * @param args need to be provided since the byte size for this account
+   * depends on them
    * @param connection used to retrieve the rent exemption information
    */
   static async getMinimumBalanceForRentExemption(
+    args: ReactionArgs,
     connection: web3.Connection,
     commitment?: web3.Commitment,
   ): Promise<number> {
-    return connection.getMinimumBalanceForRentExemption(Reaction.byteSize, commitment);
-  }
-
-  /**
-   * Determines if the provided {@link Buffer} has the correct byte size to
-   * hold {@link Reaction} data.
-   */
-  static hasCorrectByteSize(buf: Buffer, offset = 0) {
-    return buf.byteLength - offset === Reaction.byteSize;
+    return connection.getMinimumBalanceForRentExemption(Reaction.byteSize(args), commitment);
   }
 
   /**
@@ -163,7 +168,6 @@ export class Reaction implements ReactionArgs {
       targetType: 'ReactionTargetType.' + ReactionTargetType[this.targetType],
       target: this.target.toBase58(),
       initializer: this.initializer.toBase58(),
-      reactionType: 'ReactionType.' + ReactionType[this.reactionType],
       createdAt: (() => {
         const x = <{ toNumber: () => number }>this.createdAt;
         if (typeof x.toNumber === 'function') {
@@ -175,8 +179,8 @@ export class Reaction implements ReactionArgs {
         }
         return x;
       })(),
-      searchable3Day: (() => {
-        const x = <{ toNumber: () => number }>this.searchable3Day;
+      creationWeek: (() => {
+        const x = <{ toNumber: () => number }>this.creationWeek;
         if (typeof x.toNumber === 'function') {
           try {
             return x.toNumber();
@@ -186,8 +190,8 @@ export class Reaction implements ReactionArgs {
         }
         return x;
       })(),
-      searchableDay: (() => {
-        const x = <{ toNumber: () => number }>this.searchableDay;
+      creation3Day: (() => {
+        const x = <{ toNumber: () => number }>this.creation3Day;
         if (typeof x.toNumber === 'function') {
           try {
             return x.toNumber();
@@ -197,6 +201,18 @@ export class Reaction implements ReactionArgs {
         }
         return x;
       })(),
+      creationDay: (() => {
+        const x = <{ toNumber: () => number }>this.creationDay;
+        if (typeof x.toNumber === 'function') {
+          try {
+            return x.toNumber();
+          } catch (_) {
+            return x;
+          }
+        }
+        return x;
+      })(),
+      reactionType: this.reactionType.__kind,
     };
   }
 }
@@ -205,7 +221,7 @@ export class Reaction implements ReactionArgs {
  * @category Accounts
  * @category generated
  */
-export const reactionBeet = new beet.BeetStruct<
+export const reactionBeet = new beet.FixableBeetStruct<
   Reaction,
   ReactionArgs & {
     accountDiscriminator: number[] /* size: 8 */;
@@ -218,10 +234,11 @@ export const reactionBeet = new beet.BeetStruct<
     ['targetType', reactionTargetTypeBeet],
     ['target', beetSolana.publicKey],
     ['initializer', beetSolana.publicKey],
-    ['reactionType', reactionTypeBeet],
     ['createdAt', beet.i64],
-    ['searchable3Day', beet.i64],
-    ['searchableDay', beet.i64],
+    ['creationWeek', beet.i64],
+    ['creation3Day', beet.i64],
+    ['creationDay', beet.i64],
+    ['reactionType', reactionTypeBeet],
   ],
   Reaction.fromArgs,
   'Reaction',

@@ -1,1 +1,0 @@
-{"version":3,"file":"LocationCoordinates.js","sourceRoot":"","sources":["../../../../src/generated/types/LocationCoordinates.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;;;;;;;;;AAOA,gEAAkD;AAUrC,QAAA,uBAAuB,GAAG,IAAI,IAAI,CAAC,cAAc,CAC5D;IACE,CAAC,UAAU,EAAE,IAAI,CAAC,GAAG,CAAC;IACtB,CAAC,WAAW,EAAE,IAAI,CAAC,GAAG,CAAC;CACxB,EACD,qBAAqB,CACtB,CAAC"}

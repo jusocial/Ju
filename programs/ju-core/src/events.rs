@@ -20,8 +20,10 @@ pub struct DeleteDeveloperEvent {
 
 #[event]
 pub struct NewExternalProcessorEvent {
-    /// Application PDA address
+    /// Program address
     pub program_address: Pubkey,
+    /// Processor authority address
+    pub authority: Pubkey,
     /// Profile creation unix timestamp
     pub created_at: i64,
 }
@@ -29,10 +31,23 @@ pub struct NewExternalProcessorEvent {
 /// An Event that is fired when existing Protocol external Processor deleted from "whitelist".
 #[event]
 pub struct DeleteExternalProcessorEvent {
-    /// Application PDA address
+    /// Program address
     pub program_address: Pubkey,
+    /// Processor authority address
+    pub authority: Pubkey,
     /// Profile creation unix timestamp
     pub deleted_at: i64,
+}
+
+/// An Event that is fired when new Application Profile is created.
+#[event]
+pub struct NewAppEvent {
+    /// Application PDA address
+    pub app: Pubkey,
+    /// App authority address
+    pub authority: Pubkey,
+    /// Profile creation unix timestamp
+    pub created_at: i64,
 }
 
 /// An Event that is fired when new Application Profile is created.
@@ -160,6 +175,19 @@ pub struct DeletePublicationEvent {
     pub profile: Pubkey,
     /// Publication delete unix timestamp
     pub deleted_at: i64,
+}
+
+/// An Event that is fired when new Application Profile is created.
+#[event]
+pub struct NewCollectionItemEvent {
+    /// Application PDA address
+    pub app: Pubkey,
+    /// Publication PDA address
+    pub publication: Pubkey,
+    /// Collector's Profile PDA address
+    pub initializer: Pubkey,
+    /// Profile creation unix timestamp
+    pub created_at: i64,
 }
 
 /// An Event that is fired when new Connection is initialized.

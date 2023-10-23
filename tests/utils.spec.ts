@@ -9,8 +9,16 @@ export async function airdrop(key: PublicKey) {
 }
 
 export function birthDate(year: number, month: number, day: number) {
-    const birthDate = new Date(year, month, day);
+    let birthDate = new Date();
+    birthDate.setUTCFullYear(year);
+    birthDate.setUTCMonth(month);
+    birthDate.setUTCDate(day);
+    birthDate.setUTCHours(0);
+    birthDate.setUTCMinutes(0);
+    birthDate.setUTCSeconds(0);
+    birthDate.setUTCMilliseconds(0);
     const unixTimestamp = Math.floor(birthDate.getTime() / 1000).toString();
+    // console.log('unixTimestamp :>> ', unixTimestamp);
     return new anchor.BN(unixTimestamp);
 }
 

@@ -10,6 +10,16 @@ export type SubspaceArgs = {
     creator: web3.PublicKey;
     publishingPermission: SubspacePublishingPermissionLevel;
     name: number[];
+    reserved1: number;
+    reserved2: number;
+    reserved3: number;
+    reserved4: number;
+    reserved5: number[];
+    reserved6: number[];
+    creationYear: beet.bignum;
+    creationMonth: beet.bignum;
+    creationWeek: beet.bignum;
+    creationDay: beet.bignum;
     alias: beet.COption<string>;
     uuid: string;
     metadataUri: beet.COption<string>;
@@ -18,8 +28,6 @@ export type SubspaceArgs = {
     collectingProcessor: beet.COption<web3.PublicKey>;
     referencingProcessor: beet.COption<web3.PublicKey>;
     createdAt: beet.bignum;
-    reserved1: number[];
-    reserved2: number[];
 };
 export declare const subspaceDiscriminator: number[];
 export declare class Subspace implements SubspaceArgs {
@@ -29,6 +37,16 @@ export declare class Subspace implements SubspaceArgs {
     readonly creator: web3.PublicKey;
     readonly publishingPermission: SubspacePublishingPermissionLevel;
     readonly name: number[];
+    readonly reserved1: number;
+    readonly reserved2: number;
+    readonly reserved3: number;
+    readonly reserved4: number;
+    readonly reserved5: number[];
+    readonly reserved6: number[];
+    readonly creationYear: beet.bignum;
+    readonly creationMonth: beet.bignum;
+    readonly creationWeek: beet.bignum;
+    readonly creationDay: beet.bignum;
     readonly alias: beet.COption<string>;
     readonly uuid: string;
     readonly metadataUri: beet.COption<string>;
@@ -37,8 +55,6 @@ export declare class Subspace implements SubspaceArgs {
     readonly collectingProcessor: beet.COption<web3.PublicKey>;
     readonly referencingProcessor: beet.COption<web3.PublicKey>;
     readonly createdAt: beet.bignum;
-    readonly reserved1: number[];
-    readonly reserved2: number[];
     private constructor();
     static fromArgs(args: SubspaceArgs): Subspace;
     static fromAccountInfo(accountInfo: web3.AccountInfo<Buffer>, offset?: number): [Subspace, number];
@@ -57,6 +73,24 @@ export declare class Subspace implements SubspaceArgs {
         creator: string;
         publishingPermission: string;
         name: number[];
+        reserved1: number;
+        reserved2: number;
+        reserved3: number;
+        reserved4: number;
+        reserved5: number[];
+        reserved6: number[];
+        creationYear: number | {
+            toNumber: () => number;
+        };
+        creationMonth: number | {
+            toNumber: () => number;
+        };
+        creationWeek: number | {
+            toNumber: () => number;
+        };
+        creationDay: number | {
+            toNumber: () => number;
+        };
         alias: beet.COption<string>;
         uuid: string;
         metadataUri: beet.COption<string>;
@@ -67,8 +101,6 @@ export declare class Subspace implements SubspaceArgs {
         createdAt: number | {
             toNumber: () => number;
         };
-        reserved1: number[];
-        reserved2: number[];
     };
 }
 export declare const subspaceBeet: beet.FixableBeetStruct<Subspace, SubspaceArgs & {

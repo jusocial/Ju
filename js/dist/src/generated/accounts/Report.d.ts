@@ -11,9 +11,11 @@ export type ReportArgs = {
     target: web3.PublicKey;
     initializer: web3.PublicKey;
     reportType: ReportType;
-    searchableDay: beet.bignum;
-    notification: beet.COption<string>;
     createdAt: beet.bignum;
+    creationWeek: beet.bignum;
+    creation3Day: beet.bignum;
+    creationDay: beet.bignum;
+    notification: beet.COption<string>;
 };
 export declare const reportDiscriminator: number[];
 export declare class Report implements ReportArgs {
@@ -23,9 +25,11 @@ export declare class Report implements ReportArgs {
     readonly target: web3.PublicKey;
     readonly initializer: web3.PublicKey;
     readonly reportType: ReportType;
-    readonly searchableDay: beet.bignum;
-    readonly notification: beet.COption<string>;
     readonly createdAt: beet.bignum;
+    readonly creationWeek: beet.bignum;
+    readonly creation3Day: beet.bignum;
+    readonly creationDay: beet.bignum;
+    readonly notification: beet.COption<string>;
     private constructor();
     static fromArgs(args: ReportArgs): Report;
     static fromAccountInfo(accountInfo: web3.AccountInfo<Buffer>, offset?: number): [Report, number];
@@ -44,13 +48,19 @@ export declare class Report implements ReportArgs {
         target: string;
         initializer: string;
         reportType: string;
-        searchableDay: number | {
-            toNumber: () => number;
-        };
-        notification: beet.COption<string>;
         createdAt: number | {
             toNumber: () => number;
         };
+        creationWeek: number | {
+            toNumber: () => number;
+        };
+        creation3Day: number | {
+            toNumber: () => number;
+        };
+        creationDay: number | {
+            toNumber: () => number;
+        };
+        notification: beet.COption<string>;
     };
 }
 export declare const reportBeet: beet.FixableBeetStruct<Report, ReportArgs & {

@@ -31,19 +31,20 @@ const ReactionTargetType_1 = require("../types/ReactionTargetType");
 const ReactionType_1 = require("../types/ReactionType");
 exports.reactionDiscriminator = [226, 61, 100, 191, 223, 221, 142, 139];
 class Reaction {
-    constructor(app, authority, targetType, target, initializer, reactionType, createdAt, searchable3Day, searchableDay) {
+    constructor(app, authority, targetType, target, initializer, createdAt, creationWeek, creation3Day, creationDay, reactionType) {
         this.app = app;
         this.authority = authority;
         this.targetType = targetType;
         this.target = target;
         this.initializer = initializer;
-        this.reactionType = reactionType;
         this.createdAt = createdAt;
-        this.searchable3Day = searchable3Day;
-        this.searchableDay = searchableDay;
+        this.creationWeek = creationWeek;
+        this.creation3Day = creation3Day;
+        this.creationDay = creationDay;
+        this.reactionType = reactionType;
     }
     static fromArgs(args) {
-        return new Reaction(args.app, args.authority, args.targetType, args.target, args.initializer, args.reactionType, args.createdAt, args.searchable3Day, args.searchableDay);
+        return new Reaction(args.app, args.authority, args.targetType, args.target, args.initializer, args.createdAt, args.creationWeek, args.creation3Day, args.creationDay, args.reactionType);
     }
     static fromAccountInfo(accountInfo, offset = 0) {
         return Reaction.deserialize(accountInfo.data, offset);
@@ -67,14 +68,15 @@ class Reaction {
             ...this,
         });
     }
-    static get byteSize() {
-        return exports.reactionBeet.byteSize;
+    static byteSize(args) {
+        const instance = Reaction.fromArgs(args);
+        return exports.reactionBeet.toFixedFromValue({
+            accountDiscriminator: exports.reactionDiscriminator,
+            ...instance,
+        }).byteSize;
     }
-    static async getMinimumBalanceForRentExemption(connection, commitment) {
-        return connection.getMinimumBalanceForRentExemption(Reaction.byteSize, commitment);
-    }
-    static hasCorrectByteSize(buf, offset = 0) {
-        return buf.byteLength - offset === Reaction.byteSize;
+    static async getMinimumBalanceForRentExemption(args, connection, commitment) {
+        return connection.getMinimumBalanceForRentExemption(Reaction.byteSize(args), commitment);
     }
     pretty() {
         return {
@@ -83,7 +85,6 @@ class Reaction {
             targetType: 'ReactionTargetType.' + ReactionTargetType_1.ReactionTargetType[this.targetType],
             target: this.target.toBase58(),
             initializer: this.initializer.toBase58(),
-            reactionType: 'ReactionType.' + ReactionType_1.ReactionType[this.reactionType],
             createdAt: (() => {
                 const x = this.createdAt;
                 if (typeof x.toNumber === 'function') {
@@ -96,8 +97,8 @@ class Reaction {
                 }
                 return x;
             })(),
-            searchable3Day: (() => {
-                const x = this.searchable3Day;
+            creationWeek: (() => {
+                const x = this.creationWeek;
                 if (typeof x.toNumber === 'function') {
                     try {
                         return x.toNumber();
@@ -108,8 +109,8 @@ class Reaction {
                 }
                 return x;
             })(),
-            searchableDay: (() => {
-                const x = this.searchableDay;
+            creation3Day: (() => {
+                const x = this.creation3Day;
                 if (typeof x.toNumber === 'function') {
                     try {
                         return x.toNumber();
@@ -120,20 +121,34 @@ class Reaction {
                 }
                 return x;
             })(),
+            creationDay: (() => {
+                const x = this.creationDay;
+                if (typeof x.toNumber === 'function') {
+                    try {
+                        return x.toNumber();
+                    }
+                    catch (_) {
+                        return x;
+                    }
+                }
+                return x;
+            })(),
+            reactionType: this.reactionType.__kind,
         };
     }
 }
 exports.Reaction = Reaction;
-exports.reactionBeet = new beet.BeetStruct([
+exports.reactionBeet = new beet.FixableBeetStruct([
     ['accountDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['app', beetSolana.publicKey],
     ['authority', beetSolana.publicKey],
     ['targetType', ReactionTargetType_1.reactionTargetTypeBeet],
     ['target', beetSolana.publicKey],
     ['initializer', beetSolana.publicKey],
-    ['reactionType', ReactionType_1.reactionTypeBeet],
     ['createdAt', beet.i64],
-    ['searchable3Day', beet.i64],
-    ['searchableDay', beet.i64],
+    ['creationWeek', beet.i64],
+    ['creation3Day', beet.i64],
+    ['creationDay', beet.i64],
+    ['reactionType', ReactionType_1.reactionTypeBeet],
 ], Reaction.fromArgs, 'Reaction');
 //# sourceMappingURL=Reaction.js.map
