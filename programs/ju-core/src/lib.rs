@@ -854,11 +854,6 @@ pub mod ju_core {
 
     // Delete existing connection
     pub fn delete_connection(ctx: Context<DeleteConnection>) -> Result<()> {
-        // Assert Connection Target authority
-        assert_connection_target_authority(
-            &ctx.accounts.authority.to_account_info().key(),
-            &ctx.accounts.target,
-        )?;
 
         // Emit new Event
         let now = Clock::get()?.unix_timestamp;
