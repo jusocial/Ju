@@ -80,10 +80,6 @@ impl ExternalProcessorPDA {
     /// 
     pub fn validate_name(&self, processor_name: &String) -> Result<()> {
 
-        if !processor_name.chars().all(|x| x.is_ascii_lowercase() || x.is_ascii_digit()) {
-            return Err(error!(CustomError::ProcessorNameInvalid));
-        }
-
         if processor_name.len() < MIN_PROCESSOR_NAME_LENGTH || processor_name.len() > MAX_PROCESSOR_NAME_LENGTH {
             return Err(error!(CustomError::ProcessorNameLengthIncorrect));
         }
