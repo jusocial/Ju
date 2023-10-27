@@ -208,7 +208,7 @@ impl App {
     ///
     /// # Parameters:
     ///
-    /// 1. `app_name` - Reference to Protocol unique Application name String
+    /// 1. `app_domain_name` - Reference to Protocol unique Application name String
     /// 
     pub fn validate_domain_name(&self, app_domain_name: &String) -> Result<()> {
         if !app_domain_name.chars().all(|x| x.is_ascii_lowercase() || x.is_ascii_digit()) {
