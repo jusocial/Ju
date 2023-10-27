@@ -17,6 +17,10 @@ Decentralized Social Graph on Solana Blockchain
 
 [Developer Board](https://dev.ju.social)
 
+## Ju App templates
+
+[dApp scaffold repo](https://github.com/jusocial/dapp-scaffold)
+
 ## Ecosystem
 
 [Awesome Ju repo](https://github.com/jusocial/awesome-ju)
